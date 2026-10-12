@@ -1,0 +1,39 @@
+name: agro_asystent
+description: "Dokumentacja gospodarstwa: ewidencja zabiegów, nawożenia i terminów dla ARiMR"
+publish_to: 'none'
+
+# Wersja aplikacji. Wersja danych (słowniki środków, progi prawne) jest osobna
+# i trzymana w assets/dane/*.json — patrz CLAUDE.md.
+version: 0.1.0+1
+
+environment:
+  sdk: ^3.13.5
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # Lokalna baza — rdzeń trybu offline-first (Android: natywne SQLite).
+  sqflite: ^2.4.4+1
+  # Ścieżki plików i katalogi systemowe (baza, kopie zapasowe, eksport).
+  path: ^1.9.1
+  path_provider: ^2.1.6
+  # Formatowanie dat i liczb po polsku (ewidencja, wydruki).
+  intl: ^0.20.3
+  flutter_localizations:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  # SQLite na komputerze — testy bazy i migracji bez emulatora;
+  # ta sama droga posłuży programowi na Windows.
+  sqflite_common_ffi: ^2.4.3
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    # Dane z wersją: progi, terminy i stawki z przepisów. Nigdy w kodzie Dart.
+    - assets/dane/

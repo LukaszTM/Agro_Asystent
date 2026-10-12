@@ -1,0 +1,76 @@
+# ─────────────────────────────────────────────────────────────────────
+# DANE OSOBOWE I PLIKI POBRANE — NIGDY W REPOZYTORIUM (plan, pkt 11)
+# ─────────────────────────────────────────────────────────────────────
+# Wnioski o płatności z eWniosekPlus i wszystko, co z nich wynika
+*wniosek*.pdf
+*Wniosek*.pdf
+/dane/wnioski/
+/dane/prywatne/
+# Pliki pobrane ze stron ministerstwa (XLSX, etykiety PDF) i pamięć podręczna
+/dane/pobrane/
+/dane/cache/
+# Bazy i słowniki wygenerowane przez skrypty z tools/
+/dane/wynik/
+*.sqlite
+*.sqlite3
+*.db
+!/test/dane/*.sqlite
+# Wyjątek: zanonimizowane wzorce do testów są wersjonowane
+!/test/dane/wzorzec_*.pdf
+!/test/dane/wzorzec_*.txt
+
+# ─────────────────────────────────────────────────────────────────────
+# Flutter / Dart
+# ─────────────────────────────────────────────────────────────────────
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+build/
+flutter_*.png
+generated_plugin_registrant.*
+*.g.dart
+*.freezed.dart
+coverage/
+doc/api/
+
+# Android
+/android/.gradle/
+/android/captures/
+/android/local.properties
+/android/key.properties
+*.jks
+*.keystore
+*.aab
+*.apk
+# Windows
+/windows/flutter/ephemeral/
+# iOS / macOS (etap 3)
+/ios/Flutter/ephemeral/
+/ios/Pods/
+/macos/Flutter/ephemeral/
+/macos/Pods/
+
+# ─────────────────────────────────────────────────────────────────────
+# Python (tools/)
+# ─────────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+
+# ─────────────────────────────────────────────────────────────────────
+# Narzędzia i system
+# ─────────────────────────────────────────────────────────────────────
+.idea/
+.vscode/
+*.iml
+.DS_Store
+Thumbs.db
+*.log
+*~

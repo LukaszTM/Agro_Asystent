@@ -1,0 +1,48 @@
+name: Sprawdzenie kodu
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+
+jobs:
+  flutter:
+    name: Analiza i testy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 3.47.7
+          channel: stable
+          cache: true
+
+      - name: Zależności
+        run: flutter pub get
+
+      - name: Formatowanie
+        run: dart format --set-exit-if-changed lib test
+
+      - name: Analiza
+        run: flutter analyze
+
+      - name: Testy
+        run: flutter test
+
+  skrypty:
+    name: Skrypty danych
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Zależności
+        run: pip install -r tools/requirements.txt
+
+      - name: Testy skryptów
+        # Katalog tools/ wypełnia się od zadania P1 — brak testów nie jest błędem.
+        run: python -m pytest tools -q || [ $? -eq 5 ]

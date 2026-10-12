@@ -1,0 +1,166 @@
+{
+  "wersja": "2026.10.12",
+  "obowiazuje_od": "2026-10-12",
+  "opis": "Progi, limity i terminy obowiązków dokumentacyjnych. Dane, nie kod — aktualizowane bez przebudowy aplikacji. Zestawienie służy do planowania i nie jest poradą prawną.",
+  "obowiazki": [
+    {
+      "id": "ewidencja_sor",
+      "nazwa": "Ewidencja zabiegów środkami ochrony roślin",
+      "podstawa": "rozporządzenie wykonawcze (UE) 2023/564",
+      "kogo_dotyczy": "każdy profesjonalny użytkownik środków ochrony roślin",
+      "progi": [],
+      "polaczenie_progow": "lub",
+      "limity": [],
+      "przechowywanie_lat": 3,
+      "status_weryfikacji": "potwierdzone",
+      "uwagi": "Od 1.01.2027 r. wyłącznie elektronicznie, w formacie do odczytu maszynowego."
+    },
+    {
+      "id": "program_azotanowy_ewidencja",
+      "nazwa": "Program azotanowy: ewidencja nawożenia azotem",
+      "podstawa": "program działań mających na celu zmniejszenie zanieczyszczenia wód azotanami",
+      "kogo_dotyczy": "gospodarstwa od 10 ha użytków rolnych albo od 10 DJP",
+      "progi": [
+        { "miara": "powierzchnia_ur_ha", "operator": ">=", "wartosc": 10 },
+        { "miara": "djp", "operator": ">=", "wartosc": 10 }
+      ],
+      "polaczenie_progow": "lub",
+      "limity": [
+        {
+          "id": "limit_azotu_z_nawozow_naturalnych",
+          "nazwa": "Limit azotu z nawozów naturalnych",
+          "wartosc": 170,
+          "jednostka": "kg N/ha/rok"
+        }
+      ],
+      "przechowywanie_lat": 3,
+      "status_weryfikacji": "potwierdzone",
+      "uwagi": "Terminy nawożenia z planu pochodzą ze strony ARiMR z 2019 r. — do sprawdzenia w aktualnym rozporządzeniu."
+    },
+    {
+      "id": "program_azotanowy_plan",
+      "nazwa": "Program azotanowy: plan nawożenia azotem",
+      "podstawa": "program działań mających na celu zmniejszenie zanieczyszczenia wód azotanami",
+      "kogo_dotyczy": "powyżej 100 ha UR, 50 ha upraw intensywnych albo 60 DJP",
+      "progi": [
+        { "miara": "powierzchnia_ur_ha", "operator": ">", "wartosc": 100 },
+        { "miara": "powierzchnia_upraw_intensywnych_ha", "operator": ">", "wartosc": 50 },
+        { "miara": "djp", "operator": ">", "wartosc": 60 }
+      ],
+      "polaczenie_progow": "lub",
+      "limity": [],
+      "przechowywanie_lat": 3,
+      "status_weryfikacji": "potwierdzone",
+      "uwagi": "Włącza się samoczynnie po przekroczeniu progu."
+    },
+    {
+      "id": "ekoschematy_rejestr",
+      "nazwa": "Ekoschematy: rejestr zabiegów agrotechnicznych",
+      "podstawa": "Plan Strategiczny WPR 2023-2027",
+      "kogo_dotyczy": "rolnicy z zadeklarowanym ekoschematem",
+      "progi": [
+        { "miara": "zadeklarowany_ekoschemat", "operator": "jest", "wartosc": 1 }
+      ],
+      "polaczenie_progow": "lub",
+      "limity": [],
+      "przechowywanie_lat": 3,
+      "status_weryfikacji": "potwierdzone",
+      "uwagi": "Rejestr: nr działki ewidencyjnej, powierzchnia, data, uprawa, rodzaj zabiegu, nawóz i ilość."
+    },
+    {
+      "id": "warunkowosc",
+      "nazwa": "Warunkowość (GAEC, SMR)",
+      "podstawa": "normy GAEC i wymogi SMR",
+      "kogo_dotyczy": "gospodarstwa powyżej 10 ha UR",
+      "progi": [
+        { "miara": "powierzchnia_ur_ha", "operator": ">", "wartosc": 10 }
+      ],
+      "polaczenie_progow": "lub",
+      "limity": [],
+      "przechowywanie_lat": 3,
+      "status_weryfikacji": "potwierdzone",
+      "uwagi": "Mniejsze gospodarstwa zwolnione z kontroli i kar."
+    },
+    {
+      "id": "wniosek_o_platnosci",
+      "nazwa": "Wniosek o płatności",
+      "podstawa": "nabór ARiMR",
+      "kogo_dotyczy": "wszyscy wnioskujący",
+      "progi": [],
+      "polaczenie_progow": "lub",
+      "limity": [],
+      "przechowywanie_lat": 5,
+      "status_weryfikacji": "potwierdzone",
+      "uwagi": "Wniosek składa się w eWniosekPlus; aplikacja daje tylko zestawienie działek i upraw."
+    },
+    {
+      "id": "irzplus",
+      "nazwa": "IRZplus: rejestr zwierząt",
+      "podstawa": "ustawa o systemie identyfikacji i rejestracji zwierząt",
+      "kogo_dotyczy": "posiadacze zwierząt gospodarskich",
+      "progi": [
+        { "miara": "posiadacz_zwierzat", "operator": "jest", "wartosc": 1 }
+      ],
+      "polaczenie_progow": "lub",
+      "limity": [],
+      "przechowywanie_lat": 3,
+      "status_weryfikacji": "potwierdzone",
+      "uwagi": "Zgłoszenie urodzenia cielęcia w 7 dni — patrz terminy."
+    }
+  ],
+  "terminy": [
+    {
+      "id": "gaec6_okrywa_gruntow",
+      "obowiazek": "warunkowosc",
+      "nazwa": "Okrywa na 80% gruntów ornych",
+      "rodzaj": "data_roczna",
+      "data_roczna": "10-15",
+      "status_weryfikacji": "potwierdzone",
+      "uwagi": "GAEC 6: okrywa do 15 października."
+    },
+    {
+      "id": "gaec8_zakaz_przycinania_drzew",
+      "obowiazek": "warunkowosc",
+      "nazwa": "Zakaz przycinania drzew i żywopłotów",
+      "rodzaj": "okres_roczny",
+      "okres_od": "04-15",
+      "okres_do": "07-31",
+      "status_weryfikacji": "potwierdzone",
+      "uwagi": "GAEC 8: okres lęgowy ptaków."
+    },
+    {
+      "id": "irzplus_urodzenie_cielecia",
+      "obowiazek": "irzplus",
+      "nazwa": "Zgłoszenie urodzenia cielęcia",
+      "rodzaj": "dni_od_zdarzenia",
+      "dni": 7,
+      "status_weryfikacji": "potwierdzone",
+      "uwagi": "Liczone od dnia urodzenia."
+    },
+    {
+      "id": "ewidencja_sor_tylko_elektronicznie",
+      "obowiazek": "ewidencja_sor",
+      "nazwa": "Ewidencja zabiegów wyłącznie elektronicznie",
+      "rodzaj": "data_jednorazowa",
+      "data": "2027-01-01",
+      "status_weryfikacji": "potwierdzone",
+      "uwagi": "Termin przenoszenia notatek za 2027 r. — sprawa otwarta (plan, pkt 10)."
+    }
+  ],
+  "parametry_warunkowosci": [
+    {
+      "id": "gaec4_pas_od_wod",
+      "nazwa": "Pas bez nawożenia i oprysku od wód powierzchniowych",
+      "wartosc": 3,
+      "jednostka": "m",
+      "status_weryfikacji": "potwierdzone"
+    },
+    {
+      "id": "gaec6_udzial_okrywy",
+      "nazwa": "Najmniejszy udział okrywy na gruntach ornych",
+      "wartosc": 80,
+      "jednostka": "%",
+      "status_weryfikacji": "potwierdzone"
+    }
+  ]
+}

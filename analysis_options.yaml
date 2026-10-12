@@ -1,0 +1,29 @@
+# Reguły analizy kodu. `flutter analyze` musi przechodzić bez ostrzeżeń
+# przed każdym commitem (CLAUDE.md).
+include: package:flutter_lints/flutter.yaml
+
+analyzer:
+  errors:
+    # Brak typu zwracanego i niejawne „dynamic" traktujemy jak błąd —
+    # dokumentacja gospodarstwa nie może się wysypać na literówce.
+    always_declare_return_types: error
+    unused_import: error
+    unused_local_variable: error
+    # Teksty widoczne dla rolnika muszą być stałe, nie składane w locie.
+    prefer_const_constructors: warning
+  exclude:
+    - "**/*.g.dart"
+    - "**/*.freezed.dart"
+    - build/**
+    - android/**
+    - windows/**
+
+linter:
+  rules:
+    - always_declare_return_types
+    - avoid_print            # komunikaty przez logger, nie print
+    - prefer_final_locals
+    - prefer_single_quotes
+    - require_trailing_commas
+    - unawaited_futures
+    - use_super_parameters
