@@ -66,6 +66,7 @@ Pojęcia dziedzinowe po polsku, zgodnie z planem i przepisami (`DzialkaEwidencyj
 Bez polskich znaków w identyfikatorach i nazwach plików (`dzialka_rolna.dart`).
 Techniczne nazwy (klasy pomocnicze, repozytoria, testy) mogą być angielskie.
 Komentarze, komunikaty i dokumentacja — po polsku.
+Opis prac, raporty i rozmowa z użytkownikiem — zawsze po polsku.
 
 ## Struktura katalogów
 
