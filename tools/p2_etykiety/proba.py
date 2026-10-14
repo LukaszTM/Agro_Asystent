@@ -150,6 +150,7 @@ def zapisz_i_podsumuj(wyniki, stany, bledy, args) -> None:
         return
 
     polaczenie = sqlite3.connect(args.baza)
+    polaczenie.execute("PRAGMA foreign_keys = ON")
     polaczenie.executescript(SCHEMAT)
     dzis = dt.date.today().isoformat()
     dopasowane = 0
@@ -158,8 +159,19 @@ def zapisz_i_podsumuj(wyniki, stany, bledy, args) -> None:
             "SELECT id FROM srodek WHERE nazwa = ? LIMIT 1", (etykieta.nazwa_srodka,)
         ).fetchone()
         dopasowane += int(srodek is not None)
+        # Ponowny odczyt tej samej etykiety zastępuje poprzedni wynik razem
+        # z jego karencjami — inaczej zostawałyby w bazie wiersze bez rodzica.
+        polaczenie.execute(
+            """DELETE FROM karencja WHERE etykieta_id IN
+                   (SELECT id FROM etykieta WHERE nazwa_srodka = ? AND data_etykiety = ?)""",
+            (etykieta.nazwa_srodka, etykieta.data_etykiety.isoformat()),
+        )
+        polaczenie.execute(
+            "DELETE FROM etykieta WHERE nazwa_srodka = ? AND data_etykiety = ?",
+            (etykieta.nazwa_srodka, etykieta.data_etykiety.isoformat()),
+        )
         kursor = polaczenie.execute(
-            """INSERT OR REPLACE INTO etykieta (nazwa_srodka, srodek_id, data_etykiety,
+            """INSERT INTO etykieta (nazwa_srodka, srodek_id, data_etykiety,
                    adres, data_pobrania, stan_odczytu, liczba_zabiegow,
                    liczba_zabiegow_rozna, sezon, prewencja_dni, prewencja_tekst)
                VALUES (?,?,?,?,?,?,?,?,?,?,?)""",
@@ -178,7 +190,6 @@ def zapisz_i_podsumuj(wyniki, stany, bledy, args) -> None:
             ),
         )
         id_etykiety = int(kursor.lastrowid)
-        polaczenie.execute("DELETE FROM karencja WHERE etykieta_id = ?", (id_etykiety,))
         for k in odczyt.karencje:
             for uprawa in k.uprawy or (None,):
                 polaczenie.execute(
