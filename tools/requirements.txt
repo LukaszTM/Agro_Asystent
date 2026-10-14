@@ -5,5 +5,7 @@
 openpyxl==3.1.5
 # Odczyt tabel z PDF (wniosek z eWniosekPlus, etykiety środków)
 pdfplumber==0.11.10
+# Wytwarzanie zanonimizowanego wzorca wniosku do testów (P4)
+reportlab==5.0.1
 # Testy skryptów
 pytest==9.1.1

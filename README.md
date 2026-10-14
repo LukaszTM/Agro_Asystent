@@ -18,7 +18,7 @@ Pełny plan: [`docs/PLAN.md`](docs/PLAN.md). Zasady pracy w kodzie: [`CLAUDE.md`
 | P1. Import pliku zastosowań środków (XLSX → SQLite) | **gotowe** — [raport](docs/raporty/P1-raport.md) |
 | P2. Próba bazy etykiet (karencja) | **gotowe** — [raport](docs/raporty/P2-raport.md) |
 | P3. Słownik upraw (wniosek ↔ rejestr ↔ EPPO) | **częściowo** — [raport](docs/raporty/P3-raport.md): brak kodów EPPO i strony z wniosku |
-| P4. Czytnik wniosku PDF z eWniosekPlus | przed nami |
+| P4. Czytnik wniosku PDF z eWniosekPlus | **gotowe na wzorcu** — [raport](docs/raporty/P4-raport.md): do sprawdzenia na prawdziwym wniosku |
 | P5. Prototyp ULDK (granice działek, mapa offline) | przed nami |
 | P6. Model danych SQLite z migracjami | przed nami |
 | P7. Pierwszy ekran: ścieżka wpisu oprysku | przed nami |
