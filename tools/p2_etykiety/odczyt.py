@@ -44,8 +44,13 @@ _KONIEC = re.compile(
 #: Celowo bez IGNORECASE — chodzi właśnie o wielkie litery.
 _NAGLOWEK = re.compile(r"[A-ZĄĆĘŁŃÓŚŹŻ]{3,}(?:\s+[A-ZĄĆĘŁŃÓŚŹŻ]{2,}){2,}")
 
+#: Początek listy numerowanej („1. Strategia zarządzania odpornością…") —
+#: tam kończy się zdanie o karencji, a zaczynają zalecenia.
+_LISTA = re.compile(r"\s\d+\.\s+[A-ZĄĆĘŁŃÓŚŹŻ]")
+
 _DNI = re.compile(r"(\d+)\s*(dni|dzień|dnia)\b", re.IGNORECASE)
-_NIE_DOTYCZY = re.compile(r"nie\s+dotyczy", re.IGNORECASE)
+#: Trzy równoważne sposoby zapisania braku okresu karencji.
+_BRAK_KARENCJI = re.compile(r"nie\s*dotyczy|nie\s*wymagan[ayeo]|brak\s+karencji", re.IGNORECASE)
 
 
 @dataclass(frozen=True)
@@ -76,7 +81,15 @@ class OdczytEtykiety:
 def _utnij(tresc: str) -> str:
     """Zwija łamanie wierszy i obcina fragment przed kolejną sekcją etykiety."""
     jedna_linia = re.sub(r"\s+", " ", tresc)
-    granice = [d.start() for d in (_KONIEC.search(jedna_linia), _NAGLOWEK.search(jedna_linia)) if d]
+    granice = [
+        d.start()
+        for d in (
+            _KONIEC.search(jedna_linia),
+            _NAGLOWEK.search(jedna_linia),
+            _LISTA.search(jedna_linia),
+        )
+        if d
+    ]
     return (jedna_linia[: min(granice)] if granice else jedna_linia).strip(" .;\t")
 
 
@@ -109,7 +122,7 @@ def odczytaj_karencje(tekst: str) -> tuple[list[Karencja], str | None]:
             )
         if dni:
             wynik.append(Karencja(uprawy, int(dni.group(1)), "dni", pozycja))
-        elif _NIE_DOTYCZY.search(pozycja):
+        elif _BRAK_KARENCJI.search(pozycja):
             wynik.append(Karencja(uprawy, None, "nie_dotyczy", pozycja))
         else:
             wynik.append(Karencja(uprawy, None, "do_sprawdzenia", pozycja))

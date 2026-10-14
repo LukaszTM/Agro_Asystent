@@ -69,6 +69,26 @@ class TestKarencja:
         assert karencje[0].dni == 42
         assert "żyto ozime" in karencje[0].uprawy
 
+    def test_nie_wymagany_to_brak_karencji(self):
+        # Trzeci sposób zapisu obok „nie dotyczy"; po nim zaczyna się lista
+        # zaleceń, która nie może trafić do odczytu.
+        karencje, fragment = odczytaj_karencje(
+            "Okres od ostatniego zastosowania środka do dnia zbioru rośliny uprawnej "
+            "(okres karencji): Nie wymagany 1. Strategia zarządzania odpornością "
+            "W celu zminimalizowania ryzyka…"
+        )
+        assert len(karencje) == 1
+        assert karencje[0].stan == "nie_dotyczy"
+        assert karencje[0].dni is None
+        assert "Strategia" not in fragment
+
+    def test_pisownia_lacznie(self):
+        karencje, _ = odczytaj_karencje(
+            "Okres od ostatniego zastosowania środka do dnia zbioru rośliny uprawnej "
+            "(okres karencji): Niewymagany."
+        )
+        assert karencje[0].stan == "nie_dotyczy"
+
     def test_brak_zdania_o_karencji(self):
         karencje, fragment = odczytaj_karencje("Etykieta bez takiej informacji.")
         assert karencje == []

@@ -68,6 +68,8 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--przerwa", type=float, default=2.0, help="przerwa między pobraniami [s]")
     parser.add_argument("--ile", type=int, default=0, help="ogranicz liczbę etykiet (0 = wszystkie)")
     parser.add_argument("--bez-zapisu", action="store_true", help="nie zapisuj do bazy")
+    parser.add_argument("--offline", action="store_true",
+                        help="pracuj na plikach już pobranych, bez łączenia się z siecią")
     args = parser.parse_args(argv)
 
     katalog_pdf = args.katalog / "etykiety"
@@ -75,8 +77,12 @@ def main(argv: list[str] | None = None) -> int:
     pobieracz = Pobieracz(args.katalog, args.przerwa)
 
     print(f"Spis z podstrony {args.podstrona}…")
-    wynik = pobieracz.pobierz(adres_podstrony(args.podstrona), f"{args.podstrona}.html")
-    tresc = wynik.sciezka.read_text(encoding="utf-8", errors="replace")
+    plik_strony = args.katalog / f"{args.podstrona}.html"
+    if not (args.offline and plik_strony.exists()):
+        plik_strony = pobieracz.pobierz(
+            adres_podstrony(args.podstrona), f"{args.podstrona}.html"
+        ).sciezka
+    tresc = plik_strony.read_text(encoding="utf-8", errors="replace")
     print("  dokumenty na stronie:", policz_dokumenty(tresc))
 
     etykiety = zbierz_etykiety(tresc)
@@ -91,9 +97,11 @@ def main(argv: list[str] | None = None) -> int:
     wyniki = []
 
     for numer, etykieta in enumerate(etykiety, 1):
+        sciezka = katalog_pdf / etykieta.nazwa_pliku
         try:
-            plik = pobieracz_pdf.pobierz(etykieta.adres, etykieta.nazwa_pliku)
-            tekst, stron = czytaj_pdf(plik.sciezka)
+            if not (args.offline and sciezka.exists()):
+                sciezka = pobieracz_pdf.pobierz(etykieta.adres, etykieta.nazwa_pliku).sciezka
+            tekst, stron = czytaj_pdf(sciezka)
         except Exception as blad:  # noqa: BLE001 — każdy błąd ma trafić do raportu
             stany["blad_pobrania"] += 1
             bledy.append(f"{etykieta.nazwa_srodka}: {type(blad).__name__} {blad}")
