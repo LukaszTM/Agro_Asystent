@@ -71,3 +71,19 @@ class TestPostacPorownawcza:
 
     def test_normalizacja_nie_gubi_wieloczlonowych_nazw(self):
         assert znormalizuj("Łąki, pastwiska") == "laki, pastwiska"
+
+
+class TestPodpowiedzPoCzlonie:
+    slownik = SlownikUpraw(NAZWY + ["cebula"])
+
+    def test_dopisek_daje_propozycje_do_zatwierdzenia(self):
+        d = self.slownik.dopasuj("cebula uprawiana na zielony szczypior", "rejestr")
+        assert d.nazwa_urzedowa == "cebula"
+        assert d.sposob == "podobienstwo"
+        # Dopisek może zmieniać dawkę i karencję, więc człowiek musi potwierdzić.
+        assert d.wymaga_decyzji
+
+    def test_nie_proponuje_gdy_poczatek_nie_jest_uprawa(self):
+        d = self.slownik.dopasuj("inne narzędzia i drobny sprzęt", "rejestr")
+        assert d.nazwa_urzedowa is None
+        assert d.sposob == "brak"

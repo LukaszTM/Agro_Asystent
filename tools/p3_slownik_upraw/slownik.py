@@ -74,6 +74,21 @@ class SlownikUpraw:
         for nazwa in nazwy_urzedowe:
             self._po_porownaniu.setdefault(postac_porownawcza(nazwa), nazwa)
 
+    def _dopasuj_poczatek(self, porownawcza: str) -> str | None:
+        """Propozycja dla zapisów typu „cebula uprawiana z siewu".
+
+        Bierzemy najdłuższy początek nazwy, który jest uprawą ze słownika.
+        To tylko podpowiedź do zatwierdzenia: dopisek potrafi zmieniać
+        przeznaczenie uprawy (cebula na szczypior to nie cebula na zbiór),
+        a wraz z nim dawkę i karencję.
+        """
+        slowa = porownawcza.split()
+        for dlugosc in range(len(slowa) - 1, 0, -1):
+            trafienie = self._po_porownaniu.get(" ".join(slowa[:dlugosc]))
+            if trafienie:
+                return trafienie
+        return None
+
     def dopasuj(self, wariant: str, zrodlo: str) -> Dopasowanie:
         trafienie = self._po_normalizacji.get(znormalizuj(wariant))
         if trafienie:
@@ -83,6 +98,10 @@ class SlownikUpraw:
         trafienie = self._po_porownaniu.get(porownawcza)
         if trafienie:
             return Dopasowanie(wariant, zrodlo, trafienie, "zblizone", 1.0)
+
+        po_czlonie = self._dopasuj_poczatek(porownawcza)
+        if po_czlonie:
+            return Dopasowanie(wariant, zrodlo, po_czlonie, "podobienstwo", None)
 
         podobne = difflib.get_close_matches(
             porownawcza, self._po_porownaniu.keys(), n=1, cutoff=PROG_PODOBIENSTWA

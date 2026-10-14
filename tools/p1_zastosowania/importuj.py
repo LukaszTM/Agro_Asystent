@@ -73,7 +73,11 @@ CREATE TABLE zastosowanie (
     grupa             TEXT,
     maloobszarowe     INTEGER,
     metody_stosowania TEXT,
-    laczne_stosowanie TEXT
+    laczne_stosowanie TEXT,
+    -- Wiersz, w którym kolumny rejestru są przesunięte (opis dawki trafił do
+    -- kolumny agrofag, a nazwy chorób do kolumny uprawa). Takiego wiersza nie
+    -- wolno pokazywać rolnikowi jako zastosowania.
+    uklad_podejrzany  INTEGER NOT NULL DEFAULT 0
 );
 
 CREATE TABLE zastosowanie_uprawa (
@@ -94,9 +98,16 @@ CREATE INDEX idx_srodek_nazwa       ON srodek(nazwa);
 """
 
 
+#: Opis dawki w kolumnie agrofag zdradza przesunięcie kolumn w wierszu.
+WZORZEC_DAWKI_W_AGROFAGU = __import__("re").compile(
+    r"maksymalna|zalecana dawka|zastosowania:", __import__("re").IGNORECASE
+)
+
+
 @dataclass
 class Raport:
     wierszy_w_pliku: int = 0
+    wierszy_z_przesunietymi_kolumnami: int = 0
     srodkow: int = 0
     zastosowan: int = 0
     wycofanych_srodkow: int = 0
@@ -255,6 +266,11 @@ def importuj(
             raport.srodkow += 1
             raport.wycofanych_srodkow += int(wycofany)
 
+        agrofag = _tekst(pole(wiersz, "agrofag"))
+        uklad_podejrzany = bool(agrofag and WZORZEC_DAWKI_W_AGROFAGU.search(agrofag))
+        if uklad_podejrzany:
+            raport.wierszy_z_przesunietymi_kolumnami += 1
+
         dawka = odczytaj_dawke(_tekst(pole(wiersz, "dawka")))
         bbch_od, bbch_do = odczytaj_bbch(_tekst(pole(wiersz, "termin")))
         raport.dawka[dawka.pewnosc] += 1
@@ -264,12 +280,12 @@ def importuj(
             """INSERT INTO zastosowanie (srodek_id, uprawa_surowa, agrofag, dawka_tekst,
                    dawka_wartosc, dawka_jednostka, dawka_odniesienie, dawka_pewnosc,
                    termin_tekst, bbch_od, bbch_do, grupa, maloobszarowe,
-                   metody_stosowania, laczne_stosowanie)
-               VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
+                   metody_stosowania, laczne_stosowanie, uklad_podejrzany)
+               VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
             (
                 srodki[klucz],
                 _tekst(pole(wiersz, "uprawa")),
-                _tekst(pole(wiersz, "agrofag")),
+                agrofag,
                 dawka.tekst or None,
                 dawka.wartosc,
                 dawka.jednostka,
@@ -282,10 +298,16 @@ def importuj(
                 _tak_nie(pole(wiersz, "maloobszarowe")),
                 _tekst(pole(wiersz, "metody_stosowania")),
                 _tekst(pole(wiersz, "laczne_stosowanie")),
+                int(uklad_podejrzany),
             ),
         )
         id_zastosowania = int(kursor.lastrowid)
         raport.zastosowan += 1
+
+        if uklad_podejrzany:
+            # W takim wierszu kolumna „uprawa" zawiera nazwy chorób — nie
+            # rozbijamy jej na uprawy, bo powstałyby fałszywe pozycje.
+            continue
 
         rozbite = rozbij_uprawy(_tekst(pole(wiersz, "uprawa")), slownik_upraw)
         for nazwa_uprawy in rozbite.rozpoznane:
@@ -348,6 +370,8 @@ def wypisz_raport(raport: Raport, baza: Path) -> None:
     print(f"  środków:                {raport.srodkow} "
           f"(po terminie stosowania: {raport.wycofanych_srodkow})")
     print(f"  zastosowań:             {raport.zastosowan}")
+    print(f"  wierszy z przesuniętymi kolumnami: "
+          f"{raport.wierszy_z_przesunietymi_kolumnami} (oznaczone, bez rozbicia upraw)")
     print(f"  uzupełniono producenta: {raport.uzupelniono_producenta}")
     print(f"  uzupełniono etykietę:   {raport.uzupelniono_etykiete}")
     print("\n  dawka:")

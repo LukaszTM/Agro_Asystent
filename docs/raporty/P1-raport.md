@@ -69,6 +69,15 @@ dalej zakres **zalecany** — czyli zwracał wartość niższą niż dopuszczaln
 Po poprawce zwraca dawkę maksymalną. Przypadek jest zabezpieczony testem
 `test_dawka_maksymalna_wazniejsza_niz_zalecana`.
 
+## Błąd w samym rejestrze (znaleziony przy P3)
+
+W jednym wierszu rejestru **kolumny są przesunięte**: w kolumnie `uprawa` stoją
+nazwy chorób („mączniak prawdziwy zbóż i traw, brunatna plamistość liści…"),
+a w kolumnie `agrofag` — opis dawki. Tak samo wygląda to w pliku ze strony
+MRiRW i w wydaniu z dane.gov.pl, więc to błąd w źródle, nie w odczycie.
+Import oznacza taki wiersz (`uklad_podejrzany = 1`) i nie rozbija jego
+„upraw", żeby do bazy nie trafiły choroby udające uprawy.
+
 ## Czy baza nadaje się dla aplikacji
 
 Zapytanie, które zada ekran wyboru środka („co wolno na pszenicę ozimą?"),
