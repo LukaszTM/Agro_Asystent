@@ -5,7 +5,5 @@
 openpyxl==3.1.5
 # Odczyt tabel z PDF (wniosek z eWniosekPlus, etykiety środków)
 pdfplumber==0.11.10
-# Pobieranie plików (ULDK, etykiety) — z przerwami i pamięcią podręczną
-requests==2.34.2
 # Testy skryptów
 pytest==9.1.1

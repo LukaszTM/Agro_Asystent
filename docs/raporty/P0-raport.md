@@ -54,14 +54,16 @@ brak ukrytego menu, cele dotyku od 48 px, żaden napis mniejszy niż 18 px.
 funkcja wymagana przepisami działa w wersji darmowej, a nowa pozycja w liście
 funkcji musi zostać świadomie przypisana do wersji darmowej albo premium.
 
-## Czego nie udało się sprawdzić w tym środowisku
+## Sprawdzenie na urządzeniu (uzupełnione 14.10.2026)
 
-- **Budowa pliku APK** — brak Android SDK w kontenerze. Kod przechodzi analizę
-  i testy; pierwsze `flutter build apk` trzeba wykonać na komputerze z Android
-  Studio.
+- **APK zbudowany i zainstalowany na telefonie** — aplikacja uruchamia się
+  i działa. Budowanie wykonano na komputerze dewelopera (`flutter build apk
+  --debug`), bo w kontenerze chmurowym nie ma Android SDK.
+- Po drodze wyszły dwa wymagania środowiska, nie projektu: na Windows trzeba
+  włączyć **tryb dewelopera** (wtyczki Fluttera wymagają dowiązań symbolicznych)
+  oraz trzymać SDK Fluttera w **ścieżce bez spacji**.
 - **Budowa programu na Windows** — wymaga Visual Studio; katalog `windows/`
-  jest przygotowany, ale nieprzetestowany.
-- Oba sprawdzenia warto wykonać przed zadaniem P7.
+  jest przygotowany, ale nieprzetestowany. Do sprawdzenia przed etapem z PC.
 
 ## Sprawy otwarte po P0
 

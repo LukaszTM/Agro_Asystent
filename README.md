@@ -15,7 +15,7 @@ Pełny plan: [`docs/PLAN.md`](docs/PLAN.md). Zasady pracy w kodzie: [`CLAUDE.md`
 | Zadanie | Stan |
 | --- | --- |
 | P0. Repozytorium, struktura, zasady, wybór technologii | **gotowe** — [raport](docs/raporty/P0-raport.md) |
-| P1. Import pliku zastosowań środków (XLSX → SQLite) | przed nami |
+| P1. Import pliku zastosowań środków (XLSX → SQLite) | **gotowe** — [raport](docs/raporty/P1-raport.md) |
 | P2. Próba bazy etykiet (karencja) | przed nami |
 | P3. Słownik upraw (wniosek ↔ rejestr ↔ EPPO) | przed nami |
 | P4. Czytnik wniosku PDF z eWniosekPlus | przed nami |
@@ -23,8 +23,8 @@ Pełny plan: [`docs/PLAN.md`](docs/PLAN.md). Zasady pracy w kodzie: [`CLAUDE.md`
 | P6. Model danych SQLite z migracjami | przed nami |
 | P7. Pierwszy ekran: ścieżka wpisu oprysku | przed nami |
 
-Aplikacja uruchamia się i pokazuje ekran główny wyglądu „Prosty" (cztery duże
-przyciski). Moduły za przyciskami powstają w kolejnych krokach etapu 1.
+Aplikacja uruchamia się na Androidzie i pokazuje ekran główny wyglądu „Prosty"
+(cztery duże przyciski). Moduły za przyciskami powstają w kolejnych krokach etapu 1.
 
 ## Technologia
 
