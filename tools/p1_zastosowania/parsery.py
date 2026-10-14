@@ -8,8 +8,12 @@ przybliżonej (zasada z CLAUDE.md: nie zgadujemy dawek).
 from __future__ import annotations
 
 import re
-import unicodedata
+import sys
 from dataclasses import dataclass, field
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from wspolne.tekst import znormalizuj  # noqa: E402  (re-eksport dla zgodności)
 
 # ──────────────────────────────────────────────────────────────────────────
 # Dawka
@@ -127,13 +131,6 @@ class Uprawy:
     @property
     def wszystkie(self) -> list[str]:
         return self.rozpoznane + self.do_sprawdzenia
-
-
-def znormalizuj(nazwa: str) -> str:
-    """Postać porównawcza nazwy: małe litery, bez ogonków i podwójnych spacji."""
-    bez_ogonkow = unicodedata.normalize("NFKD", nazwa.lower())
-    bez_ogonkow = "".join(z for z in bez_ogonkow if not unicodedata.combining(z))
-    return re.sub(r"\s+", " ", bez_ogonkow.replace("ł", "l")).strip()
 
 
 def rozbij_uprawy(komorka: str | None, slownik: set[str]) -> Uprawy:

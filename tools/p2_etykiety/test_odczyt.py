@@ -95,6 +95,37 @@ class TestKarencja:
         assert fragment is None
 
 
+class TestSprawdzanieUpraw:
+    SLOWNIK = {"oberzyna": "oberżyna", "ogorek": "ogórek", "pomidor": "pomidor"}
+
+    def test_nazwy_spoza_slownika_sa_odrzucane(self):
+        karencje, _ = odczytaj_karencje(
+            "Okres od ostatniego zastosowania środka do dnia zbioru rośliny uprawnej "
+            "(okres karencji): Oberżyna, ogórek, zielsko wszelakie – 3 dni",
+            self.SLOWNIK,
+        )
+        assert karencje[0].uprawy == ("oberżyna", "ogórek")
+
+    def test_sama_nieznana_nazwa_nie_obejmuje_wszystkich_upraw(self):
+        # Gdyby lista upraw okazała się fragmentem zdania o środku, karencja
+        # nie może zostać przypisana całej etykiecie.
+        karencje, _ = odczytaj_karencje(
+            "Okres od ostatniego zastosowania środka do dnia zbioru rośliny uprawnej "
+            "(okres karencji): Etykieta środka ochrony roślin ATRIUM -X – 7 dni",
+            self.SLOWNIK,
+        )
+        assert karencje[0].stan == "do_sprawdzenia"
+        assert karencje[0].uprawy == ()
+        assert karencje[0].dni is None
+
+    def test_bez_slownika_nic_nie_sprawdzamy(self):
+        karencje, _ = odczytaj_karencje(
+            "Okres od ostatniego zastosowania środka do dnia zbioru rośliny uprawnej "
+            "(okres karencji): cokolwiek – 7 dni"
+        )
+        assert karencje[0].dni == 7
+
+
 class TestPrewencja:
     def test_okres_w_dniach(self):
         tekst, dni = odczytaj_prewencje(

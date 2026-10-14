@@ -8,7 +8,12 @@ pustą i znacznik „do_sprawdzenia", nigdy wartości przybliżonej.
 from __future__ import annotations
 
 import re
+import sys
 from dataclasses import dataclass, field
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from wspolne.tekst import postac_porownawcza  # noqa: E402
 
 # Zdania wprowadzające poszczególne okresy. Etykiety różnią się odstępami
 # i łamaniem wierszy, więc dopuszczamy dowolne białe znaki.
@@ -98,8 +103,33 @@ def _podziel_na_pozycje(tresc: str) -> list[str]:
     return [c.strip() for c in tresc.split(";") if c.strip()]
 
 
-def odczytaj_karencje(tekst: str) -> tuple[list[Karencja], str | None]:
-    """Zwraca listę karencji oraz surowy fragment etykiety, z którego pochodzą."""
+def _sprawdz_uprawy(
+    uprawy: tuple[str, ...], znane: dict[str, str] | None
+) -> tuple[tuple[str, ...], bool]:
+    """Zostawia tylko nazwy znane ze słownika upraw.
+
+    Zdanie o karencji bywa przerwane nagłówkiem strony albo zdaniem o środku,
+    więc tekst przed myślnikiem nie zawsze jest listą upraw. Bez słownika nic
+    nie sprawdzamy; ze słownikiem odrzucamy nazwy nieznane, a gdy nie zostaje
+    żadna — pozycja idzie do ręcznego sprawdzenia, zamiast objąć wszystkie
+    uprawy etykiety.
+    """
+    if znane is None or not uprawy:
+        return uprawy, True
+    rozpoznane = tuple(
+        znane[postac_porownawcza(u)] for u in uprawy if postac_porownawcza(u) in znane
+    )
+    return rozpoznane, bool(rozpoznane)
+
+
+def odczytaj_karencje(
+    tekst: str, znane_uprawy: dict[str, str] | None = None
+) -> tuple[list[Karencja], str | None]:
+    """Zwraca listę karencji oraz surowy fragment etykiety, z którego pochodzą.
+
+    ``znane_uprawy`` to słownik „postać porównawcza → nazwa urzędowa";
+    gdy jest podany, nazwy upraw spoza niego nie trafiają do wyniku.
+    """
     dopasowanie = _KARENCJA_ZBIOR.search(tekst) or _KARENCJA_KONSUMPCJA.search(tekst)
     if not dopasowanie:
         return [], None
@@ -120,7 +150,12 @@ def odczytaj_karencje(tekst: str) -> tuple[list[Karencja], str | None]:
                 for u in przed_myslnikiem[0].split(",")
                 if u.strip(" ,.") and not _DNI.search(u)
             )
-        if dni:
+        uprawy, uprawy_pewne = _sprawdz_uprawy(uprawy, znane_uprawy)
+        if not uprawy_pewne:
+            # Tekst przed myślnikiem nie jest listą upraw — nie wolno przypisać
+            # tej karencji ani konkretnej uprawie, ani wszystkim.
+            wynik.append(Karencja((), None, "do_sprawdzenia", pozycja))
+        elif dni:
             wynik.append(Karencja(uprawy, int(dni.group(1)), "dni", pozycja))
         elif _BRAK_KARENCJI.search(pozycja):
             wynik.append(Karencja(uprawy, None, "nie_dotyczy", pozycja))
@@ -157,14 +192,16 @@ def odczytaj_liczbe_zabiegow(tekst: str) -> tuple[int | None, str | None, bool]:
 PROG_SKANU = 200
 
 
-def odczytaj_etykiete(tekst: str, stron: int = 1) -> OdczytEtykiety:
+def odczytaj_etykiete(
+    tekst: str, stron: int = 1, znane_uprawy: dict[str, str] | None = None
+) -> OdczytEtykiety:
     wynik = OdczytEtykiety(znakow_tekstu=len(tekst))
 
     if len(tekst) < PROG_SKANU * max(stron, 1):
         wynik.stan = "skan"
         return wynik
 
-    wynik.karencje, wynik.karencja_tekst = odczytaj_karencje(tekst)
+    wynik.karencje, wynik.karencja_tekst = odczytaj_karencje(tekst, znane_uprawy)
     wynik.prewencja_tekst, wynik.prewencja_dni = odczytaj_prewencje(tekst)
     (
         wynik.liczba_zabiegow,

@@ -20,8 +20,10 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 sys.path.insert(0, str(Path(__file__).parent))
 
 from odczyt import odczytaj_etykiete  # noqa: E402
+from p1_zastosowania.importuj import wczytaj_csv_slownik  # noqa: E402
 from spis import adres_podstrony, policz_dokumenty, zbierz_etykiety  # noqa: E402
 from wspolne.pobieranie import Pobieracz  # noqa: E402
+from wspolne.tekst import postac_porownawcza  # noqa: E402
 
 SCHEMAT = """
 CREATE TABLE IF NOT EXISTS etykieta (
@@ -68,9 +70,20 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--przerwa", type=float, default=2.0, help="przerwa między pobraniami [s]")
     parser.add_argument("--ile", type=int, default=0, help="ogranicz liczbę etykiet (0 = wszystkie)")
     parser.add_argument("--bez-zapisu", action="store_true", help="nie zapisuj do bazy")
+    parser.add_argument("--slownik-upraw", type=Path,
+                        default=Path("dane/pobrane/p1/Slownik_Uprawy.csv"),
+                        help="urzędowy słownik upraw — nazwy spoza niego nie są "
+                             "uznawane za uprawy w karencji")
     parser.add_argument("--offline", action="store_true",
                         help="pracuj na plikach już pobranych, bez łączenia się z siecią")
     args = parser.parse_args(argv)
+
+    znane_uprawy: dict[str, str] | None = None
+    if args.slownik_upraw.exists():
+        znane_uprawy = {
+            postac_porownawcza(n): n for n in wczytaj_csv_slownik(args.slownik_upraw)
+        }
+        print(f"Słownik upraw: {len(znane_uprawy)} nazw urzędowych")
 
     katalog_pdf = args.katalog / "etykiety"
     katalog_pdf.mkdir(parents=True, exist_ok=True)
@@ -106,7 +119,7 @@ def main(argv: list[str] | None = None) -> int:
             stany["blad_pobrania"] += 1
             bledy.append(f"{etykieta.nazwa_srodka}: {type(blad).__name__} {blad}")
             continue
-        odczyt = odczytaj_etykiete(tekst, stron)
+        odczyt = odczytaj_etykiete(tekst, stron, znane_uprawy)
         stany[odczyt.stan] += 1
         wyniki.append((etykieta, odczyt))
         if numer % 25 == 0:
