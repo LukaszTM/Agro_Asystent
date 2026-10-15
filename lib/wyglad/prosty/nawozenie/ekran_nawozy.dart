@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../../app/uslugi.dart';
 import '../../../funkcje/nawozenie/nawoz.dart';
+import '../../../funkcje/odczyt/czytnik_zdjecia.dart';
+import '../../../funkcje/odczyt/odczyt_nawozu.dart';
 import '../motyw.dart';
 import '../widgety/duzy_przycisk.dart';
 import '../widgety/wybor_liczby.dart';
@@ -101,6 +103,56 @@ class _EkranNowyNawozState extends State<EkranNowyNawoz> {
   bool _naturalny = false;
   double _azot = 0;
   bool _zapisuje = false;
+  bool _czyta = false;
+
+  /// Co wyszło z odczytu worka — pokazujemy do potwierdzenia, nie zapisujemy
+  /// po cichu (CLAUDE.md, reguła 5).
+  OdczytNawozu? _odczyt;
+  String? _bladOdczytu;
+
+  Future<void> _odczytajZWorka() async {
+    if (_czyta) {
+      return;
+    }
+    setState(() {
+      _czyta = true;
+      _bladOdczytu = null;
+    });
+    try {
+      final tekst = await widget.uslugi.czytnikZdjecia.tekst(
+        ZrodloZdjecia.aparat,
+      );
+      if (tekst == null || !mounted) {
+        return;
+      }
+      final odczyt = CzytnikNawozu.zTekstu(tekst);
+      setState(() {
+        _odczyt = odczyt;
+        if (odczyt.nazwa != null) {
+          _nazwa.text = odczyt.nazwa!;
+        }
+        if (odczyt.azotProcent != null) {
+          _azot = odczyt.azotProcent!;
+        }
+        if (odczyt.naturalny ?? false) {
+          _naturalny = true;
+        }
+      });
+    } on BladOdczytuZdjecia catch (blad) {
+      if (mounted) {
+        setState(
+          () => _bladOdczytu = [
+            blad.wiadomosc,
+            if (blad.coZrobic != null) blad.coZrobic!,
+          ].join(' '),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _czyta = false);
+      }
+    }
+  }
 
   @override
   void dispose() {
@@ -123,7 +175,9 @@ class _EkranNowyNawozState extends State<EkranNowyNawoz> {
         // Zero znaczy „nie wiem" — wtedy azot zostaje nieznany i nie liczymy
         // go do limitu, zamiast wpisywać wartość z sufitu.
         azotProcent: _azot > 0 ? _azot : null,
-        zrodlo: _naturalny ? 'analiza' : 'worek',
+        zrodlo: _odczyt?.cokolwiekZnaleziono ?? false
+            ? 'zdjęcie worka'
+            : (_naturalny ? 'analiza' : 'worek'),
       ),
       urzadzenie: widget.uslugi.urzadzenie,
     );
@@ -139,6 +193,32 @@ class _EkranNowyNawozState extends State<EkranNowyNawoz> {
       body: ListView(
         padding: const EdgeInsets.all(MotywProsty.odstep),
         children: [
+          if (_czyta)
+            const Center(child: CircularProgressIndicator())
+          else
+            DuzyPrzycisk(
+              etykieta: 'Odczytaj z worka',
+              opis: 'zrób zdjęcie napisu na opakowaniu',
+              ikona: Icons.photo_camera_outlined,
+              onTap: _odczytajZWorka,
+            ),
+          if (_bladOdczytu != null) ...[
+            const SizedBox(height: MotywProsty.odstep),
+            Ostrzezenie(tresc: _bladOdczytu!),
+          ],
+          if (_odczyt != null) ...[
+            const SizedBox(height: MotywProsty.odstep),
+            Ostrzezenie(
+              tresc: _odczyt!.cokolwiekZnaleziono
+                  ? 'Odczytano ze zdjęcia — sprawdź i popraw, jeśli trzeba.'
+                  : 'Ze zdjęcia nic nie dało się odczytać.',
+              coZrobic: _odczyt!.cokolwiekZnaleziono
+                  ? null
+                  : 'Wpisz nazwę i zawartość azotu ręcznie albo zrób zdjęcie '
+                        'z bliska, w świetle.',
+            ),
+          ],
+          const SizedBox(height: MotywProsty.odstep),
           Text('Nazwa nawozu', style: Theme.of(context).textTheme.titleLarge),
           const SizedBox(height: 8),
           TextField(

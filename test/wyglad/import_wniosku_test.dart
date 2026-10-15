@@ -12,6 +12,8 @@ import 'package:agro_asystent/funkcje/dzialki/zrodlo_pliku.dart';
 import 'package:agro_asystent/funkcje/nawozenie/ewidencja_nawozenia.dart';
 import 'package:agro_asystent/funkcje/nawozenie/nawoz.dart';
 import 'package:agro_asystent/funkcje/nawozenie/plan_nawozenia.dart';
+import 'package:agro_asystent/funkcje/odczyt/czytnik_zdjecia.dart';
+import 'package:agro_asystent/funkcje/odczyt/odczyt_etykiety.dart';
 import 'package:agro_asystent/funkcje/terminy/kalendarz_terminow.dart';
 import 'package:agro_asystent/funkcje/terminy/przypomnienia.dart';
 import 'package:agro_asystent/funkcje/terminy/ustawienia_przypomnien.dart';
@@ -90,6 +92,8 @@ void main() {
       czcionki: _brakCzcionek,
       wyjscie: const _BrakWyjscia(),
     ),
+    czytnikZdjecia: const _BrakZdjec(),
+    czytnikEtykiety: CzytnikEtykiety(SlownikSrodkow(slowniki)),
     nawozy: RepozytoriumNawozow(baza),
     nawozenie: EwidencjaNawozenia(
       baza: baza,
@@ -260,4 +264,12 @@ class _BrakPrzypomnien implements UslugaPrzypomnien {
 
   @override
   Future<void> wylacz() async {}
+}
+
+/// Testy, które nie dotykają zdjęć, dostają czytnik odmawiający pracy.
+class _BrakZdjec implements CzytnikZdjecia {
+  const _BrakZdjec();
+
+  @override
+  Future<String?> tekst(ZrodloZdjecia zrodlo) async => null;
 }

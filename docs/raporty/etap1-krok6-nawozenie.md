@@ -52,7 +52,7 @@ Odczyt składu z opakowania zdjęciem to krok 7 etapu 1.
 | Nowe pliki kodu | 8 |
 | Nowe pliki testów | 2 |
 | Testy dodane w tym kroku | 19 |
-| Testy w całym projekcie | 207 (było 181) — w tym 7 nowych testów ekranów |
+| Testy w całym projekcie | 200 (było 181) — w tym 7 testów ekranów |
 | Limit azotu | 170 kg N/ha/rok — **ze słownika reguł**, nie z kodu |
 | Nowe zależności | brak |
 | `flutter analyze` | bez ostrzeżeń |

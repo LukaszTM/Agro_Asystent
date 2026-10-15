@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../../app/uslugi.dart';
+import '../../../funkcje/odczyt/czytnik_zdjecia.dart';
+import '../../../funkcje/odczyt/odczyt_etykiety.dart';
 import '../../../funkcje/zabiegi/dane_wpisu.dart';
 import '../../../funkcje/zabiegi/slownik_srodkow.dart';
 import '../motyw.dart';
@@ -22,6 +24,57 @@ class EkranWyborSrodka extends StatefulWidget {
 class _EkranWyborSrodkaState extends State<EkranWyborSrodka> {
   late Future<List<DopuszczonySrodek>> _srodki;
   String _szukane = '';
+  bool _czytaEtykiete = false;
+  OdczytEtykiety? _odczyt;
+  String? _bladOdczytu;
+
+  /// Rozpoznanie etykiety ze zdjęcia: zawęża listę do tego, co widać na
+  /// opakowaniu. Wybór i tak należy do rolnika — niczego nie zapisujemy
+  /// za niego.
+  Future<void> _rozpoznajEtykiete() async {
+    if (_czytaEtykiete) {
+      return;
+    }
+    setState(() {
+      _czytaEtykiete = true;
+      _bladOdczytu = null;
+      _odczyt = null;
+    });
+    try {
+      final tekst = await widget.uslugi.czytnikZdjecia.tekst(
+        ZrodloZdjecia.aparat,
+      );
+      if (tekst == null || !mounted) {
+        return;
+      }
+      final odczyt = await widget.uslugi.czytnikEtykiety.rozpoznaj(
+        tekst,
+        uprawa: _uprawa,
+      );
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _odczyt = odczyt;
+        if (odczyt.dopasowania.isNotEmpty) {
+          _srodki = Future<List<DopuszczonySrodek>>.value(odczyt.dopasowania);
+        }
+      });
+    } on BladOdczytuZdjecia catch (blad) {
+      if (mounted) {
+        setState(
+          () => _bladOdczytu = [
+            blad.wiadomosc,
+            if (blad.coZrobic != null) blad.coZrobic!,
+          ].join(' '),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _czytaEtykiete = false);
+      }
+    }
+  }
 
   String get _uprawa => widget.dane.pola.first.uprawa;
 
@@ -71,6 +124,46 @@ class _EkranWyborSrodkaState extends State<EkranWyborSrodka> {
               }),
             ),
           ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: MotywProsty.odstep),
+            child: _czytaEtykiete
+                ? const Center(child: CircularProgressIndicator())
+                : DuzyPrzycisk(
+                    etykieta: 'Rozpoznaj etykietę',
+                    opis: 'zrób zdjęcie napisu na opakowaniu',
+                    ikona: Icons.photo_camera_outlined,
+                    onTap: _rozpoznajEtykiete,
+                  ),
+          ),
+          if (_bladOdczytu != null)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(
+                MotywProsty.odstep,
+                MotywProsty.odstep,
+                MotywProsty.odstep,
+                0,
+              ),
+              child: Ostrzezenie(tresc: _bladOdczytu!),
+            ),
+          if (_odczyt != null && _odczyt!.dopasowania.isEmpty)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(
+                MotywProsty.odstep,
+                MotywProsty.odstep,
+                MotywProsty.odstep,
+                0,
+              ),
+              child: Ostrzezenie(
+                tresc: _odczyt!.cokolwiekZnaleziono
+                    ? 'Ze zdjęcia wyszło „${_odczyt!.nazwa ?? _odczyt!.nrZezwolenia}", '
+                          'ale rejestr nie ma takiego środka dla tej uprawy.'
+                    : 'Ze zdjęcia nic nie dało się odczytać.',
+                coZrobic:
+                    'Wybierz środek z listy albo zrób zdjęcie z bliska, '
+                    'w świetle.',
+              ),
+            ),
+          const SizedBox(height: MotywProsty.odstep),
           Expanded(
             child: FutureBuilder<List<DopuszczonySrodek>>(
               future: _srodki,

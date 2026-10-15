@@ -7,6 +7,8 @@ import '../funkcje/dzialki/zrodlo_pliku.dart';
 import '../funkcje/nawozenie/ewidencja_nawozenia.dart';
 import '../funkcje/nawozenie/nawoz.dart';
 import '../funkcje/nawozenie/plan_nawozenia.dart';
+import '../funkcje/odczyt/czytnik_zdjecia.dart';
+import '../funkcje/odczyt/odczyt_etykiety.dart';
 import '../funkcje/terminy/kalendarz_terminow.dart';
 import '../funkcje/terminy/przypomnienia.dart';
 import '../funkcje/terminy/ustawienia_przypomnien.dart';
@@ -33,6 +35,8 @@ class Uslugi {
     required this.importWniosku,
     required this.zrodloPliku,
     required this.dokumenty,
+    required this.czytnikZdjecia,
+    required this.czytnikEtykiety,
     required this.nawozy,
     required this.nawozenie,
     required this.planNawozenia,
@@ -70,6 +74,12 @@ class Uslugi {
 
   /// Podgląd, wydruk PDF i eksport CSV/XLSX — zawsze darmowe (plan, pkt 8).
   final UslugaDokumentow dokumenty;
+
+  /// Odczyt tekstu ze zdjęcia — etykieta środka, worek nawozu.
+  final CzytnikZdjecia czytnikZdjecia;
+
+  /// Rozpoznanie etykiety w słowniku środków.
+  final CzytnikEtykiety czytnikEtykiety;
 
   /// Spis nawozów gospodarstwa.
   final RepozytoriumNawozow nawozy;
