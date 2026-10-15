@@ -5,13 +5,22 @@ wydruków dla kontroli, repozytorium i strony w sklepie.
 
 ## Jedno źródło
 
+Źródła są dwa, każde ma swoje zadanie:
+
+| Plik | Co zawiera | Z czego powstaje |
+| --- | --- | --- |
+| `assets/logo/agro_asystent.png` (1331 × 1331) | znak **i nazwa** | ekran powitalny, pasek ekranu głównego, README |
+| `assets/logo/agro_asystent_znak.png` (1238 × 1238) | **sam znak** | ikony Androida i Windows |
+
+Oba mają przezroczyste tło. Ikony robimy ze znaku, bo w kwadracie 48 × 48 px
+napis „Agro Asystent" zlewa się w nieczytelną kreskę.
+
 | | |
 | --- | --- |
-| Plik źródłowy | `assets/logo/agro_asystent.png` (1331 × 1331, tło przezroczyste) |
 | Skrypt wytwarzający warianty | `tools/zbuduj_ikony.py` |
-| Stałe w kodzie | `lib/rdzen/marka/marka.dart` |
+| Stałe w kodzie | `lib/rdzen/marka/marka.dart` (`Marka.logo`, `Marka.znak`) |
 
-Plik źródłowy musi być **kwadratowy i mieć przezroczyste tło** — skrypt
+Każdy plik źródłowy musi być **kwadratowy i mieć przezroczyste tło** — skrypt
 skaluje go wprost do boku ikony, więc obrazek prostokątny zostałby ściśnięty,
 a białe tło dałoby biały kwadrat w rogach ikony adaptacyjnej. Nowe logo
 przygotowujemy tak: obcinamy przezroczysty margines, a potem dokładamy
@@ -54,9 +63,9 @@ w `lib/wyglad/*/motyw.dart` kolory ekranów, w `Marka` kolory znaku.
 
 **Jest:**
 
-- ikona aplikacji na telefonie i na pulpicie Windows,
-- ekran powitalny (zanim aplikacja się wczyta),
-- pasek ekranu głównego,
+- ikona aplikacji na telefonie i na pulpicie Windows — **sam znak**,
+- ekran powitalny (zanim aplikacja się wczyta) — pełne logo z nazwą,
+- pasek ekranu głównego — pełne logo z nazwą,
 - stopka wydruków i eksportów — **nazwą**, nie znakiem graficznym:
   „Sporządzono … w Agro Asystencie (słownik reguł …)",
 - `README.md` repozytorium.
@@ -75,6 +84,8 @@ w `lib/wyglad/*/motyw.dart` kolory ekranów, w `Marka` kolory znaku.
 - nie zmieniamy kolorów ani nie robimy wersji jednobarwnej „na szybko"
   (ikona jednobarwna Androida 13+ wymaga osobnej, uproszczonej sylwetki —
   dopóki jej nie ma, nie podajemy jej systemowi),
+- nie wycinamy nazwy z pełnego logo własnoręcznie — wersja bez nazwy jest
+  osobnym plikiem od projektanta,
 - nie używamy logo jako tła pod tekstem,
 - nie dodajemy do niego napisów ani odznak.
 
