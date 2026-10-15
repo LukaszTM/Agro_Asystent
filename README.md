@@ -20,7 +20,7 @@ Pełny plan: [`docs/PLAN.md`](docs/PLAN.md). Zasady pracy w kodzie: [`CLAUDE.md`
 | P3. Słownik upraw (wniosek ↔ rejestr ↔ EPPO) | **gotowe** — [raport](docs/raporty/P3-raport.md): kody EPPO wymagają decyzji doradcy |
 | P4. Czytnik wniosku PDF z eWniosekPlus | **gotowe** — [raport](docs/raporty/P4-raport.md): sprawdzone na prawdziwym wniosku |
 | P5. Prototyp ULDK (granice działek, mapa offline) | **gotowe** — [raport](docs/raporty/P5-raport.md): 20 z 20 działek pobranych |
-| P6. Model danych SQLite z migracjami | przed nami |
+| P6. Model danych SQLite z migracjami | **gotowe** — [raport](docs/raporty/P6-raport.md) |
 | P7. Pierwszy ekran: ścieżka wpisu oprysku | przed nami |
 
 Aplikacja uruchamia się na Androidzie i pokazuje ekran główny wyglądu „Prosty"
