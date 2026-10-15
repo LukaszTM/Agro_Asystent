@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../app/uslugi.dart';
 import '../../rdzen/dostep/dostep_funkcji.dart';
+import '../../rdzen/marka/marka.dart';
 import 'ekran_pola.dart';
 import 'ekran_w_budowie.dart';
 import 'motyw.dart';
@@ -53,7 +54,22 @@ class EkranGlownyProsty extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Agro Asystent')),
+      appBar: AppBar(
+        titleSpacing: MotywProsty.odstep,
+        title: Row(
+          children: [
+            Image.asset(
+              Marka.logo,
+              height: 40,
+              // Logo jest znakiem aplikacji, nie treścią ekranu — czytnik
+              // ekranu ma czytać nazwę, nie opisywać obrazek.
+              excludeFromSemantics: true,
+            ),
+            const SizedBox(width: 12),
+            const Text(Marka.nazwa),
+          ],
+        ),
+      ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(MotywProsty.odstep),

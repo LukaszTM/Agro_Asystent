@@ -1,3 +1,5 @@
+<img src="assets/logo/agro_asystent.png" alt="Agro Asystent" width="120" align="right" />
+
 # Agro Asystent
 
 Aplikacja na telefon (Android, później Windows) prowadząca dokumentację gospodarstwa
@@ -6,6 +8,7 @@ do działek — z jednego wpisu powstają wszystkie wymagane dokumenty. Aplikacj
 bez internetu; synchronizacja z komputerem tylko wtedy, gdy rolnik tego chce.
 
 Pełny plan: [`docs/PLAN.md`](docs/PLAN.md). Zasady pracy w kodzie: [`CLAUDE.md`](CLAUDE.md).
+Identyfikacja wizualna: [`docs/identyfikacja-wizualna.md`](docs/identyfikacja-wizualna.md).
 
 > Zestawienie przepisów w tym repozytorium służy do zaplanowania aplikacji
 > i nie jest poradą prawną.

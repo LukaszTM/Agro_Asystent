@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:agro_asystent/app/aplikacja.dart';
 import 'package:agro_asystent/app/uslugi.dart';
+import 'package:agro_asystent/rdzen/marka/marka.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -62,6 +63,16 @@ void main() {
                 .fontSize!;
         expect(rozmiar, greaterThanOrEqualTo(18), reason: napis.data ?? '');
       }
+    });
+
+    testWidgets('pasek ekranu nosi logo i nazwę aplikacji', (tester) async {
+      await tester.pumpWidget(aplikacjaBezBazy());
+
+      expect(find.text(Marka.nazwa), findsOneWidget);
+      final logo = tester.widget<Image>(
+        find.descendant(of: find.byType(AppBar), matching: find.byType(Image)),
+      );
+      expect((logo.image as AssetImage).assetName, Marka.logo);
     });
 
     testWidgets('dotknięcie kafelka otwiera ekran z informacją, co będzie', (

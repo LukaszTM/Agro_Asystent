@@ -58,6 +58,10 @@ Miara powodzenia: **wpis zabiegu w najwyżej pięciu dotknięciach, bez klawiatu
 - Podczas wpisu zabiegu **żadnych okien z ofertą premium**.
 - Kolory i kroje pisma: wyłącznie z `lib/wyglad/*/motyw.dart`. Nie wpisuj kodów kolorów
   w ekranach.
+- **Identyfikacja wizualna**: logo i kolory marki tylko z `lib/rdzen/marka/marka.dart`,
+  pliki wariantów wytwarza `tools/zbuduj_ikony.py` z jednego źródła
+  (`assets/logo/agro_asystent.png`). Nie rysuj wariantów logo ręcznie i nie myl
+  kolorów marki z kolorami ekranów — zasady w `docs/identyfikacja-wizualna.md`.
 
 ## Nazewnictwo
 
