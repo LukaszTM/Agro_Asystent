@@ -148,7 +148,8 @@ z 22,5% do **36,0%**.
 Baza zawiera komplet form ozimych i jarych (HORVS, SECCW, SECCS, BRSNS, TTLSO,
 AVESP, AVESW, TRZDW, TRZDS), więc resztę dobrałem **z tej samej listy** jako
 propozycje do potwierdzenia — razem z jabłonią (MABSD, Malus domestica).
-Ich zatwierdzenie podniesie pokrycie do **44,8%**.
+Użytkownik potwierdził je 15.10.2026 — pokrycie wynosi dziś **44,8%**
+zastosowań, a plik decyzji liczy 18 pozycji.
 
 Decyzje i propozycje leżą w `assets/dane/kody_eppo_decyzje.csv` —
 w repozytorium, bo to słownik aplikacji, a nie dane gospodarstwa. Kolumna
