@@ -47,7 +47,15 @@ Wyłuskane z pliku logo, nie dobrane z pamięci:
 | Ciemna zieleń | `#0A3C20` | litera „A" i napis | główny kolor marki, nagłówki wydruków |
 | Zieleń liścia | `#69A31E` | liść | akcent, podkreślenia |
 | Złoto | `#C3912E` | pas pola | wyróżnienia, oszczędnie |
-| Biel | `#FFFFFF` | karta pod logo | tło ikony |
+| Biel | `#FFFFFF` | karta pod logo | tło ikony aplikacji |
+
+### Tło ikony: biel
+
+Tło ikony adaptacyjnej zostaje **białe** (`ic_launcher_background` w
+`android/app/src/main/res/values/colors.xml`). Rozważaliśmy ciemną zieleń
+marki, ale przerwy między pasami pola i w liściu są w pliku przezroczyste —
+na zieleni zlałyby się z tłem i rysunek straciłby podział. Na bieli znak
+wygląda tak samo jak na papierze. Decyzja z 15 października 2026 r.
 
 ## Kolory marki a kolory ekranów — to dwie różne rzeczy
 
