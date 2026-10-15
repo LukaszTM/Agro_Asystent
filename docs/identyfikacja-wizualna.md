@@ -7,9 +7,15 @@ wydruków dla kontroli, repozytorium i strony w sklepie.
 
 | | |
 | --- | --- |
-| Plik źródłowy | `assets/logo/agro_asystent.png` (1254 × 1254) |
+| Plik źródłowy | `assets/logo/agro_asystent.png` (1331 × 1331, tło przezroczyste) |
 | Skrypt wytwarzający warianty | `tools/zbuduj_ikony.py` |
 | Stałe w kodzie | `lib/rdzen/marka/marka.dart` |
+
+Plik źródłowy musi być **kwadratowy i mieć przezroczyste tło** — skrypt
+skaluje go wprost do boku ikony, więc obrazek prostokątny zostałby ściśnięty,
+a białe tło dałoby biały kwadrat w rogach ikony adaptacyjnej. Nowe logo
+przygotowujemy tak: obcinamy przezroczysty margines, a potem dokładamy
+przezroczysty zapas do kwadratu.
 
 **Wariantów logo nie rysujemy ręcznie.** Zmiana logo to podmiana pliku
 źródłowego i jedno uruchomienie skryptu:
@@ -51,7 +57,8 @@ w `lib/wyglad/*/motyw.dart` kolory ekranów, w `Marka` kolory znaku.
 - ikona aplikacji na telefonie i na pulpicie Windows,
 - ekran powitalny (zanim aplikacja się wczyta),
 - pasek ekranu głównego,
-- nagłówek wydruków i eksportów — **gdy powstaną** (krok 4 etapu 1),
+- stopka wydruków i eksportów — **nazwą**, nie znakiem graficznym:
+  „Sporządzono … w Agro Asystencie (słownik reguł …)",
 - `README.md` repozytorium.
 
 **Nie ma go:**
@@ -59,8 +66,8 @@ w `lib/wyglad/*/motyw.dart` kolory ekranów, w `Marka` kolory znaku.
 - na ekranach ścieżki wpisu zabiegu — tam liczy się pole, środek i dawka,
   a każdy element bez zadania zabiera miejsce przyciskom (plan, pkt 5),
 - w ostrzeżeniach i komunikatach o błędach,
-- na wydrukach w miejscu, które mogłoby sugerować, że dokument wystawia
-  ktokolwiek inny niż rolnik.
+- na wydrukach jako znak graficzny: dokument wystawia rolnik, a nie my,
+  więc w stopce wystarczy nazwa programu, którym go sporządzono.
 
 ## Czego z logo nie robimy
 
