@@ -4,6 +4,9 @@ import '../funkcje/dzialki/klient_uldk.dart';
 import '../funkcje/dzialki/repozytorium_dzialek.dart';
 import '../funkcje/dzialki/repozytorium_pol.dart';
 import '../funkcje/dzialki/zrodlo_pliku.dart';
+import '../funkcje/terminy/kalendarz_terminow.dart';
+import '../funkcje/terminy/przypomnienia.dart';
+import '../funkcje/terminy/ustawienia_przypomnien.dart';
 import '../funkcje/zabiegi/rejestr_zabiegow.dart';
 import '../funkcje/zabiegi/repozytorium_zabiegow.dart';
 import '../funkcje/zabiegi/slownik_srodkow.dart';
@@ -27,6 +30,10 @@ class Uslugi {
     required this.importWniosku,
     required this.zrodloPliku,
     required this.dokumenty,
+    required this.kalendarz,
+    required this.profil,
+    required this.przypomnienia,
+    required this.ustawieniaPrzypomnien,
     this.uldk = const KlientUldk(),
     this.dostep = const DostepFunkcji.darmowa(),
   });
@@ -57,6 +64,19 @@ class Uslugi {
 
   /// Podgląd, wydruk PDF i eksport CSV/XLSX — zawsze darmowe (plan, pkt 8).
   final UslugaDokumentow dokumenty;
+
+  /// Kalendarz obowiązków: terminy z przepisów i karencje z własnych zabiegów.
+  final KalendarzTerminow kalendarz;
+
+  /// Powierzchnia, DJP i deklaracje — od nich zależy, które obowiązki
+  /// się włączają (plan, pkt 3).
+  final ProfilZBazy profil;
+
+  /// Powiadomienia w telefonie.
+  final UslugaPrzypomnien przypomnienia;
+
+  /// Czy rolnik chce przypomnień.
+  final UstawieniaPrzypomnien ustawieniaPrzypomnien;
 
   /// Granice działek pobieramy tylko przy dodawaniu działki; potem wszystko
   /// działa bez internetu.

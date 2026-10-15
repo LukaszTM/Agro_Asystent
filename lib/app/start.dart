@@ -9,6 +9,8 @@ import '../funkcje/dokumenty/wydruk_pdf.dart';
 import '../funkcje/dzialki/import_wniosku.dart';
 import '../funkcje/dzialki/repozytorium_dzialek.dart';
 import '../funkcje/dzialki/repozytorium_pol.dart';
+import '../funkcje/terminy/kalendarz_terminow.dart';
+import '../funkcje/terminy/ustawienia_przypomnien.dart';
 import '../funkcje/zabiegi/rejestr_zabiegow.dart';
 import '../funkcje/zabiegi/repozytorium_zabiegow.dart';
 import '../funkcje/zabiegi/slownik_srodkow.dart';
@@ -16,6 +18,7 @@ import '../rdzen/baza/baza_gospodarstwa.dart';
 import '../rdzen/baza/przygotowanie_slownikow.dart';
 import '../rdzen/reguly/zrodlo_regul.dart';
 import 'uslugi.dart';
+import 'przypomnienia_urzadzenia.dart';
 import 'wyjscie_dokumentu_urzadzenia.dart';
 import 'zrodlo_pliku_urzadzenia.dart';
 
@@ -67,6 +70,13 @@ Future<Uslugi> uruchom({
       czcionki: wczytajCzcionkiWydruku,
       wyjscie: const WyjscieDokumentuUrzadzenia(),
     ),
+    kalendarz: KalendarzTerminow(
+      reguly: reguly,
+      rejestr: RejestrZabiegow(baza),
+    ),
+    profil: ProfilZBazy(baza),
+    przypomnienia: PrzypomnieniaUrzadzenia(),
+    ustawieniaPrzypomnien: UstawieniaPrzypomnien(baza),
   );
 }
 

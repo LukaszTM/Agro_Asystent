@@ -1,4 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Po ponownym uruchomieniu telefonu przypomnienia o terminach muszą
+         zostać zaplanowane od nowa; bez tego przepadają. Zgodę na same
+         powiadomienia deklaruje wtyczka. -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <application
         android:label="Agro Asystent"
         android:name="${applicationName}"

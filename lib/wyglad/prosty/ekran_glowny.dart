@@ -6,6 +6,7 @@ import '../../rdzen/marka/marka.dart';
 import 'ekran_pola.dart';
 import 'ekran_w_budowie.dart';
 import 'rejestr/ekran_rejestr.dart';
+import 'terminy/ekran_terminy.dart';
 import 'motyw.dart';
 import 'wpis/ekran_wybor_pola.dart';
 
@@ -127,6 +128,8 @@ class _PrzyciskKafelek extends StatelessWidget {
           return EkranWyborPola(uslugi: dostepneUslugi);
         case 'Dokumenty':
           return EkranRejestr(uslugi: dostepneUslugi);
+        case 'Terminy':
+          return EkranTerminy(uslugi: dostepneUslugi);
       }
     }
     return EkranWBudowie(tytul: kafelek.etykieta, coBedzie: kafelek.coBedzie);

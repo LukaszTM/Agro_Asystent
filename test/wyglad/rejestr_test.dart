@@ -9,6 +9,9 @@ import 'package:agro_asystent/funkcje/dzialki/import_wniosku.dart';
 import 'package:agro_asystent/funkcje/dzialki/repozytorium_dzialek.dart';
 import 'package:agro_asystent/funkcje/dzialki/repozytorium_pol.dart';
 import 'package:agro_asystent/funkcje/dzialki/zrodlo_pliku.dart';
+import 'package:agro_asystent/funkcje/terminy/kalendarz_terminow.dart';
+import 'package:agro_asystent/funkcje/terminy/przypomnienia.dart';
+import 'package:agro_asystent/funkcje/terminy/ustawienia_przypomnien.dart';
 import 'package:agro_asystent/funkcje/zabiegi/rejestr_zabiegow.dart';
 import 'package:agro_asystent/funkcje/zabiegi/repozytorium_zabiegow.dart';
 import 'package:agro_asystent/funkcje/zabiegi/slownik_srodkow.dart';
@@ -145,6 +148,13 @@ void main() {
       czcionki: _brakCzcionek,
       wyjscie: const _BrakWyjscia(),
     ),
+    kalendarz: KalendarzTerminow(
+      reguly: reguly,
+      rejestr: RejestrZabiegow(baza),
+    ),
+    profil: ProfilZBazy(baza),
+    przypomnienia: const _BrakPrzypomnien(),
+    ustawieniaPrzypomnien: UstawieniaPrzypomnien(baza),
   );
 
   /// Przewija ekran do podanego miejsca — ewidencja ma dwanaście pól, więc
@@ -335,4 +345,21 @@ class _BrakWyjscia implements WyjscieDokumentu {
     required String nazwa,
     required String typMime,
   }) => throw UnimplementedError();
+}
+
+/// Te testy nie dotykają terminów — przypomnienia nie są planowane.
+class _BrakPrzypomnien implements UslugaPrzypomnien {
+  const _BrakPrzypomnien();
+
+  @override
+  Future<bool> czyWolno() async => false;
+
+  @override
+  Future<bool> popros() async => false;
+
+  @override
+  Future<void> zaplanuj(List<Przypomnienie> przypomnienia) async {}
+
+  @override
+  Future<void> wylacz() async {}
 }
