@@ -4,4 +4,8 @@
 <adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
     <background android:drawable="@color/ic_launcher_background" />
     <foreground android:drawable="@mipmap/ic_launcher_foreground" />
+    <!-- Ikona jednobarwna: od Androida 13 system barwi ją pod tapetę
+         użytkownika. Bez tej warstwy nowszy system i tak zrobi to po swojemu,
+         więc wolimy podać własny kształt. -->
+    <monochrome android:drawable="@mipmap/ic_launcher_monochrome" />
 </adaptive-icon>

@@ -35,8 +35,33 @@ python3 tools/zbuduj_ikony.py
 
 Skrypt wytwarza: ikony Androida w pięciu gęstościach, pierwszy plan ikony
 adaptacyjnej (z zapasem przy krawędziach, bo Android przycina ją do koła albo
-kwadratu zależnie od nakładki producenta), logo ekranu powitalnego i ikonę
-Windows z kompletem rozmiarów.
+kwadratu zależnie od nakładki producenta), **warstwę jednobarwną** dla
+Androida 13+, logo ekranu powitalnego i ikonę Windows z kompletem rozmiarów.
+
+Pliki od projektanta mają wokół znaku ledwo widoczną poświatę sięgającą
+krawędzi. Skrypt ją pomija przy obcinaniu marginesu (próg 32 ze 255 krycia) —
+inaczej znak byłby na ikonie mniejszy, niż może być.
+
+### Ikona jednobarwna (Android 13+)
+
+Od Androida 13 system barwi ikonę pod tapetę użytkownika, a od Androida 16
+QPR 2 robi to **także aplikacjom bez własnej warstwy** — po swojemu. Dlatego
+podajemy własną: `ic_launcher_monochrome` w `mipmap-*`, wpięta przez
+`<monochrome>` w `mipmap-anydpi-v26/ic_launcher.xml`.
+
+Warunki, które spełnia (dokumentacja Androida):
+
+| Warunek | U nas |
+| --- | --- |
+| Kanwa 108 × 108 dp | tak, jak pozostałe warstwy |
+| Znak od 48 do 66 dp | 66 dp szerokości (górna granica) |
+| Jeden kolor, bez gradientów i cienia | czarna sylwetka na przezroczystym tle; system i tak zastąpi kolor |
+| Czyste krawędzie, bez własnej maski | tak |
+
+Sylwetka powstaje z **kanału alfa znaku**: przerwy między pasami pola i w
+liściu są w pliku przezroczyste, więc zostają dziurami i rysunek zachowuje
+podział. W rozmiarze 48 px cienkie pasy zaczynają się zlewać — gdyby to miało
+przeszkadzać, trzeba osobnej, uproszczonej sylwetki od projektanta.
 
 ## Kolory marki
 

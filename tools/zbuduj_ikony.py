@@ -26,11 +26,39 @@ GESTOSCI = {"mdpi": 48, "hdpi": 72, "xhdpi": 96, "xxhdpi": 144, "xxxhdpi": 192}
 #: Logo na ekranie powitalnym — większe niż ikona.
 POWITALNE = {"mdpi": 160, "hdpi": 240, "xhdpi": 320, "xxhdpi": 480, "xxxhdpi": 640}
 
-#: Android przycina pierwszy plan ikony adaptacyjnej do koła albo kwadratu,
-#: więc logo musi mieć zapas przy krawędziach.
-UDZIAL_LOGO_W_IKONIE_ADAPTACYJNEJ = 0.62
+#: Ikona adaptacyjna ma kanwę 108 dp, z czego widoczne zostaje 66 dp —
+#: resztę zabiera maska nakładki producenta (koło, zaokrąglony kwadrat).
+#: Android dopuszcza znak od 48 do 66 dp, więc bierzemy górną granicę.
+UDZIAL_LOGO_W_IKONIE_ADAPTACYJNEJ = 66 / 108
 
 ROZMIARY_WINDOWS = [(16, 16), (24, 24), (32, 32), (48, 48), (64, 64), (128, 128), (256, 256)]
+
+#: Krycie, poniżej którego piksel uznajemy za ślad cienia, a nie rysunek.
+#: Pliki od projektanta mają wokół znaku ledwo widoczną poświatę sięgającą
+#: krawędzi; bez jej pominięcia logo byłoby na ikonie mniejsze, niż może być.
+PROG_OBCINANIA = 32
+
+
+def przytnij_do_kwadratu(obraz: Image.Image) -> Image.Image:
+    """Obcina przezroczysty margines i dokłada zapas do kwadratu.
+
+    Skrypt skaluje źródło wprost do boku ikony, więc obrazek prostokątny
+    zostałby ściśnięty, a zbędny margines zabrałby miejsce samemu znakowi.
+    """
+    ksztalt = obraz.getchannel("A").point(
+        lambda v: 255 if v > PROG_OBCINANIA else 0
+    )
+    obszar = ksztalt.getbbox()
+    if obszar is None:
+        return obraz
+    przyciety = obraz.crop(obszar)
+    bok = max(przyciety.size)
+    kwadrat = Image.new("RGBA", (bok, bok), (0, 0, 0, 0))
+    kwadrat.paste(
+        przyciety,
+        ((bok - przyciety.width) // 2, (bok - przyciety.height) // 2),
+    )
+    return kwadrat
 
 
 def zbuduj(
@@ -39,10 +67,14 @@ def zbuduj(
     katalog_android: Path,
     ikona_windows: Path,
 ) -> list[str]:
-    zrodlo = Image.open(logo).convert("RGBA")
+    zrodlo = przytnij_do_kwadratu(Image.open(logo).convert("RGBA"))
     # Gdy wersji bez nazwy jeszcze nie ma, ikony robimy z pełnego logo —
     # brzydziej, ale skrypt nie wywraca się na brakującym pliku.
-    zrodlo_znaku = Image.open(znak).convert("RGBA") if znak.exists() else zrodlo
+    zrodlo_znaku = (
+        przytnij_do_kwadratu(Image.open(znak).convert("RGBA"))
+        if znak.exists()
+        else zrodlo
+    )
     zrobione: list[str] = []
 
     for gestosc, bok in GESTOSCI.items():
@@ -59,6 +91,16 @@ def zbuduj(
         odstep = (bok_adaptacyjny - wielkosc) // 2
         plansza.paste(logo_male, (odstep, odstep), logo_male)
         plansza.save(katalog / "ic_launcher_foreground.png", optimize=True)
+
+        # Warstwa jednobarwna (Android 13+): system barwi ją pod tapetę
+        # użytkownika, więc nasze kolory i tak odrzuci — liczy się sam kształt.
+        # Bierzemy go z kanału alfa znaku: przerwy w rysunku są przezroczyste,
+        # więc zostają dziurami i znak zachowuje podział na pasy.
+        sylwetka = Image.new("RGBA", (bok_adaptacyjny, bok_adaptacyjny), (0, 0, 0, 0))
+        ksztalt = logo_male.getchannel("A").point(lambda v: 255 if v > 128 else 0)
+        sylwetka.paste((0, 0, 0, 255), (odstep, odstep), ksztalt)
+        sylwetka.save(katalog / "ic_launcher_monochrome.png", optimize=True)
+
         zrobione.append(f"ikona ze znaku {gestosc}: {bok}×{bok}")
 
     for gestosc, bok in POWITALNE.items():
