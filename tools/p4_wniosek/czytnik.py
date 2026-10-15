@@ -509,11 +509,10 @@ def main(argv: list[str] | None = None) -> int:
         print(f"Nazwy upraw zapisane do {args.uprawy_csv}")
     if args.dzialki_csv:
         args.dzialki_csv.parent.mkdir(parents=True, exist_ok=True)
-        args.dzialki_csv.write_text(
-            "\n".join(sorted({d.identyfikator for d in wniosek.dzialki_ewidencyjne}))
-            + "\n",
-            encoding="utf-8",
-        )
+        # Pełne identyfikatory (z kodem gminy) są w tabeli XI; tabela X podaje
+        # sam numer obrębu, więc do ULDK nadają się tylko te pierwsze.
+        pelne = sorted({i for d in wniosek.dzialki_rolne for i in d.identyfikatory})
+        args.dzialki_csv.write_text("\n".join(pelne) + "\n", encoding="utf-8")
         print(f"Identyfikatory działek zapisane do {args.dzialki_csv}")
     return 0 if kontrola.wynik_pewny else 1
 

@@ -59,15 +59,37 @@ class Dzialka:
     obreb: str | None = None
 
 
+#: Pola odpowiedzi w kolejności, w jakiej je zamawiamy — usługa zwraca je
+#: dokładnie w tym porządku, rozdzielone znakiem „|".
+POLA_WYNIKU = ["geom_wkt", "teryt", "voivodeship", "county", "commune", "region", "parcel"]
+
+
 def adres_zapytania(identyfikator: str, srid: int = 4326) -> str:
     """Buduje adres żądania GetParcelById."""
     parametry = {
         "request": "GetParcelById",
         "id": identyfikator,
-        "result": "geom_wkt,teryt,region,county,commune,parcel",
+        "result": ",".join(POLA_WYNIKU),
         "srid": str(srid),
     }
     return ADRES + "?" + urllib.parse.urlencode(parametry)
+
+
+def rozbierz_geometrie(pole: str) -> tuple[str, int | None]:
+    """Usługa zwraca geometrię w postaci EWKT: „SRID=4326;POLYGON((…))".
+
+    Zwraca samo WKT oraz układ współrzędnych odczytany z przedrostka.
+    """
+    tekst = pole.strip()
+    srid: int | None = None
+    if tekst.upper().startswith("SRID="):
+        przedrostek, _, reszta = tekst.partition(";")
+        try:
+            srid = int(przedrostek.split("=", 1)[1])
+        except (IndexError, ValueError):
+            srid = None
+        tekst = reszta.strip()
+    return tekst, srid
 
 
 def odczytaj_odpowiedz(tresc: str, identyfikator: str, srid: int) -> Dzialka:
@@ -84,20 +106,20 @@ def odczytaj_odpowiedz(tresc: str, identyfikator: str, srid: int) -> Dzialka:
         raise BladUldk(f"{identyfikator}: brak danych w odpowiedzi")
 
     pola = [p.strip() for p in wiersze[1].split("|")]
-    wkt = next((p for p in pola if p.upper().startswith(("POLYGON", "MULTIPOLYGON"))), None)
-    if not wkt:
+    dane = dict(zip(POLA_WYNIKU, pola))
+
+    wkt, srid_z_odpowiedzi = rozbierz_geometrie(dane.get("geom_wkt", ""))
+    if not wkt.upper().startswith(("POLYGON", "MULTIPOLYGON")):
         raise BladUldk(f"{identyfikator}: w odpowiedzi nie ma geometrii")
 
-    pozostale = [p for p in pola if p is not wkt and p]
-    # Układ pozostałych pól zależy od parametru „result"; bierzemy ostrożnie.
     return Dzialka(
         identyfikator=identyfikator,
         wkt=wkt,
-        srid=srid,
-        wojewodztwo=pozostale[1] if len(pozostale) > 1 else None,
-        powiat=pozostale[2] if len(pozostale) > 2 else None,
-        gmina=pozostale[3] if len(pozostale) > 3 else None,
-        obreb=pozostale[4] if len(pozostale) > 4 else None,
+        srid=srid_z_odpowiedzi or srid,
+        wojewodztwo=dane.get("voivodeship") or None,
+        powiat=dane.get("county") or None,
+        gmina=dane.get("commune") or None,
+        obreb=dane.get("region") or None,
     )
 
 

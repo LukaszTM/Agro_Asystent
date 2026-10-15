@@ -7,11 +7,11 @@ pobranie granic po identyfikatorze, zapis lokalny, wyświetlenie na mapie offlin
 
 | Część | Stan |
 | --- | --- |
-| Klient usługi ULDK (budowa zapytania, odczyt odpowiedzi, pamięć podręczna) | **gotowe, nieprzetestowane na żywej usłudze** |
+| Klient usługi ULDK (budowa zapytania, odczyt odpowiedzi, pamięć podręczna) | **gotowe i sprawdzone na żywej usłudze** |
 | Zapis granic do bazy lokalnej | **gotowe** |
 | Rysowanie granic bez internetu | **gotowe** |
 | Decyzja o podkładzie mapy | **gotowe** — `docs/decyzje/ADR-0003-mapa-offline.md` |
-| Sprawdzenie na prawdziwych działkach | **zablokowane** — `uldk.gugik.gov.pl` poza dozwolonymi domenami środowiska |
+| Sprawdzenie na prawdziwych działkach | **gotowe** — 20 z 20 działek z prawdziwego wniosku |
 
 ## Co powstało
 
@@ -26,24 +26,39 @@ przedstawia się nagłówkiem User-Agent, robi przerwy między żądaniami, nie
 pobiera ponownie tego, co już ma, i ponawia próbę przy zerwanym połączeniu.
 Granice pobiera się **raz na działkę** — potem wszystko dzieje się offline.
 
-## Czego jeszcze nie wiemy
+## Sprawdzenie na prawdziwej usłudze
 
-Usługa ULDK jest w tym środowisku niedostępna, więc **klient nie został
-sprawdzony na żywej usłudze**. Zbudowany jest według opisu z planu (pkt 6.1)
-i dokumentacji `uldk.gugik.gov.pl/opis.html`, a odczyt odpowiedzi jest objęty
-testami na przykładowej treści — ale to nie to samo co prawdziwe wywołanie.
-Doświadczenie z P4 mówi wprost, czego się spodziewać: prawdziwa usługa prawie
-na pewno różni się w szczegółach od opisu.
+Po dodaniu `uldk.gugik.gov.pl` do dozwolonych domen klient pobrał granice
+**20 z 20 działek** z prawdziwego wniosku (identyfikatory odczytane przez
+czytnik z P4). Pliki zostały w katalogu roboczym poza repozytorium.
 
-Po dodaniu `uldk.gugik.gov.pl` do dozwolonych domen wystarczy:
+Pierwsze uruchomienie zwróciło jednak **20 błędów „w odpowiedzi nie ma
+geometrii"** — znów rozbieżność między dokumentacją a rzeczywistością:
 
-```bash
-python3 tools/p5_uldk/klient.py --plik dane/prywatne/dzialki_z_wniosku.pdf.csv
-python3 tools/p5_uldk/mapa.py
-```
+| Zakładałem | Jak jest naprawdę |
+| --- | --- |
+| Geometria jako czyste WKT: `POLYGON((…))` | **EWKT z przedrostkiem układu**: `SRID=4326;POLYGON((…))` |
+| Pola odpowiedzi w stałym układzie | Pola wracają **w kolejności, w jakiej je zamówiono** w parametrze `result` |
+| `region` to województwo | `region` to **obręb ewidencyjny**; województwo to `voivodeship` |
 
-Identyfikatory 20 działek z prawdziwego wniosku są już odczytane przez czytnik
-z P4 i czekają w katalogu roboczym.
+Po poprawce wszystkie 20 działek odczytuje się poprawnie, razem z nazwą
+województwa, powiatu, gminy i obrębu. Format EWKT i przypisanie pól są objęte
+testami na prawdziwej treści odpowiedzi.
+
+### Kontrola krzyżowa powierzchni
+
+Powierzchnia policzona z geometrii ULDK: **32,78 ha**. Powierzchnia z tabeli X
+wniosku: **33,04 ha**. Różnica **0,26 ha (0,8%)** bierze się z przybliżenia
+przy liczeniu pola na współrzędnych geograficznych — dla kontroli „czy to na
+pewno te działki" w zupełności wystarcza. Gdyby aplikacja miała podawać
+powierzchnię do dokumentów, trzeba będzie liczyć pole w układzie metrycznym
+(EPSG:2180, który ULDK zwraca na żądanie).
+
+### Identyfikatory: skąd je brać
+
+Przy okazji wyszła pułapka: **tabela X wniosku podaje numer obrębu bez kodu
+gminy** (`0007.138`), więc nie nadaje się dla ULDK. Pełne identyfikatory
+(`061506_2.0007.138`) są w tabeli XI i stamtąd czytnik z P4 je teraz eksportuje.
 
 ## Mapa bez internetu — sprawdzona
 

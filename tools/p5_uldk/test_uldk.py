@@ -93,3 +93,34 @@ class TestRysunek:
     def test_brak_danych_konczy_wyjatkiem(self):
         with pytest.raises(ValueError):
             rysuj_svg([])
+
+
+class TestFormatEwkt:
+    """Prawdziwa usługa zwraca geometrię z przedrostkiem układu współrzędnych."""
+
+    ODPOWIEDZ_EWKT = (
+        "0\n"
+        "SRID=4326;POLYGON((22.5777 51.8354,22.5778 51.8356,22.5730 51.8364,22.5777 51.8354))"
+        "|061506_2.0007.138|lubelskie|powiat radzyński|Radzyń Podlaski|Brzostówiec|138\n"
+    )
+
+    def test_przedrostek_srid_jest_odczytywany(self):
+        from klient import rozbierz_geometrie
+
+        wkt, srid = rozbierz_geometrie("SRID=4326;POLYGON((0 0,1 0,1 1,0 0))")
+        assert wkt.startswith("POLYGON")
+        assert srid == 4326
+
+    def test_odpowiedz_z_prawdziwej_uslugi(self):
+        dzialka = odczytaj_odpowiedz(self.ODPOWIEDZ_EWKT, "061506_2.0007.138", 4326)
+        assert dzialka.wkt.startswith("POLYGON")
+        assert dzialka.srid == 4326
+        assert dzialka.wojewodztwo == "lubelskie"
+        assert dzialka.powiat == "powiat radzyński"
+        assert dzialka.gmina == "Radzyń Podlaski"
+        assert dzialka.obreb == "Brzostówiec"  # „region" w ULDK to obręb, nie województwo
+
+    def test_geometria_z_odpowiedzi_daje_sie_narysowac(self):
+        dzialka = odczytaj_odpowiedz(self.ODPOWIEDZ_EWKT, "061506_2.0007.138", 4326)
+        svg = rysuj_svg([Ksztalt(dzialka.identyfikator, wczytaj_wkt(dzialka.wkt))])
+        assert "<path" in svg
