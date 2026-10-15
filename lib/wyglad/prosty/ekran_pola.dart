@@ -2,14 +2,16 @@ import 'package:flutter/material.dart';
 
 import '../../app/uslugi.dart';
 import '../../funkcje/dzialki/repozytorium_pol.dart';
+import 'dzialki/ekran_dzialki.dart';
 import 'motyw.dart';
 import 'widgety/duzy_przycisk.dart';
 import 'widgety/wybor_liczby.dart';
 
-/// Lista pól gospodarstwa wraz z dodawaniem nowego.
+/// Lista pól gospodarstwa wraz z dodawaniem nowego oraz wejściem do działek
+/// ewidencyjnych i mapy.
 ///
-/// Mapa i import z wniosku dojdą w kolejnych krokach etapu 1; tu chodzi o to,
-/// żeby rolnik miał na czym zapisać pierwszy zabieg.
+/// Import z wniosku dojdzie w kolejnym kroku etapu 1; tu chodzi o to, żeby
+/// rolnik miał na czym zapisać pierwszy zabieg.
 class EkranPola extends StatefulWidget {
   const EkranPola({super.key, required this.uslugi});
 
@@ -75,6 +77,17 @@ class _EkranPolaState extends State<EkranPola> {
               ],
               const SizedBox(height: MotywProsty.odstep),
               FilledButton(onPressed: _dodaj, child: const Text('Dodaj pole')),
+              const SizedBox(height: MotywProsty.odstep),
+              DuzyPrzycisk(
+                etykieta: 'Działki i mapa',
+                opis: 'Granice działek z numeru ewidencyjnego',
+                ikona: Icons.map_outlined,
+                onTap: () => Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (_) => EkranDzialki(uslugi: widget.uslugi),
+                  ),
+                ),
+              ),
             ],
           );
         },

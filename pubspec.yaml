@@ -23,6 +23,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   sqflite_common: ^2.5.14
+  http: ^1.6.0
 
 dev_dependencies:
   flutter_test:

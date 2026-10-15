@@ -3,6 +3,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart' as sqflite;
 import 'package:sqflite_common/sqlite_api.dart';
 
+import '../funkcje/dzialki/repozytorium_dzialek.dart';
 import '../funkcje/dzialki/repozytorium_pol.dart';
 import '../funkcje/zabiegi/repozytorium_zabiegow.dart';
 import '../funkcje/zabiegi/slownik_srodkow.dart';
@@ -42,6 +43,7 @@ Future<Uslugi> uruchom({
     gospodarstwoId: gospodarstwoId,
     urzadzenie: urzadzenie,
     pola: RepozytoriumPol(baza),
+    dzialki: RepozytoriumDzialek(baza),
     zabiegi: RepozytoriumZabiegow(baza),
     srodki: SlownikSrodkow(slowniki),
   );

@@ -1,5 +1,6 @@
 import 'package:agro_asystent/app/aplikacja.dart';
 import 'package:agro_asystent/app/uslugi.dart';
+import 'package:agro_asystent/funkcje/dzialki/repozytorium_dzialek.dart';
 import 'package:agro_asystent/funkcje/dzialki/repozytorium_pol.dart';
 import 'package:agro_asystent/funkcje/zabiegi/repozytorium_zabiegow.dart';
 import 'package:agro_asystent/funkcje/zabiegi/slownik_srodkow.dart';
@@ -120,6 +121,7 @@ void main() {
       gospodarstwoId: 'g1',
       urzadzenie: 'telefon',
       pola: RepozytoriumPol(gospodarstwo),
+      dzialki: RepozytoriumDzialek(gospodarstwo),
       zabiegi: RepozytoriumZabiegow(gospodarstwo),
       srodki: SlownikSrodkow(slowniki),
     );
