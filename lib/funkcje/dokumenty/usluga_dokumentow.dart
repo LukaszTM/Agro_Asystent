@@ -48,6 +48,7 @@ class UslugaDokumentow {
     required String gospodarstwoId,
     required String gospodarstwo,
     required RodzajZabiegu rodzaj,
+    String? numerProducenta,
     int? rok,
     DateTime? sporzadzono,
   }) async {
@@ -64,6 +65,7 @@ class UslugaDokumentow {
       // Na wydruku wpisy idą od najstarszego — tak czyta je kontrola.
       wpisy: wpisy.reversed.toList(growable: false),
       gospodarstwo: gospodarstwo,
+      numerProducenta: numerProducenta,
       wersjaRegul: reguly.wersja,
       rok: rok,
       sporzadzono: sporzadzono,

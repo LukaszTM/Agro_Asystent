@@ -12,6 +12,7 @@ import '../funkcje/odczyt/odczyt_etykiety.dart';
 import '../funkcje/terminy/kalendarz_terminow.dart';
 import '../funkcje/terminy/przypomnienia.dart';
 import '../funkcje/terminy/ustawienia_przypomnien.dart';
+import '../funkcje/ustawienia/gospodarstwa.dart';
 import '../funkcje/zwierzeta/stado.dart';
 import '../funkcje/zabiegi/rejestr_zabiegow.dart';
 import '../funkcje/zabiegi/repozytorium_zabiegow.dart';
@@ -42,6 +43,7 @@ class Uslugi {
     required this.nawozenie,
     required this.planNawozenia,
     required this.stado,
+    required this.gospodarstwa,
     required this.kalendarz,
     required this.profil,
     required this.przypomnienia,
@@ -95,6 +97,9 @@ class Uslugi {
   /// Rejestr stada: zwierzęta, zdarzenia i DJP.
   final RepozytoriumStada stado;
 
+  /// Lista gospodarstw, wybór aktywnego i konto (plan, pkt 7).
+  final RepozytoriumGospodarstw gospodarstwa;
+
   /// Kalendarz obowiązków: terminy z przepisów i karencje z własnych zabiegów.
   final KalendarzTerminow kalendarz;
 
@@ -113,4 +118,36 @@ class Uslugi {
   final KlientUldk uldk;
 
   final DostepFunkcji dostep;
+
+  /// Te same usługi, ale dla innego gospodarstwa. Wszystkie repozytoria
+  /// pracują na jednej bazie i same filtrują po gospodarstwie, więc
+  /// przełączenie to zmiana identyfikatora i nazwy — bez ponownego
+  /// otwierania bazy i rozpakowywania słowników.
+  Uslugi dlaGospodarstwa({required String id, required String nazwa}) => Uslugi(
+    gospodarstwoId: id,
+    nazwaGospodarstwa: nazwa,
+    urzadzenie: urzadzenie,
+    pola: pola,
+    dzialki: dzialki,
+    zabiegi: zabiegi,
+    rejestr: rejestr,
+    srodki: srodki,
+    reguly: reguly,
+    importWniosku: importWniosku,
+    zrodloPliku: zrodloPliku,
+    dokumenty: dokumenty,
+    czytnikZdjecia: czytnikZdjecia,
+    czytnikEtykiety: czytnikEtykiety,
+    nawozy: nawozy,
+    nawozenie: nawozenie,
+    planNawozenia: planNawozenia,
+    stado: stado,
+    gospodarstwa: gospodarstwa,
+    kalendarz: kalendarz,
+    profil: profil,
+    przypomnienia: przypomnienia,
+    ustawieniaPrzypomnien: ustawieniaPrzypomnien,
+    uldk: uldk,
+    dostep: dostep,
+  );
 }

@@ -63,13 +63,17 @@ class _Start extends StatefulWidget {
 class _StartState extends State<_Start> {
   Future<Uslugi>? _uslugi;
 
+  /// Usługi po przełączeniu gospodarstwa — baza i słowniki zostają otwarte,
+  /// zmienia się tylko gospodarstwo, nad którym pracujemy.
+  Uslugi? _wybrane;
+
   @override
   void initState() {
     super.initState();
     final gotowe = widget.gotowe;
     _uslugi = gotowe != null
         ? Future<Uslugi>.value(gotowe)
-        : (widget.uruchomienie ?? uruchom)();
+        : (widget.uruchomienie ?? () => uruchom(dostep: widget.dostep))();
   }
 
   @override
@@ -92,7 +96,11 @@ class _StartState extends State<_Start> {
             ),
           );
         }
-        return EkranGlownyProsty(dostep: widget.dostep, uslugi: stan.data);
+        return EkranGlownyProsty(
+          dostep: widget.dostep,
+          uslugi: _wybrane ?? stan.data,
+          onZmianaGospodarstwa: (nowe) => setState(() => _wybrane = nowe),
+        );
       },
     );
   }

@@ -16,6 +16,7 @@ class DokumentEwidencji {
     required this.wersjaRegul,
     required this.gospodarstwo,
     required this.rok,
+    this.numerProducenta,
     required this.kolumny,
     required this.wiersze,
     required this.sporzadzono,
@@ -25,6 +26,10 @@ class DokumentEwidencji {
   final String podstawa;
   final String wersjaRegul;
   final String gospodarstwo;
+
+  /// Numer producenta z ARiMR. `null` znaczy „rolnik go nie podał" —
+  /// na wydruku piszemy „brak", niczego nie zgadujemy.
+  final String? numerProducenta;
 
   /// `null` oznacza „wszystkie lata".
   final int? rok;
@@ -78,6 +83,7 @@ abstract final class BudowniczyDokumentu {
     required List<WpisRejestru> wpisy,
     required String gospodarstwo,
     required String wersjaRegul,
+    String? numerProducenta,
     int? rok,
     DateTime? sporzadzono,
   }) {
@@ -100,6 +106,7 @@ abstract final class BudowniczyDokumentu {
       podstawa: obowiazek.podstawa,
       wersjaRegul: wersjaRegul,
       gospodarstwo: gospodarstwo,
+      numerProducenta: numerProducenta,
       rok: rok,
       kolumny: obowiazek.wymaganePola,
       wiersze: wiersze,

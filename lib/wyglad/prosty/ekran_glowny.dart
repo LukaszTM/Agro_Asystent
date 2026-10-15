@@ -8,14 +8,24 @@ import 'ekran_w_budowie.dart';
 import 'rejestr/ekran_rejestr.dart';
 import 'terminy/ekran_terminy.dart';
 import 'motyw.dart';
+import 'ustawienia/ekran_gospodarstwa.dart';
 import 'wpis/ekran_wybor_pola.dart';
 
 /// Ekran główny wyglądu „Prosty": cztery duże przyciski, bez ukrytego menu
 /// (plan, pkt 5). Kolejność od najczęściej używanego.
 class EkranGlownyProsty extends StatelessWidget {
-  const EkranGlownyProsty({super.key, required this.dostep, this.uslugi});
+  const EkranGlownyProsty({
+    super.key,
+    required this.dostep,
+    this.uslugi,
+    this.onZmianaGospodarstwa,
+  });
 
   final DostepFunkcji dostep;
+
+  /// Przełączenie gospodarstwa zmienia dane na wszystkich ekranach, więc
+  /// nowy zestaw usług wraca do startu aplikacji.
+  final void Function(Uslugi noweUslugi)? onZmianaGospodarstwa;
 
   /// Usługi są dostępne dopiero po otwarciu bazy; bez nich pokazujemy ekrany
   /// zastępcze zamiast pustej aplikacji.
@@ -71,6 +81,21 @@ class EkranGlownyProsty extends StatelessWidget {
             const Text(Marka.nazwa),
           ],
         ),
+        actions: [
+          if (uslugi != null)
+            IconButton(
+              icon: const Icon(Icons.agriculture_outlined, size: 32),
+              tooltip: 'Gospodarstwo',
+              onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (_) => EkranGospodarstwa(
+                    uslugi: uslugi!,
+                    onZmiana: onZmianaGospodarstwa,
+                  ),
+                ),
+              ),
+            ),
+        ],
       ),
       body: SafeArea(
         child: Padding(

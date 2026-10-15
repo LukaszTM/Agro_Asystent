@@ -63,7 +63,9 @@ abstract final class WydrukPdf {
       ),
       pw.SizedBox(height: 4),
       pw.Text(
-        'Gospodarstwo: ${dokument.gospodarstwo}   •   Okres: ${dokument.okres}'
+        'Gospodarstwo: ${dokument.gospodarstwo}'
+        '   •   Numer producenta: ${dokument.numerProducenta ?? 'brak'}'
+        '   •   Okres: ${dokument.okres}'
         '   •   Wpisów: ${dokument.liczbaWpisow}',
         style: const pw.TextStyle(fontSize: 9),
       ),

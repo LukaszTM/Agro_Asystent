@@ -18,6 +18,7 @@ abstract final class EksportCsv {
     final wiersze = <String>[
       _wiersz([dokument.tytul]),
       _wiersz(['Gospodarstwo', dokument.gospodarstwo]),
+      _wiersz(['Numer producenta', dokument.numerProducenta ?? 'brak']),
       _wiersz(['Okres', dokument.okres]),
       _wiersz(['Podstawa', dokument.podstawa]),
       _wiersz(['Słownik reguł', dokument.wersjaRegul]),

@@ -50,6 +50,7 @@ abstract final class EksportXlsx {
 
     dopisz([dokument.tytul], naglowek: true);
     dopisz(['Gospodarstwo', dokument.gospodarstwo]);
+    dopisz(['Numer producenta', dokument.numerProducenta ?? 'brak']);
     dopisz(['Okres', dokument.okres]);
     dopisz(['Podstawa', dokument.podstawa]);
     dopisz(['Słownik reguł', dokument.wersjaRegul]);

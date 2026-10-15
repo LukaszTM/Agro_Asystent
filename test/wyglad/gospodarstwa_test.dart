@@ -1,0 +1,320 @@
+import 'dart:io';
+import 'dart:typed_data';
+
+import 'package:agro_asystent/app/uslugi.dart';
+import 'package:agro_asystent/funkcje/dokumenty/usluga_dokumentow.dart';
+import 'package:agro_asystent/funkcje/dokumenty/wydruk_pdf.dart';
+import 'package:agro_asystent/funkcje/dokumenty/wyjscie_dokumentu.dart';
+import 'package:agro_asystent/funkcje/dzialki/import_wniosku.dart';
+import 'package:agro_asystent/funkcje/dzialki/repozytorium_dzialek.dart';
+import 'package:agro_asystent/funkcje/dzialki/repozytorium_pol.dart';
+import 'package:agro_asystent/funkcje/dzialki/zrodlo_pliku.dart';
+import 'package:agro_asystent/funkcje/nawozenie/ewidencja_nawozenia.dart';
+import 'package:agro_asystent/funkcje/nawozenie/nawoz.dart';
+import 'package:agro_asystent/funkcje/nawozenie/plan_nawozenia.dart';
+import 'package:agro_asystent/funkcje/odczyt/czytnik_zdjecia.dart';
+import 'package:agro_asystent/funkcje/odczyt/odczyt_etykiety.dart';
+import 'package:agro_asystent/funkcje/terminy/kalendarz_terminow.dart';
+import 'package:agro_asystent/funkcje/terminy/przypomnienia.dart';
+import 'package:agro_asystent/funkcje/terminy/ustawienia_przypomnien.dart';
+import 'package:agro_asystent/funkcje/ustawienia/gospodarstwa.dart';
+import 'package:agro_asystent/funkcje/zabiegi/rejestr_zabiegow.dart';
+import 'package:agro_asystent/funkcje/zabiegi/repozytorium_zabiegow.dart';
+import 'package:agro_asystent/funkcje/zabiegi/slownik_srodkow.dart';
+import 'package:agro_asystent/funkcje/zwierzeta/stado.dart';
+import 'package:agro_asystent/rdzen/baza/baza_gospodarstwa.dart';
+import 'package:agro_asystent/rdzen/reguly/regula_prawna.dart';
+import 'package:agro_asystent/wyglad/prosty/motyw.dart';
+import 'package:agro_asystent/rdzen/dostep/dostep_funkcji.dart';
+import 'package:agro_asystent/wyglad/prosty/ustawienia/ekran_gospodarstwa.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+
+/// Ekran gospodarstwa i konta (krok 10 etapu 1): dane na wydruki,
+/// przełączanie między gospodarstwami i nazwa konta.
+
+void main() {
+  sqfliteFfiInit();
+  final fabryka = databaseFactoryFfiNoIsolate;
+  final reguly = SlownikRegul.zTekstuJson(
+    File('assets/dane/reguly_prawne.json').readAsStringSync(),
+  );
+
+  late Database baza;
+  late Database slowniki;
+
+  setUp(() async {
+    baza = await BazaGospodarstwa.otworz(
+      fabryka: fabryka,
+      sciezka: inMemoryDatabasePath,
+    );
+    await baza.insert('gospodarstwo', {
+      'id': 'g1',
+      'nazwa': 'Gospodarstwo próbne',
+      'numer_producenta': '012345678',
+      'utworzono': '2026-03-01T08:00:00',
+      'zmieniono': '2026-03-01T08:00:00',
+      'urzadzenie': 'telefon',
+    });
+    slowniki = await fabryka.openDatabase(inMemoryDatabasePath);
+    await slowniki.execute(
+      'CREATE TABLE uprawa (nazwa TEXT PRIMARY KEY, kod_eppo TEXT)',
+    );
+  });
+
+  tearDown(() async {
+    await baza.close();
+    await slowniki.close();
+  });
+
+  Uslugi zbudujUslugi({bool premium = false}) => Uslugi(
+    gospodarstwoId: 'g1',
+    nazwaGospodarstwa: 'Gospodarstwo próbne',
+    urzadzenie: 'telefon',
+    pola: RepozytoriumPol(baza),
+    dzialki: RepozytoriumDzialek(baza),
+    zabiegi: RepozytoriumZabiegow(baza),
+    rejestr: RejestrZabiegow(baza),
+    srodki: SlownikSrodkow(slowniki),
+    reguly: reguly,
+    importWniosku: ImportWniosku(baza: baza, srodki: SlownikSrodkow(slowniki)),
+    zrodloPliku: const _BrakZrodlaPliku(),
+    dokumenty: UslugaDokumentow(
+      rejestr: RejestrZabiegow(baza),
+      reguly: reguly,
+      czcionki: _brakCzcionek,
+      wyjscie: const _BrakWyjscia(),
+    ),
+    czytnikZdjecia: const _BrakZdjec(),
+    czytnikEtykiety: CzytnikEtykiety(SlownikSrodkow(slowniki)),
+    nawozy: RepozytoriumNawozow(baza),
+    nawozenie: EwidencjaNawozenia(
+      baza: baza,
+      zabiegi: RepozytoriumZabiegow(baza),
+      reguly: reguly,
+    ),
+    planNawozenia: PlanNawozenia(baza: baza, reguly: reguly),
+    stado: RepozytoriumStada(baza: baza, reguly: reguly),
+    gospodarstwa: RepozytoriumGospodarstw(
+      baza: baza,
+      dostep: DostepFunkcji(maPremium: premium),
+    ),
+    kalendarz: KalendarzTerminow(
+      reguly: reguly,
+      rejestr: RejestrZabiegow(baza),
+      stado: RepozytoriumStada(baza: baza, reguly: reguly),
+    ),
+    profil: ProfilZBazy(
+      baza,
+      stado: RepozytoriumStada(baza: baza, reguly: reguly),
+    ),
+    przypomnienia: const _BrakPrzypomnien(),
+    ustawieniaPrzypomnien: UstawieniaPrzypomnien(baza),
+    dostep: DostepFunkcji(maPremium: premium),
+  );
+
+  Future<void> pokaz(WidgetTester tester, Widget ekran) async {
+    tester.view.physicalSize = const Size(420, 1000);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    await tester.pumpWidget(
+      MaterialApp(theme: MotywProsty.zbuduj(), home: ekran),
+    );
+    await tester.pumpAndSettle();
+  }
+
+  /// Przewija listę ekranu. Bierzemy pierwszy obszar przewijany, bo pole
+  /// tekstowe ma własny, wewnętrzny — przeciąganie go nic nie dałoby.
+  Future<void> przewinDo(WidgetTester tester, Finder czego) async {
+    await tester.scrollUntilVisible(
+      czego,
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pumpAndSettle();
+  }
+
+  testWidgets('dane gospodarstwa widać i można je poprawić', (tester) async {
+    await pokaz(tester, EkranGospodarstwa(uslugi: zbudujUslugi()));
+
+    expect(find.text('Gospodarstwo próbne'), findsOneWidget);
+    expect(find.textContaining('012345678'), findsOneWidget);
+
+    await tester.tap(find.text('Gospodarstwo próbne'));
+    await tester.pumpAndSettle();
+
+    await tester.enterText(
+      find.byType(TextField).first,
+      'Gospodarstwo Kowalskich',
+    );
+    await przewinDo(tester, find.text('Zapisz dane'));
+    await tester.tap(find.text('Zapisz dane'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Gospodarstwo Kowalskich'), findsOneWidget);
+    final zBazy = await RepozytoriumGospodarstw(baza: baza).jedno('g1');
+    expect(zBazy!.nazwa, 'Gospodarstwo Kowalskich');
+  });
+
+  testWidgets('bez premium dodanie kolejnego gospodarstwa jest wyjaśnione', (
+    tester,
+  ) async {
+    await pokaz(tester, EkranGospodarstwa(uslugi: zbudujUslugi()));
+
+    expect(find.text('Dodaj gospodarstwo'), findsNothing);
+    await przewinDo(tester, find.textContaining('to dodatek premium'));
+    expect(
+      find.textContaining('działa w całości bez opłaty'),
+      findsOneWidget,
+      reason: 'Dokumentacji nie wolno blokować za brak płatności.',
+    );
+  });
+
+  testWidgets('w premium dodane gospodarstwo staje się bieżącym', (
+    tester,
+  ) async {
+    Uslugi? poZmianie;
+    await pokaz(
+      tester,
+      EkranGospodarstwa(
+        uslugi: zbudujUslugi(premium: true),
+        onZmiana: (nowe) => poZmianie = nowe,
+      ),
+    );
+
+    await przewinDo(tester, find.text('Dodaj gospodarstwo'));
+    await tester.tap(find.text('Dodaj gospodarstwo'));
+    await tester.pumpAndSettle();
+
+    await tester.enterText(
+      find.byType(TextField).first,
+      'Gospodarstwo po dziadku',
+    );
+    await przewinDo(tester, find.text('Dodaj gospodarstwo'));
+    await tester.tap(find.text('Dodaj gospodarstwo'));
+    await tester.pumpAndSettle();
+
+    expect(poZmianie, isNotNull);
+    expect(poZmianie!.nazwaGospodarstwa, 'Gospodarstwo po dziadku');
+    expect(find.textContaining('pracujesz tu teraz'), findsOneWidget);
+
+    final zapisane = await RepozytoriumGospodarstw(baza: baza).aktywne();
+    expect(zapisane!.nazwa, 'Gospodarstwo po dziadku');
+  });
+
+  testWidgets('przełączenie wraca do startu aplikacji i do bazy', (
+    tester,
+  ) async {
+    final repozytorium = RepozytoriumGospodarstw(
+      baza: baza,
+      dostep: const DostepFunkcji(maPremium: true),
+    );
+    final drugie = (await repozytorium.dodaj(
+      nazwa: 'Gospodarstwo po dziadku',
+      urzadzenie: 'telefon',
+    )).id!;
+    await repozytorium.ustawAktywne('g1');
+
+    Uslugi? poZmianie;
+    await pokaz(
+      tester,
+      EkranGospodarstwa(
+        uslugi: zbudujUslugi(premium: true),
+        onZmiana: (nowe) => poZmianie = nowe,
+      ),
+    );
+
+    await przewinDo(tester, find.text('Gospodarstwo po dziadku'));
+    await tester.tap(find.text('Gospodarstwo po dziadku'));
+    await tester.pumpAndSettle();
+
+    expect(poZmianie!.gospodarstwoId, drugie);
+    expect((await repozytorium.aktywne())!.id, drugie);
+  });
+
+  testWidgets('nazwa konta zapisuje się i wraca po ponownym wejściu', (
+    tester,
+  ) async {
+    await pokaz(tester, EkranGospodarstwa(uslugi: zbudujUslugi()));
+
+    await przewinDo(tester, find.text('Zapisz konto'));
+    await tester.enterText(find.byType(TextField).last, 'Jan Kowalski');
+    await tester.tap(find.text('Zapisz konto'));
+    await tester.pumpAndSettle();
+
+    final konto = await RepozytoriumGospodarstw(baza: baza).konto();
+    expect(konto!.nazwa, 'Jan Kowalski');
+
+    await pokaz(
+      tester,
+      EkranGospodarstwa(key: UniqueKey(), uslugi: zbudujUslugi()),
+    );
+    await przewinDo(tester, find.text('Zapisz konto'));
+    expect(find.text('Jan Kowalski'), findsOneWidget);
+  });
+
+  testWidgets('gospodarstwo bez nazwy nie powstaje i mówi, co zrobić', (
+    tester,
+  ) async {
+    await pokaz(tester, EkranGospodarstwa(uslugi: zbudujUslugi(premium: true)));
+
+    await przewinDo(tester, find.text('Dodaj gospodarstwo'));
+    await tester.tap(find.text('Dodaj gospodarstwo'));
+    await tester.pumpAndSettle();
+    await przewinDo(tester, find.text('Dodaj gospodarstwo'));
+    await tester.tap(find.text('Dodaj gospodarstwo'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Gospodarstwo nie ma nazwy.'), findsOneWidget);
+    expect(find.textContaining('Wpisz nazwę'), findsOneWidget);
+  });
+}
+
+class _BrakZrodlaPliku implements ZrodloPliku {
+  const _BrakZrodlaPliku();
+
+  @override
+  Future<WybranyPlik?> wybierzPdf() async => null;
+}
+
+Future<CzcionkiWydruku> _brakCzcionek() async =>
+    throw UnimplementedError('czcionki wydruku nie są tu potrzebne');
+
+class _BrakWyjscia implements WyjscieDokumentu {
+  const _BrakWyjscia();
+
+  @override
+  Future<void> drukujPdf({required Uint8List dane, required String nazwa}) =>
+      throw UnimplementedError();
+
+  @override
+  Future<void> udostepnij({
+    required Uint8List dane,
+    required String nazwa,
+    required String typMime,
+  }) => throw UnimplementedError();
+}
+
+class _BrakPrzypomnien implements UslugaPrzypomnien {
+  const _BrakPrzypomnien();
+
+  @override
+  Future<bool> czyWolno() async => false;
+
+  @override
+  Future<bool> popros() async => false;
+
+  @override
+  Future<void> zaplanuj(List<Przypomnienie> przypomnienia) async {}
+
+  @override
+  Future<void> wylacz() async {}
+}
+
+class _BrakZdjec implements CzytnikZdjecia {
+  const _BrakZdjec();
+
+  @override
+  Future<String?> tekst(ZrodloZdjecia zrodlo) async => null;
+}

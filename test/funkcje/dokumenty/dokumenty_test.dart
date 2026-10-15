@@ -135,10 +135,11 @@ void main() {
 
   tearDown(() => baza.close());
 
-  Future<DokumentEwidencji> zbuduj({int? rok}) async {
+  Future<DokumentEwidencji> zbuduj({int? rok, String? numerProducenta}) async {
     final dokument = await dokumenty.zbuduj(
       gospodarstwoId: 'g1',
       gospodarstwo: 'Gospodarstwo Łąki Górne',
+      numerProducenta: numerProducenta,
       rodzaj: RodzajZabiegu.oprysk,
       rok: rok,
       sporzadzono: DateTime(2026, 10, 15),
@@ -226,6 +227,45 @@ void main() {
       final dokument = await zbuduj(rok: 2026);
       expect(dokument.nazwaPliku('pdf'), endsWith('_2026.pdf'));
       expect(dokument.nazwaPliku('csv'), startsWith('ewidencja_zabiegów'));
+    });
+  });
+
+  group('dane gospodarstwa w nagłówku', () {
+    test('numer producenta trafia do CSV, XLSX i na wydruk', () async {
+      await dodajPole(id: 'p1', nazwa: 'Za stodołą');
+      await dodajOprysk(id: 'z1', poleId: 'p1', kiedy: DateTime(2026, 5, 10));
+
+      final dokument = await zbuduj(rok: 2026, numerProducenta: '012345678');
+      expect(
+        EksportCsv.tekst(dokument),
+        contains('Numer producenta;012345678'),
+      );
+
+      final arkusz = utf8.decode(
+        ZipDecoder()
+            .decodeBytes(EksportXlsx.bajty(dokument))
+            .files
+            .firstWhere((p) => p.name == 'xl/worksheets/sheet1.xml')
+            .content,
+      );
+      expect(arkusz, contains('012345678'));
+
+      final bajty = await WydrukPdf.bajty(dokument, czcionki: await czcionki());
+      final tekst = [
+        for (final strona in OdczytTekstuPdf.strony(bajty))
+          for (final wiersz in strona.wiersze())
+            wiersz.map((s) => s.tekst).join(' '),
+      ].join('\n');
+      expect(tekst, contains('012345678'));
+    });
+
+    test('brak numeru to „brak", nie puste miejsce', () async {
+      await dodajPole(id: 'p1', nazwa: 'Za stodołą');
+      await dodajOprysk(id: 'z1', poleId: 'p1', kiedy: DateTime(2026, 5, 10));
+
+      final dokument = await zbuduj(rok: 2026);
+      expect(dokument.numerProducenta, isNull);
+      expect(EksportCsv.tekst(dokument), contains('Numer producenta;brak'));
     });
   });
 

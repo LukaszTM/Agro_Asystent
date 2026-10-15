@@ -15,12 +15,14 @@ import '../funkcje/nawozenie/plan_nawozenia.dart';
 import '../funkcje/odczyt/odczyt_etykiety.dart';
 import '../funkcje/terminy/kalendarz_terminow.dart';
 import '../funkcje/terminy/ustawienia_przypomnien.dart';
+import '../funkcje/ustawienia/gospodarstwa.dart';
 import '../funkcje/zwierzeta/stado.dart';
 import '../funkcje/zabiegi/rejestr_zabiegow.dart';
 import '../funkcje/zabiegi/repozytorium_zabiegow.dart';
 import '../funkcje/zabiegi/slownik_srodkow.dart';
 import '../rdzen/baza/baza_gospodarstwa.dart';
 import '../rdzen/baza/przygotowanie_slownikow.dart';
+import '../rdzen/dostep/dostep_funkcji.dart';
 import '../rdzen/reguly/zrodlo_regul.dart';
 import 'uslugi.dart';
 import 'czytnik_zdjecia_urzadzenia.dart';
@@ -37,6 +39,7 @@ Future<Uslugi> uruchom({
   DatabaseFactory? fabryka,
   String? katalogDanych,
   String urzadzenie = 'telefon',
+  DostepFunkcji dostep = const DostepFunkcji.darmowa(),
 }) async {
   final fabrykaBazy = fabryka ?? sqflite.databaseFactory;
   final katalog =
@@ -46,7 +49,12 @@ Future<Uslugi> uruchom({
     fabryka: fabrykaBazy,
     sciezka: sciezki.join(katalog, BazaGospodarstwa.nazwaPliku),
   );
-  final gospodarstwo = await _zapewnijGospodarstwo(baza, urzadzenie);
+  final gospodarstwa = RepozytoriumGospodarstw(baza: baza, dostep: dostep);
+  final gospodarstwo = await _zapewnijGospodarstwo(
+    gospodarstwa,
+    baza,
+    urzadzenie,
+  );
 
   final sciezkaSlownikow = await const PrzygotowanieSlownikow().przygotuj(
     katalog: katalog,
@@ -87,6 +95,7 @@ Future<Uslugi> uruchom({
     ),
     planNawozenia: PlanNawozenia(baza: baza, reguly: reguly),
     stado: stado,
+    gospodarstwa: gospodarstwa,
     kalendarz: KalendarzTerminow(
       reguly: reguly,
       rejestr: RejestrZabiegow(baza),
@@ -95,6 +104,7 @@ Future<Uslugi> uruchom({
     profil: ProfilZBazy(baza, stado: stado),
     przypomnienia: PrzypomnieniaUrzadzenia(),
     ustawieniaPrzypomnien: UstawieniaPrzypomnien(baza),
+    dostep: dostep,
   );
 }
 
@@ -111,22 +121,16 @@ Future<CzcionkiWydruku> wczytajCzcionkiWydruku() async {
   );
 }
 
-typedef _Gospodarstwo = ({String id, String nazwa});
-
-Future<_Gospodarstwo> _zapewnijGospodarstwo(
+/// Gospodarstwo, nad którym pracujemy: zapamiętany wybór rolnika, a przy
+/// pierwszym starcie — nowe gospodarstwo o nazwie do poprawienia.
+Future<Gospodarstwo> _zapewnijGospodarstwo(
+  RepozytoriumGospodarstw gospodarstwa,
   Database baza,
   String urzadzenie,
 ) async {
-  final istniejace = await baza.query(
-    'gospodarstwo',
-    where: 'usuniety = 0',
-    limit: 1,
-  );
-  if (istniejace.isNotEmpty) {
-    return (
-      id: istniejace.first['id']! as String,
-      nazwa: (istniejace.first['nazwa'] as String?) ?? 'Moje gospodarstwo',
-    );
+  final wybrane = await gospodarstwa.aktywne();
+  if (wybrane != null) {
+    return wybrane;
   }
 
   final czas = DateTime.now().toIso8601String();
@@ -139,5 +143,6 @@ Future<_Gospodarstwo> _zapewnijGospodarstwo(
     'zmieniono': czas,
     'urzadzenie': urzadzenie,
   });
-  return (id: id, nazwa: nazwa);
+  await gospodarstwa.ustawAktywne(id);
+  return const Gospodarstwo(id: id, nazwa: nazwa);
 }

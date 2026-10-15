@@ -37,9 +37,19 @@ class _EkranDokumentyState extends State<EkranDokumenty> {
   }
 
   void _odswiez() {
-    _dokument = widget.uslugi.dokumenty.zbuduj(
+    _dokument = _zbuduj();
+  }
+
+  /// Numer producenta bierzemy z danych gospodarstwa — stoi w nagłówku
+  /// wydruku i eksportu, a gdy rolnik go nie podał, piszemy „brak".
+  Future<DokumentEwidencji?> _zbuduj() async {
+    final gospodarstwo = await widget.uslugi.gospodarstwa.jedno(
+      widget.uslugi.gospodarstwoId,
+    );
+    return widget.uslugi.dokumenty.zbuduj(
       gospodarstwoId: widget.uslugi.gospodarstwoId,
       gospodarstwo: widget.uslugi.nazwaGospodarstwa,
+      numerProducenta: gospodarstwo?.numerProducenta,
       rodzaj: _rodzaj,
       rok: _rok,
     );

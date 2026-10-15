@@ -17,6 +17,7 @@ import 'package:agro_asystent/funkcje/odczyt/odczyt_etykiety.dart';
 import 'package:agro_asystent/funkcje/terminy/kalendarz_terminow.dart';
 import 'package:agro_asystent/funkcje/terminy/przypomnienia.dart';
 import 'package:agro_asystent/funkcje/terminy/ustawienia_przypomnien.dart';
+import 'package:agro_asystent/funkcje/ustawienia/gospodarstwa.dart';
 import 'package:agro_asystent/funkcje/zabiegi/rejestr_zabiegow.dart';
 import 'package:agro_asystent/funkcje/zabiegi/repozytorium_zabiegow.dart';
 import 'package:agro_asystent/funkcje/zabiegi/slownik_srodkow.dart';
@@ -103,6 +104,7 @@ void main() {
     ),
     planNawozenia: PlanNawozenia(baza: baza, reguly: reguly),
     stado: RepozytoriumStada(baza: baza, reguly: reguly),
+    gospodarstwa: RepozytoriumGospodarstw(baza: baza),
     kalendarz: KalendarzTerminow(
       reguly: reguly,
       rejestr: RejestrZabiegow(baza),
