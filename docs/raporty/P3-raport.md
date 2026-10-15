@@ -91,7 +91,49 @@ fragmenty zdań („Etykieta środka ochrony roślin ATRIUM -X" jako uprawa).
 Po poprawce różnych upraw w karencjach jest 112 zamiast 163, a 11 pozycji
 trafiło do ręcznego sprawdzenia, zamiast udawać dane.
 
-## Kody EPPO — zablokowane
+## Kody EPPO — odblokowane 15.10.2026
+
+Użytkownik pobrał z EPPO Global Database bazę `eppocodes_all.sqlite` (48 MB)
+i przekazał ją do pracy. Powstał `tools/p3_slownik_upraw/eppo.py`, który wiąże
+nazwy upraw z kodami **wyłącznie przez polskie nazwy zapisane w tej bazie** —
+żadnego kodu nie dopisujemy z pamięci.
+
+| | |
+| --- | --- |
+| Polskich nazw roślin w bazie EPPO | 4 444 |
+| Nazw upraw z rejestru MRiRW | 1 052 |
+| **Nazwa polska zgodna co do znaku** | **169 (16,1%)** |
+| Nazwa EPPO z dopowiedzeniem („jabłoń" → „jabłoń domowa") — do potwierdzenia | 32 (3,0%) |
+| Kilku kandydatów — do wyboru | 112 (10,6%) |
+| Brak polskiej nazwy w EPPO | 739 (70,2%) |
+
+Licząc wagą użycia (ile razy uprawa występuje w rejestrze zastosowań), gotowy
+kod ma **22,5% zastosowań**.
+
+### Dlaczego tak mało
+
+Baza EPPO **nie zawiera polskich nazw dla najważniejszych polskich upraw**.
+Pszenica zwyczajna (TRZAX) nie ma w niej żadnej nazwy polskiej — jest tylko
+łacińska. Do tego rozróżnienia „ozima/jara" są polską praktyką agrotechniczną,
+a nie odrębnymi gatunkami, więc EPPO ich nie zna.
+
+Najważniejsze uprawy czekające na decyzję (według liczby zastosowań w rejestrze):
+pszenica ozima (1 515), rzepak ozimy (1 165), pszenżyto ozime (948),
+jęczmień ozimy (819), jęczmień jary (807), pszenica jara (698).
+
+### Co z tym zrobić
+
+`dane/wynik/uprawy_eppo_do_decyzji.csv` jest ułożony **od upraw najczęściej
+występujących w rejestrze** i ma kolumny: liczba zastosowań, propozycja,
+kandydaci oraz „inne gatunki tego rodzaju" (sam trop, nie propozycja — dla
+„pszenica ozima" pokazuje np. „pszenica płaskurka=TRZMO", czyli inny gatunek).
+Rozstrzygnięcie pierwszych kilkudziesięciu pozycji przez doradcę pokryje
+większość realnych zastosowań.
+
+Kodów dla tych upraw **nie wpiszę sam**: błędny kod EPPO to błąd w dokumencie
+urzędowym, który od 2027 r. ma być czytany maszynowo.
+
+## Kody EPPO — stan przed 15.10.2026 (nieaktualne)
 
 Kodów **nie ma w żadnym dostępnym źródle**:
 

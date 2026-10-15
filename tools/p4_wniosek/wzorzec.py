@@ -1,17 +1,19 @@
 """Wytwarza zanonimizowany wzorzec wniosku o płatności (zadanie P4).
 
 Prawdziwy wniosek z eWniosekPlus zawiera dane osobowe i **nie może trafić do
-repozytorium** (plan, pkt 11). Do testów czytnika służy ten wzorzec: układ
-tabel X i XI odwzorowany według opisu z planu (pkt 6.2), ale wszystkie dane
-są zmyślone — nazwiska, numery działek i powierzchnie nie należą do nikogo.
+repozytorium** (plan, pkt 11). Wzorzec odwzorowuje układ sprawdzony na
+prawdziwym wniosku za 2026 r., ale wszystkie dane są zmyślone.
 
-Wzorzec celowo odtwarza pułapki prawdziwego wniosku:
+Odwzorowane cechy prawdziwego pliku:
 
-- nazwa uprawy i identyfikator działki łamią się na kilka wierszy,
-- jedna działka rolna leży na kilku działkach ewidencyjnych
-  (kolejne wiersze bez oznaczenia),
-- tabela przechodzi przez strony z powtórzonym nagłówkiem,
-- podsumowanie powierzchni na końcu.
+- strona pozioma A4, nagłówki tabel rozbite na kilka wierszy,
+- wiersz z numerami kolumn pod nagłówkiem (w tabeli X z kropkami, w XI bez),
+- wartości wyśrodkowane w kolumnach tabeli X,
+- identyfikator działki referencyjnej łamany na dwa wiersze,
+- nazwa uprawy łamana na dwa wiersze,
+- kilka działek ewidencyjnych pod jedną działką rolną (wiersze bez oznaczenia),
+- stopka na każdej stronie,
+- brak podsumowania powierzchni (wniosek go nie zawiera).
 """
 
 from __future__ import annotations
@@ -20,21 +22,34 @@ import argparse
 from dataclasses import dataclass
 from pathlib import Path
 
-from reportlab.lib.pagesizes import A4
+from reportlab.lib.pagesizes import A4, landscape
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfgen import canvas as rl_canvas
 
-SZEROKOSC, WYSOKOSC = A4
-MARGINES = 36
-WIERSZ = 13
+SZEROKOSC, WYSOKOSC = landscape(A4)
+MARGINES = 18
+WIERSZ = 11
 
 KROJ = "DejaVuSans"
 PLIK_KROJU = "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
 
+#: Środki kolumn tabeli X — jak w prawdziwym wniosku.
+SRODKI_X = [22, 92, 203, 316, 415, 503, 590, 677, 778]
+NAGLOWKI_X = ["Lp.", "województwo", "powiat", "gmina", "nazwa obrębu",
+              "nr obrębu", "nr arkusza", "nr działki", "powierzchnia [ha]"]
+
+#: Lewe krawędzie wartości w tabeli XI oraz środki kolumn numeracji.
+X_OZNACZENIE, X_UPRAWA, X_HA, X_AR = 36, 105, 171, 205
+X_IDENTYFIKATOR, X_CZESC_HA, X_CZESC_AR, X_PLATNOSCI = 236, 328, 362, 443
+SRODKI_XI = [37, 112, 190, 269, 347, 465, 587, 667, 748, 809]
+
+STOPKA = "000000000-PLA-26-0001 Status wniosku: Roboczy"
+
 
 @dataclass(frozen=True)
 class DzialkaEwidencyjna:
+    lp: int
     wojewodztwo: str
     powiat: str
     gmina: str
@@ -46,8 +61,14 @@ class DzialkaEwidencyjna:
 
     @property
     def identyfikator(self) -> str:
-        arkusz = f"AR_{self.arkusz}." if self.arkusz else ""
-        return f"{self.nr_obrebu}.{arkusz}{self.nr_dzialki}"
+        return f"140100_2.{self.nr_obrebu}.{self.nr_dzialki}"
+
+
+@dataclass(frozen=True)
+class Czesc:
+    identyfikator: str
+    ha: int
+    ar: int
 
 
 @dataclass(frozen=True)
@@ -56,64 +77,66 @@ class DzialkaRolna:
     uprawa: str
     ha: int
     ar: int
-    identyfikatory: tuple[str, ...]
+    czesci: tuple[Czesc, ...]
     platnosci: str
 
 
-def przykladowe_dzialki() -> tuple[list[DzialkaEwidencyjna], list[DzialkaRolna]]:
-    """Dane zmyślone, dobrane tak, by liczby zgadzały się z planem:
-    20 działek ewidencyjnych, 34 działki rolne, razem 28,91 ha."""
-    gminy = [("MAZOWIECKIE", "siedlecki", "Mokobody"), ("MAZOWIECKIE", "siedlecki", "Suchożebry")]
-    obreby = ["Kolonia Wschodnia", "Zawady Dolne", "Pole za Lasem", "Nowa Wieś"]
-
-    ewidencyjne: list[DzialkaEwidencyjna] = []
-    for numer in range(20):
-        woj, pow, gm = gminy[numer % 2]
-        ewidencyjne.append(
-            DzialkaEwidencyjna(
-                wojewodztwo=woj,
-                powiat=pow,
-                gmina=gm,
-                obreb=obreby[numer % 4],
-                nr_obrebu=f"140100_2.{(numer % 4) + 1:04d}",
-                arkusz=str((numer % 3) + 1) if numer % 2 == 0 else "",
-                nr_dzialki=f"{100 + numer * 7}/{(numer % 5) + 1}",
-                powierzchnia_ha=round(0.84 + (numer % 9) * 0.21, 2),
-            )
+def przykladowe_dane() -> tuple[list[DzialkaEwidencyjna], list[DzialkaRolna]]:
+    """Dane zmyślone, liczbowo zgodne z opisem z planu:
+    20 działek ewidencyjnych, 34 działki rolne, 28,91 ha."""
+    obreby = ["PRZYKŁADOWO", "TESTOWA WOLA", "POLE GÓRNE", "ZAGRODY"]
+    ewidencyjne = [
+        DzialkaEwidencyjna(
+            lp=numer + 1,
+            wojewodztwo="testowe",
+            powiat="testowy",
+            gmina="Nowa Testowa",
+            obreb=obreby[numer % 4],
+            nr_obrebu=f"{(numer % 4) + 1:04d}",
+            arkusz="",
+            nr_dzialki=f"{100 + numer * 7}" + ("/2" if numer % 3 == 0 else ""),
+            powierzchnia_ha=round(0.9 + (numer % 9) * 0.23, 2),
         )
-
-    uprawy = [
-        "pszenica ozima",
-        "kukurydza na ziarno",
-        "rzepak ozimy",
-        "jęczmień jary",
-        "owies zwyczajny",
-        "mieszanka zbożowo-strączkowa na nasiona z przeznaczeniem na paszę",
-        "łąki trwałe",
-        "ziemniak",
+        for numer in range(20)
     ]
-    platnosci = ["PB, ONW", "PB", "PB, ONW, E_MPW", "PB, E_MPW"]
 
+    uprawy = ["TUZ", "pszenica zwyczajna ozima", "kukurydza na ziarno",
+              "owies zwyczajny", "jęczmień ozimy", "Sad", "ziemniak",
+              "trawy wieloletnie na gruntach ornych"]
+    platnosci = ["ONW, PWD", "ONW, PWD, UPP", "PWD"]
     oznaczenia = [chr(65 + i) for i in range(26)] + [f"A{chr(65 + i)}" for i in range(8)]
+
     rolne: list[DzialkaRolna] = []
-    pozostalo_ar = 2891  # 28,91 ha w arach
+    pozostalo_ar = 2891
     for numer, oznaczenie in enumerate(oznaczenia):
         ostatnia = numer == len(oznaczenia) - 1
-        ar_razem = pozostalo_ar if ostatnia else min(pozostalo_ar - (len(oznaczenia) - numer - 1), 60 + numer * 3)
-        pozostalo_ar -= ar_razem
-        # Co siódma działka rolna leży na dwóch działkach ewidencyjnych.
-        ile_ewid = 2 if numer % 7 == 3 else 1
-        identyfikatory = tuple(
-            ewidencyjne[(numer + przesuniecie) % len(ewidencyjne)].identyfikator
-            for przesuniecie in range(ile_ewid)
+        ar_razem = (
+            pozostalo_ar
+            if ostatnia
+            else min(pozostalo_ar - (len(oznaczenia) - numer - 1), 60 + numer * 3)
         )
+        pozostalo_ar -= ar_razem
+        # Co siódma działka rolna leży na trzech działkach ewidencyjnych.
+        ile_czesci = 3 if numer % 7 == 3 else 1
+        czesci: list[Czesc] = []
+        zostalo = ar_razem
+        for kolejna in range(ile_czesci):
+            udzial = zostalo if kolejna == ile_czesci - 1 else zostalo // ile_czesci
+            zostalo -= udzial
+            czesci.append(
+                Czesc(
+                    identyfikator=ewidencyjne[(numer + kolejna) % 20].identyfikator,
+                    ha=udzial // 100,
+                    ar=udzial % 100,
+                )
+            )
         rolne.append(
             DzialkaRolna(
                 oznaczenie=oznaczenie,
                 uprawa=uprawy[numer % len(uprawy)],
                 ha=ar_razem // 100,
                 ar=ar_razem % 100,
-                identyfikatory=identyfikatory,
+                czesci=tuple(czesci),
                 platnosci=platnosci[numer % len(platnosci)],
             )
         )
@@ -121,82 +144,77 @@ def przykladowe_dzialki() -> tuple[list[DzialkaEwidencyjna], list[DzialkaRolna]]
 
 
 class Rysownik:
-    """Prosty rysownik tekstu z łamaniem kolumn, naśladujący wygląd wniosku."""
-
     def __init__(self, plik: Path) -> None:
         pdfmetrics.registerFont(TTFont(KROJ, PLIK_KROJU))
-        self.canvas = rl_canvas.Canvas(str(plik), pagesize=A4)
+        self.canvas = rl_canvas.Canvas(str(plik), pagesize=landscape(A4))
         self.y = WYSOKOSC - MARGINES
         self.strona = 1
+        self.stron_razem = 9
 
-    def naglowek_strony(self) -> None:
-        self.canvas.setFont(KROJ, 7)
-        self.canvas.drawString(MARGINES, WYSOKOSC - 20, "WZORZEC TESTOWY — DANE ZMYŚLONE, NIE DOTYCZĄ ŻADNEGO GOSPODARSTWA")
-        self.canvas.drawRightString(SZEROKOSC - MARGINES, WYSOKOSC - 20, f"strona {self.strona}")
+    def stopka(self) -> None:
+        self.canvas.setFont(KROJ, 6)
+        self.canvas.drawString(5, 6, f"{STOPKA} {self.strona}/{self.stron_razem}")
+        self.canvas.setFont(KROJ, 6)
+        self.canvas.drawRightString(
+            SZEROKOSC - 5, 6, "WZORZEC TESTOWY — DANE ZMYŚLONE"
+        )
 
     def nowa_strona(self) -> None:
+        self.stopka()
         self.canvas.showPage()
         self.strona += 1
         self.y = WYSOKOSC - MARGINES
-        self.naglowek_strony()
 
-    def miejsce(self, wierszy: int = 1) -> None:
-        if self.y - wierszy * WIERSZ < MARGINES + 40:
+    def miejsce(self, wierszy: int = 1) -> bool:
+        if self.y - wierszy * WIERSZ < MARGINES + 20:
             self.nowa_strona()
+            return True
+        return False
 
-    def tekst(self, kolumny: list[tuple[float, str]], rozmiar: int = 7, pogrubienie: bool = False) -> None:
+    def wiersz(self, kolumny: list[tuple[float, str]], rozmiar: float = 7,
+               srodkiem: bool = False) -> None:
         self.miejsce()
         self.canvas.setFont(KROJ, rozmiar)
         for x, wartosc in kolumny:
-            self.canvas.drawString(MARGINES + x, self.y, wartosc)
+            if srodkiem:
+                self.canvas.drawCentredString(x, self.y, wartosc)
+            else:
+                self.canvas.drawString(x, self.y, wartosc)
         self.y -= WIERSZ
 
     def tytul(self, tekst: str) -> None:
         self.miejsce(3)
-        self.y -= WIERSZ
-        self.canvas.setFont(KROJ, 10)
-        self.canvas.drawString(MARGINES, self.y, tekst)
-        self.y -= WIERSZ * 1.5
+        self.canvas.setFont(KROJ, 9)
+        self.canvas.drawString(14, self.y, tekst)
+        self.y -= WIERSZ * 1.6
 
     def zapisz(self) -> None:
+        self.stopka()
         self.canvas.save()
 
 
-KOLUMNY_X = [0, 75, 130, 190, 290, 360, 412, 478]
-NAGLOWEK_X = ["Województwo", "Powiat", "Gmina", "Nazwa obrębu", "Nr obrębu", "Nr arkusza", "Nr działki", "Powierzchnia [ha]"]
-
-KOLUMNY_XI = [0, 48, 268, 294, 325, 452]
-NAGLOWEK_XI = ["Oznaczenie", "Uprawa", "ha", "a", "Identyfikator działki", "Płatności"]
-
-
-def _lamanie(tekst: str, ile_znakow: int) -> list[str]:
-    """Dzieli tekst na wiersze — tak jak robi to generator wniosku."""
-    slowa = tekst.split()
-    wiersze: list[str] = [""]
-    for slowo in slowa:
-        if len(wiersze[-1]) + len(slowo) + 1 > ile_znakow and wiersze[-1]:
-            wiersze.append(slowo)
-        else:
-            wiersze[-1] = f"{wiersze[-1]} {slowo}".strip()
-    return wiersze
-
-
 def zbuduj(plik: Path) -> tuple[list[DzialkaEwidencyjna], list[DzialkaRolna]]:
-    ewidencyjne, rolne = przykladowe_dzialki()
-    rysownik = Rysownik(plik)
-    rysownik.naglowek_strony()
-    rysownik.tytul("WNIOSEK O PRZYZNANIE PŁATNOŚCI NA ROK 2026")
-    rysownik.tekst([(0, "Numer identyfikacyjny producenta: 000000000")])
-    rysownik.tekst([(0, "Nazwisko i imię: JAN PRZYKŁADOWY (dane zmyślone)")])
+    ewidencyjne, rolne = przykladowe_dane()
+    r = Rysownik(plik)
 
-    rysownik.tytul("X. OŚWIADCZENIE O DZIAŁKACH REFERENCYJNYCH")
-    rysownik.tekst(list(zip(KOLUMNY_X, NAGLOWEK_X)), rozmiar=7)
+    r.tytul("WNIOSEK O PRZYZNANIE PŁATNOŚCI NA ROK 2026")
+    r.wiersz([(14, "Numer identyfikacyjny: 000000000")])
+    r.wiersz([(14, "Nazwisko i imię: dane zmyślone, nie dotyczą żadnej osoby")])
+
+    # ── tabela X ──
+    r.tytul("X. OŚWIADCZENIE O DZIAŁKACH REFERENCYJNYCH")
+    r.wiersz([(SRODKI_X[1], "Położenie działki referencyjnej:"),
+              (SRODKI_X[5], "Dane według ewidencji gruntów i budynków:")], rozmiar=6)
+    r.wiersz(list(zip(SRODKI_X, NAGLOWKI_X)), rozmiar=6, srodkiem=True)
+    r.wiersz([(x, f"{numer}.") for numer, x in enumerate(SRODKI_X, 1)],
+             rozmiar=6, srodkiem=True)
     for dzialka in ewidencyjne:
-        rysownik.tekst(
+        r.wiersz(
             list(
                 zip(
-                    KOLUMNY_X,
+                    SRODKI_X,
                     [
+                        str(dzialka.lp),
                         dzialka.wojewodztwo,
                         dzialka.powiat,
                         dzialka.gmina,
@@ -204,40 +222,66 @@ def zbuduj(plik: Path) -> tuple[list[DzialkaEwidencyjna], list[DzialkaRolna]]:
                         dzialka.nr_obrebu,
                         dzialka.arkusz,
                         dzialka.nr_dzialki,
-                        f"{dzialka.powierzchnia_ha:.2f}".replace(".", ","),
+                        f"{dzialka.powierzchnia_ha:.2f}",
                     ],
                 )
-            )
+            ),
+            srodkiem=True,
         )
-    suma_ewid = sum(d.powierzchnia_ha for d in ewidencyjne)
-    rysownik.tekst([(0, "Razem działek referencyjnych:"), (412, str(len(ewidencyjne))),
-                    (478, f"{suma_ewid:.2f}".replace(".", ","))])
 
-    rysownik.tytul("XI. OŚWIADCZENIE O ZADEKLAROWANYCH POWIERZCHNIACH")
-    rysownik.tekst(list(zip(KOLUMNY_XI, NAGLOWEK_XI)), rozmiar=7)
+    # ── tabela XI ──
+    r.tytul("XI. OŚWIADCZENIE O ZADEKLAROWANYCH POWIERZCHNIACH")
+    r.wiersz([(X_OZNACZENIE, "Oznaczenie"), (X_UPRAWA, "Uprawa"),
+              (X_HA, "Wielkość zadeklarowanej"), (X_IDENTYFIKATOR, "Nr działki"),
+              (X_CZESC_HA, "Wielkość zadeklarowanej"),
+              (X_PLATNOSCI, "Interwencje, płatności")], rozmiar=6)
+    r.wiersz([(X_OZNACZENIE, "działki"), (X_HA, "powierzchni"),
+              (X_IDENTYFIKATOR, "referencyjnej"),
+              (X_CZESC_HA, "powierzchni w granicach")], rozmiar=6)
+    r.wiersz([(X_HA, "ha"), (X_AR, "a"), (X_CZESC_HA, "ha"), (X_CZESC_AR, "a")],
+             rozmiar=6)
+    numeracja = [(x, str(numer)) for numer, x in enumerate(SRODKI_XI, 1)]
+    r.wiersz(numeracja, rozmiar=6, srodkiem=True)
+
+    def numeracja_po_zmianie_strony() -> None:
+        if r.y > WYSOKOSC - MARGINES - WIERSZ * 2:  # właśnie zaczęła się strona
+            r.wiersz(numeracja, rozmiar=6, srodkiem=True)
+
     for dzialka in rolne:
-        wiersze_uprawy = _lamanie(dzialka.uprawa, 46)
-        pierwszy = [
-            (KOLUMNY_XI[0], dzialka.oznaczenie),
-            (KOLUMNY_XI[1], wiersze_uprawy[0]),
-            (KOLUMNY_XI[2], str(dzialka.ha)),
-            (KOLUMNY_XI[3], f"{dzialka.ar:02d}"),
-            (KOLUMNY_XI[4], dzialka.identyfikatory[0]),
-            (KOLUMNY_XI[5], dzialka.platnosci),
-        ]
-        rysownik.tekst(pierwszy)
-        # Dalsze wiersze nazwy uprawy — bez oznaczenia i bez powierzchni.
-        for dalszy in wiersze_uprawy[1:]:
-            rysownik.tekst([(KOLUMNY_XI[1], dalszy)])
-        # Kolejne działki ewidencyjne tej samej działki rolnej.
-        for identyfikator in dzialka.identyfikatory[1:]:
-            rysownik.tekst([(KOLUMNY_XI[4], identyfikator)])
+        czlony = dzialka.uprawa.split()
+        pierwszy_czlon = czlony[0]
+        reszta_nazwy = " ".join(czlony[1:])
+        glowa, _, ogon = dzialka.czesci[0].identyfikator.rpartition(".")
 
-    suma_ar = sum(d.ha * 100 + d.ar for d in rolne)
-    rysownik.tekst([(0, "Razem działek rolnych:"), (KOLUMNY_XI[2], str(len(rolne)))])
-    rysownik.tekst([(0, "Razem powierzchnia:"),
-                    (KOLUMNY_XI[2], f"{suma_ar // 100},{suma_ar % 100:02d} ha")])
-    rysownik.zapisz()
+        numeracja_po_zmianie_strony()
+        r.wiersz([
+            (X_OZNACZENIE, dzialka.oznaczenie),
+            (X_UPRAWA, pierwszy_czlon),
+            (X_HA, str(dzialka.ha)),
+            (X_AR, f"{dzialka.ar:02d}"),
+            (X_IDENTYFIKATOR, glowa),
+            (X_CZESC_HA, str(dzialka.czesci[0].ha)),
+            (X_CZESC_AR, f"{dzialka.czesci[0].ar:02d}"),
+            (X_PLATNOSCI, dzialka.platnosci),
+        ])
+        # Ogon identyfikatora (i ewentualnie reszta nazwy uprawy) w następnym wierszu.
+        dalszy: list[tuple[float, str]] = [(X_IDENTYFIKATOR + 25, f".{ogon}")]
+        if reszta_nazwy:
+            dalszy.insert(0, (X_UPRAWA - 14, reszta_nazwy))
+        r.wiersz(dalszy)
+
+        for czesc in dzialka.czesci[1:]:
+            glowa, _, ogon = czesc.identyfikator.rpartition(".")
+            numeracja_po_zmianie_strony()
+            r.wiersz([
+                (X_IDENTYFIKATOR, glowa),
+                (X_CZESC_HA, str(czesc.ha)),
+                (X_CZESC_AR, f"{czesc.ar:02d}"),
+                (X_PLATNOSCI, dzialka.platnosci),
+            ])
+            r.wiersz([(X_IDENTYFIKATOR + 25, f".{ogon}")])
+
+    r.zapisz()
     return ewidencyjne, rolne
 
 

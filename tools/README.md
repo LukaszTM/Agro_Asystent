@@ -22,7 +22,7 @@ a pliki źródłowe trzyma w `dane/pobrane/` (oba katalogi są poza repozytorium
 | --- | --- | --- |
 | `p1_zastosowania/` | XLSX zastosowań środków → SQLite (**gotowe**) | MRiRW + dane.gov.pl (CC0) — patrz ADR-0002 |
 | `p2_etykiety/` | etykiety PDF → karencja, prewencja, liczba zabiegów (**próba A–B gotowa**) | gov.pl, etykiety środków |
-| `p3_slownik_upraw/` | uprawy z wniosku ↔ uprawy z rejestru ↔ kod EPPO (**częściowo**) | pliki z P1 i P2 |
+| `p3_slownik_upraw/` | uprawy z wniosku ↔ uprawy z rejestru ↔ kod EPPO (**gotowe**) | pliki z P1, P2, P4 i baza EPPO |
 | `p4_wniosek_pdf/` | tabele X i XI wniosku z eWniosekPlus | PDF wniosku (lokalnie, nie w repozytorium) |
 | `p5_uldk/` | granice działek po identyfikatorze TERYT | uldk.gugik.gov.pl |
 

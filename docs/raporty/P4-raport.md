@@ -91,22 +91,83 @@ przewidywał (pkt 6.3):
 Czyli ta część słownika upraw działa — potrzebuje tylko prawdziwej listy nazw
 używanych przez ARiMR.
 
-## Czego ten raport **nie** dowodzi
+## Sprawdzenie na prawdziwym wniosku (15.10.2026)
 
-Czytnik sprawdzono **wyłącznie na wzorcu, który sam wytworzyłem** według opisu
-z planu. To dowodzi, że radzi sobie z opisanymi pułapkami — nie dowodzi, że
-poradzi sobie z prawdziwym plikiem z eWniosekPlus. Prawdziwy wniosek może mieć
-inne nazwy kolumn, dodatkowe sekcje między tabelami albo inne łamanie wierszy.
+Użytkownik udostępnił swój wniosek za 2026 r. (31 stron, plik tekstowy).
+**Plik został użyty wyłącznie w katalogu roboczym poza repozytorium
+(`dane/prywatne/`, wykluczony w `.gitignore`) i nigdzie nie został zapisany
+na stałe.** Pierwsze uruchomienie czytnika odczytało **zero wierszy** — mój
+wzorzec, zbudowany z opisu w planie, różnił się od rzeczywistości w czterech
+miejscach:
 
-**Potrzebny jest jeden prawdziwy wniosek do sprawdzenia** — wystarczy
-jednorazowo, na komputerze, bez wgrywania do repozytorium:
+| Co zakładałem | Jak jest naprawdę |
+| --- | --- |
+| Strona pionowa, nagłówek tabeli w jednym wierszu | Strona **pozioma**, nagłówek rozbity na kilkanaście wierszy |
+| Kolumny rozpoznawane po nazwach w nagłówku | Pod nagłówkiem jest **wiersz z numerami kolumn**, a wartości są wyśrodkowane |
+| Identyfikator działki w jednym kawałku | Łamany na dwa wiersze: `140100_2.0001` + `.123/4` |
+| Podsumowanie powierzchni na końcu tabeli | **Wniosek nie zawiera żadnego podsumowania** |
 
-```bash
-python3 tools/p4_wniosek/czytnik.py /ścieżka/do/wniosku.pdf
+Po przebudowie czytnika wynik na prawdziwym pliku:
+
+```
+Działki ewidencyjne: 20  (33.04 ha)
+Działki rolne:       34
+Powierzchnia zadeklarowana: 28.91 ha
+Różnych upraw:       10
+Kontrola: zgodna
 ```
 
-Wynik (same liczby, bez danych osobowych) wystarczy, żeby ocenić, co poprawić.
-Plan przewiduje też próbę na wniosku z ekoschematami i długimi tabelami.
+Liczby zgadzają się co do jednego z opisem w planie (pkt 6.2): 20 działek
+ewidencyjnych, 34 działki rolne, 28,91 ha.
+
+### Trzy błędy, które wyszły dopiero na prawdziwym pliku
+
+1. **Działka rolna leżąca na trzech działkach ewidencyjnych.** Wiersze kolejnych
+   części zaczynają się od identyfikatora, bez oznaczenia i bez powierzchni
+   zadeklarowanej. Czytnik je gubił, a kody płatności z tych wierszy wsiąkały
+   w nazwę uprawy („TUZ ONW, PWD ONW").
+2. **Stopka strony** („…-PLA-26-0001 Status wniosku: Roboczy 5/9") dopisywała się
+   do nazwy uprawy ostatniej działki na stronie. Teraz pas przy dolnej krawędzi
+   strony jest odcinany.
+3. **Brak podsumowania powierzchni** — kontrola, na której opierał się cały
+   czytnik, nie miała się o co oprzeć.
+
+### Kontrole wewnętrzne zamiast podsumowania
+
+Skoro wniosek nie podaje sumy, czytnik sprawdza spójność samych danych:
+
+- suma powierzchni części działki rolnej musi równać się jej powierzchni
+  zadeklarowanej (łapie zgubiony wiersz części),
+- każdy identyfikator z tabeli XI musi występować w tabeli X,
+- oznaczenia działek rolnych nie mogą się powtarzać.
+
+Na prawdziwym wniosku wszystkie trzy przechodzą. To one wyłapały błąd nr 1 —
+zanim go poprawiłem, czytnik zgłaszał „działka AB: powierzchnia 0,51 ha,
+a części dają 0,05 ha".
+
+### Wzorzec przebudowany według rzeczywistości
+
+`test/dane/wzorzec_wniosku.pdf` powstaje teraz według prawdziwego układu
+(strona pozioma, wiersz numeracji kolumn, wyśrodkowane wartości, łamane
+identyfikatory, wiersze części, stopka). Dane w nim pozostają zmyślone.
+Czytnik daje na nim te same liczby co na prawdziwym pliku, a 21 testów pilnuje
+każdej z wymienionych pułapek.
+
+### Nazwy upraw z prawdziwego wniosku
+
+Dziesięć nazw, z czego trzy trafiają dokładnie w rejestr (jęczmień ozimy,
+pszenżyto ozime, ziemniak), cztery dostają propozycję do zatwierdzenia
+(„pszenica zwyczajna ozima" → pszenica, „kukurydza na ziarno" → kukurydza,
+„owies zwyczajny" → owies, „trawy wieloletnie na gruntach ornych" → trawy),
+a trzy nie mają odpowiednika, bo to kategorie ARiMR, a nie uprawy w rozumieniu
+rejestru: **TUZ**, **Sad**, **Uprawa mieszana**. Te trzy wymagają decyzji
+w słowniku upraw (P3) — plan to przewidywał („łąki, pastwiska" wobec „TUZ").
+
+### Czego nadal nie wiemy
+
+Sprawdzenie objęło **jeden wniosek, w stanie roboczym**. Plan przewiduje jeszcze
+próbę na wniosku z ekoschematami i długimi tabelami — tam mogą dojść kolumny,
+których ten plik nie zawiera.
 
 ## Następny krok
 
