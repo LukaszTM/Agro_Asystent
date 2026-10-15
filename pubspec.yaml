@@ -38,3 +38,5 @@ flutter:
   assets:
     # Dane z wersją: progi, terminy i stawki z przepisów. Nigdy w kodzie Dart.
     - assets/dane/
+    # Logo aplikacji — źródło ikon i ekranu powitalnego.
+    - assets/logo/

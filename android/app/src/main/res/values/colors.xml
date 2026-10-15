@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Tło ikony aplikacji — biel karty z logo. -->
+    <color name="ic_launcher_background">#FFFFFF</color>
+    <!-- Tło ekranu powitalnego — jak tło aplikacji w wyglądzie prostym. -->
+    <color name="tlo_powitalne">#F4F6F0</color>
+</resources>
