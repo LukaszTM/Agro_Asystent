@@ -4,6 +4,9 @@ import '../funkcje/dzialki/klient_uldk.dart';
 import '../funkcje/dzialki/repozytorium_dzialek.dart';
 import '../funkcje/dzialki/repozytorium_pol.dart';
 import '../funkcje/dzialki/zrodlo_pliku.dart';
+import '../funkcje/nawozenie/ewidencja_nawozenia.dart';
+import '../funkcje/nawozenie/nawoz.dart';
+import '../funkcje/nawozenie/plan_nawozenia.dart';
 import '../funkcje/terminy/kalendarz_terminow.dart';
 import '../funkcje/terminy/przypomnienia.dart';
 import '../funkcje/terminy/ustawienia_przypomnien.dart';
@@ -30,6 +33,9 @@ class Uslugi {
     required this.importWniosku,
     required this.zrodloPliku,
     required this.dokumenty,
+    required this.nawozy,
+    required this.nawozenie,
+    required this.planNawozenia,
     required this.kalendarz,
     required this.profil,
     required this.przypomnienia,
@@ -64,6 +70,15 @@ class Uslugi {
 
   /// Podgląd, wydruk PDF i eksport CSV/XLSX — zawsze darmowe (plan, pkt 8).
   final UslugaDokumentow dokumenty;
+
+  /// Spis nawozów gospodarstwa.
+  final RepozytoriumNawozow nawozy;
+
+  /// Ewidencja nawożenia i limit azotu z nawozów naturalnych.
+  final EwidencjaNawozenia nawozenie;
+
+  /// Zestawienie azotu i sprawdzenie, czy przepis wymaga planu nawożenia.
+  final PlanNawozenia planNawozenia;
 
   /// Kalendarz obowiązków: terminy z przepisów i karencje z własnych zabiegów.
   final KalendarzTerminow kalendarz;

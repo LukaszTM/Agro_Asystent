@@ -9,6 +9,9 @@ import 'package:agro_asystent/funkcje/dzialki/import_wniosku.dart';
 import 'package:agro_asystent/funkcje/dzialki/repozytorium_dzialek.dart';
 import 'package:agro_asystent/funkcje/dzialki/repozytorium_pol.dart';
 import 'package:agro_asystent/funkcje/dzialki/zrodlo_pliku.dart';
+import 'package:agro_asystent/funkcje/nawozenie/ewidencja_nawozenia.dart';
+import 'package:agro_asystent/funkcje/nawozenie/nawoz.dart';
+import 'package:agro_asystent/funkcje/nawozenie/plan_nawozenia.dart';
 import 'package:agro_asystent/funkcje/terminy/kalendarz_terminow.dart';
 import 'package:agro_asystent/funkcje/terminy/przypomnienia.dart';
 import 'package:agro_asystent/funkcje/terminy/ustawienia_przypomnien.dart';
@@ -87,6 +90,13 @@ void main() {
       czcionki: _brakCzcionek,
       wyjscie: const _BrakWyjscia(),
     ),
+    nawozy: RepozytoriumNawozow(baza),
+    nawozenie: EwidencjaNawozenia(
+      baza: baza,
+      zabiegi: RepozytoriumZabiegow(baza),
+      reguly: reguly,
+    ),
+    planNawozenia: PlanNawozenia(baza: baza, reguly: reguly),
     kalendarz: KalendarzTerminow(
       reguly: reguly,
       rejestr: RejestrZabiegow(baza),

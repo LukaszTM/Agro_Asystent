@@ -5,6 +5,7 @@ import '../../../funkcje/zabiegi/dane_wpisu.dart';
 import '../../../rdzen/modele/zabieg.dart';
 import '../motyw.dart';
 import '../widgety/duzy_przycisk.dart';
+import '../nawozenie/ekran_wybor_nawozu.dart';
 import 'ekran_wybor_srodka.dart';
 
 /// Krok 2: co robimy na tym polu. Kafelki, jedna decyzja na ekranie.
@@ -32,6 +33,14 @@ class EkranRodzajZabiegu extends StatelessWidget {
       Navigator.of(context).push(
         MaterialPageRoute<void>(
           builder: (_) => EkranWyborSrodka(uslugi: uslugi, dane: dane),
+        ),
+      );
+      return;
+    }
+    if (rodzaj == RodzajZabiegu.nawozenie) {
+      Navigator.of(context).push(
+        MaterialPageRoute<void>(
+          builder: (_) => EkranWyborNawozu(uslugi: uslugi, dane: dane),
         ),
       );
       return;

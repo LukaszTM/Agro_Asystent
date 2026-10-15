@@ -4,6 +4,7 @@ import '../../app/uslugi.dart';
 import '../../funkcje/dzialki/repozytorium_pol.dart';
 import 'dzialki/ekran_dzialki.dart';
 import 'dzialki/ekran_import_wniosku.dart';
+import 'nawozenie/ekran_nawozenie.dart';
 import 'motyw.dart';
 import 'widgety/duzy_przycisk.dart';
 import 'widgety/wybor_liczby.dart';
@@ -97,6 +98,17 @@ class _EkranPolaState extends State<EkranPola> {
                 onTap: () => Navigator.of(context).push(
                   MaterialPageRoute<void>(
                     builder: (_) => EkranDzialki(uslugi: widget.uslugi),
+                  ),
+                ),
+              ),
+              const SizedBox(height: MotywProsty.odstep),
+              DuzyPrzycisk(
+                etykieta: 'Nawożenie',
+                opis: 'azot na polach i limit z przepisu',
+                ikona: Icons.compost_outlined,
+                onTap: () => Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (_) => EkranNawozenie(uslugi: widget.uslugi),
                   ),
                 ),
               ),

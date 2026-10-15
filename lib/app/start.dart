@@ -9,6 +9,9 @@ import '../funkcje/dokumenty/wydruk_pdf.dart';
 import '../funkcje/dzialki/import_wniosku.dart';
 import '../funkcje/dzialki/repozytorium_dzialek.dart';
 import '../funkcje/dzialki/repozytorium_pol.dart';
+import '../funkcje/nawozenie/ewidencja_nawozenia.dart';
+import '../funkcje/nawozenie/nawoz.dart';
+import '../funkcje/nawozenie/plan_nawozenia.dart';
 import '../funkcje/terminy/kalendarz_terminow.dart';
 import '../funkcje/terminy/ustawienia_przypomnien.dart';
 import '../funkcje/zabiegi/rejestr_zabiegow.dart';
@@ -70,6 +73,13 @@ Future<Uslugi> uruchom({
       czcionki: wczytajCzcionkiWydruku,
       wyjscie: const WyjscieDokumentuUrzadzenia(),
     ),
+    nawozy: RepozytoriumNawozow(baza),
+    nawozenie: EwidencjaNawozenia(
+      baza: baza,
+      zabiegi: RepozytoriumZabiegow(baza),
+      reguly: reguly,
+    ),
+    planNawozenia: PlanNawozenia(baza: baza, reguly: reguly),
     kalendarz: KalendarzTerminow(
       reguly: reguly,
       rejestr: RejestrZabiegow(baza),

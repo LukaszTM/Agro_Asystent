@@ -1,5 +1,6 @@
 import '../../rdzen/modele/zabieg.dart';
 import '../dzialki/repozytorium_pol.dart';
+import '../nawozenie/nawoz.dart';
 import 'slownik_srodkow.dart';
 
 /// Stan wpisywanego zabiegu, przenoszony między ekranami.
@@ -21,6 +22,12 @@ class DaneWpisu {
   final List<Pole> pola = [];
   RodzajZabiegu? rodzaj;
   DopuszczonySrodek? srodek;
+
+  /// Nawóz — przy wpisie nawożenia (krok 6 etapu 1).
+  Nawoz? nawoz;
+
+  JednostkaDawki jednostkaDawki = JednostkaDawki.kilogramyNaHektar;
+
   double? dawka;
   String? przyczyna;
 
@@ -34,7 +41,19 @@ class DaneWpisu {
   bool get gotowyDoZapisu =>
       pola.isNotEmpty &&
       rodzaj != null &&
-      (rodzaj != RodzajZabiegu.oprysk || srodek != null);
+      (rodzaj != RodzajZabiegu.oprysk || srodek != null) &&
+      (rodzaj != RodzajZabiegu.nawozenie || nawoz != null);
+
+  /// Ile azotu wniesie ta dawka na hektar — `null`, gdy nawóz nie ma znanej
+  /// zawartości azotu (wtedy niczego nie zgadujemy).
+  double? get azotKgNaHa {
+    final wybrany = nawoz;
+    final wartosc = dawka;
+    if (wybrany == null || wartosc == null) {
+      return null;
+    }
+    return wybrany.azotKgNaHa(wartosc, jednostkaDawki);
+  }
 
   /// Ile razem środka trzeba na wybrane pola — rolnik pyta o to przy nalewaniu.
   double? get iloscSrodkaRazem {
