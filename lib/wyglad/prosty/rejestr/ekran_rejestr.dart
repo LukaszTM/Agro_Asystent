@@ -4,6 +4,7 @@ import '../../../app/uslugi.dart';
 import '../../../funkcje/zabiegi/kompletnosc_ewidencji.dart';
 import '../../../funkcje/zabiegi/rejestr_zabiegow.dart';
 import '../../../rdzen/modele/zabieg.dart';
+import '../dokumenty/ekran_dokumenty.dart';
 import '../motyw.dart';
 import '../widgety/duzy_przycisk.dart';
 import 'ekran_wpis_rejestru.dart';
@@ -126,9 +127,25 @@ class _EkranRejestrState extends State<EkranRejestr> {
                       const SizedBox(height: MotywProsty.odstep),
                   itemBuilder: (context, numer) {
                     if (numer == 0) {
-                      return _Podsumowanie(
-                        wpisy: wpisy.length,
-                        niekompletne: niekompletne,
+                      return Column(
+                        children: [
+                          _Podsumowanie(
+                            wpisy: wpisy.length,
+                            niekompletne: niekompletne,
+                          ),
+                          const SizedBox(height: MotywProsty.odstep),
+                          DuzyPrzycisk(
+                            etykieta: 'Wydruk i eksport',
+                            opis: 'PDF, CSV i XLSX — zawsze bez opłat',
+                            ikona: Icons.print_outlined,
+                            onTap: () => Navigator.of(context).push(
+                              MaterialPageRoute<void>(
+                                builder: (_) =>
+                                    EkranDokumenty(uslugi: widget.uslugi),
+                              ),
+                            ),
+                          ),
+                        ],
                       );
                     }
                     return _WpisNaLiscie(

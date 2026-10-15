@@ -1,3 +1,4 @@
+import '../funkcje/dokumenty/usluga_dokumentow.dart';
 import '../funkcje/dzialki/import_wniosku.dart';
 import '../funkcje/dzialki/klient_uldk.dart';
 import '../funkcje/dzialki/repozytorium_dzialek.dart';
@@ -15,6 +16,7 @@ import '../rdzen/reguly/regula_prawna.dart';
 class Uslugi {
   const Uslugi({
     required this.gospodarstwoId,
+    required this.nazwaGospodarstwa,
     required this.urzadzenie,
     required this.pola,
     required this.dzialki,
@@ -24,11 +26,16 @@ class Uslugi {
     required this.reguly,
     required this.importWniosku,
     required this.zrodloPliku,
+    required this.dokumenty,
     this.uldk = const KlientUldk(),
     this.dostep = const DostepFunkcji.darmowa(),
   });
 
   final String gospodarstwoId;
+
+  /// Nazwa gospodarstwa — stoi na każdym wydruku i w eksporcie.
+  final String nazwaGospodarstwa;
+
   final String urzadzenie;
   final RepozytoriumPol pola;
   final RepozytoriumDzialek dzialki;
@@ -47,6 +54,9 @@ class Uslugi {
 
   /// Wybór pliku wniosku — w aplikacji okno systemowe, w testach plik z dysku.
   final ZrodloPliku zrodloPliku;
+
+  /// Podgląd, wydruk PDF i eksport CSV/XLSX — zawsze darmowe (plan, pkt 8).
+  final UslugaDokumentow dokumenty;
 
   /// Granice działek pobieramy tylko przy dodawaniu działki; potem wszystko
   /// działa bez internetu.

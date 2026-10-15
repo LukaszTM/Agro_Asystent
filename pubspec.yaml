@@ -25,6 +25,10 @@ dependencies:
   sqflite_common: ^2.5.14
   http: ^1.6.0
   file_selector: ^1.1.0
+  pdf: ^3.13.1
+  printing: ^5.15.1
+  share_plus: ^13.3.1
+  archive: ^4.5.2
 
 dev_dependencies:
   flutter_test:
@@ -42,3 +46,5 @@ flutter:
     - assets/dane/
     # Logo aplikacji — źródło ikon i ekranu powitalnego.
     - assets/logo/
+    # Czcionka wydruków (fragment DejaVu Sans, licencja w LICENCJA.txt).
+    - assets/czcionki/

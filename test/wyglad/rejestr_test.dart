@@ -1,6 +1,10 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:agro_asystent/app/uslugi.dart';
+import 'package:agro_asystent/funkcje/dokumenty/usluga_dokumentow.dart';
+import 'package:agro_asystent/funkcje/dokumenty/wydruk_pdf.dart';
+import 'package:agro_asystent/funkcje/dokumenty/wyjscie_dokumentu.dart';
 import 'package:agro_asystent/funkcje/dzialki/import_wniosku.dart';
 import 'package:agro_asystent/funkcje/dzialki/repozytorium_dzialek.dart';
 import 'package:agro_asystent/funkcje/dzialki/repozytorium_pol.dart';
@@ -125,6 +129,7 @@ void main() {
 
   Uslugi zbudujUslugi() => Uslugi(
     gospodarstwoId: 'g1',
+    nazwaGospodarstwa: 'Gospodarstwo próbne',
     urzadzenie: 'telefon',
     pola: RepozytoriumPol(baza),
     dzialki: RepozytoriumDzialek(baza),
@@ -134,6 +139,12 @@ void main() {
     reguly: reguly,
     importWniosku: ImportWniosku(baza: baza, srodki: SlownikSrodkow(slowniki)),
     zrodloPliku: const _BrakZrodlaPliku(),
+    dokumenty: UslugaDokumentow(
+      rejestr: RejestrZabiegow(baza),
+      reguly: reguly,
+      czcionki: _brakCzcionek,
+      wyjscie: const _BrakWyjscia(),
+    ),
   );
 
   /// Przewija ekran do podanego miejsca — ewidencja ma dwanaście pól, więc
@@ -305,4 +316,23 @@ class _BrakZrodlaPliku implements ZrodloPliku {
 
   @override
   Future<WybranyPlik?> wybierzPdf() async => null;
+}
+
+/// Te testy nie dotykają dokumentów — wydruk i wyjście nie są pytane.
+Future<CzcionkiWydruku> _brakCzcionek() async =>
+    throw UnimplementedError('czcionki wydruku nie są tu potrzebne');
+
+class _BrakWyjscia implements WyjscieDokumentu {
+  const _BrakWyjscia();
+
+  @override
+  Future<void> drukujPdf({required Uint8List dane, required String nazwa}) =>
+      throw UnimplementedError();
+
+  @override
+  Future<void> udostepnij({
+    required Uint8List dane,
+    required String nazwa,
+    required String typMime,
+  }) => throw UnimplementedError();
 }

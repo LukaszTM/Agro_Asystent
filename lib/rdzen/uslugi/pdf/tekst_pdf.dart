@@ -81,8 +81,14 @@ class _ZnakPdf {
 ///
 /// Nie rysujemy niczego — grafika, obrazy i kolory są pomijane.
 abstract final class OdczytTekstuPdf {
-  /// Przerwa między znakami, od której zaczyna się nowe słowo.
-  static const double przerwaMiedzySlowami = 3;
+  /// Przerwa między znakami, od której zaczyna się nowe słowo — ułamek
+  /// szerokości poprzedniego znaku.
+  ///
+  /// Miara względna, a nie w punktach, bo wydruki mają pismo od 6 do 14
+  /// punktów: stała przerwa albo sklejałaby słowa w drobnym piśmie, albo
+  /// rwała je w dużym. Niektóre programy w ogóle nie zapisują spacji —
+  /// zostawiają po nich wolne miejsce — i wtedy to jedyny ślad podziału.
+  static const double przerwaMiedzySlowami = 0.3;
 
   static List<StronaTekstuPdf> strony(Uint8List plik) {
     final dokument = DokumentPdf.zBajtow(plik);
@@ -290,6 +296,7 @@ abstract final class OdczytTekstuPdf {
       var tekst = '';
       var x0 = 0.0;
       var x1 = 0.0;
+      var x0Znaku = 0.0;
       var gora = 0.0;
 
       void zakoncz() {
@@ -307,12 +314,13 @@ abstract final class OdczytTekstuPdf {
         if (tekst.isEmpty) {
           x0 = znak.x0;
           gora = znak.gora;
-        } else if (znak.x0 - x1 > przerwaMiedzySlowami) {
+        } else if (znak.x0 - x1 > przerwaMiedzySlowami * (x1 - x0Znaku)) {
           zakoncz();
           x0 = znak.x0;
           gora = znak.gora;
         }
         tekst += znak.znak;
+        x0Znaku = znak.x0;
         x1 = znak.x1;
       }
       zakoncz();
