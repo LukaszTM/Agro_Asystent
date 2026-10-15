@@ -315,4 +315,13 @@ const List<Migracja> migracje = [
       ''',
     ],
   ),
+
+  // Zwierzę trzyma teraz identyfikator grupy ze słownika reguł, a nie tylko
+  // sam współczynnik: dzięki temu widać, do której grupy zostało przypisane,
+  // nawet gdy współczynniki w przepisie się zmienią.
+  Migracja(
+    wersja: 3,
+    opis: 'Grupa DJP przy zwierzęciu',
+    polecenia: ['ALTER TABLE zwierze ADD COLUMN grupa_djp TEXT'],
+  ),
 ];

@@ -2,6 +2,7 @@ import 'package:sqflite_common/sqlite_api.dart';
 
 import '../../rdzen/reguly/regula_prawna.dart';
 import '../zabiegi/rejestr_zabiegow.dart';
+import '../zwierzeta/stado.dart';
 
 /// Skąd wziął się termin.
 enum ZrodloTerminu {
@@ -10,6 +11,9 @@ enum ZrodloTerminu {
 
   /// Karencja po zabiegu wykonanym w tym gospodarstwie.
   karencja,
+
+  /// Zgłoszenie zdarzenia zwierzęcia do IRZplus.
+  zwierzeta,
 }
 
 /// Jak pilny jest termin — po tym grupujemy listę na ekranie.
@@ -95,10 +99,17 @@ class PozycjaKalendarza {
 /// nie ma w kodzie (CLAUDE.md, reguła 1). Obowiązki, których aplikacja nie
 /// umie ocenić, pokazujemy z adnotacją, zamiast je chować.
 class KalendarzTerminow {
-  const KalendarzTerminow({required this.reguly, required this.rejestr});
+  const KalendarzTerminow({
+    required this.reguly,
+    required this.rejestr,
+    this.stado,
+  });
 
   final SlownikRegul reguly;
   final RejestrZabiegow rejestr;
+
+  /// Rejestr stada — gdy go nie ma, terminy zgłoszeń po prostu nie wchodzą.
+  final RepozytoriumStada? stado;
 
   /// Ile dni do przodu patrzymy domyślnie.
   static const int horyzontDni = 365;
@@ -117,6 +128,10 @@ class KalendarzTerminow {
     final pozycje = <PozycjaKalendarza>[
       ...zPrzepisow(profil: profil, teraz: dzis, dni: dni),
       ...await _zKarencji(gospodarstwoId: gospodarstwoId, teraz: dzis),
+      ...await _zeZdarzenZwierzat(
+        gospodarstwoId: gospodarstwoId,
+        profil: profil,
+      ),
     ];
 
     pozycje.sort((a, b) => a.data.compareTo(b.data));
@@ -223,6 +238,59 @@ class KalendarzTerminow {
     uwagi: obowiazek?.nazwa ?? '',
   );
 
+  /// Zgłoszenia zdarzeń zwierząt: termin liczony od dnia zdarzenia.
+  ///
+  /// Które zdarzenie uruchamia który termin, mówi **słownik reguł** (pole
+  /// `zdarzenie` przy terminie) — nowy termin nie wymaga zmiany kodu.
+  Future<List<PozycjaKalendarza>> _zeZdarzenZwierzat({
+    required String gospodarstwoId,
+    required ProfilGospodarstwa profil,
+  }) async {
+    final rejestrStada = stado;
+    if (rejestrStada == null) {
+      return const [];
+    }
+
+    final wynik = <PozycjaKalendarza>[];
+    for (final termin in reguly.terminy) {
+      if (termin.rodzaj != RodzajTerminu.dniOdZdarzenia) {
+        continue;
+      }
+      final dni = termin.dni;
+      final nazwaZdarzenia = termin.zdarzenie;
+      if (dni == null || nazwaZdarzenia == null) {
+        continue;
+      }
+      final obowiazek = reguly.obowiazek(termin.idObowiazku);
+      final ocena = obowiazek?.ocena(profil) ?? Ocena.nieWiadomo;
+      if (ocena == Ocena.nieDotyczy) {
+        continue;
+      }
+
+      final zdarzenia = await rejestrStada.zdarzenia(
+        gospodarstwoId,
+        rodzaj: RodzajZdarzenia.zBazy(nazwaZdarzenia),
+        tylkoNiezgloszone: true,
+      );
+      for (final zdarzenie in zdarzenia) {
+        final numer = zdarzenie.numerZwierzecia;
+        wynik.add(
+          PozycjaKalendarza(
+            id: 'zgloszenie-${zdarzenie.id}',
+            nazwa: numer == null ? termin.nazwa : '${termin.nazwa}: $numer',
+            coZrobic: 'Zgłoś do IRZplus w ciągu $dni dni od zdarzenia.',
+            zrodlo: ZrodloTerminu.zwierzeta,
+            data: zdarzenie.data.add(Duration(days: dni)),
+            doWeryfikacji: termin.doWeryfikacji,
+            obowiazekNiepewny: ocena == Ocena.nieWiadomo,
+            uwagi: obowiazek?.nazwa ?? '',
+          ),
+        );
+      }
+    }
+    return wynik;
+  }
+
   /// Karencje po opryskach: do kiedy nie wolno zbierać plonu.
   Future<List<PozycjaKalendarza>> _zKarencji({
     required String gospodarstwoId,
@@ -312,9 +380,12 @@ class KalendarzTerminow {
 /// Liczy profil gospodarstwa z danych w bazie: od niego zależy, które
 /// obowiązki się włączają (plan, pkt 3).
 class ProfilZBazy {
-  const ProfilZBazy(this._baza);
+  const ProfilZBazy(this._baza, {this.stado});
 
   final DatabaseExecutor _baza;
+
+  /// Rejestr stada — bez niego DJP zostaje zerem i mówimy o tym w raporcie.
+  final RepozytoriumStada? stado;
 
   Future<ProfilGospodarstwa> policz(String gospodarstwoId, {int? sezon}) async {
     final rok = sezon ?? DateTime.now().year;
@@ -328,8 +399,14 @@ class ProfilZBazy {
     );
     final ar = (wiersze.first['ar'] as num?)?.toDouble() ?? 0;
 
-    // Zwierzęta i ekoschematy dojdą w krokach 9 i 2 etapu 1; do tego czasu
+    final stanStada = await stado?.djp(gospodarstwoId);
+
+    // Deklaracja ekoschematów dojdzie z importu wniosku; do tego czasu
     // liczymy tylko to, co naprawdę wiemy.
-    return ProfilGospodarstwa(powierzchniaUrHa: ar / 100);
+    return ProfilGospodarstwa(
+      powierzchniaUrHa: ar / 100,
+      djp: stanStada?.djp ?? 0,
+      posiadaczZwierzat: (stanStada?.sztuk ?? 0) > 0,
+    );
   }
 }

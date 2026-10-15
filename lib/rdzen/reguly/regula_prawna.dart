@@ -253,6 +253,7 @@ class Termin {
     this.okresDo,
     this.dni,
     this.data,
+    this.zdarzenie,
   });
 
   factory Termin.zJson(Map<String, dynamic> json) => Termin(
@@ -267,6 +268,7 @@ class Termin {
     okresDo: json['okres_do'] as String?,
     dni: json['dni'] as int?,
     data: json['data'] as String?,
+    zdarzenie: json['zdarzenie'] as String?,
   );
 
   final String id;
@@ -284,6 +286,10 @@ class Termin {
 
   /// „RRRR-MM-DD" dla terminu jednorazowego.
   final String? data;
+
+  /// Zdarzenie, od którego liczy się termin (np. „urodzenie”). Mapowanie
+  /// jest danymi, więc nowy termin nie wymaga zmiany kodu.
+  final String? zdarzenie;
 
   /// Termin wymagający sprawdzenia u doradcy przed naborem (plan, pkt 10).
   bool get doWeryfikacji => statusWeryfikacji != 'potwierdzone';
@@ -312,6 +318,79 @@ class ParametrWarunkowosci {
   final String jednostka;
 }
 
+/// Grupa zwierząt i jej współczynnik przeliczeniowy na DJP.
+class GrupaDjp {
+  const GrupaDjp({
+    required this.id,
+    required this.gatunek,
+    required this.nazwa,
+    required this.wspolczynnik,
+  });
+
+  factory GrupaDjp.zJson(Map<String, dynamic> json) => GrupaDjp(
+    id: json['id'] as String,
+    gatunek: json['gatunek'] as String? ?? '',
+    nazwa: json['nazwa'] as String? ?? '',
+    wspolczynnik: (json['wspolczynnik'] as num?)?.toDouble() ?? 0,
+  );
+
+  final String id;
+  final String gatunek;
+  final String nazwa;
+  final double wspolczynnik;
+}
+
+/// Współczynniki DJP razem ze stanem ich sprawdzenia.
+///
+/// Dopóki `statusWeryfikacji` nie jest „potwierdzone", aplikacja pokazuje
+/// wynik z adnotacją „do sprawdzenia" — nie udaje, że liczba jest pewna.
+class WspolczynnikiDjp {
+  const WspolczynnikiDjp({
+    required this.grupy,
+    required this.statusWeryfikacji,
+    required this.zrodlo,
+    required this.uwagi,
+  });
+
+  factory WspolczynnikiDjp.zJson(Map<String, dynamic> json) => WspolczynnikiDjp(
+    grupy: ((json['grupy'] as List<dynamic>?) ?? const [])
+        .map((g) => GrupaDjp.zJson(g as Map<String, dynamic>))
+        .toList(growable: false),
+    statusWeryfikacji: json['status_weryfikacji'] as String? ?? 'nieznany',
+    zrodlo: json['zrodlo'] as String? ?? '',
+    uwagi: json['uwagi'] as String? ?? '',
+  );
+
+  static const WspolczynnikiDjp puste = WspolczynnikiDjp(
+    grupy: [],
+    statusWeryfikacji: 'brak',
+    zrodlo: '',
+    uwagi: '',
+  );
+
+  final List<GrupaDjp> grupy;
+  final String statusWeryfikacji;
+  final String zrodlo;
+  final String uwagi;
+
+  bool get doWeryfikacji => statusWeryfikacji != 'potwierdzone';
+
+  GrupaDjp? grupa(String id) => grupy.where((g) => g.id == id).firstOrNull;
+
+  List<String> get gatunki {
+    final nazwy = <String>[];
+    for (final grupa in grupy) {
+      if (!nazwy.contains(grupa.gatunek)) {
+        nazwy.add(grupa.gatunek);
+      }
+    }
+    return nazwy;
+  }
+
+  List<GrupaDjp> grupyGatunku(String gatunek) =>
+      grupy.where((g) => g.gatunek == gatunek).toList(growable: false);
+}
+
 /// Cały słownik reguł prawnych — dane z numerem wersji, nie kod.
 class SlownikRegul {
   const SlownikRegul({
@@ -320,6 +399,7 @@ class SlownikRegul {
     required this.obowiazki,
     required this.terminy,
     required this.parametryWarunkowosci,
+    this.wspolczynnikiDjp = WspolczynnikiDjp.puste,
   });
 
   factory SlownikRegul.zTekstuJson(String tekst) =>
@@ -338,6 +418,11 @@ class SlownikRegul {
         ((json['parametry_warunkowosci'] as List<dynamic>?) ?? const [])
             .map((p) => ParametrWarunkowosci.zJson(p as Map<String, dynamic>))
             .toList(growable: false),
+    wspolczynnikiDjp: json['wspolczynniki_djp'] == null
+        ? WspolczynnikiDjp.puste
+        : WspolczynnikiDjp.zJson(
+            json['wspolczynniki_djp'] as Map<String, dynamic>,
+          ),
   );
 
   final String wersja;
@@ -345,6 +430,9 @@ class SlownikRegul {
   final List<Obowiazek> obowiazki;
   final List<Termin> terminy;
   final List<ParametrWarunkowosci> parametryWarunkowosci;
+
+  /// Przeliczniki zwierząt na DJP — dane, nie stałe w kodzie.
+  final WspolczynnikiDjp wspolczynnikiDjp;
 
   Obowiazek? obowiazek(String id) =>
       obowiazki.where((o) => o.id == id).firstOrNull;

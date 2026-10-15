@@ -15,6 +15,7 @@ import '../funkcje/nawozenie/plan_nawozenia.dart';
 import '../funkcje/odczyt/odczyt_etykiety.dart';
 import '../funkcje/terminy/kalendarz_terminow.dart';
 import '../funkcje/terminy/ustawienia_przypomnien.dart';
+import '../funkcje/zwierzeta/stado.dart';
 import '../funkcje/zabiegi/rejestr_zabiegow.dart';
 import '../funkcje/zabiegi/repozytorium_zabiegow.dart';
 import '../funkcje/zabiegi/slownik_srodkow.dart';
@@ -56,6 +57,7 @@ Future<Uslugi> uruchom({
   );
 
   final reguly = await ZrodloRegul().wczytaj();
+  final stado = RepozytoriumStada(baza: baza, reguly: reguly);
 
   return Uslugi(
     gospodarstwoId: gospodarstwo.id,
@@ -84,11 +86,13 @@ Future<Uslugi> uruchom({
       reguly: reguly,
     ),
     planNawozenia: PlanNawozenia(baza: baza, reguly: reguly),
+    stado: stado,
     kalendarz: KalendarzTerminow(
       reguly: reguly,
       rejestr: RejestrZabiegow(baza),
+      stado: stado,
     ),
-    profil: ProfilZBazy(baza),
+    profil: ProfilZBazy(baza, stado: stado),
     przypomnienia: PrzypomnieniaUrzadzenia(),
     ustawieniaPrzypomnien: UstawieniaPrzypomnien(baza),
   );

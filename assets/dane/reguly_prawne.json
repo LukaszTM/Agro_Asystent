@@ -1,5 +1,5 @@
 {
-  "wersja": "2026.10.15",
+  "wersja": "2026.10.15.1",
   "obowiazuje_od": "2026-10-15",
   "opis": "Progi, limity i terminy obowiązków dokumentacyjnych. Dane, nie kod — aktualizowane bez przebudowy aplikacji. Zestawienie służy do planowania i nie jest poradą prawną.",
   "obowiazki": [
@@ -239,7 +239,8 @@
       "rodzaj": "dni_od_zdarzenia",
       "dni": 7,
       "status_weryfikacji": "potwierdzone",
-      "uwagi": "Liczone od dnia urodzenia."
+      "uwagi": "Liczone od dnia urodzenia.",
+      "zdarzenie": "urodzenie"
     },
     {
       "id": "ewidencja_sor_tylko_elektronicznie",
@@ -266,5 +267,108 @@
       "jednostka": "%",
       "status_weryfikacji": "potwierdzone"
     }
-  ]
+  ],
+  "wspolczynniki_djp": {
+    "status_weryfikacji": "do_weryfikacji",
+    "zrodlo": "współczynniki przeliczeniowe zwierząt na DJP — do sprawdzenia w aktualnym załączniku do przepisów o nawozach",
+    "uwagi": "Wartości wpisane do uruchomienia modułu zwierząt. Przed wydaniem aplikacji muszą zostać sprawdzone w rozporządzeniu; aplikacja oznacza wynik jako „do sprawdzenia”, dopóki status jest inny niż potwierdzone.",
+    "grupy": [
+      {
+        "id": "bydlo_ciele",
+        "gatunek": "bydło",
+        "nazwa": "cielę do 6 miesięcy",
+        "wspolczynnik": 0.15
+      },
+      {
+        "id": "bydlo_mlodziez_6_12",
+        "gatunek": "bydło",
+        "nazwa": "młodzież 6–12 miesięcy",
+        "wspolczynnik": 0.3
+      },
+      {
+        "id": "bydlo_mlodziez_12_18",
+        "gatunek": "bydło",
+        "nazwa": "młodzież 12–18 miesięcy",
+        "wspolczynnik": 0.5
+      },
+      {
+        "id": "bydlo_jalowka",
+        "gatunek": "bydło",
+        "nazwa": "jałówka powyżej 18 miesięcy",
+        "wspolczynnik": 0.8
+      },
+      {
+        "id": "bydlo_krowa",
+        "gatunek": "bydło",
+        "nazwa": "krowa",
+        "wspolczynnik": 1.0
+      },
+      {
+        "id": "bydlo_buhaj",
+        "gatunek": "bydło",
+        "nazwa": "buhaj",
+        "wspolczynnik": 1.4
+      },
+      {
+        "id": "trzoda_prosie",
+        "gatunek": "trzoda chlewna",
+        "nazwa": "prosię do 2 miesięcy",
+        "wspolczynnik": 0.02
+      },
+      {
+        "id": "trzoda_warchlak",
+        "gatunek": "trzoda chlewna",
+        "nazwa": "warchlak 2–4 miesiące",
+        "wspolczynnik": 0.07
+      },
+      {
+        "id": "trzoda_tucznik",
+        "gatunek": "trzoda chlewna",
+        "nazwa": "tucznik",
+        "wspolczynnik": 0.14
+      },
+      {
+        "id": "trzoda_locha",
+        "gatunek": "trzoda chlewna",
+        "nazwa": "locha",
+        "wspolczynnik": 0.35
+      },
+      {
+        "id": "owca_jagnie",
+        "gatunek": "owce",
+        "nazwa": "jagnię",
+        "wspolczynnik": 0.05
+      },
+      {
+        "id": "owca_dorosla",
+        "gatunek": "owce",
+        "nazwa": "owca dorosła",
+        "wspolczynnik": 0.1
+      },
+      {
+        "id": "koza_dorosla",
+        "gatunek": "kozy",
+        "nazwa": "koza dorosła",
+        "wspolczynnik": 0.1
+      },
+      {
+        "id": "kon_dorosly",
+        "gatunek": "konie",
+        "nazwa": "koń dorosły",
+        "wspolczynnik": 1.2
+      },
+      {
+        "id": "drob_kura",
+        "gatunek": "drób",
+        "nazwa": "kura nioska",
+        "wspolczynnik": 0.004
+      },
+      {
+        "id": "drob_brojler",
+        "gatunek": "drób",
+        "nazwa": "brojler",
+        "wspolczynnik": 0.0025
+      }
+    ]
+  }
 }

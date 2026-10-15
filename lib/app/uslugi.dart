@@ -12,6 +12,7 @@ import '../funkcje/odczyt/odczyt_etykiety.dart';
 import '../funkcje/terminy/kalendarz_terminow.dart';
 import '../funkcje/terminy/przypomnienia.dart';
 import '../funkcje/terminy/ustawienia_przypomnien.dart';
+import '../funkcje/zwierzeta/stado.dart';
 import '../funkcje/zabiegi/rejestr_zabiegow.dart';
 import '../funkcje/zabiegi/repozytorium_zabiegow.dart';
 import '../funkcje/zabiegi/slownik_srodkow.dart';
@@ -40,6 +41,7 @@ class Uslugi {
     required this.nawozy,
     required this.nawozenie,
     required this.planNawozenia,
+    required this.stado,
     required this.kalendarz,
     required this.profil,
     required this.przypomnienia,
@@ -89,6 +91,9 @@ class Uslugi {
 
   /// Zestawienie azotu i sprawdzenie, czy przepis wymaga planu nawożenia.
   final PlanNawozenia planNawozenia;
+
+  /// Rejestr stada: zwierzęta, zdarzenia i DJP.
+  final RepozytoriumStada stado;
 
   /// Kalendarz obowiązków: terminy z przepisów i karencje z własnych zabiegów.
   final KalendarzTerminow kalendarz;

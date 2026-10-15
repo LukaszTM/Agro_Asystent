@@ -21,6 +21,7 @@ import 'package:agro_asystent/funkcje/terminy/ustawienia_przypomnien.dart';
 import 'package:agro_asystent/funkcje/zabiegi/rejestr_zabiegow.dart';
 import 'package:agro_asystent/funkcje/zabiegi/repozytorium_zabiegow.dart';
 import 'package:agro_asystent/funkcje/zabiegi/slownik_srodkow.dart';
+import 'package:agro_asystent/funkcje/zwierzeta/stado.dart';
 import 'package:agro_asystent/rdzen/baza/baza_gospodarstwa.dart';
 import 'package:agro_asystent/rdzen/reguly/regula_prawna.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -168,6 +169,7 @@ void main() {
         reguly: reguly,
       ),
       planNawozenia: PlanNawozenia(baza: gospodarstwo, reguly: reguly),
+      stado: RepozytoriumStada(baza: gospodarstwo, reguly: reguly),
       kalendarz: KalendarzTerminow(
         reguly: reguly,
         rejestr: RejestrZabiegow(gospodarstwo),
