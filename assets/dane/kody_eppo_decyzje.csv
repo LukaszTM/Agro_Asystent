@@ -1,0 +1,19 @@
+nazwa_uprawy;kod_eppo;nazwa_eppo;stan;zrodlo;data
+jabłoń;MABSD;Malus domestica;propozycja;propozycja z bazy EPPO (formy ozime/jare);2026-10-15
+jęczmień jary;HORVS;barley (spring);propozycja;propozycja z bazy EPPO (formy ozime/jare);2026-10-15
+jęczmień ozimy;HORVW;barley (winter);potwierdzone;decyzja użytkownika;2026-10-15
+owies;AVESA;Avena sativa;propozycja;propozycja z bazy EPPO (gatunek);2026-10-15
+owies jary;AVESP;oat (spring);propozycja;propozycja z bazy EPPO (formy ozime/jare);2026-10-15
+owies ozimy;AVESW;oat (winter);propozycja;propozycja z bazy EPPO (formy ozime/jare);2026-10-15
+owies siewny;AVESA;Avena sativa;propozycja;propozycja z bazy EPPO (gatunek);2026-10-15
+pszenica jara;TRZAS;soft wheat (spring);potwierdzone;decyzja użytkownika;2026-10-15
+pszenica ozima;TRZAW;soft wheat (winter);potwierdzone;decyzja użytkownika;2026-10-15
+pszenica twarda jara;TRZDS;durum wheat (spring);propozycja;propozycja z bazy EPPO (formy ozime/jare);2026-10-15
+pszenica twarda ozima;TRZDW;durum wheat (winter);propozycja;propozycja z bazy EPPO (formy ozime/jare);2026-10-15
+pszenica zwyczajna;TRZAX;Triticum aestivum subsp. aestivum;potwierdzone;decyzja użytkownika;2026-10-15
+pszenżyto jare;TTLSO;triticale (spring);propozycja;propozycja z bazy EPPO (formy ozime/jare);2026-10-15
+pszenżyto ozime;TTLWI;triticale (winter);potwierdzone;decyzja użytkownika;2026-10-15
+rzepak jary;BRSNS;rape (spring);propozycja;propozycja z bazy EPPO (formy ozime/jare);2026-10-15
+rzepak ozimy;BRSNW;rape (winter);potwierdzone;decyzja użytkownika;2026-10-15
+żyto jare;SECCS;rye (spring);propozycja;propozycja z bazy EPPO (formy ozime/jare);2026-10-15
+żyto ozime;SECCW;rye (winter);propozycja;propozycja z bazy EPPO (formy ozime/jare);2026-10-15

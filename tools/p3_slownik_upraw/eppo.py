@@ -115,6 +115,23 @@ def dopasuj(nazwy_urzedowe: list[str], slownik_eppo: dict[str, list[str]]):
     return wynik
 
 
+def wczytaj_decyzje(sciezka: Path) -> dict[str, tuple[str, str]]:
+    """Kody rozstrzygnięte przez człowieka: postać porównawcza → (kod, stan).
+
+    Stan „potwierdzone" oznacza decyzję użytkownika albo doradcy, „propozycja" —
+    kod wyszukany w bazie EPPO, który czeka na potwierdzenie.
+    """
+    decyzje: dict[str, tuple[str, str]] = {}
+    with sciezka.open(encoding="utf-8-sig", newline="") as plik:
+        czytnik = csv.reader(plik, delimiter=";")
+        next(czytnik, None)
+        for wiersz in czytnik:
+            if len(wiersz) >= 4 and wiersz[0].strip() and wiersz[1].strip():
+                stan = "kod" if wiersz[3].strip() == "potwierdzone" else "propozycja"
+                decyzje[postac_porownawcza(wiersz[0])] = (wiersz[1].strip(), stan)
+    return decyzje
+
+
 def liczba_zastosowan(baza: Path) -> dict[str, int]:
     """Ile razy uprawa występuje w rejestrze — żeby decydować od najważniejszych."""
     if not baza.exists():
@@ -172,6 +189,10 @@ def main(argv: list[str] | None = None) -> int:
                         default=Path("dane/pobrane/p3_eppo/eppocodes_all.sqlite"))
     parser.add_argument("--slownik-rejestru", type=Path,
                         default=Path("dane/pobrane/p1/Slownik_Uprawy.csv"))
+    parser.add_argument("--decyzje", type=Path,
+                        default=Path("assets/dane/kody_eppo_decyzje.csv"),
+                        help="kody rozstrzygnięte ręcznie — mają pierwszeństwo przed "
+                             "dopasowaniem po nazwie polskiej")
     parser.add_argument("--baza", type=Path,
                         default=Path("dane/wynik/srodki_ochrony.sqlite"),
                         help="baza z P1 — służy do ustalenia, które uprawy są najważniejsze")
@@ -187,6 +208,15 @@ def main(argv: list[str] | None = None) -> int:
     slownik_eppo = nazwy_polskie(args.baza_eppo)
     nazwy_urzedowe = wczytaj_csv_slownik(args.slownik_rejestru)
     wiersze = dopasuj(nazwy_urzedowe, slownik_eppo)
+
+    decyzje = wczytaj_decyzje(args.decyzje) if args.decyzje and args.decyzje.exists() else {}
+    if decyzje:
+        print(f"Kody rozstrzygnięte ręcznie: {len(decyzje)}")
+        wiersze = [
+            (nazwa, decyzje.get(postac_porownawcza(nazwa), (kod, stan))[0],
+             decyzje.get(postac_porownawcza(nazwa), (kod, stan))[1])
+            for nazwa, kod, stan in wiersze
+        ]
 
     liczby = Counter(stan for _, _, stan in wiersze)
     razem = max(len(wiersze), 1)

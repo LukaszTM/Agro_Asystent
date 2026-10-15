@@ -121,6 +121,39 @@ Najważniejsze uprawy czekające na decyzję (według liczby zastosowań w rejes
 pszenica ozima (1 515), rzepak ozimy (1 165), pszenżyto ozime (948),
 jęczmień ozimy (819), jęczmień jary (807), pszenica jara (698).
 
+### Pierwsze decyzje — 15.10.2026
+
+Użytkownik podał sześć kodów dla najważniejszych upraw. **Każdy sprawdziłem
+w bazie EPPO**: wszystkie istnieją i są aktualne.
+
+| Uprawa | Kod | Nazwa w EPPO | Zastosowań w rejestrze |
+| --- | --- | --- | --- |
+| pszenica ozima | TRZAW | soft wheat (winter) | 1 515 |
+| rzepak ozimy | BRSNW | rape (winter) | 1 165 |
+| pszenżyto ozime | TTLWI | triticale (winter) | 948 |
+| jęczmień ozimy | HORVW | barley (winter) | 819 |
+| pszenica jara | TRZAS | soft wheat (spring) | 698 |
+| pszenica zwyczajna | TRZAX | Triticum aestivum | — |
+
+Przy okazji wyszło, **dlaczego moje szukanie ich nie znalazło**: formy ozime
+i jare mają w EPPO typ `NTX` („non taxonomic"), który odfiltrowałem jako
+„nie-roślina". I słusznie co do zasady — to nie są gatunki, tylko formy
+uprawne — ale to właśnie ich wymaga ewidencja. Dodatkowo **spośród 640 kodów
+NTX tylko 5 ma polską nazwę**, więc automatyczne dopasowanie po polsku było
+z góry skazane.
+
+Po wpisaniu tych sześciu kodów udział zastosowań z gotowym kodem wzrósł
+z 22,5% do **36,0%**.
+
+Baza zawiera komplet form ozimych i jarych (HORVS, SECCW, SECCS, BRSNS, TTLSO,
+AVESP, AVESW, TRZDW, TRZDS), więc resztę dobrałem **z tej samej listy** jako
+propozycje do potwierdzenia — razem z jabłonią (MABSD, Malus domestica).
+Ich zatwierdzenie podniesie pokrycie do **44,8%**.
+
+Decyzje i propozycje leżą w `assets/dane/kody_eppo_decyzje.csv` —
+w repozytorium, bo to słownik aplikacji, a nie dane gospodarstwa. Kolumna
+`stan` odróżnia „potwierdzone" od „propozycja".
+
 ### Co z tym zrobić
 
 `dane/wynik/uprawy_eppo_do_decyzji.csv` jest ułożony **od upraw najczęściej

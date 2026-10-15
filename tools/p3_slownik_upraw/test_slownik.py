@@ -6,6 +6,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 sys.path.insert(0, str(Path(__file__).parent))
 
+from eppo import wczytaj_decyzje  # noqa: E402,F401
 from slownik import SlownikUpraw  # noqa: E402
 from wspolne.tekst import postac_porownawcza, znormalizuj  # noqa: E402
 
@@ -87,3 +88,34 @@ class TestPodpowiedzPoCzlonie:
         d = self.slownik.dopasuj("inne narzędzia i drobny sprzęt", "rejestr")
         assert d.nazwa_urzedowa is None
         assert d.sposob == "brak"
+
+
+class TestDecyzjeEppo:
+    """Kody rozstrzygnięte ręcznie mają pierwszeństwo przed dopasowaniem nazw."""
+
+    def test_wczytanie_pliku_decyzji(self, tmp_path):
+        from eppo import wczytaj_decyzje
+
+        plik = tmp_path / "decyzje.csv"
+        plik.write_text(
+            "nazwa_uprawy;kod_eppo;nazwa_eppo;stan;zrodlo;data\n"
+            "pszenica ozima;TRZAW;soft wheat (winter);potwierdzone;decyzja;2026-10-15\n"
+            "jabłoń;MABSD;Malus domestica;propozycja;propozycja;2026-10-15\n",
+            encoding="utf-8",
+        )
+        decyzje = wczytaj_decyzje(plik)
+        assert decyzje[postac_porownawcza("pszenica ozima")] == ("TRZAW", "kod")
+        # Propozycja nie staje się kodem gotowym do użycia.
+        assert decyzje[postac_porownawcza("jabłoń")] == ("MABSD", "propozycja")
+
+    def test_plik_decyzji_w_repozytorium_jest_czytelny(self):
+        from pathlib import Path
+
+        from eppo import wczytaj_decyzje
+
+        plik = Path("assets/dane/kody_eppo_decyzje.csv")
+        if not plik.exists():
+            return
+        decyzje = wczytaj_decyzje(plik)
+        assert decyzje, "plik decyzji nie może być pusty"
+        assert all(len(kod) >= 5 for kod, _ in decyzje.values()), "kod EPPO ma 5-6 znaków"
