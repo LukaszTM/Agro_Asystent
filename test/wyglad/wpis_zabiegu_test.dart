@@ -1,7 +1,9 @@
 import 'package:agro_asystent/app/aplikacja.dart';
 import 'package:agro_asystent/app/uslugi.dart';
+import 'package:agro_asystent/funkcje/dzialki/import_wniosku.dart';
 import 'package:agro_asystent/funkcje/dzialki/repozytorium_dzialek.dart';
 import 'package:agro_asystent/funkcje/dzialki/repozytorium_pol.dart';
+import 'package:agro_asystent/funkcje/dzialki/zrodlo_pliku.dart';
 import 'package:agro_asystent/funkcje/zabiegi/repozytorium_zabiegow.dart';
 import 'package:agro_asystent/funkcje/zabiegi/slownik_srodkow.dart';
 import 'package:agro_asystent/rdzen/baza/baza_gospodarstwa.dart';
@@ -124,6 +126,11 @@ void main() {
       dzialki: RepozytoriumDzialek(gospodarstwo),
       zabiegi: RepozytoriumZabiegow(gospodarstwo),
       srodki: SlownikSrodkow(slowniki),
+      importWniosku: ImportWniosku(
+        baza: gospodarstwo,
+        srodki: SlownikSrodkow(slowniki),
+      ),
+      zrodloPliku: const _BrakZrodlaPliku(),
     );
 
     await uslugi.pola.dodaj(
@@ -283,4 +290,12 @@ void main() {
     expect(find.textContaining('premium', findRichText: true), findsNothing);
     expect(find.textContaining('Kup'), findsNothing);
   });
+}
+
+/// Te testy nie dotykają wniosku, więc źródło pliku nigdy nie jest pytane.
+class _BrakZrodlaPliku implements ZrodloPliku {
+  const _BrakZrodlaPliku();
+
+  @override
+  Future<WybranyPlik?> wybierzPdf() async => null;
 }

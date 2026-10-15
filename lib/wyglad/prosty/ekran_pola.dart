@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../app/uslugi.dart';
 import '../../funkcje/dzialki/repozytorium_pol.dart';
 import 'dzialki/ekran_dzialki.dart';
+import 'dzialki/ekran_import_wniosku.dart';
 import 'motyw.dart';
 import 'widgety/duzy_przycisk.dart';
 import 'widgety/wybor_liczby.dart';
@@ -32,6 +33,17 @@ class _EkranPolaState extends State<EkranPola> {
 
   void _odswiez() {
     _pola = widget.uslugi.pola.wszystkie(widget.uslugi.gospodarstwoId);
+  }
+
+  Future<void> _wczytajWniosek() async {
+    final zapisano = await Navigator.of(context).push<bool>(
+      MaterialPageRoute<bool>(
+        builder: (_) => EkranImportWniosku(uslugi: widget.uslugi),
+      ),
+    );
+    if (zapisano ?? false) {
+      setState(_odswiez);
+    }
   }
 
   Future<void> _dodaj() async {
@@ -87,6 +99,13 @@ class _EkranPolaState extends State<EkranPola> {
                     builder: (_) => EkranDzialki(uslugi: widget.uslugi),
                   ),
                 ),
+              ),
+              const SizedBox(height: MotywProsty.odstep),
+              DuzyPrzycisk(
+                etykieta: 'Wczytaj wniosek z PDF',
+                opis: 'Działki i uprawy z eWniosekPlus',
+                ikona: Icons.upload_file_outlined,
+                onTap: _wczytajWniosek,
               ),
             ],
           );
