@@ -1,13 +1,22 @@
+import 'dart:async';
+
 import 'package:agro_asystent/app/aplikacja.dart';
+import 'package:agro_asystent/app/uslugi.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+
+/// Ekran główny bez otwartej bazy: usługi jeszcze się składają, więc kafelki
+/// prowadzą do ekranów zastępczych. Baza w testach ekranu głównego nie jest
+/// potrzebna — ścieżkę wpisu sprawdza osobny test.
+Widget aplikacjaBezBazy() =>
+    AplikacjaAgroAsystent(wlasneUruchomienie: () => Completer<Uslugi>().future);
 
 void main() {
   group('ekran główny (wygląd prosty)', () {
     testWidgets('pokazuje cztery duże przyciski bez ukrytego menu', (
       tester,
     ) async {
-      await tester.pumpWidget(const AplikacjaAgroAsystent());
+      await tester.pumpWidget(aplikacjaBezBazy());
 
       expect(find.text('Pola'), findsOneWidget);
       expect(find.text('Dodaj zabieg'), findsOneWidget);
@@ -21,7 +30,7 @@ void main() {
     testWidgets('każdy przycisk ma co najmniej 48 px wysokości', (
       tester,
     ) async {
-      await tester.pumpWidget(const AplikacjaAgroAsystent());
+      await tester.pumpWidget(aplikacjaBezBazy());
 
       for (final etykieta in ['Pola', 'Dodaj zabieg', 'Terminy', 'Dokumenty']) {
         final przycisk = find.ancestor(
@@ -40,7 +49,7 @@ void main() {
     testWidgets('żaden widoczny napis nie jest mniejszy niż 18 px', (
       tester,
     ) async {
-      await tester.pumpWidget(const AplikacjaAgroAsystent());
+      await tester.pumpWidget(aplikacjaBezBazy());
 
       final napisy = tester.widgetList<Text>(find.byType(Text));
       expect(napisy, isNotEmpty);
@@ -58,7 +67,7 @@ void main() {
     testWidgets('dotknięcie kafelka otwiera ekran z informacją, co będzie', (
       tester,
     ) async {
-      await tester.pumpWidget(const AplikacjaAgroAsystent());
+      await tester.pumpWidget(aplikacjaBezBazy());
 
       await tester.tap(find.text('Dodaj zabieg'));
       await tester.pumpAndSettle();

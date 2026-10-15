@@ -24,6 +24,7 @@ a pliki źródłowe trzyma w `dane/pobrane/` (oba katalogi są poza repozytorium
 | `p2_etykiety/` | etykiety PDF → karencja, prewencja, liczba zabiegów (**próba A–B gotowa**) | gov.pl, etykiety środków |
 | `p3_slownik_upraw/` | uprawy z wniosku ↔ uprawy z rejestru ↔ kod EPPO (**gotowe**) | pliki z P1, P2, P4 i baza EPPO |
 | `p4_wniosek_pdf/` | tabele X i XI wniosku z eWniosekPlus | PDF wniosku (lokalnie, nie w repozytorium) |
+| `zbuduj_slowniki.py` | składa słowniki dla aplikacji z wyników P1–P3 | wyniki poprzednich zadań |
 | `p5_uldk/` | granice działek po identyfikatorze TERYT i rysunek mapy (**gotowe**) | uldk.gugik.gov.pl |
 
 ## Zasady

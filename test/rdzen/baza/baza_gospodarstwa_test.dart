@@ -3,7 +3,6 @@ import 'package:agro_asystent/rdzen/baza/baza_gospodarstwa.dart';
 import 'package:agro_asystent/rdzen/baza/migracje.dart';
 import 'package:agro_asystent/rdzen/modele/zabieg.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:sqflite_common/sqlite_api.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 /// Testy bazy gospodarstwa na SQLite uruchomionym na komputerze — ta sama
@@ -15,12 +14,12 @@ void main() {
   late Database baza;
 
   Future<void> dodajGospodarstwo(String id) => baza.insert('gospodarstwo', {
-        'id': id,
-        'nazwa': 'Gospodarstwo próbne',
-        'utworzono': '2026-10-15T08:00:00',
-        'zmieniono': '2026-10-15T08:00:00',
-        'urzadzenie': 'telefon',
-      });
+    'id': id,
+    'nazwa': 'Gospodarstwo próbne',
+    'utworzono': '2026-10-15T08:00:00',
+    'zmieniono': '2026-10-15T08:00:00',
+    'urzadzenie': 'telefon',
+  });
 
   Future<void> dodajPole(String id, String gospodarstwoId) =>
       baza.insert('dzialka_rolna', {
@@ -49,9 +48,7 @@ void main() {
     test('zakładają komplet tabel z punktu 7 planu', () async {
       final tabele = (await baza.rawQuery(
         "SELECT name FROM sqlite_master WHERE type='table'",
-      ))
-          .map((w) => w['name'] as String)
-          .toSet();
+      )).map((w) => w['name'] as String).toSet();
 
       for (final oczekiwana in [
         'gospodarstwo',
@@ -130,14 +127,14 @@ void main() {
     });
 
     Zabieg przykladowyZabieg() => Zabieg(
-          id: 'z1',
-          gospodarstwoId: 'g1',
-          rodzaj: RodzajZabiegu.oprysk,
-          data: DateTime(2026, 5, 10),
-          godzina: '08:30',
-          powierzchniaAr: 320,
-          urzadzenie: 'telefon',
-        );
+      id: 'z1',
+      gospodarstwoId: 'g1',
+      rodzaj: RodzajZabiegu.oprysk,
+      data: DateTime(2026, 5, 10),
+      godzina: '08:30',
+      powierzchniaAr: 320,
+      urzadzenie: 'telefon',
+    );
 
     test('zapisuje zabieg, pole i szczegóły oprysku', () async {
       await repozytorium.zapisz(
@@ -190,20 +187,25 @@ void main() {
       expect(oprysk.dzienZbioru(DateTime(2026, 5, 10)), isNull);
     });
 
-    test('zapis jest w jednej transakcji — błąd nie zostawia połowy wpisu',
-        () async {
-      await expectLater(
-        repozytorium.zapisz(
-          zabieg: przykladowyZabieg(),
-          pola: const [
-            PoleZabiegu(dzialkaRolnaId: 'p1', powierzchniaAr: 320),
-            PoleZabiegu(dzialkaRolnaId: 'nie-ma-takiego-pola', powierzchniaAr: 10),
-          ],
-        ),
-        throwsA(isA<DatabaseException>()),
-      );
-      expect(await repozytorium.wszystkie('g1'), isEmpty);
-    });
+    test(
+      'zapis jest w jednej transakcji — błąd nie zostawia połowy wpisu',
+      () async {
+        await expectLater(
+          repozytorium.zapisz(
+            zabieg: przykladowyZabieg(),
+            pola: const [
+              PoleZabiegu(dzialkaRolnaId: 'p1', powierzchniaAr: 320),
+              PoleZabiegu(
+                dzialkaRolnaId: 'nie-ma-takiego-pola',
+                powierzchniaAr: 10,
+              ),
+            ],
+          ),
+          throwsA(isA<DatabaseException>()),
+        );
+        expect(await repozytorium.wszystkie('g1'), isEmpty);
+      },
+    );
   });
 
   group('wpisy są dopisywane, nie nadpisywane', () {
@@ -255,7 +257,11 @@ void main() {
       await repozytorium.oznaczUsuniety(zabiegId: 'z1', urzadzenie: 'telefon');
 
       expect(await repozytorium.wszystkie('g1'), isEmpty);
-      final wiersze = await baza.query('zabieg', where: 'id = ?', whereArgs: ['z1']);
+      final wiersze = await baza.query(
+        'zabieg',
+        where: 'id = ?',
+        whereArgs: ['z1'],
+      );
       expect(wiersze, hasLength(1), reason: 'wiersz zostaje w bazie');
       expect(wiersze.single['usuniety'], 1);
 

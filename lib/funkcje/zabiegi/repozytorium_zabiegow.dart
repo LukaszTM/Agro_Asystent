@@ -96,9 +96,9 @@ class RepozytoriumZabiegow {
   /// Zapis dziennika zmian dla jednego wpisu — do pokazania przy kontroli
   /// i do synchronizacji między urządzeniami.
   Future<List<Map<String, Object?>>> historia(String zabiegId) => _baza.query(
-        'historia_zmian',
-        where: 'tabela = ? AND wiersz_id = ?',
-        whereArgs: ['zabieg', zabiegId],
-        orderBy: 'id',
-      );
+    'historia_zmian',
+    where: 'tabela = ? AND wiersz_id = ?',
+    whereArgs: ['zabieg', zabiegId],
+    orderBy: 'id',
+  );
 }

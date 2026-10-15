@@ -12,7 +12,11 @@ library;
 
 /// Jedna migracja: numer wersji i polecenia SQL wykonywane po kolei.
 class Migracja {
-  const Migracja({required this.wersja, required this.polecenia, required this.opis});
+  const Migracja({
+    required this.wersja,
+    required this.polecenia,
+    required this.opis,
+  });
 
   final int wersja;
   final String opis;

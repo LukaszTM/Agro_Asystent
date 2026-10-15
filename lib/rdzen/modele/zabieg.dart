@@ -18,11 +18,10 @@ enum RodzajZabiegu {
   final String dlaRolnika;
   final String naWydruku;
 
-  static RodzajZabiegu zBazy(String wartosc) =>
-      RodzajZabiegu.values.firstWhere(
-        (r) => r.wBazie == wartosc,
-        orElse: () => RodzajZabiegu.inny,
-      );
+  static RodzajZabiegu zBazy(String wartosc) => RodzajZabiegu.values.firstWhere(
+    (r) => r.wBazie == wartosc,
+    orElse: () => RodzajZabiegu.inny,
+  );
 }
 
 /// Zabieg wykonany na jednym lub kilku polach.
@@ -50,30 +49,30 @@ class Zabieg {
   final bool usuniety;
 
   Map<String, Object?> doBazy({required DateTime teraz}) => {
-        'id': id,
-        'gospodarstwo_id': gospodarstwoId,
-        'typ': rodzaj.wBazie,
-        'data': data.toIso8601String().split('T').first,
-        'godzina': godzina,
-        'powierzchnia_ar': powierzchniaAr,
-        'uwagi': uwagi,
-        'utworzono': teraz.toIso8601String(),
-        'zmieniono': teraz.toIso8601String(),
-        'urzadzenie': urzadzenie,
-        'usuniety': usuniety ? 1 : 0,
-      };
+    'id': id,
+    'gospodarstwo_id': gospodarstwoId,
+    'typ': rodzaj.wBazie,
+    'data': data.toIso8601String().split('T').first,
+    'godzina': godzina,
+    'powierzchnia_ar': powierzchniaAr,
+    'uwagi': uwagi,
+    'utworzono': teraz.toIso8601String(),
+    'zmieniono': teraz.toIso8601String(),
+    'urzadzenie': urzadzenie,
+    'usuniety': usuniety ? 1 : 0,
+  };
 
   static Zabieg zBazy(Map<String, Object?> wiersz) => Zabieg(
-        id: wiersz['id']! as String,
-        gospodarstwoId: wiersz['gospodarstwo_id']! as String,
-        rodzaj: RodzajZabiegu.zBazy(wiersz['typ']! as String),
-        data: DateTime.parse(wiersz['data']! as String),
-        godzina: wiersz['godzina'] as String?,
-        powierzchniaAr: (wiersz['powierzchnia_ar'] as int?) ?? 0,
-        uwagi: wiersz['uwagi'] as String?,
-        urzadzenie: wiersz['urzadzenie']! as String,
-        usuniety: (wiersz['usuniety'] as int? ?? 0) == 1,
-      );
+    id: wiersz['id']! as String,
+    gospodarstwoId: wiersz['gospodarstwo_id']! as String,
+    rodzaj: RodzajZabiegu.zBazy(wiersz['typ']! as String),
+    data: DateTime.parse(wiersz['data']! as String),
+    godzina: wiersz['godzina'] as String?,
+    powierzchniaAr: (wiersz['powierzchnia_ar'] as int?) ?? 0,
+    uwagi: wiersz['uwagi'] as String?,
+    urzadzenie: wiersz['urzadzenie']! as String,
+    usuniety: (wiersz['usuniety'] as int? ?? 0) == 1,
+  );
 }
 
 /// Szczegóły oprysku wymagane w ewidencji (rozp. UE 2023/564).
@@ -121,29 +120,31 @@ class SzczegolyOprysku {
   final bool karencjaPotwierdzona;
 
   /// Dzień, od którego wolno zbierać plon. `null`, gdy karencja nieznana.
-  DateTime? dzienZbioru(DateTime dataZabiegu) =>
-      karencjaDni == null ? null : dataZabiegu.add(Duration(days: karencjaDni!));
+  DateTime? dzienZbioru(DateTime dataZabiegu) => karencjaDni == null
+      ? null
+      : dataZabiegu.add(Duration(days: karencjaDni!));
 
   Map<String, Object?> doBazy() => {
-        'zabieg_id': zabiegId,
-        'srodek_nazwa': srodekNazwa,
-        'nr_zezwolenia': nrZezwolenia,
-        'dawka': dawka,
-        'dawka_jednostka': dawkaJednostka,
-        'dawka_odniesienie': dawkaOdniesienie,
-        'przyczyna': przyczyna,
-        'agrofag': agrofag,
-        'bbch_od': bbchOd,
-        'bbch_do': bbchDo,
-        'kod_eppo': kodEppo,
-        'rodzaj_zastosowania': rodzajZastosowania,
-        'karencja_dni': karencjaDni,
-        'karencja_zrodlo': karencjaZrodlo,
-        'karencja_data_etykiety': karencjaDataEtykiety,
-        'karencja_potwierdzona': karencjaPotwierdzona ? 1 : 0,
-      };
+    'zabieg_id': zabiegId,
+    'srodek_nazwa': srodekNazwa,
+    'nr_zezwolenia': nrZezwolenia,
+    'dawka': dawka,
+    'dawka_jednostka': dawkaJednostka,
+    'dawka_odniesienie': dawkaOdniesienie,
+    'przyczyna': przyczyna,
+    'agrofag': agrofag,
+    'bbch_od': bbchOd,
+    'bbch_do': bbchDo,
+    'kod_eppo': kodEppo,
+    'rodzaj_zastosowania': rodzajZastosowania,
+    'karencja_dni': karencjaDni,
+    'karencja_zrodlo': karencjaZrodlo,
+    'karencja_data_etykiety': karencjaDataEtykiety,
+    'karencja_potwierdzona': karencjaPotwierdzona ? 1 : 0,
+  };
 
-  static SzczegolyOprysku zBazy(Map<String, Object?> wiersz) => SzczegolyOprysku(
+  static SzczegolyOprysku zBazy(Map<String, Object?> wiersz) =>
+      SzczegolyOprysku(
         zabiegId: wiersz['zabieg_id']! as String,
         srodekNazwa: wiersz['srodek_nazwa']! as String,
         nrZezwolenia: wiersz['nr_zezwolenia']! as String,
@@ -159,13 +160,17 @@ class SzczegolyOprysku {
         karencjaDni: wiersz['karencja_dni'] as int?,
         karencjaZrodlo: wiersz['karencja_zrodlo'] as String?,
         karencjaDataEtykiety: wiersz['karencja_data_etykiety'] as String?,
-        karencjaPotwierdzona: (wiersz['karencja_potwierdzona'] as int? ?? 0) == 1,
+        karencjaPotwierdzona:
+            (wiersz['karencja_potwierdzona'] as int? ?? 0) == 1,
       );
 }
 
 /// Pole objęte zabiegiem wraz z powierzchnią, na której zabieg wykonano.
 class PoleZabiegu {
-  const PoleZabiegu({required this.dzialkaRolnaId, required this.powierzchniaAr});
+  const PoleZabiegu({
+    required this.dzialkaRolnaId,
+    required this.powierzchniaAr,
+  });
 
   final String dzialkaRolnaId;
   final int powierzchniaAr;

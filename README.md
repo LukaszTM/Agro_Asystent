@@ -21,10 +21,12 @@ Pełny plan: [`docs/PLAN.md`](docs/PLAN.md). Zasady pracy w kodzie: [`CLAUDE.md`
 | P4. Czytnik wniosku PDF z eWniosekPlus | **gotowe** — [raport](docs/raporty/P4-raport.md): sprawdzone na prawdziwym wniosku |
 | P5. Prototyp ULDK (granice działek, mapa offline) | **gotowe** — [raport](docs/raporty/P5-raport.md): 20 z 20 działek pobranych |
 | P6. Model danych SQLite z migracjami | **gotowe** — [raport](docs/raporty/P6-raport.md) |
-| P7. Pierwszy ekran: ścieżka wpisu oprysku | przed nami |
+| P7. Pierwszy ekran: ścieżka wpisu oprysku | **gotowe** — [raport](docs/raporty/P7-raport.md) |
 
-Aplikacja uruchamia się na Androidzie i pokazuje ekran główny wyglądu „Prosty"
-(cztery duże przyciski). Moduły za przyciskami powstają w kolejnych krokach etapu 1.
+Aplikacja uruchamia się na Androidzie, pozwala dodać pole i **zapisać oprysk
+w pięciu dotknięciach** na prawdziwych danych z rejestru środków ochrony roślin
+(2 967 środków, 18 632 zastosowania). Dokumenty, mapa i przypomnienia powstają
+w kolejnych krokach etapu 1.
 
 ## Technologia
 

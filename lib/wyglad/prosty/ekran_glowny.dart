@@ -1,15 +1,22 @@
 import 'package:flutter/material.dart';
 
+import '../../app/uslugi.dart';
 import '../../rdzen/dostep/dostep_funkcji.dart';
+import 'ekran_pola.dart';
 import 'ekran_w_budowie.dart';
 import 'motyw.dart';
+import 'wpis/ekran_wybor_pola.dart';
 
 /// Ekran główny wyglądu „Prosty": cztery duże przyciski, bez ukrytego menu
 /// (plan, pkt 5). Kolejność od najczęściej używanego.
 class EkranGlownyProsty extends StatelessWidget {
-  const EkranGlownyProsty({super.key, required this.dostep});
+  const EkranGlownyProsty({super.key, required this.dostep, this.uslugi});
 
   final DostepFunkcji dostep;
+
+  /// Usługi są dostępne dopiero po otwarciu bazy; bez nich pokazujemy ekrany
+  /// zastępcze zamiast pustej aplikacji.
+  final Uslugi? uslugi;
 
   static const List<_Kafelek> _kafelki = [
     _Kafelek(
@@ -60,7 +67,7 @@ class EkranGlownyProsty extends StatelessWidget {
                 childAspectRatio: waskiEkran ? 2.4 : 1.2,
                 children: [
                   for (final kafelek in _kafelki)
-                    _PrzyciskKafelek(kafelek: kafelek),
+                    _PrzyciskKafelek(kafelek: kafelek, uslugi: uslugi),
                 ],
               );
             },
@@ -88,9 +95,23 @@ class _Kafelek {
 }
 
 class _PrzyciskKafelek extends StatelessWidget {
-  const _PrzyciskKafelek({required this.kafelek});
+  const _PrzyciskKafelek({required this.kafelek, this.uslugi});
 
   final _Kafelek kafelek;
+  final Uslugi? uslugi;
+
+  Widget _ekranDocelowy() {
+    final dostepneUslugi = uslugi;
+    if (dostepneUslugi != null) {
+      switch (kafelek.etykieta) {
+        case 'Pola':
+          return EkranPola(uslugi: dostepneUslugi);
+        case 'Dodaj zabieg':
+          return EkranWyborPola(uslugi: dostepneUslugi);
+      }
+    }
+    return EkranWBudowie(tytul: kafelek.etykieta, coBedzie: kafelek.coBedzie);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -109,14 +130,8 @@ class _PrzyciskKafelek extends StatelessWidget {
         borderRadius: BorderRadius.circular(MotywProsty.zaokraglenieDuze),
         child: InkWell(
           borderRadius: BorderRadius.circular(MotywProsty.zaokraglenieDuze),
-          onTap: () => Navigator.of(context).push(
-            MaterialPageRoute<void>(
-              builder: (_) => EkranWBudowie(
-                tytul: kafelek.etykieta,
-                coBedzie: kafelek.coBedzie,
-              ),
-            ),
-          ),
+          onTap: () => Navigator.of(context)
+              .push(MaterialPageRoute<void>(builder: (_) => _ekranDocelowy())),
           child: ConstrainedBox(
             constraints: const BoxConstraints(
               minHeight: MotywProsty.minCelDotyku * 2,
