@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import '../../../app/uslugi.dart';
 import '../../../funkcje/zabiegi/kompletnosc_ewidencji.dart';
 import '../../../funkcje/zabiegi/rejestr_zabiegow.dart';
+import '../../../rdzen/modele/zabieg.dart';
 import '../motyw.dart';
 import '../widgety/duzy_przycisk.dart';
+import '../wpis/ekran_karencja.dart';
 import 'ekran_popraw_wpis.dart';
 
 /// Jeden wpis rejestru w całości — tak, jak ma go zobaczyć kontrola.
@@ -46,6 +48,29 @@ class _EkranWpisRejestruState extends State<EkranWpisRejestru> {
       ),
     );
     if (poprawione ?? false) {
+      _zmienione = true;
+      setState(_odswiez);
+    }
+  }
+
+  Future<void> _ustawKarencje(WpisRejestru wpis) async {
+    final oprysk = wpis.oprysk;
+    if (oprysk == null) {
+      return;
+    }
+    final zapisane = await Navigator.of(context).push<bool>(
+      MaterialPageRoute<bool>(
+        builder: (_) => EkranKarencja(
+          uslugi: widget.uslugi,
+          zabiegId: wpis.zabieg.id,
+          dataZabiegu: wpis.zabieg.data,
+          srodekNazwa: oprysk.srodekNazwa,
+          dniZEtykiety: oprysk.karencjaDni,
+          dataEtykiety: oprysk.karencjaDataEtykiety,
+        ),
+      ),
+    );
+    if (zapisane ?? false) {
       _zmienione = true;
       setState(_odswiez);
     }
@@ -146,7 +171,26 @@ class _EkranWpisRejestruState extends State<EkranWpisRejestru> {
                       ? null
                       : 'Źródło: ${wpis.oprysk!.karencjaZrodlo}.',
                 ),
-              if (wpis.dzienZbioru != null)
+              if (wpis.oprysk case final SzczegolyOprysku oprysk) ...[
+                if (wpis.dzienZbioru == null)
+                  const SizedBox(height: MotywProsty.odstep),
+                Text(
+                  'Karencja: ${OpisKarencji.dlaWpisu(oprysk)}',
+                  style: Theme.of(context).textTheme.bodyLarge,
+                ),
+                const SizedBox(height: 8),
+                DuzyPrzycisk(
+                  etykieta: oprysk.karencjaDni == null
+                      ? 'Wpisz karencję z opakowania'
+                      : 'Potwierdź karencję',
+                  opis: oprysk.karencjaPotwierdzona
+                      ? 'już potwierdzona — można poprawić'
+                      : 'sprawdź liczbę dni na opakowaniu',
+                  ikona: Icons.event_available_outlined,
+                  onTap: () => _ustawKarencje(wpis),
+                ),
+                const SizedBox(height: MotywProsty.odstep),
+              ] else if (wpis.dzienZbioru != null)
                 const SizedBox(height: MotywProsty.odstep),
               if (ocena != null) ..._ewidencja(context, ocena),
               const SizedBox(height: MotywProsty.odstep),

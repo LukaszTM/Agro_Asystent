@@ -80,7 +80,8 @@ class _EkranDawkaState extends State<EkranDawka> {
     }
     await Navigator.of(context).pushReplacement(
       MaterialPageRoute<void>(
-        builder: (_) => EkranZapisano(dane: dane, zabieg: zabieg),
+        builder: (_) =>
+            EkranZapisano(dane: dane, zabieg: zabieg, uslugi: widget.uslugi),
       ),
     );
   }

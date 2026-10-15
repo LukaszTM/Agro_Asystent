@@ -142,6 +142,52 @@ class RepozytoriumZabiegow {
     }
   }
 
+  /// Dopisanie albo potwierdzenie karencji przy wpisie oprysku.
+  ///
+  /// Karencja z bazy etykiet jest propozycją — dopóki rolnik jej nie
+  /// potwierdzi, wpis mówi „z etykiety MRiRW". Gdy jej nie znamy, rolnik
+  /// przepisuje ją z opakowania i wtedy źródłem jest on sam (plan, pkt 5).
+  Future<void> zapiszKarencje({
+    required String zabiegId,
+    required int? dni,
+    required String zrodlo,
+    required bool potwierdzona,
+    String? dataEtykiety,
+    String urzadzenie = 'telefon',
+    DateTime? teraz,
+  }) async {
+    final czas = (teraz ?? DateTime.now()).toIso8601String();
+    Future<void> zapiszW(DatabaseExecutor wykonawca) async {
+      await wykonawca.update(
+        'zabieg_oprysk',
+        {
+          'karencja_dni': dni,
+          'karencja_zrodlo': zrodlo,
+          'karencja_potwierdzona': potwierdzona ? 1 : 0,
+          if (dataEtykiety case final String data)
+            'karencja_data_etykiety': data,
+        },
+        where: 'zabieg_id = ?',
+        whereArgs: [zabiegId],
+      );
+      // Dziennik zmian wisi na tabeli zabiegu, więc dotykamy też jej —
+      // inaczej poprawka karencji nie zostawiłaby śladu.
+      await wykonawca.update(
+        'zabieg',
+        {'zmieniono': czas, 'urzadzenie': urzadzenie},
+        where: 'id = ?',
+        whereArgs: [zabiegId],
+      );
+    }
+
+    final baza = _baza;
+    if (baza is Database) {
+      await baza.transaction(zapiszW);
+    } else {
+      await zapiszW(baza);
+    }
+  }
+
   /// Zapis dziennika zmian dla jednego wpisu — do pokazania przy kontroli
   /// i do synchronizacji między urządzeniami.
   Future<List<Map<String, Object?>>> historia(String zabiegId) => _baza.query(

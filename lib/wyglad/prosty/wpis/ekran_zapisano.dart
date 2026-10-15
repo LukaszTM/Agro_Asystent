@@ -1,22 +1,68 @@
 import 'package:flutter/material.dart';
 
+import '../../../app/uslugi.dart';
 import '../../../funkcje/zabiegi/dane_wpisu.dart';
 import '../../../rdzen/modele/zabieg.dart';
 import '../motyw.dart';
 import '../widgety/duzy_przycisk.dart';
+import 'ekran_karencja.dart';
 
 /// Po zapisie: potwierdzenie, karencja i lista dokumentów, do których wpis
 /// trafił (plan, pkt 5).
-class EkranZapisano extends StatelessWidget {
-  const EkranZapisano({super.key, required this.dane, required this.zabieg});
+class EkranZapisano extends StatefulWidget {
+  const EkranZapisano({
+    super.key,
+    required this.dane,
+    required this.zabieg,
+    this.uslugi,
+  });
 
   final DaneWpisu dane;
   final Zabieg zabieg;
+
+  /// Potrzebne do zapisania karencji wpisanej ręcznie; `null` w podglądzie.
+  final Uslugi? uslugi;
+
+  @override
+  State<EkranZapisano> createState() => _EkranZapisanoState();
+}
+
+class _EkranZapisanoState extends State<EkranZapisano> {
+  /// Karencja po poprawce rolnika — `null`, dopóki jej nie ruszał.
+  int? _karencjaOdRolnika;
 
   static const List<String> _dokumenty = [
     'Ewidencja zabiegów środkami ochrony roślin',
     'Rejestr zabiegów agrotechnicznych (ekoschematy)',
   ];
+
+  DaneWpisu get dane => widget.dane;
+  Zabieg get zabieg => widget.zabieg;
+
+  Future<void> _ustawKarencje({int? dniZEtykiety, String? dataEtykiety}) async {
+    final uslugi = widget.uslugi;
+    if (uslugi == null) {
+      return;
+    }
+    final zapisane = await Navigator.of(context).push<bool>(
+      MaterialPageRoute<bool>(
+        builder: (_) => EkranKarencja(
+          uslugi: uslugi,
+          zabiegId: zabieg.id,
+          dataZabiegu: zabieg.data,
+          srodekNazwa: dane.srodek?.nazwa ?? 'Środek',
+          dniZEtykiety: dniZEtykiety,
+          dataEtykiety: dataEtykiety,
+        ),
+      ),
+    );
+    if ((zapisane ?? false) && mounted) {
+      final oprysk = await uslugi.zabiegi.szczegolyOprysku(zabieg.id);
+      if (mounted) {
+        setState(() => _karencjaOdRolnika = oprysk?.karencjaDni);
+      }
+    }
+  }
 
   String _dzien(DateTime data) =>
       '${data.day.toString().padLeft(2, '0')}.${data.month.toString().padLeft(2, '0')}.${data.year}';
@@ -24,9 +70,10 @@ class EkranZapisano extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final srodek = dane.srodek;
-    final karencjaDni = srodek != null && srodek.karencjaZnana
-        ? srodek.karencjaDni
-        : null;
+    final karencjaDni =
+        _karencjaOdRolnika ??
+        (srodek != null && srodek.karencjaZnana ? srodek.karencjaDni : null);
+    final mozeZapisac = widget.uslugi != null;
 
     return Scaffold(
       appBar: AppBar(title: const Text('Zapisano')),
@@ -76,6 +123,24 @@ class EkranZapisano extends StatelessWidget {
               tresc: 'Karencji nie znamy dla tego środka.',
               coZrobic: 'Sprawdź ją na etykiecie i dopisz do wpisu.',
             ),
+          if (mozeZapisac && !(srodek?.karencjaNieDotyczy ?? false)) ...[
+            const SizedBox(height: MotywProsty.odstep),
+            DuzyPrzycisk(
+              etykieta: karencjaDni == null
+                  ? 'Wpisz karencję z opakowania'
+                  : 'Sprawdź karencję na opakowaniu',
+              opis: karencjaDni == null
+                  ? 'bez niej nie policzymy dnia zbioru'
+                  : 'potwierdź albo popraw liczbę dni',
+              ikona: Icons.event_available_outlined,
+              onTap: () => _ustawKarencje(
+                dniZEtykiety: srodek != null && srodek.karencjaZnana
+                    ? srodek.karencjaDni
+                    : null,
+                dataEtykiety: srodek?.karencjaDataEtykiety,
+              ),
+            ),
+          ],
           const SizedBox(height: MotywProsty.odstep),
           Text(
             'Wpis trafił do:',

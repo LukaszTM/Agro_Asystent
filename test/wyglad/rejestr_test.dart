@@ -226,7 +226,10 @@ void main() {
       find.text('Ewidencja zabiegów środkami ochrony roślin'),
       findsOneWidget,
     );
-    expect(find.text('numer zezwolenia środka'), findsOneWidget);
+    // Nad ewidencją stoi teraz karencja ze źródłem, więc pola przepisu
+    // trzeba przewinąć.
+    expect(find.textContaining('Karencja: 42 dni'), findsOneWidget);
+    await przewinDo(tester, find.text('numer zezwolenia środka'));
     expect(find.text('R-14/2025 h.r.'), findsOneWidget);
     await przewinDo(tester, find.text('BBCH 29–59'));
     await przewinDo(tester, find.text('opryskiwanie'));
