@@ -128,6 +128,21 @@ class Limit {
   final String jednostka;
 }
 
+/// Pole, które przepis każe zapisać w dokumencie. Lista pól jest **danymi**
+/// ze słownika reguł, nie stałą w kodzie — gdy przepis doda pole, wystarczy
+/// podmienić plik (CLAUDE.md, reguła 1).
+class PoleWymagane {
+  const PoleWymagane({required this.id, required this.nazwa});
+
+  factory PoleWymagane.zJson(Map<String, dynamic> json) => PoleWymagane(
+    id: json['id'] as String,
+    nazwa: json['nazwa'] as String? ?? json['id'] as String,
+  );
+
+  final String id;
+  final String nazwa;
+}
+
 /// Obowiązek dokumentacyjny wraz z progami, od których się włącza.
 class Obowiazek {
   const Obowiazek({
@@ -141,6 +156,7 @@ class Obowiazek {
     required this.przechowywanieLat,
     required this.statusWeryfikacji,
     required this.uwagi,
+    this.wymaganePola = const [],
   });
 
   factory Obowiazek.zJson(Map<String, dynamic> json) => Obowiazek(
@@ -158,6 +174,9 @@ class Obowiazek {
     przechowywanieLat: json['przechowywanie_lat'] as int? ?? 0,
     statusWeryfikacji: json['status_weryfikacji'] as String? ?? 'nieznany',
     uwagi: json['uwagi'] as String? ?? '',
+    wymaganePola: ((json['wymagane_pola'] as List<dynamic>?) ?? const [])
+        .map((p) => PoleWymagane.zJson(p as Map<String, dynamic>))
+        .toList(growable: false),
   );
 
   final String id;
@@ -172,6 +191,9 @@ class Obowiazek {
   final int przechowywanieLat;
   final String statusWeryfikacji;
   final String uwagi;
+
+  /// Pola, które przepis każe zapisać. Puste, gdy słownik ich nie podaje.
+  final List<PoleWymagane> wymaganePola;
 
   /// Obowiązek bez progów dotyczy każdego.
   Ocena ocena(ProfilGospodarstwa profil) {

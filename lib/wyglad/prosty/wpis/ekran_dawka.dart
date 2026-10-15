@@ -66,6 +66,9 @@ class _EkranDawkaState extends State<EkranDawka> {
         bbchOd: srodek.bbchOd,
         bbchDo: srodek.bbchDo,
         kodEppo: dane.pola.first.kodEppo,
+        // Rolnik wybrał „Oprysk", więc rodzaj zastosowania jest znany
+        // z jego wyboru — nie z domysłu (ewidencja wymaga tego pola).
+        rodzajZastosowania: 'opryskiwanie',
         karencjaDni: srodek.karencjaZnana ? srodek.karencjaDni : null,
         karencjaZrodlo: srodek.karencjaZnana ? 'etykieta MRiRW' : null,
         karencjaDataEtykiety: srodek.karencjaDataEtykiety,

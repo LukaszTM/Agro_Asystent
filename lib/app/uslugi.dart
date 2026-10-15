@@ -3,9 +3,11 @@ import '../funkcje/dzialki/klient_uldk.dart';
 import '../funkcje/dzialki/repozytorium_dzialek.dart';
 import '../funkcje/dzialki/repozytorium_pol.dart';
 import '../funkcje/dzialki/zrodlo_pliku.dart';
+import '../funkcje/zabiegi/rejestr_zabiegow.dart';
 import '../funkcje/zabiegi/repozytorium_zabiegow.dart';
 import '../funkcje/zabiegi/slownik_srodkow.dart';
 import '../rdzen/dostep/dostep_funkcji.dart';
+import '../rdzen/reguly/regula_prawna.dart';
 
 /// To, czego ekrany potrzebują do pracy. Składane raz, przy starcie aplikacji,
 /// i podawane dalej w konstruktorach — bez globalnych zmiennych, żeby testy
@@ -17,7 +19,9 @@ class Uslugi {
     required this.pola,
     required this.dzialki,
     required this.zabiegi,
+    required this.rejestr,
     required this.srodki,
+    required this.reguly,
     required this.importWniosku,
     required this.zrodloPliku,
     this.uldk = const KlientUldk(),
@@ -29,7 +33,14 @@ class Uslugi {
   final RepozytoriumPol pola;
   final RepozytoriumDzialek dzialki;
   final RepozytoriumZabiegow zabiegi;
+
+  /// Odczyt wpisów do podglądu, wydruku i eksportu.
+  final RejestrZabiegow rejestr;
+
   final SlownikSrodkow srodki;
+
+  /// Słownik reguł prawnych — stąd bierzemy listę pól wymaganych w ewidencji.
+  final SlownikRegul reguly;
 
   /// Zapis odczytanego wniosku do bazy gospodarstwa.
   final ImportWniosku importWniosku;

@@ -292,4 +292,27 @@ const List<Migracja> migracje = [
       ''',
     ],
   ),
+
+  // Poprawka wpisu zmienia dawkę w `zabieg_oprysk`, a tam nie było wyzwalacza:
+  // poprzednia dawka przepadałaby bez śladu. Ewidencja musi pokazywać, co
+  // zostało poprawione (CLAUDE.md: wpisy są dopisywane, nie nadpisywane).
+  Migracja(
+    wersja: 2,
+    opis: 'Dziennik zmian dla szczegółów oprysku',
+    polecenia: [
+      '''
+      CREATE TRIGGER historia_oprysk_zmiana AFTER UPDATE ON zabieg_oprysk
+      BEGIN
+        INSERT INTO historia_zmian (tabela, wiersz_id, operacja, dane_json, czas, urzadzenie)
+        VALUES ('zabieg_oprysk', NEW.zabieg_id, 'zmiana',
+                json_object('poprzednio',
+                  json_object('srodek_nazwa', OLD.srodek_nazwa, 'dawka', OLD.dawka,
+                              'dawka_jednostka', OLD.dawka_jednostka,
+                              'przyczyna', OLD.przyczyna)),
+                (SELECT zmieniono FROM zabieg WHERE id = NEW.zabieg_id),
+                (SELECT urzadzenie FROM zabieg WHERE id = NEW.zabieg_id));
+      END
+      ''',
+    ],
+  ),
 ];

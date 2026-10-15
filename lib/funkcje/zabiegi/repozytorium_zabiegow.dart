@@ -93,6 +93,55 @@ class RepozytoriumZabiegow {
     );
   }
 
+  /// Poprawka wpisu: godzina, dawka, powód i uwagi.
+  ///
+  /// Zmiany idą do dziennika same, wyzwalaczami — poprzednia wartość zostaje
+  /// w bazie, bo kontrola musi widzieć, co było wpisane wcześniej.
+  Future<void> popraw({
+    required String zabiegId,
+    required String urzadzenie,
+    String? godzina,
+    String? uwagi,
+    double? dawka,
+    String? przyczyna,
+    DateTime? teraz,
+  }) async {
+    final czas = (teraz ?? DateTime.now()).toIso8601String();
+
+    Future<void> poprawW(DatabaseExecutor wykonawca) async {
+      await wykonawca.update(
+        'zabieg',
+        {
+          if (godzina case final String nowaGodzina) 'godzina': nowaGodzina,
+          if (uwagi case final String noweUwagi) 'uwagi': noweUwagi,
+          'zmieniono': czas,
+          'urzadzenie': urzadzenie,
+        },
+        where: 'id = ?',
+        whereArgs: [zabiegId],
+      );
+      if (dawka != null || przyczyna != null) {
+        await wykonawca.update(
+          'zabieg_oprysk',
+          {
+            if (dawka case final double nowaDawka) 'dawka': nowaDawka,
+            if (przyczyna case final String nowaPrzyczyna)
+              'przyczyna': nowaPrzyczyna,
+          },
+          where: 'zabieg_id = ?',
+          whereArgs: [zabiegId],
+        );
+      }
+    }
+
+    final baza = _baza;
+    if (baza is Database) {
+      await baza.transaction(poprawW);
+    } else {
+      await poprawW(baza);
+    }
+  }
+
   /// Zapis dziennika zmian dla jednego wpisu — do pokazania przy kontroli
   /// i do synchronizacji między urządzeniami.
   Future<List<Map<String, Object?>>> historia(String zabiegId) => _baza.query(

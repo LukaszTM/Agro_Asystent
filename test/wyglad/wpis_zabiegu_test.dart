@@ -1,12 +1,16 @@
+import 'dart:io';
+
 import 'package:agro_asystent/app/aplikacja.dart';
 import 'package:agro_asystent/app/uslugi.dart';
 import 'package:agro_asystent/funkcje/dzialki/import_wniosku.dart';
 import 'package:agro_asystent/funkcje/dzialki/repozytorium_dzialek.dart';
 import 'package:agro_asystent/funkcje/dzialki/repozytorium_pol.dart';
 import 'package:agro_asystent/funkcje/dzialki/zrodlo_pliku.dart';
+import 'package:agro_asystent/funkcje/zabiegi/rejestr_zabiegow.dart';
 import 'package:agro_asystent/funkcje/zabiegi/repozytorium_zabiegow.dart';
 import 'package:agro_asystent/funkcje/zabiegi/slownik_srodkow.dart';
 import 'package:agro_asystent/rdzen/baza/baza_gospodarstwa.dart';
+import 'package:agro_asystent/rdzen/reguly/regula_prawna.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
@@ -15,6 +19,9 @@ import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 /// i żadnego pisania na klawiaturze.
 void main() {
   sqfliteFfiInit();
+  final reguly = SlownikRegul.zTekstuJson(
+    File('assets/dane/reguly_prawne.json').readAsStringSync(),
+  );
   final fabryka = databaseFactoryFfiNoIsolate;
 
   late Database gospodarstwo;
@@ -125,7 +132,9 @@ void main() {
       pola: RepozytoriumPol(gospodarstwo),
       dzialki: RepozytoriumDzialek(gospodarstwo),
       zabiegi: RepozytoriumZabiegow(gospodarstwo),
+      rejestr: RejestrZabiegow(gospodarstwo),
       srodki: SlownikSrodkow(slowniki),
+      reguly: reguly,
       importWniosku: ImportWniosku(
         baza: gospodarstwo,
         srodki: SlownikSrodkow(slowniki),

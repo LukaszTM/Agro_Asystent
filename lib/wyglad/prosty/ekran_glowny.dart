@@ -5,6 +5,7 @@ import '../../rdzen/dostep/dostep_funkcji.dart';
 import '../../rdzen/marka/marka.dart';
 import 'ekran_pola.dart';
 import 'ekran_w_budowie.dart';
+import 'rejestr/ekran_rejestr.dart';
 import 'motyw.dart';
 import 'wpis/ekran_wybor_pola.dart';
 
@@ -46,7 +47,7 @@ class EkranGlownyProsty extends StatelessWidget {
       etykieta: 'Dokumenty',
       ikona: Icons.description_outlined,
       coBedzie:
-          'Trzy rejestry do podglądu, wydruku PDF i eksportu '
+          'Rejestr zabiegów do podglądu; wydruk PDF i eksport '
           'CSV/XLSX — zawsze w wersji darmowej.',
     ),
   ];
@@ -124,6 +125,8 @@ class _PrzyciskKafelek extends StatelessWidget {
           return EkranPola(uslugi: dostepneUslugi);
         case 'Dodaj zabieg':
           return EkranWyborPola(uslugi: dostepneUslugi);
+        case 'Dokumenty':
+          return EkranRejestr(uslugi: dostepneUslugi);
       }
     }
     return EkranWBudowie(tytul: kafelek.etykieta, coBedzie: kafelek.coBedzie);
