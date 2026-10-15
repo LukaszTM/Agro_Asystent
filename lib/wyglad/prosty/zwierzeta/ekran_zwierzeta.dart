@@ -209,7 +209,12 @@ class _Djp extends StatelessWidget {
 }
 
 /// Wybór grupy zwierząt ze słownika reguł — nazwy i przeliczniki są danymi.
-class WyborGrupyDjp extends StatelessWidget {
+///
+/// Rozporządzenie wymienia ponad osiemdziesiąt grup, w tym zwierzęta, których
+/// prawie nikt nie trzyma (szynszyle, jenoty, strusie). Pokazujemy od razu
+/// pierwsze gatunki z listy — w słowniku stoją w kolejności od
+/// najczęstszych — a resztę po naciśnięciu „Więcej zwierząt".
+class WyborGrupyDjp extends StatefulWidget {
   const WyborGrupyDjp({
     super.key,
     required this.wspolczynniki,
@@ -217,16 +222,32 @@ class WyborGrupyDjp extends StatelessWidget {
     required this.onZmiana,
   });
 
+  /// Ile gatunków widać bez rozwijania.
+  static const int gatunkiNaStart = 6;
+
   final WspolczynnikiDjp wspolczynniki;
   final GrupaDjp? wybrana;
   final void Function(GrupaDjp) onZmiana;
 
   @override
+  State<WyborGrupyDjp> createState() => _WyborGrupyDjpState();
+}
+
+class _WyborGrupyDjpState extends State<WyborGrupyDjp> {
+  bool _wszystkie = false;
+
+  @override
   Widget build(BuildContext context) {
+    final gatunki = widget.wspolczynniki.gatunki;
+    final widoczne = _wszystkie
+        ? gatunki
+        : gatunki.take(WyborGrupyDjp.gatunkiNaStart).toList(growable: false);
+    final ukryte = gatunki.length - widoczne.length;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        for (final gatunek in wspolczynniki.gatunki) ...[
+        for (final gatunek in widoczne) ...[
           Padding(
             padding: const EdgeInsets.only(top: 8, bottom: 4),
             child: Text(gatunek, style: Theme.of(context).textTheme.bodyMedium),
@@ -235,20 +256,27 @@ class WyborGrupyDjp extends StatelessWidget {
             spacing: 10,
             runSpacing: 10,
             children: [
-              for (final grupa in wspolczynniki.grupyGatunku(gatunek))
+              for (final grupa in widget.wspolczynniki.grupyGatunku(gatunek))
                 ChoiceChip(
                   label: Text(
                     grupa.nazwa,
                     style: Theme.of(context).textTheme.labelLarge,
                   ),
-                  selected: wybrana?.id == grupa.id,
-                  onSelected: (_) => onZmiana(grupa),
+                  selected: widget.wybrana?.id == grupa.id,
+                  onSelected: (_) => widget.onZmiana(grupa),
                   padding: const EdgeInsets.symmetric(
                     horizontal: 12,
                     vertical: 10,
                   ),
                 ),
             ],
+          ),
+        ],
+        if (ukryte > 0) ...[
+          const SizedBox(height: MotywProsty.odstep),
+          OutlinedButton(
+            onPressed: () => setState(() => _wszystkie = true),
+            child: Text('Więcej zwierząt ($ukryte)'),
           ),
         ],
       ],

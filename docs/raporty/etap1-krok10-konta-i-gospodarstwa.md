@@ -125,9 +125,9 @@ Wszystkie dziesięć kroków z planu (pkt 4) jest zrobione:
 
 ### Co trzeba zrobić przed wydaniem
 
-1. **Przeliczniki DJP** (`wspolczynniki_djp`) mają status
-   `do_weryfikacji` — sprawdzić w aktualnym załączniku do przepisów
-   o nawozach (krok 9).
+1. ~~**Przeliczniki DJP** — sprawdzić w załączniku do przepisów
+   o nawozach.~~ **Zrobione 15.10.2026**: tabela 3 z programu działań
+   (Dz.U. 2020 poz. 243) — `docs/raporty/djp-weryfikacja.md`.
 2. **Terminy nawożenia** pochodzą ze strony ARiMR z 2019 r. — sprawdzić
    w aktualnym rozporządzeniu (plan, pkt 3).
 3. **Uprawy bez decyzji o kodzie EPPO** —

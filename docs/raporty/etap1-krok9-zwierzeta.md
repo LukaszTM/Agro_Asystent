@@ -55,7 +55,7 @@ to wpis w słowniku, nie zmiana w kodzie.
 
 | Miara | Wartość |
 | --- | --- |
-| Grupy zwierząt w słowniku | 16 (6 gatunków) |
+| Grupy zwierząt w słowniku | 16 (6 gatunków) — po weryfikacji 85 (22 gatunki) |
 | Nowe pliki kodu | 3 (+ zmiany w pięciu) |
 | Nowe pliki testów | 2 |
 | Testy dodane w tym kroku | 14 (9 logiki + 5 ekranów) |
@@ -65,8 +65,9 @@ to wpis w słowniku, nie zmiana w kodzie.
 
 ## Czego pilnują testy
 
-- Słownik przeliczników jest oznaczony jako „do weryfikacji" i ekran to
-  pokazuje.
+- Słownik przeliczników podaje źródło i status; gdy status nie jest
+  „potwierdzone", ekran pokazuje ostrzeżenie (po weryfikacji z 15.10.2026
+  testem jest to, że sprawdzony słownik ostrzeżenia **nie** pokazuje).
 - Zwierzę sprzedane, padłe albo ubite wychodzi ze stanu stada; urodzone
   i kupione w nim zostaje.
 - 2 krowy + cielę = 2,15 DJP (przeliczniki ze słownika).
@@ -86,11 +87,14 @@ to wpis w słowniku, nie zmiana w kodzie.
   wieku, więc po potwierdzeniu przepisu grupa może wynikać z daty
   urodzenia sama.
 
-## Do zrobienia przed wydaniem — otwarta sprawa
+## Do zrobienia przed wydaniem — **sprawa zamknięta 15.10.2026**
 
-**Przeliczniki DJP (`wspolczynniki_djp`) trzeba sprawdzić w aktualnym
-załączniku do przepisów o nawozach.** Wartości wpisane w tym kroku służą
-uruchomieniu modułu; dopóki `status_weryfikacji` to `do_weryfikacji`,
-aplikacja oznacza wynik jako „do sprawdzenia" i prosi o potwierdzenie
-u doradcy. Przed wydaniem: sprawdzić liczby, zmienić status na
-`potwierdzone` i podnieść wersję słownika.
+Przeliczniki DJP zostały sprawdzone w rozporządzeniu i wymienione na
+urzędowe: **Dz.U. 2020 poz. 243, załącznik nr 1, tabela 3**. Szczegóły
+i wykaz poprawionych wartości: `docs/raporty/djp-weryfikacja.md`.
+Słownik ma teraz `status_weryfikacji: "potwierdzone"`, więc karta DJP nie
+pokazuje już ostrzeżenia „do sprawdzenia".
+
+Pierwotna treść tej sekcji: wartości wpisane w kroku 9 służyły uruchomieniu
+modułu i czekały na sprawdzenie w przepisie. Pięć z nich było błędnych —
+dlatego były oznaczone jako niepewne.

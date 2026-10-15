@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'dart:io';
 
 import 'package:agro_asystent/funkcje/terminy/kalendarz_terminow.dart';
@@ -61,17 +63,57 @@ void main() {
   );
 
   group('słownik współczynników', () {
-    test('ma grupy DJP i mówi, że czekają na sprawdzenie', () {
+    test('ma współczynniki z rozporządzenia i podaje źródło', () {
       final wspolczynniki = reguly.wspolczynnikiDjp;
       expect(wspolczynniki.grupy, isNotEmpty);
       expect(wspolczynniki.gatunki, contains('bydło'));
       expect(wspolczynniki.grupa('bydlo_krowa')?.wspolczynnik, 1.0);
+      expect(wspolczynniki.grupa('bydlo_ciele')?.wspolczynnik, 0.15);
       expect(
         wspolczynniki.doWeryfikacji,
-        isTrue,
-        reason: 'dopóki nikt nie sprawdził ich w rozporządzeniu',
+        isFalse,
+        reason: 'tabela 3 z programu działań została sprawdzona',
       );
-      expect(wspolczynniki.zrodlo, isNotEmpty);
+      expect(wspolczynniki.zrodlo, contains('Dz.U. 2020 poz. 243'));
+    });
+
+    test('nazwy grup są przepisane z rozporządzenia', () {
+      final wspolczynniki = reguly.wspolczynnikiDjp;
+      expect(wspolczynniki.grupa('bydlo_krowa')?.nazwa, 'Krowy');
+      expect(
+        wspolczynniki.grupa('swinie_tucznik')?.nazwa,
+        'Tuczniki, loszki i knurki hodowlane',
+      );
+      expect(
+        wspolczynniki.grupa('inne_zwierzeta_500_kg')?.wspolczynnik,
+        1.0,
+        reason: 'wiersz „inne zwierzęta o łącznej masie 500 kg"',
+      );
+    });
+
+    test('niesprawdzony słownik nadal każe potwierdzić wynik u doradcy', () {
+      // Gdy kiedyś dojdą nowe grupy, a status wróci do „do_weryfikacji",
+      // aplikacja musi znowu oznaczać DJP jako niepewne.
+      final niesprawdzony = SlownikRegul.zTekstuJson(
+        jsonEncode({
+          'wersja': '2026.10.15',
+          'obowiazuje_od': '2026-10-15',
+          'obowiazki': const [],
+          'wspolczynniki_djp': {
+            'status_weryfikacji': 'do_weryfikacji',
+            'zrodlo': 'projekt zmiany rozporządzenia',
+            'grupy': [
+              {
+                'id': 'bydlo_krowa',
+                'gatunek': 'bydło',
+                'nazwa': 'Krowy',
+                'wspolczynnik': 1.1,
+              },
+            ],
+          },
+        }),
+      );
+      expect(niesprawdzony.wspolczynnikiDjp.doWeryfikacji, isTrue);
     });
   });
 
@@ -130,10 +172,10 @@ void main() {
       expect(stan.bezWspolczynnika, 0);
       expect(
         stan.pewny,
-        isFalse,
-        reason: 'współczynniki czekają na sprawdzenie w przepisie',
+        isTrue,
+        reason: 'współczynniki są z rozporządzenia, a każde zwierzę ma grupę',
       );
-      expect(stan.doWeryfikacji, isTrue);
+      expect(stan.doWeryfikacji, isFalse);
     });
 
     test('zwierzę bez grupy nie psuje wyniku po cichu', () async {

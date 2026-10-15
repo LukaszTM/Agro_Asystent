@@ -144,8 +144,8 @@ void main() {
     await tester.pumpAndSettle();
 
     await tester.enterText(find.byType(TextField), 'PL005123456789');
-    await przewinDo(tester, find.text('krowa'));
-    await tester.tap(find.text('krowa'));
+    await przewinDo(tester, find.text('Krowy'));
+    await tester.tap(find.text('Krowy'));
     await tester.pumpAndSettle();
     await przewinDo(tester, find.text('Zapisz zwierzę'));
     await tester.tap(find.text('Zapisz zwierzę'));
@@ -180,17 +180,34 @@ void main() {
     expect(find.textContaining('1 sztuk bez grupy'), findsOneWidget);
   });
 
-  testWidgets('przeliczniki do sprawdzenia są widoczne dla rolnika', (
+  testWidgets('sprawdzone przeliczniki nie straszą rolnika ostrzeżeniem', (
     tester,
   ) async {
     await pokaz(tester, EkranZwierzeta(uslugi: zbudujUslugi()));
 
     expect(
       find.textContaining('czekają na sprawdzenie w przepisie'),
-      findsOneWidget,
+      findsNothing,
       reason:
-          'Dopóki słownik ma status „do_weryfikacji”, wynik nie udaje pewnego.',
+          'Współczynniki są z rozporządzenia (Dz.U. 2020 poz. 243, tab. 3).',
     );
+  });
+
+  testWidgets('rzadkie zwierzęta są schowane za „Więcej zwierząt"', (
+    tester,
+  ) async {
+    await pokaz(tester, EkranZwierzeta(uslugi: zbudujUslugi()));
+    await przewinDo(tester, find.text('Dodaj zwierzę'));
+    await tester.tap(find.text('Dodaj zwierzę'));
+    await tester.pumpAndSettle();
+
+    await przewinDo(tester, find.textContaining('Więcej zwierząt'));
+    expect(find.text('Szynszyle samce'), findsNothing);
+
+    await tester.tap(find.textContaining('Więcej zwierząt'));
+    await tester.pumpAndSettle();
+    await przewinDo(tester, find.text('Szynszyle samce'));
+    expect(find.text('Szynszyle samce'), findsOneWidget);
   });
 
   testWidgets('zgłoszone zdarzenie znika z listy', (tester) async {

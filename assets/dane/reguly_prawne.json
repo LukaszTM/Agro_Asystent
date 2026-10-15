@@ -1,5 +1,5 @@
 {
-  "wersja": "2026.10.15.1",
+  "wersja": "2026.10.15.2",
   "obowiazuje_od": "2026-10-15",
   "opis": "Progi, limity i terminy obowiązków dokumentacyjnych. Dane, nie kod — aktualizowane bez przebudowy aplikacji. Zestawienie służy do planowania i nie jest poradą prawną.",
   "obowiazki": [
@@ -269,105 +269,520 @@
     }
   ],
   "wspolczynniki_djp": {
-    "status_weryfikacji": "do_weryfikacji",
-    "zrodlo": "współczynniki przeliczeniowe zwierząt na DJP — do sprawdzenia w aktualnym załączniku do przepisów o nawozach",
-    "uwagi": "Wartości wpisane do uruchomienia modułu zwierząt. Przed wydaniem aplikacji muszą zostać sprawdzone w rozporządzeniu; aplikacja oznacza wynik jako „do sprawdzenia”, dopóki status jest inny niż potwierdzone.",
+    "status_weryfikacji": "potwierdzone",
+    "zrodlo": "Dz.U. 2020 poz. 243 — Program działań mających na celu zmniejszenie zanieczyszczenia wód azotanami pochodzącymi ze źródeł rolniczych, załącznik nr 1, tabela 3",
+    "sprawdzono": "2026-10-15",
+    "uwagi": "Pełna tabela 3 z programu działań: nazwy grup przepisane dosłownie z rozporządzenia, bo tak czyta je kontrola. Gatunki stoją w kolejności od najczęstszych w polskich gospodarstwach — ekran wyboru pokazuje pierwsze z listy, resztę po naciśnięciu „Więcej zwierząt”.",
     "grupy": [
       {
-        "id": "bydlo_ciele",
+        "id": "bydlo_buhaj",
         "gatunek": "bydło",
-        "nazwa": "cielę do 6 miesięcy",
-        "wspolczynnik": 0.15
-      },
-      {
-        "id": "bydlo_mlodziez_6_12",
-        "gatunek": "bydło",
-        "nazwa": "młodzież 6–12 miesięcy",
-        "wspolczynnik": 0.3
-      },
-      {
-        "id": "bydlo_mlodziez_12_18",
-        "gatunek": "bydło",
-        "nazwa": "młodzież 12–18 miesięcy",
-        "wspolczynnik": 0.5
-      },
-      {
-        "id": "bydlo_jalowka",
-        "gatunek": "bydło",
-        "nazwa": "jałówka powyżej 18 miesięcy",
-        "wspolczynnik": 0.8
+        "nazwa": "Buhaje",
+        "wspolczynnik": 1.4
       },
       {
         "id": "bydlo_krowa",
         "gatunek": "bydło",
-        "nazwa": "krowa",
-        "wspolczynnik": 1.0
+        "nazwa": "Krowy",
+        "wspolczynnik": 1
       },
       {
-        "id": "bydlo_buhaj",
+        "id": "bydlo_krowa_powyzej_500",
         "gatunek": "bydło",
-        "nazwa": "buhaj",
-        "wspolczynnik": 1.4
-      },
-      {
-        "id": "trzoda_prosie",
-        "gatunek": "trzoda chlewna",
-        "nazwa": "prosię do 2 miesięcy",
-        "wspolczynnik": 0.02
-      },
-      {
-        "id": "trzoda_warchlak",
-        "gatunek": "trzoda chlewna",
-        "nazwa": "warchlak 2–4 miesiące",
-        "wspolczynnik": 0.07
-      },
-      {
-        "id": "trzoda_tucznik",
-        "gatunek": "trzoda chlewna",
-        "nazwa": "tucznik",
-        "wspolczynnik": 0.14
-      },
-      {
-        "id": "trzoda_locha",
-        "gatunek": "trzoda chlewna",
-        "nazwa": "locha",
-        "wspolczynnik": 0.35
-      },
-      {
-        "id": "owca_jagnie",
-        "gatunek": "owce",
-        "nazwa": "jagnię",
-        "wspolczynnik": 0.05
-      },
-      {
-        "id": "owca_dorosla",
-        "gatunek": "owce",
-        "nazwa": "owca dorosła",
-        "wspolczynnik": 0.1
-      },
-      {
-        "id": "koza_dorosla",
-        "gatunek": "kozy",
-        "nazwa": "koza dorosła",
-        "wspolczynnik": 0.1
-      },
-      {
-        "id": "kon_dorosly",
-        "gatunek": "konie",
-        "nazwa": "koń dorosły",
+        "nazwa": "Krowy powyżej 500 kg masy ciała",
         "wspolczynnik": 1.2
       },
       {
-        "id": "drob_kura",
+        "id": "bydlo_jalowka_cielna",
+        "gatunek": "bydło",
+        "nazwa": "Jałówki cielne",
+        "wspolczynnik": 1
+      },
+      {
+        "id": "bydlo_jalowka_powyzej_1",
+        "gatunek": "bydło",
+        "nazwa": "Jałówki powyżej 1 roku",
+        "wspolczynnik": 0.8
+      },
+      {
+        "id": "bydlo_jalowka_6_12",
+        "gatunek": "bydło",
+        "nazwa": "Jałówki od 6 miesiąca do 1 roku",
+        "wspolczynnik": 0.3
+      },
+      {
+        "id": "bydlo_opasowe_powyzej_1",
+        "gatunek": "bydło",
+        "nazwa": "Bydło opasowe powyżej 1 roku",
+        "wspolczynnik": 0.9
+      },
+      {
+        "id": "bydlo_opasowe_6_12",
+        "gatunek": "bydło",
+        "nazwa": "Bydło opasowe od 6 miesiąca do 1 roku",
+        "wspolczynnik": 0.36
+      },
+      {
+        "id": "bydlo_ciele",
+        "gatunek": "bydło",
+        "nazwa": "Cielęta do 6 miesiąca",
+        "wspolczynnik": 0.15
+      },
+      {
+        "id": "swinie_knur",
+        "gatunek": "świnie",
+        "nazwa": "Knury",
+        "wspolczynnik": 0.4
+      },
+      {
+        "id": "swinie_locha",
+        "gatunek": "świnie",
+        "nazwa": "Lochy",
+        "wspolczynnik": 0.35
+      },
+      {
+        "id": "swinie_warchlak",
+        "gatunek": "świnie",
+        "nazwa": "Warchlaki od 2 miesiąca do 4 miesiąca",
+        "wspolczynnik": 0.07
+      },
+      {
+        "id": "swinie_prosie",
+        "gatunek": "świnie",
+        "nazwa": "Prosięta do 2 miesiąca",
+        "wspolczynnik": 0.02
+      },
+      {
+        "id": "swinie_tucznik",
+        "gatunek": "świnie",
+        "nazwa": "Tuczniki, loszki i knurki hodowlane",
+        "wspolczynnik": 0.14
+      },
+      {
+        "id": "drob_kury_kaczki",
         "gatunek": "drób",
-        "nazwa": "kura nioska",
+        "nazwa": "Kury, kaczki",
         "wspolczynnik": 0.004
+      },
+      {
+        "id": "drob_kury_do_20_tygodnia",
+        "gatunek": "drób",
+        "nazwa": "Kury do 20 tygodnia",
+        "wspolczynnik": 0.0014
       },
       {
         "id": "drob_brojler",
         "gatunek": "drób",
-        "nazwa": "brojler",
-        "wspolczynnik": 0.0025
+        "nazwa": "Kurczęta brojlery",
+        "wspolczynnik": 0.0036
+      },
+      {
+        "id": "drob_gesi",
+        "gatunek": "drób",
+        "nazwa": "Gęsi",
+        "wspolczynnik": 0.008
+      },
+      {
+        "id": "drob_indyki_samce",
+        "gatunek": "drób",
+        "nazwa": "Indyki samce",
+        "wspolczynnik": 0.044
+      },
+      {
+        "id": "drob_indyki_samice",
+        "gatunek": "drób",
+        "nazwa": "Indyki samice",
+        "wspolczynnik": 0.02
+      },
+      {
+        "id": "drob_przepiorki",
+        "gatunek": "drób",
+        "nazwa": "Przepiórki",
+        "wspolczynnik": 0.0003
+      },
+      {
+        "id": "drob_perlice",
+        "gatunek": "drób",
+        "nazwa": "Perlice",
+        "wspolczynnik": 0.003
+      },
+      {
+        "id": "owce_powyzej_1_5_roku",
+        "gatunek": "owce",
+        "nazwa": "Owce powyżej 1,5 roku",
+        "wspolczynnik": 0.1
+      },
+      {
+        "id": "owce_tryki_powyzej_1_5_roku",
+        "gatunek": "owce",
+        "nazwa": "Tryki powyżej 1,5 roku",
+        "wspolczynnik": 0.12
+      },
+      {
+        "id": "owce_jagnieta_do_3_5_miesiaca",
+        "gatunek": "owce",
+        "nazwa": "Jagnięta do 3,5 miesiąca",
+        "wspolczynnik": 0.05
+      },
+      {
+        "id": "owce_jarlaki_tryczki",
+        "gatunek": "owce",
+        "nazwa": "Jarlaki tryczki",
+        "wspolczynnik": 0.08
+      },
+      {
+        "id": "owce_jarlaki_maciorki",
+        "gatunek": "owce",
+        "nazwa": "Jarlaki maciorki",
+        "wspolczynnik": 0.1
+      },
+      {
+        "id": "kozy_matki",
+        "gatunek": "kozy",
+        "nazwa": "Kozy matki",
+        "wspolczynnik": 0.15
+      },
+      {
+        "id": "kozy_kozleta_do_3_5_miesiaca",
+        "gatunek": "kozy",
+        "nazwa": "Koźlęta do 3,5 miesiąca",
+        "wspolczynnik": 0.05
+      },
+      {
+        "id": "kozy_kozleta_3_5_miesiaca_1_5_roku",
+        "gatunek": "kozy",
+        "nazwa": "Koźlęta od 3,5 miesiąca do 1,5 roku",
+        "wspolczynnik": 0.08
+      },
+      {
+        "id": "kozy_pozostale",
+        "gatunek": "kozy",
+        "nazwa": "Pozostałe kozy",
+        "wspolczynnik": 0.1
+      },
+      {
+        "id": "konie_duze_ogiery_klacze_walachy",
+        "gatunek": "konie ras dużych",
+        "nazwa": "Ogiery, klacze, wałachy",
+        "wspolczynnik": 1.2
+      },
+      {
+        "id": "konie_duze_zrebaki_powyzej_2_lat",
+        "gatunek": "konie ras dużych",
+        "nazwa": "Źrebaki powyżej 2 lat",
+        "wspolczynnik": 1
+      },
+      {
+        "id": "konie_duze_zrebaki_1_2_lat",
+        "gatunek": "konie ras dużych",
+        "nazwa": "Źrebaki od 1 roku do 2 lat",
+        "wspolczynnik": 0.8
+      },
+      {
+        "id": "konie_duze_zrebaki_6_miesiecy_1_rok",
+        "gatunek": "konie ras dużych",
+        "nazwa": "Źrebaki od 6 miesiąca do 1 roku",
+        "wspolczynnik": 0.5
+      },
+      {
+        "id": "konie_duze_zrebieta_do_6_miesiaca",
+        "gatunek": "konie ras dużych",
+        "nazwa": "Źrebięta do 6 miesiąca",
+        "wspolczynnik": 0.3
+      },
+      {
+        "id": "konie_male_ogiery_klacze_walachy",
+        "gatunek": "konie ras małych",
+        "nazwa": "Ogiery, klacze, wałachy",
+        "wspolczynnik": 0.6
+      },
+      {
+        "id": "konie_male_zrebaki_powyzej_2_lat",
+        "gatunek": "konie ras małych",
+        "nazwa": "Źrebaki powyżej 2 lat",
+        "wspolczynnik": 0.5
+      },
+      {
+        "id": "konie_male_zrebaki_1_2_lat",
+        "gatunek": "konie ras małych",
+        "nazwa": "Źrebaki od 1 roku do 2 lat",
+        "wspolczynnik": 0.35
+      },
+      {
+        "id": "konie_male_zrebaki_6_miesiecy_1_rok",
+        "gatunek": "konie ras małych",
+        "nazwa": "Źrebaki od 6 miesiąca do 1 roku",
+        "wspolczynnik": 0.2
+      },
+      {
+        "id": "konie_male_zrebieta_do_6_miesiaca",
+        "gatunek": "konie ras małych",
+        "nazwa": "Źrebięta do 6 miesiąca",
+        "wspolczynnik": 0.12
+      },
+      {
+        "id": "bawol_powyzej_2_lat",
+        "gatunek": "bawół domowy",
+        "nazwa": "Bawół domowy powyżej 2 lat",
+        "wspolczynnik": 0.7
+      },
+      {
+        "id": "bawol_1_2_lat",
+        "gatunek": "bawół domowy",
+        "nazwa": "Bawół domowy od 1 roku do 2 lat",
+        "wspolczynnik": 0.4
+      },
+      {
+        "id": "bawol_6_miesiecy_1_rok",
+        "gatunek": "bawół domowy",
+        "nazwa": "Bawół domowy od 6 miesiąca do 1 roku",
+        "wspolczynnik": 0.3
+      },
+      {
+        "id": "bawol_do_6_miesiaca",
+        "gatunek": "bawół domowy",
+        "nazwa": "Bawół domowy do 6 miesiąca",
+        "wspolczynnik": 0.13
+      },
+      {
+        "id": "mul_powyzej_2_lat",
+        "gatunek": "muł",
+        "nazwa": "Muł powyżej 2 lat",
+        "wspolczynnik": 0.6
+      },
+      {
+        "id": "mul_1_2_lat",
+        "gatunek": "muł",
+        "nazwa": "Muł od 1 roku do 2 lat",
+        "wspolczynnik": 0.3
+      },
+      {
+        "id": "mul_do_1_roku",
+        "gatunek": "muł",
+        "nazwa": "Muł do 1 roku",
+        "wspolczynnik": 0.1
+      },
+      {
+        "id": "osiol_powyzej_2_lat",
+        "gatunek": "osioł",
+        "nazwa": "Osioł powyżej 2 lat",
+        "wspolczynnik": 0.5
+      },
+      {
+        "id": "osiol_1_2_lat",
+        "gatunek": "osioł",
+        "nazwa": "Osioł od 1 roku do 2 lat",
+        "wspolczynnik": 0.25
+      },
+      {
+        "id": "osiol_do_1_roku",
+        "gatunek": "osioł",
+        "nazwa": "Osioł do 1 roku",
+        "wspolczynnik": 0.07
+      },
+      {
+        "id": "jelenie_sika_byki",
+        "gatunek": "jelenie sika i daniele",
+        "nazwa": "Byki",
+        "wspolczynnik": 0.22
+      },
+      {
+        "id": "jelenie_sika_lanie",
+        "gatunek": "jelenie sika i daniele",
+        "nazwa": "Łanie",
+        "wspolczynnik": 0.13
+      },
+      {
+        "id": "jelenie_sika_pozostale",
+        "gatunek": "jelenie sika i daniele",
+        "nazwa": "Pozostałe",
+        "wspolczynnik": 0.06
+      },
+      {
+        "id": "jelenie_szlachetne_byki",
+        "gatunek": "jelenie szlachetne",
+        "nazwa": "Byki",
+        "wspolczynnik": 0.42
+      },
+      {
+        "id": "jelenie_szlachetne_lanie",
+        "gatunek": "jelenie szlachetne",
+        "nazwa": "Łanie",
+        "wspolczynnik": 0.24
+      },
+      {
+        "id": "jelenie_szlachetne_pozostale",
+        "gatunek": "jelenie szlachetne",
+        "nazwa": "Pozostałe",
+        "wspolczynnik": 0.1
+      },
+      {
+        "id": "strusie_afrykanskie",
+        "gatunek": "strusie",
+        "nazwa": "Strusie afrykańskie",
+        "wspolczynnik": 0.2
+      },
+      {
+        "id": "strusie_emu_i_nandu",
+        "gatunek": "strusie",
+        "nazwa": "Strusie Emu i Nandu",
+        "wspolczynnik": 0.1
+      },
+      {
+        "id": "golebie_miesne",
+        "gatunek": "gołębie (mięsne)",
+        "nazwa": "Gołębie (mięsne)",
+        "wspolczynnik": 0.002
+      },
+      {
+        "id": "kroliki_samce",
+        "gatunek": "króliki",
+        "nazwa": "Króliki samce",
+        "wspolczynnik": 0.007
+      },
+      {
+        "id": "kroliki_samice",
+        "gatunek": "króliki",
+        "nazwa": "Króliki samice",
+        "wspolczynnik": 0.007
+      },
+      {
+        "id": "kroliki_mlode",
+        "gatunek": "króliki",
+        "nazwa": "Króliki młode",
+        "wspolczynnik": 0.004
+      },
+      {
+        "id": "lisy_pospolite_samce",
+        "gatunek": "lisy",
+        "nazwa": "Lisy pospolite samce",
+        "wspolczynnik": 0.017
+      },
+      {
+        "id": "lisy_pospolite_samice",
+        "gatunek": "lisy",
+        "nazwa": "Lisy pospolite samice",
+        "wspolczynnik": 0.011
+      },
+      {
+        "id": "lisy_pospolite_mlode",
+        "gatunek": "lisy",
+        "nazwa": "Lisy pospolite młode",
+        "wspolczynnik": 0.005
+      },
+      {
+        "id": "lisy_polarne_samce",
+        "gatunek": "lisy",
+        "nazwa": "Lisy polarne samce",
+        "wspolczynnik": 0.02
+      },
+      {
+        "id": "lisy_polarne_samice",
+        "gatunek": "lisy",
+        "nazwa": "Lisy polarne samice",
+        "wspolczynnik": 0.016
+      },
+      {
+        "id": "lisy_polarne_mlode",
+        "gatunek": "lisy",
+        "nazwa": "Lisy polarne młode",
+        "wspolczynnik": 0.006
+      },
+      {
+        "id": "jenoty_samce",
+        "gatunek": "jenoty",
+        "nazwa": "Jenoty samce",
+        "wspolczynnik": 0.018
+      },
+      {
+        "id": "jenoty_samice",
+        "gatunek": "jenoty",
+        "nazwa": "Jenoty samice",
+        "wspolczynnik": 0.016
+      },
+      {
+        "id": "jenoty_mlode",
+        "gatunek": "jenoty",
+        "nazwa": "Jenoty młode",
+        "wspolczynnik": 0.006
+      },
+      {
+        "id": "norki_samce",
+        "gatunek": "norki",
+        "nazwa": "Norki samce",
+        "wspolczynnik": 0.0042
+      },
+      {
+        "id": "norki_samice",
+        "gatunek": "norki",
+        "nazwa": "Norki samice",
+        "wspolczynnik": 0.0031
+      },
+      {
+        "id": "norki_mlode",
+        "gatunek": "norki",
+        "nazwa": "Norki młode",
+        "wspolczynnik": 0.0015
+      },
+      {
+        "id": "nutrie_samce",
+        "gatunek": "nutrie",
+        "nazwa": "Nutrie samce",
+        "wspolczynnik": 0.009
+      },
+      {
+        "id": "nutrie_samice",
+        "gatunek": "nutrie",
+        "nazwa": "Nutrie samice",
+        "wspolczynnik": 0.008
+      },
+      {
+        "id": "nutrie_mlode",
+        "gatunek": "nutrie",
+        "nazwa": "Nutrie młode",
+        "wspolczynnik": 0.004
+      },
+      {
+        "id": "tchorze_samce",
+        "gatunek": "tchórze",
+        "nazwa": "Tchórze samce",
+        "wspolczynnik": 0.003
+      },
+      {
+        "id": "tchorze_samice",
+        "gatunek": "tchórze",
+        "nazwa": "Tchórze samice",
+        "wspolczynnik": 0.0016
+      },
+      {
+        "id": "tchorze_mlode",
+        "gatunek": "tchórze",
+        "nazwa": "Tchórze młode",
+        "wspolczynnik": 0.0008
+      },
+      {
+        "id": "szynszyle_samce",
+        "gatunek": "szynszyle",
+        "nazwa": "Szynszyle samce",
+        "wspolczynnik": 0.0012
+      },
+      {
+        "id": "szynszyle_samice",
+        "gatunek": "szynszyle",
+        "nazwa": "Szynszyle samice",
+        "wspolczynnik": 0.0012
+      },
+      {
+        "id": "szynszyle_mlode",
+        "gatunek": "szynszyle",
+        "nazwa": "Szynszyle młode",
+        "wspolczynnik": 0.0007
+      },
+      {
+        "id": "inne_zwierzeta_500_kg",
+        "gatunek": "inne zwierzęta",
+        "nazwa": "Inne zwierzęta o łącznej masie 500 kg, z wyłączeniem ryb",
+        "wspolczynnik": 1
       }
     ]
   }
