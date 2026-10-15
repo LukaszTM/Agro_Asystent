@@ -21,7 +21,6 @@ import 'package:agro_asystent/funkcje/zabiegi/rejestr_zabiegow.dart';
 import 'package:agro_asystent/funkcje/zabiegi/repozytorium_zabiegow.dart';
 import 'package:agro_asystent/funkcje/zabiegi/slownik_srodkow.dart';
 import 'package:agro_asystent/rdzen/baza/baza_gospodarstwa.dart';
-import 'package:agro_asystent/rdzen/modele/zabieg.dart';
 import 'package:agro_asystent/rdzen/reguly/regula_prawna.dart';
 import 'package:agro_asystent/wyglad/prosty/motyw.dart';
 import 'package:agro_asystent/funkcje/zabiegi/dane_wpisu.dart';
