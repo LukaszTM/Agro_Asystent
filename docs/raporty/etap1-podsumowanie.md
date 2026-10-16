@@ -1,0 +1,76 @@
+# Etap 1 zamknięty — podsumowanie
+
+16 października 2026 r.
+
+Aplikacja prowadzi dokumentację gospodarstwa w całości offline, na jednym
+telefonie, bez serwera i bez żadnej opłaty za to, czego wymagają przepisy.
+
+## Dziesięć kroków z planu (pkt 4)
+
+| Krok | Raport |
+| --- | --- |
+| 1. Działki i mapa | `etap1-krok1-dzialki-i-mapa.md` |
+| 2. Import działek i upraw z PDF wniosku | `etap1-krok2-import-wniosku.md` |
+| 3. Rejestr zabiegów z ewidencją oprysków | `etap1-krok3-rejestr-zabiegow.md` |
+| 4. Dokumenty: podgląd, PDF, CSV/XLSX | `etap1-krok4-dokumenty.md` |
+| 5. Terminy i przypomnienia | `etap1-krok5-terminy.md` |
+| 6. Nawożenie: ewidencja, limit N, plan | `etap1-krok6-nawozenie.md` |
+| 7. Odczyt zdjęć: etykieta, worek nawozu | `etap1-krok7-odczyt-zdjec.md` |
+| 8. Karencja z bazy etykiet | `etap1-krok8-karencja.md` |
+| 9. Zwierzęta: stado, terminy, DJP | `etap1-krok9-zwierzeta.md` |
+| 10. Konta i kilka gospodarstw | `etap1-krok10-konta-i-gospodarstwa.md` |
+
+## Domknięte po dziesiątym kroku
+
+| Co | Dlaczego | Raport |
+| --- | --- | --- |
+| **Trzy rejestry** do podglądu, wydruku i eksportu | plan (pkt 8) obiecuje trzy, aplikacja drukowała dwa — i to ewidencję nawożenia pod inną podstawą prawną | `etap1-trzy-rejestry.md` |
+| **Kopia danych do pliku** + usuwanie gospodarstwa | plan (pkt 8) obiecuje ją w wersji darmowej; bez niej zgubiony telefon = utrata dokumentacji | `etap1-kopia-danych.md` |
+| **Współczynniki DJP** z obowiązującego rozporządzenia | dane z kroku 9 pochodziły z uchylonego aktu i trzy wartości były błędne | `djp-weryfikacja.md` |
+| **Okresy nawożenia azotem** + wykazy gmin | terminów nie było w danych; dziś są sprawdzone w tabeli 2 rozporządzenia, z dokładną datą dla konkretnego pola | `terminy-nawozenia-azotem.md` |
+
+## Liczby
+
+| Miara | Wartość |
+| --- | --- |
+| Pliki kodu w `lib/` | 85 |
+| Pliki testów | 34 |
+| Testy | **295** |
+| `flutter analyze` | bez ostrzeżeń |
+| `dart format` | bez zmian |
+| Migracje bazy | 3 |
+| Wersja słownika reguł | 2026.10.16.3 |
+| Gminy w wykazach terminów | 2158 |
+| Grupy DJP | 93 |
+
+## Zasady, które przetrwały cały etap
+
+- **Żadnej liczby z przepisu w kodzie Dart.** Progi, limity, terminy,
+  przeliczniki DJP i kolumny rejestrów są danymi ze słownika; pilnuje tego
+  test architektury.
+- **Niczego nie zgadujemy.** Nieznana karencja, nawóz bez składu, grupa DJP
+  bez przypisania, data przyorania, gmina nierozczytana z identyfikatora —
+  wszystko to zostaje pustym polem z adnotacją, nie liczbą „na oko".
+- **Dokumentacji nie zamykamy za opłatą.** Wpisy, trzy rejestry, wydruk,
+  eksport, kalendarz, ewidencja nawożenia, rejestr stada i kopia danych są
+  darmowe; premium otwiera tylko oszczędzanie czasu.
+- **Wpisy są dopisywane, nie nadpisywane.** Dziennik zmian przetrwał nawet
+  wczytanie kopii — z pierwotnymi czasami.
+- **Dane prawne mają źródło i status.** Każda wartość wie, z jakiego aktu
+  pochodzi i czy została sprawdzona; niesprawdzona mówi o tym na ekranie.
+
+## Luki do uzupełnienia
+
+1. **Dane prawne**: art. 20 ustawy o nawozach (zakaz dla gleb
+   zamarzniętych), progi planu nawożenia z Prawa wodnego art. 105a, lista
+   upraw intensywnych (załącznik nr 7), tabela 14 z maksymalnymi dawkami
+   azotu, tabela 1 z odległościami od wód.
+2. **Uprawy bez decyzji o kodzie EPPO** — `uprawy_eppo_do_decyzji.csv` z P3.
+3. **Rejestr stada do wydruku** — wymaga urzędowego układu kolumn IRZplus.
+4. **Pytanie do ministerstwa** o hurtowy dostęp do etykiet (P2) bez odpowiedzi.
+5. **Format „maszynowo odczytywalny"** wymagany od 1.01.2027 — nieogłoszony.
+6. **Wygląd „Nowoczesny"** — etap 1 dał tylko wygląd „Prosty" (plan, pkt 5).
+
+Dalej według planu: program na Windows i synchronizacja, potem etap 2
+(kontrola warunkowości, magazyn) i etap 3 (API IRZplus, koszty
+i przychody, iPhone).
