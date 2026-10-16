@@ -77,8 +77,19 @@ nazwie rodzajowej, własna nazwa gdy uprawy nie ma w słowniku) razem ze **zmian
 uprawy pola na nowy sezon** zapisywaną w dzienniku zmian (raport
 `docs/raporty/kody-eppo-uprawy-polskie.md`) — wszystko zrobione 16.10.2026.
 
-Później: program na Windows i synchronizacja; etap 2 — kontrola warunkowości, magazyn;
-etap 3 — koszty i przychody, wersja na iPhone'a.
+Tego samego dnia domknięte jeszcze: **maksymalne dawki azotu dla 126 upraw**
+(tabela 14 programu azotanowego, ostrzeżenie przy wpisie dawki — raport
+`docs/raporty/maksymalne-dawki-azotu.md`), **cztery brakujące ekrany formularzowe
+w wyglądzie nowoczesnym** (`docs/raporty/etap1-nowoczesny-ekrany-formularzowe.md`),
+**dołączanie danych z drugiego urządzenia** — czyli obiecana w pkt 2 synchronizacja
+przez dysk użytkownika (`docs/raporty/etap1-synchronizacja-przez-plik.md`),
+**start aplikacji na komputerze** (baza z biblioteki dołączonej do programu,
+`lib/app/platforma.dart`) i **podpis wydawniczy** gotowy do użycia
+(`docs/wydanie-android.md`).
+
+Później: zbudowanie programu na Windows (przepływ `windows.yml`, uruchamiany
+ręcznie) i próba z rolnikami na prawdziwym telefonie; etap 2 — kontrola
+warunkowości, magazyn; etap 3 — koszty i przychody, wersja na iPhone'a.
 
 **Ścieżka rozwoju: produkcja zwierzęca.** Rejestr stada, liczenie DJP, terminy
 zgłoszeń do IRZplus i później wysyłka przez API IRZplus. Moduł jest napisany
