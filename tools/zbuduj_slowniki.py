@@ -19,7 +19,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from wspolne.tekst import postac_porownawcza  # noqa: E402
+from wspolne.tekst import postac_porownawcza, znormalizuj  # noqa: E402
 
 SCHEMAT = """
 CREATE TABLE srodek (
@@ -66,7 +66,10 @@ CREATE TABLE uprawa (
     pytanie    TEXT,
     -- Ile zastosowań w rejestrze dotyczy tej uprawy — po tym układamy
     -- listę wyboru, żeby najczęstsze uprawy były na górze.
-    zastosowan INTEGER NOT NULL DEFAULT 0
+    zastosowan INTEGER NOT NULL DEFAULT 0,
+    -- Nazwa bez ogonków i wielkich liter: po niej szuka wyszukiwarka,
+    -- żeby „lubin" znajdowało „łubin", a „ZYTO" — „żyto".
+    szukanie   TEXT NOT NULL DEFAULT ''
 );
 
 CREATE TABLE karencja (
@@ -86,6 +89,7 @@ CREATE TABLE zrodlo_danych (
     data_importu TEXT
 );
 
+CREATE INDEX idx_uprawa_szukanie ON uprawa(szukanie);
 CREATE INDEX idx_zu_uprawa ON zastosowanie_uprawa(uprawa);
 CREATE INDEX idx_zu_zastosowanie ON zastosowanie_uprawa(zastosowanie_id);
 CREATE INDEX idx_zastosowanie_srodek ON zastosowanie(srodek_id);
@@ -216,12 +220,13 @@ def zbuduj(
                 (decyzja.get("zamiast") or "") or None,
                 (decyzja.get("nazwa_eppo") or "") if stan == "rodzajowa" else None,
                 uzycia[nazwa],
+                znormalizuj(nazwa),
             )
         )
     wy.executemany(
         """INSERT INTO uprawa (nazwa, kod_eppo, stan, gatunki, pytanie,
-                               zastosowan)
-           VALUES (?,?,?,?,?,?)""",
+                               zastosowan, szukanie)
+           VALUES (?,?,?,?,?,?,?)""",
         wiersze_upraw,
     )
 

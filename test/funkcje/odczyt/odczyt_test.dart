@@ -90,7 +90,8 @@ NPK 12-12-17
       await slowniki.execute(
         '''CREATE TABLE uprawa (nazwa TEXT PRIMARY KEY, kod_eppo TEXT,
           stan TEXT NOT NULL DEFAULT 'brak', gatunki TEXT, pytanie TEXT,
-          zastosowan INTEGER NOT NULL DEFAULT 0)''',
+          zastosowan INTEGER NOT NULL DEFAULT 0,
+          szukanie TEXT NOT NULL DEFAULT '')''',
       );
       await slowniki.execute('''
         CREATE TABLE karencja (srodek_nazwa TEXT, uprawa TEXT, dni INTEGER,

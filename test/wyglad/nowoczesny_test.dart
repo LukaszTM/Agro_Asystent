@@ -81,7 +81,8 @@ void main() {
     await baza.execute(
       '''CREATE TABLE uprawa (nazwa TEXT PRIMARY KEY, kod_eppo TEXT,
           stan TEXT NOT NULL DEFAULT 'brak', gatunki TEXT, pytanie TEXT,
-          zastosowan INTEGER NOT NULL DEFAULT 0)''',
+          zastosowan INTEGER NOT NULL DEFAULT 0,
+          szukanie TEXT NOT NULL DEFAULT '')''',
     );
     await baza.execute('''
       CREATE TABLE karencja (srodek_nazwa TEXT, uprawa TEXT, dni INTEGER,
@@ -122,6 +123,7 @@ void main() {
       'kod_eppo': 'TRZAW',
       'stan': 'kod',
       'zastosowan': 100,
+      'szukanie': 'pszenica ozima',
     });
     // Nazwa rodzajowa: rejestr nie podaje gatunku, więc ekran musi dopytać.
     await baza.insert('uprawa', {
@@ -130,18 +132,21 @@ void main() {
       'gatunki': 'łubin żółty|łubin biały',
       'pytanie': 'Jaki łubin?',
       'zastosowan': 30,
+      'szukanie': 'lubin',
     });
     await baza.insert('uprawa', {
       'nazwa': 'łubin żółty',
       'kod_eppo': 'LUPLU',
       'stan': 'kod',
       'zastosowan': 20,
+      'szukanie': 'lubin zolty',
     });
     await baza.insert('uprawa', {
       'nazwa': 'łubin biały',
       'kod_eppo': 'LUPAL',
       'stan': 'kod',
       'zastosowan': 10,
+      'szukanie': 'lubin bialy',
     });
     return baza;
   }
@@ -507,6 +512,38 @@ void main() {
       expect(dodane.kodEppo, isNull);
     });
 
+    testWidgets('karta pola pozwala zmienić uprawę na nowy sezon', (
+      tester,
+    ) async {
+      await otworz(tester);
+      await zakladka(tester, 'Pola');
+
+      await tester.tap(find.text('Za stodołą'));
+      await tester.pumpAndSettle();
+      expect(find.textContaining('Kod EPPO: TRZAW'), findsOneWidget);
+
+      await przewinDo(tester, find.text('Zmień uprawę'));
+      await tester.tap(find.text('Zmień uprawę'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('łubin'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('łubin żółty'));
+      await tester.pumpAndSettle();
+
+      final pola = await uslugi.pola.wszystkie('g1');
+      final pole = pola.firstWhere((p) => p.id == 'p1');
+      expect(pole.uprawa, 'łubin żółty');
+      expect(pole.kodEppo, 'LUPLU');
+      // Poprzednia uprawa zostaje w dzienniku zmian.
+      final historia = await gospodarstwo.query(
+        'historia_zmian',
+        where: 'tabela = ? AND wiersz_id = ?',
+        whereArgs: ['dzialka_rolna', 'p1'],
+      );
+      expect(historia, hasLength(1));
+      expect(historia.single['dane_json'], contains('pszenica ozima'));
+    });
+
     testWidgets('karta wybranego pola prowadzi do wpisu zabiegu', (
       tester,
     ) async {
@@ -515,9 +552,9 @@ void main() {
 
       await tester.tap(find.text('Za stodołą'));
       await tester.pumpAndSettle();
-      expect(find.text('Zapisz zabieg na tym polu'), findsOneWidget);
+      expect(find.text('Zapisz zabieg'), findsOneWidget);
 
-      await tester.tap(find.text('Zapisz zabieg na tym polu'));
+      await tester.tap(find.text('Zapisz zabieg'));
       await tester.pumpAndSettle();
       expect(find.text('Nowy zabieg'), findsOneWidget);
       // Pole przyszło z karty — rolnik nie wybiera go drugi raz.

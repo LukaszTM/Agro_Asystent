@@ -124,6 +124,41 @@ Słownik aplikacji nosi teraz przy każdej uprawie stan, gatunki do wyboru,
 pytanie i liczbę zastosowań w rejestrze (`tools/zbuduj_slowniki.py`),
 więc kolejność listy i pytania są **danymi**, nie kodem ekranu.
 
+## Wyszukiwarka upraw (16.10.2026)
+
+Do wyboru jest **621 upraw** — przewijaniem nie da się znaleźć konkretnej,
+więc wyszukiwarka jest w ekranie wyboru uprawy obowiązkowa, a nie dodatkowa:
+
+- **Bez ogonków i bez wielkich liter.** Słownik trzyma przy każdej nazwie
+  postać znormalizowaną (kolumna `szukanie`: małe litery, `ł` → `l`,
+  bez ogonków). „lubin" znajduje „łubin", „ZYTO" — „żyto".
+  Tę samą normalizację robi `Tekst.znormalizuj` w `lib/rdzen/wspolne/`,
+  więc wpisany tekst i dane liczą się tak samo.
+- **Kilka słów, dowolna kolejność.** „ozim psz" znajduje „pszenicę ozimą" —
+  każde słowo musi wystąpić w nazwie, kolejność nie ma znaczenia.
+- **Widać, ile pasuje.** Nad listą stoi „Znaleziono 7 upraw"; gdy pasuje
+  więcej, niż się pokazuje, ekran mówi wprost: „Pasuje 231 upraw,
+  pokazujemy 60 — wpisz więcej liter".
+- Bez szukania lista idzie od upraw najczęstszych w rejestrze, więc
+  pszenica ozima, rzepak ozimy i jęczmień są pod ręką bez pisania.
+
+## Zmiana uprawy pola
+
+Uprawa zmienia się co sezon, a wpisy zabiegów zostają przy tym samym polu.
+Wcześniej uprawę można było ustawić tylko przy zakładaniu pola — teraz:
+
+- wygląd prosty: lista pól → pole → „Zmień uprawę",
+- wygląd nowoczesny: karta wybranego pola → „Zmień uprawę",
+- oba ekrany prowadzą do tej samej wyszukiwarki upraw.
+
+Poprzednią uprawę i kod EPPO zapisuje **wyzwalacz bazy** (migracja 4,
+`historia_dzialka_rolna_zmiana`), więc kontrola widzi, co rosło wcześniej —
+tak jak przy poprawce wpisu (CLAUDE.md: wpisy są dopisywane, nie
+nadpisywane). Zapis tej samej uprawy nie dopisuje nic do dziennika.
+
+To zamyka też lukę z importu wniosku: uprawę wczytaną z PDF, której słownik
+nie rozpoznał, rolnik poprawia na ekranie pola.
+
 ## Dziura w zabezpieczeniu, znaleziona przy okazji
 
 `tools/zbuduj_slowniki.py` brał z wyniku P3 **każdy wiersz z kodem**, nie
@@ -153,7 +188,14 @@ odrzucone nazwy zbiorcze i miejsca, gatunki w kolejności z danych, własna
 nazwa bez kodu) oraz `test/wyglad/wybor_uprawy_test.dart` i trzy testy
 w `test/wyglad/nowoczesny_test.dart` — ta sama ścieżka w obu wyglądach.
 
-Razem: `python3 -m pytest tools` → 112 testów, `flutter test` → 349 testów.
+Wyszukiwarkę i zmianę uprawy pilnują kolejne testy: szukanie bez ogonków
+i wielkimi literami, dwa słowa w dowolnej kolejności, uprawa z końca listy
+(1 zastosowanie w rejestrze) znaleziona po fragmencie nazwy, ucięta lista
+podająca liczbę pasujących, zmiana uprawy pola w obu wyglądach i wpis
+w dzienniku zmian (plus kontrola, że zapis tej samej uprawy nic nie
+dopisuje).
+
+Razem: `python3 -m pytest tools` → 112 testów, `flutter test` → 360 testów.
 
 ## Jak powtórzyć
 

@@ -324,4 +324,31 @@ const List<Migracja> migracje = [
     opis: 'Grupa DJP przy zwierzęciu',
     polecenia: ['ALTER TABLE zwierze ADD COLUMN grupa_djp TEXT'],
   ),
+
+  // Uprawa pola zmienia się co sezon, a wpisy zabiegów zostają przy tym
+  // samym polu. Kontrola musi widzieć, jaka uprawa była wtedy, gdy zabieg
+  // był wykonywany — więc zmiana uprawy idzie do dziennika zmian
+  // (CLAUDE.md: wpisy są dopisywane, nie nadpisywane).
+  Migracja(
+    wersja: 4,
+    opis: 'Dziennik zmian dla uprawy pola',
+    polecenia: [
+      '''
+      CREATE TRIGGER historia_dzialka_rolna_zmiana AFTER UPDATE ON dzialka_rolna
+      WHEN OLD.uprawa IS NOT NEW.uprawa
+        OR OLD.kod_eppo IS NOT NEW.kod_eppo
+        OR OLD.nazwa_wlasna IS NOT NEW.nazwa_wlasna
+        OR OLD.powierzchnia_ar IS NOT NEW.powierzchnia_ar
+      BEGIN
+        INSERT INTO historia_zmian (tabela, wiersz_id, operacja, dane_json, czas, urzadzenie)
+        VALUES ('dzialka_rolna', NEW.id, 'zmiana',
+                json_object('poprzednio',
+                  json_object('nazwa_wlasna', OLD.nazwa_wlasna, 'uprawa', OLD.uprawa,
+                              'kod_eppo', OLD.kod_eppo, 'sezon', OLD.sezon,
+                              'powierzchnia_ar', OLD.powierzchnia_ar)),
+                NEW.zmieniono, NEW.urzadzenie);
+      END
+      ''',
+    ],
+  ),
 ];

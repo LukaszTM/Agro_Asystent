@@ -1,4 +1,5 @@
 import 'package:agro_asystent/funkcje/dzialki/slownik_upraw.dart';
+import 'package:agro_asystent/rdzen/wspolne/tekst.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
@@ -24,6 +25,8 @@ void main() {
     'gatunki': gatunki,
     'pytanie': pytanie,
     'zastosowan': zastosowan,
+    // Tę kolumnę liczy skrypt budujący słownik — tu robimy to samo.
+    'szukanie': Tekst.znormalizuj(nazwa),
   });
 
   setUp(() async {
@@ -31,7 +34,8 @@ void main() {
     await slowniki.execute('''
       CREATE TABLE uprawa (nazwa TEXT PRIMARY KEY, kod_eppo TEXT,
         stan TEXT NOT NULL DEFAULT 'brak', gatunki TEXT, pytanie TEXT,
-        zastosowan INTEGER NOT NULL DEFAULT 0)
+        zastosowan INTEGER NOT NULL DEFAULT 0,
+        szukanie TEXT NOT NULL DEFAULT '')
     ''');
     await dodaj(nazwa: 'pszenica ozima', kod: 'TRZAW', zastosowan: 1497);
     await dodaj(nazwa: 'kukurydza', kod: 'ZEAMX', zastosowan: 425);
@@ -60,9 +64,9 @@ void main() {
 
   group('lista do wyboru', () {
     test('najczęstsze uprawy są na górze', () async {
-      final uprawy = await slownik().doWyboru();
-      expect(uprawy.first.nazwa, 'pszenica ozima');
-      expect(uprawy.map((u) => u.nazwa).take(2), [
+      final wynik = await slownik().doWyboru();
+      expect(wynik.uprawy.first.nazwa, 'pszenica ozima');
+      expect(wynik.uprawy.map((u) => u.nazwa).take(2), [
         'pszenica ozima',
         'kukurydza',
       ]);
@@ -71,7 +75,9 @@ void main() {
     test(
       'nie proponujemy nazw zbiorczych, miejsc ani roślin spoza zakresu',
       () async {
-        final nazwy = (await slownik().doWyboru()).map((u) => u.nazwa).toSet();
+        final nazwy = (await slownik().doWyboru()).uprawy
+            .map((u) => u.nazwa)
+            .toSet();
         expect(nazwy, isNot(contains('zboża')));
         expect(nazwy, isNot(contains('uprawa w szklarni')));
         expect(nazwy, isNot(contains('róża')));
@@ -79,7 +85,7 @@ void main() {
     );
 
     test('uprawa bez rozstrzygnięcia jest do wyboru, ale bez kodu', () async {
-      final nieszpulka = (await slownik().doWyboru()).firstWhere(
+      final nieszpulka = (await slownik().doWyboru()).uprawy.firstWhere(
         (u) => u.nazwa == 'nieszpułka',
       );
       expect(nieszpulka.maKod, isFalse);
@@ -87,9 +93,37 @@ void main() {
     });
 
     test('szukanie zawęża listę', () async {
-      final uprawy = await slownik().doWyboru(szukane: 'łubin');
-      expect(uprawy.map((u) => u.nazwa), contains('łubin'));
-      expect(uprawy.map((u) => u.nazwa), isNot(contains('kukurydza')));
+      final wynik = await slownik().doWyboru(szukane: 'łubin');
+      expect(wynik.uprawy.map((u) => u.nazwa), contains('łubin'));
+      expect(wynik.uprawy.map((u) => u.nazwa), isNot(contains('kukurydza')));
+    });
+
+    test('szukanie nie wymaga ogonków ani małych liter', () async {
+      // Rolnik pisze „lubin" i „ZYTO" — i ma znaleźć „łubin" oraz „żyto".
+      final bezOgonkow = await slownik().doWyboru(szukane: 'lubin');
+      expect(bezOgonkow.uprawy.map((u) => u.nazwa), contains('łubin biały'));
+
+      await dodaj(nazwa: 'żyto ozime', kod: 'SECCW', zastosowan: 609);
+      final wielkimi = await slownik().doWyboru(szukane: 'ZYTO');
+      expect(wielkimi.uprawy.map((u) => u.nazwa), contains('żyto ozime'));
+    });
+
+    test('kilka słów szuka niezależnie od kolejności', () async {
+      final wynik = await slownik().doWyboru(szukane: 'ozim psz');
+      expect(wynik.uprawy.map((u) => u.nazwa), ['pszenica ozima']);
+    });
+
+    test('ucięta lista mówi, ile upraw pasuje', () async {
+      final wynik = await slownik().doWyboru(limit: 2);
+      expect(wynik.uprawy, hasLength(2));
+      expect(wynik.jestWiecej, isTrue);
+      expect(wynik.razem, greaterThan(2));
+    });
+
+    test('krótka lista nie udaje, że jest dłuższa', () async {
+      final wynik = await slownik().doWyboru(szukane: 'kukurydza');
+      expect(wynik.razem, 1);
+      expect(wynik.jestWiecej, isFalse);
     });
   });
 

@@ -37,12 +37,12 @@ telefonie, bez serwera i bez żadnej opłaty za to, czego wymagają przepisy.
 
 | Miara | Wartość |
 | --- | --- |
-| Pliki kodu w `lib/` | 105 |
+| Pliki kodu w `lib/` | 108 |
 | Pliki testów | 37 |
-| Testy | **349** |
+| Testy | **360** |
 | `flutter analyze` | bez ostrzeżeń |
 | `dart format` | bez zmian |
-| Migracje bazy | 3 |
+| Migracje bazy | 4 |
 | Wersja słownika reguł | 2026.10.16.4 |
 | Gminy w wykazach terminów | 2158 |
 | Grupy DJP | 93 |

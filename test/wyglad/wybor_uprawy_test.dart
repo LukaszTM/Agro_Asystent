@@ -31,6 +31,7 @@ import 'package:agro_asystent/rdzen/baza/migracje.dart';
 import 'package:agro_asystent/rdzen/reguly/gminy_terminy.dart';
 import 'package:agro_asystent/rdzen/reguly/regula_prawna.dart';
 import 'package:agro_asystent/rdzen/uslugi/kopia/kopia_danych.dart';
+import 'package:agro_asystent/rdzen/wspolne/tekst.dart';
 import 'package:agro_asystent/wyglad/prosty/ekran_pola.dart';
 import 'package:agro_asystent/wyglad/prosty/motyw.dart';
 import 'package:flutter/material.dart';
@@ -66,6 +67,8 @@ void main() {
     'gatunki': gatunki,
     'pytanie': pytanie,
     'zastosowan': zastosowan,
+    // Tę kolumnę liczy skrypt budujący słownik — tu robimy to samo.
+    'szukanie': Tekst.znormalizuj(nazwa),
   });
 
   setUp(() async {
@@ -84,7 +87,8 @@ void main() {
     await slowniki.execute('''
       CREATE TABLE uprawa (nazwa TEXT PRIMARY KEY, kod_eppo TEXT,
         stan TEXT NOT NULL DEFAULT 'brak', gatunki TEXT, pytanie TEXT,
-        zastosowan INTEGER NOT NULL DEFAULT 0)
+        zastosowan INTEGER NOT NULL DEFAULT 0,
+        szukanie TEXT NOT NULL DEFAULT '')
     ''');
     await dodajUprawe(nazwa: 'pszenica ozima', kod: 'TRZAW', zastosowan: 1497);
     await dodajUprawe(nazwa: 'kukurydza', kod: 'ZEAMX', zastosowan: 425);
@@ -100,6 +104,8 @@ void main() {
     await dodajUprawe(nazwa: 'nieszpułka', stan: 'brak', zastosowan: 92);
     await dodajUprawe(nazwa: 'zboża', stan: 'grupa', zastosowan: 27);
     await dodajUprawe(nazwa: 'róża', stan: 'poza_zakresem', zastosowan: 131);
+    // Uprawa z samego końca listy — przewijaniem nie do znalezienia.
+    await dodajUprawe(nazwa: 'salsefia', kod: 'TROPS', zastosowan: 1);
   });
 
   tearDown(() async {
@@ -170,10 +176,17 @@ void main() {
   }
 
   Future<void> przewinDo(WidgetTester tester, Finder czego) async {
+    // Przewijamy listę ekranu, nie wnętrze pola tekstowego — TextField też
+    // ma swój Scrollable i trafienie w niego nic nie przewija.
     await tester.scrollUntilVisible(
       czego,
       200,
-      scrollable: find.byType(Scrollable).first,
+      scrollable: find
+          .descendant(
+            of: find.byType(ListView),
+            matching: find.byType(Scrollable),
+          )
+          .first,
     );
     await tester.pumpAndSettle();
   }
@@ -267,6 +280,95 @@ void main() {
     final pola = await RepozytoriumPol(baza).wszystkie('g1');
     expect(pola.single.uprawa, 'proso na ziarno');
     expect(pola.single.kodEppo, isNull, reason: 'kodu nie wymyślamy');
+  });
+
+  testWidgets('wyszukiwarka znajduje uprawę z końca listy', (tester) async {
+    await otworzNowePole(tester);
+    await tester.tap(find.text('Wybierz uprawę'));
+    await tester.pumpAndSettle();
+
+    await tester.enterText(find.byType(TextField), 'salsef');
+    await tester.pumpAndSettle();
+
+    expect(find.text('Znaleziono 1 uprawę.'), findsOneWidget);
+    expect(find.text('salsefia'), findsOneWidget);
+    expect(find.text('pszenica ozima'), findsNothing);
+  });
+
+  testWidgets('szukanie bez ogonków i wielkimi literami też działa', (
+    tester,
+  ) async {
+    await otworzNowePole(tester);
+    await tester.tap(find.text('Wybierz uprawę'));
+    await tester.pumpAndSettle();
+
+    // Rolnik nie przełącza klawiatury na polskie znaki.
+    await tester.enterText(find.byType(TextField), 'LUBIN');
+    await tester.pumpAndSettle();
+
+    expect(find.text('łubin'), findsOneWidget);
+  });
+
+  testWidgets('dwa słowa szukają niezależnie od kolejności', (tester) async {
+    await otworzNowePole(tester);
+    await tester.tap(find.text('Wybierz uprawę'));
+    await tester.pumpAndSettle();
+
+    await tester.enterText(find.byType(TextField), 'ozim psz');
+    await tester.pumpAndSettle();
+
+    expect(find.text('pszenica ozima'), findsOneWidget);
+  });
+
+  testWidgets('uprawę pola można zmienić na nowy sezon', (tester) async {
+    await baza.insert('dzialka_rolna', {
+      'id': 'p1',
+      'gospodarstwo_id': 'g1',
+      'nazwa_wlasna': 'Za stodołą',
+      'sezon': 2026,
+      'uprawa': 'pszenica ozima',
+      'kod_eppo': 'TRZAW',
+      'powierzchnia_ar': 320,
+      'utworzono': '2026-10-16T08:00:00',
+      'zmieniono': '2026-10-16T08:00:00',
+      'urzadzenie': 'telefon',
+    });
+
+    tester.view.physicalSize = const Size(420, 1000);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: MotywProsty.zbuduj(),
+        home: EkranPola(uslugi: zbudujUslugi()),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Za stodołą'));
+    await tester.pumpAndSettle();
+    expect(find.text('pszenica ozima'), findsOneWidget);
+    expect(find.textContaining('Kod EPPO: TRZAW'), findsOneWidget);
+
+    await tester.tap(find.text('Zmień uprawę'));
+    await tester.pumpAndSettle();
+    // Krótki fragment, żeby wpisany tekst nie mieszał się z nazwą na liście.
+    await tester.enterText(find.byType(TextField), 'kuku');
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('kukurydza'));
+    await tester.pumpAndSettle();
+
+    final pole = await RepozytoriumPol(baza).jedno('p1');
+    expect(pole!.uprawa, 'kukurydza');
+    expect(pole.kodEppo, 'ZEAMX');
+    // Poprzednia uprawa zostaje w dzienniku zmian.
+    final historia = await baza.query(
+      'historia_zmian',
+      where: 'tabela = ? AND wiersz_id = ?',
+      whereArgs: ['dzialka_rolna', 'p1'],
+    );
+    expect(historia, hasLength(1));
+    expect(historia.single['dane_json'], contains('pszenica ozima'));
   });
 
   testWidgets('bez wybranej uprawy pola nie da się zapisać', (tester) async {

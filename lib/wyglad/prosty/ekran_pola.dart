@@ -4,6 +4,7 @@ import '../../app/uslugi.dart';
 import '../../funkcje/dzialki/repozytorium_pol.dart';
 import '../../funkcje/dzialki/slownik_upraw.dart';
 import 'dzialki/ekran_dzialki.dart';
+import 'dzialki/ekran_pole.dart';
 import 'dzialki/ekran_wybor_uprawy.dart';
 import 'dzialki/ekran_import_wniosku.dart';
 import 'nawozenie/ekran_nawozenie.dart';
@@ -49,6 +50,18 @@ class _EkranPolaState extends State<EkranPola> {
     }
   }
 
+  /// Podgląd pola: stąd zmienia się uprawę na nowy sezon.
+  Future<void> _otworz(Pole pole) async {
+    final zmienione = await Navigator.of(context).push<bool>(
+      MaterialPageRoute<bool>(
+        builder: (_) => EkranPole(uslugi: widget.uslugi, pole: pole),
+      ),
+    );
+    if ((zmienione ?? false) && mounted) {
+      setState(_odswiez);
+    }
+  }
+
   Future<void> _dodaj() async {
     final dodano = await Navigator.of(context).push<bool>(
       MaterialPageRoute<bool>(
@@ -86,7 +99,7 @@ class _EkranPolaState extends State<EkranPola> {
                   etykieta: pole.nazwa,
                   opis: '${pole.uprawa} • ${pole.powierzchniaOpis}',
                   ikona: Icons.crop_square,
-                  onTap: null,
+                  onTap: () => _otworz(pole),
                 ),
                 const SizedBox(height: MotywProsty.odstep),
               ],

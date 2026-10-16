@@ -1,5 +1,7 @@
 import 'package:sqflite_common/sqlite_api.dart';
 
+import '../../rdzen/wspolne/tekst.dart';
+
 /// Co aplikacja wie o nazwie uprawy ze słownika.
 enum StanUprawy {
   /// Jest kod EPPO — ta uprawa wyjdzie na wydruku z kodem.
@@ -88,6 +90,23 @@ class UprawaDoWyboru {
       .toList(growable: false);
 }
 
+/// Wynik szukania: uprawy do pokazania i ile pasuje w ogóle.
+///
+/// Rolnik musi wiedzieć, że lista jest ucięta — inaczej szukałby wzrokiem
+/// czegoś, czego na ekranie nie ma.
+class WynikSzukaniaUpraw {
+  const WynikSzukaniaUpraw({required this.uprawy, required this.razem});
+
+  final List<UprawaDoWyboru> uprawy;
+
+  /// Ile upraw pasuje do szukania — także tych poza listą.
+  final int razem;
+
+  bool get jestWiecej => razem > uprawy.length;
+
+  bool get pusty => uprawy.isEmpty;
+}
+
 /// Słownik upraw do wyboru przy zakładaniu pola.
 ///
 /// Rolnik wybiera uprawę z listy — pisanie jest wyjściem awaryjnym, gdy
@@ -109,24 +128,45 @@ class SlownikUpraw {
   static String get _warunekStanu =>
       "stan IN (${_doWyboru.map((s) => "'${s.wBazie}'").join(',')})";
 
-  /// Uprawy do wyboru, najczęstsze pierwsze. [szukane] zawęża po nazwie.
-  Future<List<UprawaDoWyboru>> doWyboru({
+  /// Uprawy do wyboru, najczęstsze pierwsze.
+  ///
+  /// [szukane] dzielimy na słowa i szukamy po postaci znormalizowanej, więc
+  /// „lubin" znajduje „łubin", „ZYTO" — „żyto", a „psz ozim" — „pszenicę
+  /// ozimą". Słownik ma ponad 600 upraw do wyboru, więc bez wyszukiwarki
+  /// nie da się znaleźć konkretnej przewijaniem.
+  Future<WynikSzukaniaUpraw> doWyboru({
     String szukane = '',
     int limit = 60,
   }) async {
-    final fragment = szukane.trim();
+    final slowa = Tekst.slowaDoSzukania(szukane);
+    final warunki = [
+      _warunekStanu,
+      for (final _ in slowa) 'szukanie LIKE ?',
+    ].join(' AND ');
+    final argumenty = [for (final slowo in slowa) '%$slowo%'];
+
     final wiersze = await _baza.rawQuery(
       '''
       SELECT nazwa, kod_eppo, stan, gatunki, pytanie, zastosowan
       FROM uprawa
-      WHERE $_warunekStanu
-        ${fragment.isEmpty ? '' : 'AND nazwa LIKE ?'}
+      WHERE $warunki
       ORDER BY zastosowan DESC, nazwa
       LIMIT ?
       ''',
-      [if (fragment.isNotEmpty) '%$fragment%', limit],
+      [...argumenty, limit],
     );
-    return wiersze.map(UprawaDoWyboru.zBazy).toList(growable: false);
+    final razem = wiersze.length < limit
+        ? wiersze.length
+        : ((await _baza.rawQuery(
+                'SELECT COUNT(*) AS ile FROM uprawa WHERE $warunki',
+                argumenty,
+              )).first['ile']
+              as int);
+
+    return WynikSzukaniaUpraw(
+      uprawy: wiersze.map(UprawaDoWyboru.zBazy).toList(growable: false),
+      razem: razem,
+    );
   }
 
   /// Jedna uprawa ze słownika — albo `null`, gdy słownik jej nie zna.

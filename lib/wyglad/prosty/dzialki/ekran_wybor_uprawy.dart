@@ -34,7 +34,11 @@ class EkranWyborUprawy extends StatefulWidget {
 }
 
 class _EkranWyborUprawyState extends State<EkranWyborUprawy> {
-  late Future<List<UprawaDoWyboru>> _uprawy;
+  /// Ile upraw pokazujemy naraz. Słownik ma ich ponad 600, więc liczy się
+  /// wyszukiwarka, a nie długość listy.
+  static const int _ileNaraz = 60;
+
+  late Future<WynikSzukaniaUpraw> _uprawy;
   String _szukane = '';
 
   @override
@@ -46,8 +50,13 @@ class _EkranWyborUprawyState extends State<EkranWyborUprawy> {
   void _odswiez() {
     final rodzajowa = widget.gatunkiDo;
     _uprawy = rodzajowa != null
-        ? widget.uslugi.uprawy.gatunki(rodzajowa)
-        : widget.uslugi.uprawy.doWyboru(szukane: _szukane);
+        ? widget.uslugi.uprawy
+              .gatunki(rodzajowa)
+              .then(
+                (gatunki) =>
+                    WynikSzukaniaUpraw(uprawy: gatunki, razem: gatunki.length),
+              )
+        : widget.uslugi.uprawy.doWyboru(szukane: _szukane, limit: _ileNaraz);
   }
 
   Future<void> _wybierz(UprawaDoWyboru uprawa) async {
@@ -76,6 +85,16 @@ class _EkranWyborUprawyState extends State<EkranWyborUprawy> {
     if (nazwa != null && nazwa.trim().isNotEmpty && mounted) {
       Navigator.of(context).pop(UprawaDoWyboru.wlasnaNazwa(nazwa));
     }
+  }
+
+  String _naglowekListy(WynikSzukaniaUpraw wynik) {
+    if (_szukane.isEmpty) {
+      return 'Najczęstsze uprawy. Szukasz innej? Wpisz nazwę u góry — '
+          'ogonki i wielkie litery nie mają znaczenia.';
+    }
+    return wynik.razem == 1
+        ? 'Znaleziono 1 uprawę.'
+        : 'Znaleziono ${wynik.razem} upraw.';
   }
 
   static String _opis(UprawaDoWyboru uprawa) {
@@ -113,17 +132,24 @@ class _EkranWyborUprawyState extends State<EkranWyborUprawy> {
               ),
             ),
           Expanded(
-            child: FutureBuilder<List<UprawaDoWyboru>>(
+            child: FutureBuilder<WynikSzukaniaUpraw>(
               future: _uprawy,
               builder: (context, stan) {
                 if (!stan.hasData) {
                   return const Center(child: CircularProgressIndicator());
                 }
-                final uprawy = stan.data!;
+                final wynik = stan.data!;
                 return ListView(
                   padding: const EdgeInsets.all(MotywProsty.odstep),
                   children: [
-                    if (uprawy.isEmpty)
+                    if (!gatunki) ...[
+                      Text(
+                        _naglowekListy(wynik),
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
+                      const SizedBox(height: 8),
+                    ],
+                    if (wynik.pusty)
                       Ostrzezenie(
                         tresc: _szukane.isEmpty
                             ? 'Słownik nie ma tu żadnej uprawy.'
@@ -132,7 +158,7 @@ class _EkranWyborUprawyState extends State<EkranWyborUprawy> {
                             'Wpisz inną część nazwy albo naciśnij '
                             '„Nie ma mojej uprawy".',
                       ),
-                    for (final uprawa in uprawy) ...[
+                    for (final uprawa in wynik.uprawy) ...[
                       DuzyPrzycisk(
                         etykieta: uprawa.nazwa,
                         opis: _opis(uprawa),
@@ -143,6 +169,15 @@ class _EkranWyborUprawyState extends State<EkranWyborUprawy> {
                       ),
                       const SizedBox(height: MotywProsty.odstep),
                     ],
+                    if (wynik.jestWiecej)
+                      Ostrzezenie(
+                        tresc:
+                            'To nie wszystkie: pasuje ${wynik.razem} upraw, '
+                            'pokazujemy ${wynik.uprawy.length}.',
+                        coZrobic:
+                            'Wpisz w okienku u góry więcej liter — '
+                            'np. „psz ozim" zamiast „psz".',
+                      ),
                     if (!gatunki) ...[
                       const SizedBox(height: MotywProsty.odstep),
                       DuzyPrzycisk(

@@ -44,7 +44,8 @@ void main() {
     await slowniki.execute(
       '''CREATE TABLE uprawa (nazwa TEXT PRIMARY KEY, kod_eppo TEXT,
           stan TEXT NOT NULL DEFAULT 'brak', gatunki TEXT, pytanie TEXT,
-          zastosowan INTEGER NOT NULL DEFAULT 0)''',
+          zastosowan INTEGER NOT NULL DEFAULT 0,
+          szukanie TEXT NOT NULL DEFAULT '')''',
     );
     // Dwie uprawy ze słownika i jedna bez kodu — tak jak w prawdziwym
     // słowniku, gdzie część nazw z wniosku nie ma odpowiednika.

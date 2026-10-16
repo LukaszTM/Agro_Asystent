@@ -1,3 +1,4 @@
+import 'package:agro_asystent/funkcje/dzialki/repozytorium_pol.dart';
 import 'package:agro_asystent/funkcje/zabiegi/repozytorium_zabiegow.dart';
 import 'package:agro_asystent/rdzen/baza/baza_gospodarstwa.dart';
 import 'package:agro_asystent/rdzen/baza/migracje.dart';
@@ -267,6 +268,48 @@ void main() {
 
       final historia = await repozytorium.historia('z1');
       expect(historia.last['operacja'], 'usuniecie');
+    });
+
+    test('zmiana uprawy pola zostaje w dzienniku zmian', () async {
+      // Uprawa zmienia się co sezon, a zabiegi zostają przy tym samym polu —
+      // kontrola musi zobaczyć, co rosło wcześniej.
+      await RepozytoriumPol(baza).zmienUprawe(
+        poleId: 'p1',
+        uprawa: 'kukurydza',
+        kodEppo: 'ZEAMX',
+        urzadzenie: 'telefon',
+        teraz: DateTime(2026, 10, 16, 9),
+      );
+
+      final pole = await RepozytoriumPol(baza).jedno('p1');
+      expect(pole!.uprawa, 'kukurydza');
+      expect(pole.kodEppo, 'ZEAMX');
+
+      final historia = await baza.query(
+        'historia_zmian',
+        where: 'tabela = ? AND wiersz_id = ?',
+        whereArgs: ['dzialka_rolna', 'p1'],
+      );
+      expect(historia, hasLength(1));
+      expect(historia.single['operacja'], 'zmiana');
+      expect(historia.single['dane_json'], contains('pszenica ozima'));
+      expect(historia.single['dane_json'], contains('TRZAW'));
+    });
+
+    test('zapis tej samej uprawy nie zaśmieca dziennika', () async {
+      await RepozytoriumPol(baza).zmienUprawe(
+        poleId: 'p1',
+        uprawa: 'pszenica ozima',
+        kodEppo: 'TRZAW',
+        urzadzenie: 'telefon',
+      );
+
+      final historia = await baza.query(
+        'historia_zmian',
+        where: 'tabela = ?',
+        whereArgs: ['dzialka_rolna'],
+      );
+      expect(historia, isEmpty);
     });
   });
 }

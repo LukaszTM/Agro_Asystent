@@ -31,7 +31,10 @@ class EkranWyborUprawyNowoczesny extends StatefulWidget {
 
 class _EkranWyborUprawyNowoczesnyState
     extends State<EkranWyborUprawyNowoczesny> {
-  late Future<List<UprawaDoWyboru>> _uprawy;
+  /// Ile upraw pokazujemy naraz — słownik ma ich ponad 600.
+  static const int _ileNaraz = 60;
+
+  late Future<WynikSzukaniaUpraw> _uprawy;
   final TextEditingController _wlasna = TextEditingController();
   String _szukane = '';
   bool _wpisujeWlasna = false;
@@ -51,8 +54,13 @@ class _EkranWyborUprawyNowoczesnyState
   void _odswiez() {
     final rodzajowa = widget.gatunkiDo;
     _uprawy = rodzajowa != null
-        ? widget.uslugi.uprawy.gatunki(rodzajowa)
-        : widget.uslugi.uprawy.doWyboru(szukane: _szukane);
+        ? widget.uslugi.uprawy
+              .gatunki(rodzajowa)
+              .then(
+                (gatunki) =>
+                    WynikSzukaniaUpraw(uprawy: gatunki, razem: gatunki.length),
+              )
+        : widget.uslugi.uprawy.doWyboru(szukane: _szukane, limit: _ileNaraz);
   }
 
   Future<void> _wybierz(UprawaDoWyboru uprawa) async {
@@ -109,14 +117,15 @@ class _EkranWyborUprawyNowoczesnyState
               }),
             ),
           const SizedBox(height: MotywNowoczesny.odstep),
-          FutureBuilder<List<UprawaDoWyboru>>(
+          FutureBuilder<WynikSzukaniaUpraw>(
             future: _uprawy,
             builder: (context, stan) {
               if (!stan.hasData) {
                 return const Center(child: CircularProgressIndicator());
               }
-              final uprawy = stan.data!;
-              if (uprawy.isEmpty) {
+              final wynik = stan.data!;
+              final uprawy = wynik.uprawy;
+              if (wynik.pusty) {
                 return OstrzezenieNowoczesne(
                   tresc: _szukane.isEmpty
                       ? 'Słownik nie ma tu żadnej uprawy.'
@@ -127,7 +136,20 @@ class _EkranWyborUprawyNowoczesnyState
                 );
               }
               return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  if (!gatunki) ...[
+                    Text(
+                      _szukane.isEmpty
+                          ? 'Najczęstsze uprawy — szukaj bez ogonków, '
+                                'np. „lubin"'
+                          : (wynik.razem == 1
+                                ? 'Znaleziono 1 uprawę'
+                                : 'Znaleziono ${wynik.razem} upraw'),
+                      style: teksty.bodyMedium,
+                    ),
+                    const SizedBox(height: 8),
+                  ],
                   for (final uprawa in uprawy) ...[
                     Karta(
                       onTap: () => _wybierz(uprawa),
@@ -156,6 +178,13 @@ class _EkranWyborUprawyNowoczesnyState
                     ),
                     const SizedBox(height: 8),
                   ],
+                  if (wynik.jestWiecej)
+                    OstrzezenieNowoczesne(
+                      tresc:
+                          'Pasuje ${wynik.razem} upraw, pokazujemy '
+                          '${uprawy.length}.',
+                      coZrobic: 'Wpisz więcej liter, żeby zawęzić listę.',
+                    ),
                 ],
               );
             },

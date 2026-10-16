@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 import '../../../app/uslugi.dart';
 import '../../../funkcje/dzialki/repozytorium_dzialek.dart';
 import '../../../funkcje/dzialki/repozytorium_pol.dart';
+import '../../../funkcje/dzialki/slownik_upraw.dart';
 import '../../../rdzen/wspolne/mapa_dzialek.dart';
 import '../motyw.dart';
 import '../widgety/karta.dart';
 import '../widgety/wybor.dart';
 import 'ekran_nowe_pole.dart';
+import 'ekran_wybor_uprawy.dart';
 
 /// Zakładka „Pola" wyglądu nowoczesnego: mapa na całą szerokość,
 /// wyszukiwarka, filtry upraw i karta wybranego pola (plan, pkt 5).
@@ -59,6 +61,40 @@ class _WidokPolaState extends State<WidokPola> {
         _dane = _wczytaj();
       });
     }
+  }
+
+  /// Zmiana uprawy wybranego pola — co sezon rośnie tam coś innego.
+  Future<void> _zmienUprawe(Pole pole) async {
+    final wybrana = await Navigator.of(context).push<UprawaDoWyboru>(
+      MaterialPageRoute<UprawaDoWyboru>(
+        builder: (_) => EkranWyborUprawyNowoczesny(uslugi: widget.uslugi),
+      ),
+    );
+    if (wybrana == null || !mounted) {
+      return;
+    }
+    await widget.uslugi.pola.zmienUprawe(
+      poleId: pole.id,
+      uprawa: wybrana.nazwa,
+      kodEppo: wybrana.kodEppo,
+      urzadzenie: widget.uslugi.urzadzenie,
+    );
+    final swieze = await widget.uslugi.pola.jedno(pole.id);
+    if (!mounted) {
+      return;
+    }
+    setState(() {
+      _dane = _wczytaj();
+      _wybrane = swieze ?? pole;
+    });
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          'Zmieniono uprawę na „${wybrana.nazwa}". Poprzednia została '
+          'w dzienniku zmian.',
+        ),
+      ),
+    );
   }
 
   void _wybierz(Pole? pole) {
@@ -156,6 +192,7 @@ class _WidokPolaState extends State<WidokPola> {
                 pole: _wybrane!,
                 dzialki: _dzialkiPola,
                 onZamknij: () => _wybierz(null),
+                onZmianaUprawy: () => _zmienUprawe(_wybrane!),
                 onZabieg: widget.onZabiegNaPolu == null
                     ? null
                     : () => widget.onZabiegNaPolu!(_wybrane!),
@@ -230,12 +267,14 @@ class _KartaPola extends StatelessWidget {
     required this.pole,
     required this.dzialki,
     required this.onZamknij,
+    required this.onZmianaUprawy,
     this.onZabieg,
   });
 
   final Pole pole;
   final Future<List<String>>? dzialki;
   final VoidCallback onZamknij;
+  final VoidCallback onZmianaUprawy;
   final VoidCallback? onZabieg;
 
   @override
@@ -283,13 +322,32 @@ class _KartaPola extends StatelessWidget {
               );
             },
           ),
-          if (onZabieg != null) ...[
-            const SizedBox(height: MotywNowoczesny.odstep),
-            FilledButton(
-              onPressed: onZabieg,
-              child: const Text('Zapisz zabieg na tym polu'),
-            ),
-          ],
+          const SizedBox(height: 4),
+          Text(
+            pole.kodEppo == null
+                ? 'Kod EPPO: brak — w ewidencji wyjdzie „brak"'
+                : 'Kod EPPO: ${pole.kodEppo}',
+            style: teksty.bodyMedium,
+          ),
+          const SizedBox(height: MotywNowoczesny.odstep),
+          Row(
+            children: [
+              if (onZabieg != null)
+                Expanded(
+                  child: FilledButton(
+                    onPressed: onZabieg,
+                    child: const Text('Zapisz zabieg'),
+                  ),
+                ),
+              if (onZabieg != null) const SizedBox(width: 8),
+              Expanded(
+                child: OutlinedButton(
+                  onPressed: onZmianaUprawy,
+                  child: const Text('Zmień uprawę'),
+                ),
+              ),
+            ],
+          ),
         ],
       ),
     );

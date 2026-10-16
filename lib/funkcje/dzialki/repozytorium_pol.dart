@@ -55,6 +55,44 @@ class RepozytoriumPol {
     return wiersze.map(Pole.zBazy).toList(growable: false);
   }
 
+  /// Zmiana uprawy pola — co sezon rolnik sieje coś innego.
+  ///
+  /// Kod EPPO zapisujemy razem z uprawą, bo bierze się z wyboru rolnika
+  /// (ze słownika albo z własnej nazwy — wtedy jest pusty). Poprzednią
+  /// uprawę zapisuje wyzwalacz bazy, więc kontrola widzi, co było wcześniej.
+  Future<void> zmienUprawe({
+    required String poleId,
+    required String uprawa,
+    required String urzadzenie,
+    String? kodEppo,
+    int? sezon,
+    DateTime? teraz,
+  }) async {
+    await _baza.update(
+      'dzialka_rolna',
+      {
+        'uprawa': uprawa,
+        'kod_eppo': kodEppo,
+        'sezon': ?sezon,
+        'zmieniono': (teraz ?? DateTime.now()).toIso8601String(),
+        'urzadzenie': urzadzenie,
+      },
+      where: 'id = ?',
+      whereArgs: [poleId],
+    );
+  }
+
+  /// Jedno pole — po zmianie uprawy ekran czyta je od nowa.
+  Future<Pole?> jedno(String id) async {
+    final wiersze = await _baza.query(
+      'dzialka_rolna',
+      where: 'id = ? AND usuniety = 0',
+      whereArgs: [id],
+      limit: 1,
+    );
+    return wiersze.isEmpty ? null : Pole.zBazy(wiersze.first);
+  }
+
   /// Numery działek ewidencyjnych, na których leży to pole — z wniosku
   /// (jedna działka rolna leży zwykle na kilku ewidencyjnych).
   Future<List<String>> dzialkiReferencyjne(String poleId) async {
