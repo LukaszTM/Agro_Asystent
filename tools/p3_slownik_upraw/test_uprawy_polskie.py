@@ -45,6 +45,20 @@ def decyzje_z_pliku() -> dict[str, dict[str, str]]:
         }
 
 
+#: Połączenie z bazą EPPO otwierane dopiero przy pierwszym użyciu.
+#: W ciele klasy być nie może: `skipif` pomija *testy*, ale ciało klasy
+#: wykonuje się przy zbieraniu — a w CI bazy EPPO nie ma (`dane/` jest
+#: w .gitignore), więc zbieranie przerywało się błędem.
+_baza_eppo: sqlite3.Connection | None = None
+
+
+def baza_eppo() -> sqlite3.Connection:
+    global _baza_eppo
+    if _baza_eppo is None:
+        _baza_eppo = sqlite3.connect(f"file:{BAZA_EPPO}?mode=ro", uri=True)
+    return _baza_eppo
+
+
 class TestTabele:
     def test_nazwa_trafia_do_jednej_tabeli(self):
         tabele = {
@@ -88,18 +102,16 @@ class TestTabele:
 
 @pytest.mark.skipif(not BAZA_EPPO.exists(), reason="brak bazy EPPO")
 class TestKody:
-    baza = sqlite3.connect(f"file:{BAZA_EPPO}?mode=ro", uri=True)
-
     def test_kazda_nazwa_naukowa_daje_jeden_kod(self):
         brak = [
             f"{nazwa} ({naukowa})"
             for nazwa, (naukowa, _) in UPRAWY.items()
-            if kod_po_nazwie_naukowej(self.baza, naukowa) is None
+            if kod_po_nazwie_naukowej(baza_eppo(), naukowa) is None
         ]
         assert not brak, f"nazwy naukowe bez jednego kodu: {brak}"
 
     def test_wymyslonej_nazwy_baza_nie_potwierdza(self):
-        assert kod_po_nazwie_naukowej(self.baza, "Nieistniejus wymyslonus") is None
+        assert kod_po_nazwie_naukowej(baza_eppo(), "Nieistniejus wymyslonus") is None
 
     @pytest.mark.parametrize(
         "nazwa,kod",
@@ -121,10 +133,10 @@ class TestKody:
     )
     def test_kody_waznych_upraw(self, nazwa, kod):
         naukowa = UPRAWY[nazwa][0]
-        assert kod_po_nazwie_naukowej(self.baza, naukowa) == kod
+        assert kod_po_nazwie_naukowej(baza_eppo(), naukowa) == kod
 
     def test_poza_zakresem_i_miejsca_bez_kodu(self):
-        wiersze, klopoty = zbuduj_wiersze(self.baza, decyzje_z_pliku())
+        wiersze, klopoty = zbuduj_wiersze(baza_eppo(), decyzje_z_pliku())
         assert not klopoty, klopoty
         for w in wiersze:
             if w["stan"] in {
@@ -136,7 +148,7 @@ class TestKody:
                 assert not w["kod_eppo"], w
 
     def test_rodzajowe_pytaja_o_gatunek(self):
-        wiersze, _ = zbuduj_wiersze(self.baza, decyzje_z_pliku())
+        wiersze, _ = zbuduj_wiersze(baza_eppo(), decyzje_z_pliku())
         rodzajowe = {
             w["nazwa_uprawy"]: w for w in wiersze if w["stan"] == "rodzajowa"
         }
@@ -151,7 +163,7 @@ class TestKody:
 
     def test_kazdy_gatunek_do_wyboru_ma_kod(self):
         """Lista wyboru nie może prowadzić do uprawy bez kodu EPPO."""
-        wiersze, klopoty = zbuduj_wiersze(self.baza, decyzje_z_pliku())
+        wiersze, klopoty = zbuduj_wiersze(baza_eppo(), decyzje_z_pliku())
         z_kodem = {w["nazwa_uprawy"] for w in wiersze if w["kod_eppo"]}
         brak = {
             nazwa: [g for g in gatunki if g not in z_kodem]
@@ -171,7 +183,7 @@ class TestScalanie:
             "grusza;XXXXX;ręcznie;potwierdzone;decyzja rolnika;2026-10-16\n",
             encoding="utf-8",
         )
-        baza = sqlite3.connect(f"file:{BAZA_EPPO}?mode=ro", uri=True)
+        baza = baza_eppo()
         wiersze, _ = zbuduj_wiersze(baza, decyzje_z_pliku())
         _, _, spory = scal(plik, wiersze)
 
@@ -189,7 +201,7 @@ class TestScalanie:
             "grusza;;podpowiedź;do_decyzji;podpowiedź z bazy;2026-10-16\n",
             encoding="utf-8",
         )
-        baza = sqlite3.connect(f"file:{BAZA_EPPO}?mode=ro", uri=True)
+        baza = baza_eppo()
         wiersze, _ = zbuduj_wiersze(baza, decyzje_z_pliku())
         scal(plik, wiersze)
 

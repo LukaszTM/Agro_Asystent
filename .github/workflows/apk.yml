@@ -35,6 +35,14 @@ jobs:
   apk:
     name: APK (release)
     runs-on: ubuntu-latest
+    # Sekrety stoją w `env` zadania, bo kontekst `secrets` nie jest
+    # dostępny w `if` kroku — przepływ z takim warunkiem nie startuje
+    # wcale („0 jobs").
+    env:
+      AGRO_KEYSTORE_BASE64: ${{ secrets.AGRO_KEYSTORE_BASE64 }}
+      AGRO_KEYSTORE_HASLO: ${{ secrets.AGRO_KEYSTORE_HASLO }}
+      AGRO_KLUCZ_ALIAS: ${{ secrets.AGRO_KLUCZ_ALIAS }}
+      AGRO_KLUCZ_HASLO: ${{ secrets.AGRO_KLUCZ_HASLO }}
     steps:
       - uses: actions/checkout@v4
 
@@ -65,22 +73,18 @@ jobs:
       # kluczem debugowym (i mówi o tym w logu). Patrz
       # `docs/wydanie-android.md`.
       - name: Klucz podpisujący z sekretów
-        if: ${{ secrets.AGRO_KEYSTORE_BASE64 != '' }}
-        env:
-          KEYSTORE_BASE64: ${{ secrets.AGRO_KEYSTORE_BASE64 }}
+        if: env.AGRO_KEYSTORE_BASE64 != ''
         run: |
-          echo "$KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/agro-upload.jks"
-          echo "AGRO_KEYSTORE_PLIK=$RUNNER_TEMP/agro-upload.jks" >> "$GITHUB_ENV"
+          echo "$AGRO_KEYSTORE_BASE64" | base64 -d \
+            > "$RUNNER_TEMP/agro-upload.jks"
+          echo "AGRO_KEYSTORE_PLIK=$RUNNER_TEMP/agro-upload.jks" \
+            >> "$GITHUB_ENV"
           echo "podpis=wlasny" >> "$GITHUB_ENV"
 
       - name: Zależności
         run: flutter pub get
 
       - name: Budowanie APK
-        env:
-          AGRO_KEYSTORE_HASLO: ${{ secrets.AGRO_KEYSTORE_HASLO }}
-          AGRO_KLUCZ_ALIAS: ${{ secrets.AGRO_KLUCZ_ALIAS }}
-          AGRO_KLUCZ_HASLO: ${{ secrets.AGRO_KLUCZ_HASLO }}
         run: flutter build apk --release
 
       - name: Nazwa pliku z numerem wersji
