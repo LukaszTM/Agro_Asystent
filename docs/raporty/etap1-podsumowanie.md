@@ -36,14 +36,15 @@ telefonie, bez serwera i bez żadnej opłaty za to, czego wymagają przepisy.
 | **Cztery ekrany formularzowe w wyglądzie nowoczesnym** (luka 9) | rolnik musiał przełączać wygląd, żeby dodać działkę, wczytać wniosek, dopisać nawóz albo poprawić dane gospodarstwa | `etap1-nowoczesny-ekrany-formularzowe.md` |
 | **Podpis wydawniczy i instrukcja wydania** (luka 2) | wydanie podpisywało się kluczem debugowym: nowszy plik nie wgrywał się na wierzch, a Google Play takiego nie przyjmie | `docs/wydanie-android.md` |
 | **Dołączanie danych z drugiego urządzenia** (luka 11, część) | plan (pkt 2) obiecuje synchronizację przez dysk użytkownika; dwa telefony nie dały się pogodzić | `etap1-synchronizacja-przez-plik.md` |
+| **Start aplikacji na komputerze** (luka 11, część) | na Windows baza nie otwarłaby się wcale: `sqflite_common_ffi` było tylko zależnością testową | `lib/app/platforma.dart` |
 
 ## Liczby
 
 | Miara | Wartość |
 | --- | --- |
-| Pliki kodu w `lib/` | 114 |
-| Pliki testów | 40 |
-| Testy | **407** |
+| Pliki kodu w `lib/` | 115 |
+| Pliki testów | 42 |
+| Testy | **413** |
 | `flutter analyze` | bez ostrzeżeń |
 | `dart format` | bez zmian |
 | Migracje bazy | 4 |
@@ -75,7 +76,7 @@ widać, co już nie wraca.
 ### Zanim aplikacja trafi na telefon
 
 1. **Aplikacja nie była ani raz uruchomiona na prawdziwym telefonie.**
-   Cała weryfikacja to 407 testów i analizator — w kontenerze sesji nie ma
+   Cała weryfikacja to 413 testów i analizator — w kontenerze sesji nie ma
    Android SDK. Pierwsze uruchomienie może pokazać rzeczy, których test nie
    widzi: wielkość tekstu w ręce, zachowanie klawiatury, czas startu,
    uprawnienia do aparatu i powiadomień.
@@ -128,8 +129,14 @@ widać, co już nie wraca.
     nie ma płatności (brak zależności do Google Play Billing). Wszystko,
     czego wymaga prawo, jest darmowe, więc to nie blokuje rolnika; blokuje
     przychód.
-11. **Program na Windows** — katalog `windows/` istnieje z szablonu, ale
-    program nie był budowany ani raz (w kontenerze sesji nie ma Windows).
+11. **Program na Windows** — strona kodu gotowa (`lib/app/platforma.dart`:
+    baza z biblioteki dołączonej do programu, nazwa urządzenia „komputer",
+    odczyt zdjęć odmawia z wyjaśnieniem), a cała droga startu ma test.
+    **Samego programu nikt jeszcze nie zbudował**: w kontenerze sesji nie
+    ma ani Windows, ani bibliotek GTK. Do uruchomienia ręcznie: Actions →
+    „Zbuduj program na Windows" (przepływ `windows.yml`, maszyna
+    `windows-latest`; uruchamiany tylko ręcznie, bo minuty Windows liczą
+    się w limicie GitHuba podwójnie).
     Synchronizacja przez dysk użytkownika **jest zrobiona**: „Dołącz dane
     z drugiego urządzenia" scala plik kopii z tym, co w telefonie —
     nowszy wpis wygrywa, starszy zostaje w dzienniku zmian

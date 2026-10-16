@@ -1,0 +1,44 @@
+# Program na komputer z Windows (plan, pkt 1: „potem Windows").
+#
+# Uruchamiany **tylko ręcznie** (Actions → „Zbuduj program na Windows" →
+# Run workflow). Nie wisi na każdym commicie, bo maszyny z Windows liczą
+# się w darmowym limicie GitHuba podwójnie, a budżet projektu to zero.
+#
+# Wynik to katalog z plikiem agro_asystent.exe i bibliotekami — do
+# pobrania jako artefakt (plik .zip). Program nie jest podpisany, więc
+# Windows pokaże ostrzeżenie SmartScreen; „Więcej informacji" →
+# „Uruchom mimo to".
+name: Zbuduj program na Windows
+
+on:
+  workflow_dispatch:
+
+jobs:
+  windows:
+    name: Windows (release)
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 3.47.7
+          channel: stable
+          cache: true
+
+      - name: Zależności
+        run: flutter pub get
+
+      # Katalogu `windows/` nie tworzymy tu od nowa — jest w repozytorium.
+      - name: Budowanie
+        run: flutter build windows --release
+
+      - name: Spis plików wyniku
+        shell: bash
+        run: ls -R build/windows/x64/runner/Release | head -40
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: agro-asystent-windows
+          path: build/windows/x64/runner/Release/
+          retention-days: 14
