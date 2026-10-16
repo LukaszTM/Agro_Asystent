@@ -155,7 +155,7 @@ void main() {
 
     test('odstępstwa i zakazy są danymi, nie warunkami w kodzie', () {
       final zasady = reguly.zasadyNawozeniaAzotem;
-      expect(zasady.zakazy, hasLength(2));
+      expect(zasady.zakazy, hasLength(5));
       expect(zasady.nieDotyczy.first, contains('pod osłonami'));
 
       final pogoda = zasady.odstepstwa.firstWhere(
@@ -182,7 +182,7 @@ void main() {
       expect(poZbiorze.uwagi, contains('ministerstwa'));
     });
 
-    test('zakaz z ustawy o nawozach jest oznaczony do sprawdzenia', () {
+    test('zakazy mają podstawę: program albo ustawa o nawozach', () {
       final zasady = reguly.zasadyNawozeniaAzotem;
       final odlogi = zasady.zakazy.firstWhere(
         (z) => z.id == 'gleby_odlogowane',
@@ -190,15 +190,16 @@ void main() {
       expect(odlogi.doWeryfikacji, isFalse);
       expect(odlogi.zrodlo, contains('1.3'));
 
+      // Treść zakazu dla gleb niezdatnych jest w ustawie — przeczytana
+      // 16.10.2026, razem z ustępem o rozmarzaniu powierzchniowym.
       final niezdatna = zasady.zakazy.firstWhere(
         (z) => z.id == 'gleba_niezdatna',
       );
-      expect(
-        niezdatna.doWeryfikacji,
-        isTrue,
-        reason: 'treść zakazu jest w ustawie o nawozach, której nie czytaliśmy',
-      );
-      expect(niezdatna.zrodlo, contains('o nawozach i nawożeniu'));
+      expect(niezdatna.doWeryfikacji, isFalse);
+      expect(niezdatna.zrodlo, contains('art. 20 ust. 1 pkt 1'));
+      expect(niezdatna.opis, contains('rozmarza'));
+
+      expect(zasady.zakazy.where((z) => z.doWeryfikacji), isEmpty);
     });
   });
 

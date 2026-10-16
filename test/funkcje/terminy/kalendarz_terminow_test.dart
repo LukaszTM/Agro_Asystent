@@ -364,4 +364,168 @@ void main() {
       );
     });
   });
+
+  group('uprawy intensywne i zasady z ustaw', () {
+    Future<void> dodajPole({
+      required String id,
+      required String uprawa,
+      required int ar,
+      double azotKgHa = 0,
+    }) async {
+      await baza.insert('dzialka_rolna', {
+        'id': id,
+        'gospodarstwo_id': 'g1',
+        'nazwa_wlasna': 'Pole $id',
+        'sezon': 2026,
+        'uprawa': uprawa,
+        'powierzchnia_ar': ar,
+        'utworzono': '2026-03-01T08:00:00',
+        'zmieniono': '2026-03-01T08:00:00',
+        'urzadzenie': 'telefon',
+      });
+      if (azotKgHa == 0) {
+        return;
+      }
+      await baza.insert('zabieg', {
+        'id': 'z-$id',
+        'gospodarstwo_id': 'g1',
+        'typ': 'nawozenie',
+        'data': '2026-04-01',
+        'powierzchnia_ar': ar,
+        'utworzono': '2026-04-01T08:00:00',
+        'zmieniono': '2026-04-01T08:00:00',
+        'urzadzenie': 'telefon',
+      });
+      await baza.insert('zabieg_pole', {
+        'zabieg_id': 'z-$id',
+        'dzialka_rolna_id': id,
+        'powierzchnia_ar': ar,
+      });
+      await baza.insert('zabieg_nawozenie', {
+        'zabieg_id': 'z-$id',
+        'nawoz_nazwa': 'Saletra amonowa',
+        'dawka': 200,
+        'dawka_jednostka': 'kg/ha',
+        'azot_kg_ha': azotKgHa,
+        'naturalny': 0,
+      });
+    }
+
+    test('lista upraw intensywnych jest sprawdzona w załączniku nr 7', () {
+      final lista = reguly.uprawyIntensywne;
+      expect(lista.doWeryfikacji, isFalse);
+      expect(lista.zrodlo, contains('załącznik nr 7'));
+      expect(lista.uprawy, hasLength(22));
+      expect(lista.dopasuj('pszenica zwyczajna ozima')?.progAzotuKgNaHa, 120);
+      expect(lista.dopasuj('kapusta głowiasta biała')?.progAzotuKgNaHa, isNull);
+      expect(
+        lista.dopasuj('żyto ozime'),
+        isNull,
+        reason: 'przepis wymienia tylko żyto mieszańcowe',
+      );
+      expect(
+        lista.dopasuj('ziemniak'),
+        isNull,
+        reason: 'przepis wymienia tylko ziemniaka późnego',
+      );
+    });
+
+    test('uprawa warunkowa liczy się dopiero powyżej dawki azotu', () async {
+      // Pszenica jest intensywna powyżej 120 kg N/ha.
+      await dodajPole(
+        id: 'p-malo',
+        uprawa: 'pszenica ozima',
+        ar: 1000,
+        azotKgHa: 100,
+      );
+      await dodajPole(
+        id: 'p-duzo',
+        uprawa: 'pszenica ozima',
+        ar: 2000,
+        azotKgHa: 150,
+      );
+
+      final profil = await ProfilZBazy(
+        baza,
+        reguly: reguly,
+      ).policz('g1', sezon: 2026);
+      expect(
+        profil.powierzchniaUprawIntensywnychHa,
+        20,
+        reason: 'liczy się tylko pole z dawką powyżej progu',
+      );
+    });
+
+    test('uprawa bezwarunkowa liczy się bez nawożenia', () async {
+      await dodajPole(
+        id: 'p-kapusta',
+        uprawa: 'kapusta głowiasta biała',
+        ar: 600,
+      );
+
+      final profil = await ProfilZBazy(
+        baza,
+        reguly: reguly,
+      ).policz('g1', sezon: 2026);
+      expect(profil.powierzchniaUprawIntensywnychHa, 6);
+    });
+
+    test('próg 50 ha upraw intensywnych włącza plan nawożenia', () async {
+      await dodajPole(
+        id: 'p-duze',
+        uprawa: 'kapusta głowiasta biała',
+        ar: 5100,
+      );
+
+      final profil = await ProfilZBazy(
+        baza,
+        reguly: reguly,
+      ).policz('g1', sezon: 2026);
+      expect(profil.powierzchniaUprawIntensywnychHa, 51);
+      expect(
+        reguly.obowiazek('program_azotanowy_plan')!.ocena(profil),
+        Ocena.dotyczy,
+        reason: 'Prawo wodne, art. 105a ust. 1 pkt 2 — powyżej 50 ha',
+      );
+    });
+
+    test('zakazy z ustawy o nawozach są w słowniku z podstawą', () {
+      final zakazy = reguly.zasadyNawozeniaAzotem.zakazy;
+      final gleba = zakazy.firstWhere((z) => z.id == 'gleba_niezdatna');
+      expect(gleba.doWeryfikacji, isFalse);
+      expect(gleba.zrodlo, contains('art. 20 ust. 1 pkt 1'));
+      expect(
+        gleba.opis,
+        contains('rozmarza co najmniej powierzchniowo'),
+        reason: 'ustęp 3 jest dla rolnika najważniejszy',
+      );
+
+      expect(
+        zakazy.map((z) => z.id),
+        containsAll([
+          'plynne_na_warzywa',
+          'nawozy_amonowo_weglanowe',
+          'mocznik_granulowany',
+          'gleby_odlogowane',
+        ]),
+      );
+    });
+
+    test('odległości od wód są danymi z tabeli 1', () {
+      final odleglosci = reguly.zasadyNawozeniaAzotem.odleglosciOdWod;
+      expect(odleglosci.doWeryfikacji, isFalse);
+      expect(
+        odleglosci.odleglosci.firstWhere((o) => o.id == 'gnojowica').metry,
+        10,
+      );
+      expect(
+        odleglosci.odleglosci
+            .firstWhere((o) => o.id == 'nawozy_bez_gnojowicy')
+            .metry,
+        5,
+      );
+      expect(odleglosci.zmniejszenieNieMniejNizM, 3);
+      expect(odleglosci.warunkiZmniejszenia, hasLength(2));
+    });
+  });
 }

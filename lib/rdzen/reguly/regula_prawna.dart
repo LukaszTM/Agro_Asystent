@@ -593,6 +593,76 @@ class ProgTemperatury {
   final String dotyczy;
 }
 
+/// Odległość, w jakiej nie stosuje się nawozów w pobliżu wód (tabela 1).
+class OdlegloscOdWody {
+  const OdlegloscOdWody({
+    required this.id,
+    required this.nazwa,
+    required this.metry,
+    required this.odCzego,
+  });
+
+  factory OdlegloscOdWody.zJson(Map<String, dynamic> json) => OdlegloscOdWody(
+    id: json['id'] as String,
+    nazwa: json['nazwa'] as String,
+    metry: (json['metry'] as num).toDouble(),
+    odCzego: json['od_czego'] as String? ?? '',
+  );
+
+  final String id;
+  final String nazwa;
+  final double metry;
+  final String odCzego;
+}
+
+/// Odległości od wód razem z warunkami ich zmniejszenia.
+class OdlegosciOdWod {
+  const OdlegosciOdWod({
+    required this.statusWeryfikacji,
+    required this.zrodlo,
+    required this.odleglosci,
+    required this.zmniejszenieNieMniejNizM,
+    required this.warunkiZmniejszenia,
+  });
+
+  static const OdlegosciOdWod puste = OdlegosciOdWod(
+    statusWeryfikacji: 'brak',
+    zrodlo: '',
+    odleglosci: [],
+    zmniejszenieNieMniejNizM: 0,
+    warunkiZmniejszenia: [],
+  );
+
+  factory OdlegosciOdWod.zJson(Map<String, dynamic> json) {
+    final zmniejszenie =
+        (json['zmniejszenie'] as Map<String, dynamic>?) ?? const {};
+    return OdlegosciOdWod(
+      statusWeryfikacji: json['status_weryfikacji'] as String? ?? 'nieznany',
+      zrodlo: json['zrodlo'] as String? ?? '',
+      odleglosci: ((json['odleglosci'] as List<dynamic>?) ?? const [])
+          .map((o) => OdlegloscOdWody.zJson(o as Map<String, dynamic>))
+          .toList(growable: false),
+      zmniejszenieNieMniejNizM:
+          (zmniejszenie['nie_mniej_niz_m'] as num?)?.toDouble() ?? 0,
+      warunkiZmniejszenia:
+          ((zmniejszenie['warunki'] as List<dynamic>?) ?? const [])
+              .map((w) => w as String)
+              .toList(growable: false),
+    );
+  }
+
+  final String statusWeryfikacji;
+  final String zrodlo;
+  final List<OdlegloscOdWody> odleglosci;
+
+  /// Odległość wolno zmniejszyć o połowę, ale nie poniżej tej wartości.
+  final double zmniejszenieNieMniejNizM;
+
+  final List<String> warunkiZmniejszenia;
+
+  bool get doWeryfikacji => statusWeryfikacji != 'potwierdzone';
+}
+
 /// Zasady stosowania nawozów azotowych poza samymi datami: odstępstwa,
 /// zakazy i wyłączenia. Wszystko danymi, bo zmienia się z przepisem.
 class ZasadyNawozeniaAzotem {
@@ -603,6 +673,7 @@ class ZasadyNawozeniaAzotem {
     required this.zakazy,
     required this.nieDotyczy,
     this.wczesniejszeWiosna = WczesniejszeWiosna.puste,
+    this.odleglosciOdWod = OdlegosciOdWod.puste,
   });
 
   static const ZasadyNawozeniaAzotem puste = ZasadyNawozeniaAzotem(
@@ -631,6 +702,11 @@ class ZasadyNawozeniaAzotem {
             : WczesniejszeWiosna.zJson(
                 json['wczesniejsze_wiosna'] as Map<String, dynamic>,
               ),
+        odleglosciOdWod: json['odleglosci_od_wod'] == null
+            ? OdlegosciOdWod.puste
+            : OdlegosciOdWod.zJson(
+                json['odleglosci_od_wod'] as Map<String, dynamic>,
+              ),
       );
 
   final String statusWeryfikacji;
@@ -644,7 +720,112 @@ class ZasadyNawozeniaAzotem {
   /// Wcześniejsze nawożenie w lutym po przejściu temperatury przez próg.
   final WczesniejszeWiosna wczesniejszeWiosna;
 
+  /// Odległości od wód powierzchniowych (tabela 1).
+  final OdlegosciOdWod odleglosciOdWod;
+
   bool get doWeryfikacji => statusWeryfikacji != 'potwierdzone';
+}
+
+/// Uprawa intensywna z załącznika nr 7 do programu azotanowego.
+///
+/// Przy części upraw „intensywna" zależy od dawki azotu: pszenica jest
+/// intensywna powyżej 120 kg N/ha, kukurydza powyżej 160. Dlatego próg
+/// jest danymi, a nie liczbą w kodzie.
+class UprawaIntensywna {
+  const UprawaIntensywna({
+    required this.nazwa,
+    this.progAzotuKgNaHa,
+    this.podOslonami = false,
+  });
+
+  factory UprawaIntensywna.zJson(Map<String, dynamic> json) => UprawaIntensywna(
+    nazwa: json['nazwa'] as String,
+    progAzotuKgNaHa: (json['prog_azotu_kg_na_ha'] as num?)?.toDouble(),
+    podOslonami: json['pod_oslonami'] as bool? ?? false,
+  );
+
+  final String nazwa;
+
+  /// Dawka azotu, powyżej której uprawa liczy się jako intensywna.
+  /// `null` znaczy „zawsze intensywna".
+  final double? progAzotuKgNaHa;
+
+  final bool podOslonami;
+
+  /// Czy ta uprawa liczy się przy danej dawce azotu na hektar.
+  bool liczySie({required double azotKgNaHa}) {
+    final prog = progAzotuKgNaHa;
+    return prog == null || azotKgNaHa > prog;
+  }
+}
+
+/// Lista upraw intensywnych — od ich powierzchni zależy obowiązek planu
+/// nawożenia azotem (Prawo wodne, art. 105a ust. 1 pkt 2).
+class UprawyIntensywne {
+  const UprawyIntensywne({
+    required this.statusWeryfikacji,
+    required this.zrodlo,
+    required this.uprawy,
+  });
+
+  static const UprawyIntensywne puste = UprawyIntensywne(
+    statusWeryfikacji: 'brak',
+    zrodlo: '',
+    uprawy: [],
+  );
+
+  factory UprawyIntensywne.zJson(Map<String, dynamic> json) => UprawyIntensywne(
+    statusWeryfikacji: json['status_weryfikacji'] as String? ?? 'nieznany',
+    zrodlo: json['zrodlo'] as String? ?? '',
+    uprawy: ((json['uprawy'] as List<dynamic>?) ?? const [])
+        .map((u) => UprawaIntensywna.zJson(u as Map<String, dynamic>))
+        .toList(growable: false),
+  );
+
+  final String statusWeryfikacji;
+  final String zrodlo;
+  final List<UprawaIntensywna> uprawy;
+
+  bool get doWeryfikacji => statusWeryfikacji != 'potwierdzone';
+
+  /// Uprawa z listy pasująca do nazwy uprawy na polu.
+  ///
+  /// Nazwy pól pochodzą z wniosku („pszenica zwyczajna ozima"), a lista
+  /// z przepisu jest ogólna („pszenica"), więc szukamy nazwy z przepisu
+  /// **w** nazwie uprawy. Dopasowanie jest dosłowne: „żyto mieszańcowe"
+  /// nie złapie zwykłego żyta, a „ziemniak późny" nie złapie ziemniaka.
+  UprawaIntensywna? dopasuj(String nazwaUprawyNaPolu) {
+    final szukane = _bezOgonkow(nazwaUprawyNaPolu);
+    if (szukane.isEmpty) {
+      return null;
+    }
+    for (final uprawa in uprawy) {
+      if (szukane.contains(_bezOgonkow(uprawa.nazwa))) {
+        return uprawa;
+      }
+    }
+    return null;
+  }
+
+  static String _bezOgonkow(String tekst) {
+    const pary = {
+      'ą': 'a',
+      'ć': 'c',
+      'ę': 'e',
+      'ł': 'l',
+      'ń': 'n',
+      'ó': 'o',
+      'ś': 's',
+      'ź': 'z',
+      'ż': 'z',
+    };
+    final male = tekst.toLowerCase();
+    final wynik = StringBuffer();
+    for (final znak in male.split('')) {
+      wynik.write(pary[znak] ?? znak);
+    }
+    return wynik.toString();
+  }
 }
 
 /// Cały słownik reguł prawnych — dane z numerem wersji, nie kod.
@@ -657,6 +838,7 @@ class SlownikRegul {
     required this.parametryWarunkowosci,
     this.wspolczynnikiDjp = WspolczynnikiDjp.puste,
     this.zasadyNawozeniaAzotem = ZasadyNawozeniaAzotem.puste,
+    this.uprawyIntensywne = UprawyIntensywne.puste,
   });
 
   factory SlownikRegul.zTekstuJson(String tekst) =>
@@ -685,6 +867,11 @@ class SlownikRegul {
         : ZasadyNawozeniaAzotem.zJson(
             json['zasady_nawozenia_azotem'] as Map<String, dynamic>,
           ),
+    uprawyIntensywne: json['uprawy_intensywne'] == null
+        ? UprawyIntensywne.puste
+        : UprawyIntensywne.zJson(
+            json['uprawy_intensywne'] as Map<String, dynamic>,
+          ),
   );
 
   final String wersja;
@@ -698,6 +885,9 @@ class SlownikRegul {
 
   /// Odstępstwa, zakazy i wyłączenia przy nawożeniu azotem.
   final ZasadyNawozeniaAzotem zasadyNawozeniaAzotem;
+
+  /// Lista upraw intensywnych (załącznik nr 7 programu azotanowego).
+  final UprawyIntensywne uprawyIntensywne;
 
   /// Graniczne terminy stosowania nawozów — te, które mówią o rodzaju
   /// nawozu i rodzaju gruntu.

@@ -112,7 +112,11 @@ Future<Uslugi> uruchom({
       reguly: reguly,
       rejestr: RejestrZabiegow(baza),
     ),
-    profil: ProfilZBazy(baza, zwierzeta: ZwierzetaWGospodarstwie(baza)),
+    profil: ProfilZBazy(
+      baza,
+      zwierzeta: ZwierzetaWGospodarstwie(baza),
+      reguly: reguly,
+    ),
     przypomnienia: PrzypomnieniaUrzadzenia(),
     ustawieniaPrzypomnien: UstawieniaPrzypomnien(baza),
     dostep: dostep,

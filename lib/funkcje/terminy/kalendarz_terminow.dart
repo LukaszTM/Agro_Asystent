@@ -381,7 +381,7 @@ class KalendarzTerminow {
 /// Liczy profil gospodarstwa z danych w bazie: od niego zależy, które
 /// obowiązki się włączają (plan, pkt 3).
 class ProfilZBazy {
-  const ProfilZBazy(this._baza, {this.stado, this.zwierzeta});
+  const ProfilZBazy(this._baza, {this.stado, this.zwierzeta, this.reguly});
 
   final DatabaseExecutor _baza;
 
@@ -392,6 +392,10 @@ class ProfilZBazy {
 
   /// Odpowiedź rolnika „czy masz zwierzęta" — stąd DJP, gdy rejestru nie ma.
   final ZwierzetaWGospodarstwie? zwierzeta;
+
+  /// Słownik reguł — potrzebny do listy upraw intensywnych. Bez niego
+  /// powierzchnia tych upraw zostaje nieznana, a nie zerowa.
+  final SlownikRegul? reguly;
 
   Future<ProfilGospodarstwa> policz(String gospodarstwoId, {int? sezon}) async {
     final rok = sezon ?? DateTime.now().year;
@@ -404,11 +408,16 @@ class ProfilZBazy {
       [gospodarstwoId, rok],
     );
     final ar = (wiersze.first['ar'] as num?)?.toDouble() ?? 0;
+    final intensywneHa = await _powierzchniaUprawIntensywnych(
+      gospodarstwoId,
+      rok,
+    );
 
     final stanStada = await stado?.djp(gospodarstwoId);
     if (stanStada != null) {
       return ProfilGospodarstwa(
         powierzchniaUrHa: ar / 100,
+        powierzchniaUprawIntensywnychHa: intensywneHa,
         djp: stanStada.djp,
         posiadaczZwierzat: stanStada.sztuk > 0,
       );
@@ -423,8 +432,56 @@ class ProfilZBazy {
     // liczymy tylko to, co naprawdę wiemy.
     return ProfilGospodarstwa(
       powierzchniaUrHa: ar / 100,
+      powierzchniaUprawIntensywnychHa: intensywneHa,
       djp: odpowiedz?.djp,
       posiadaczZwierzat: odpowiedz?.posiadaczZwierzat,
     );
+  }
+
+  /// Powierzchnia upraw intensywnych z załącznika nr 7.
+  ///
+  /// Przy części upraw „intensywna" zależy od dawki azotu na hektar, więc
+  /// liczymy azot wniesiony na każde pole w sezonie. Pole bez nawożenia
+  /// ma zero azotu, czyli uprawą intensywną jeszcze nie jest.
+  Future<double> _powierzchniaUprawIntensywnych(
+    String gospodarstwoId,
+    int rok,
+  ) async {
+    final lista = reguly?.uprawyIntensywne;
+    if (lista == null || lista.uprawy.isEmpty) {
+      return 0;
+    }
+    final wiersze = await _baza.rawQuery(
+      '''
+      -- Powierzchnie trzymamy w arach, a azot liczymy na hektar — stąd
+      -- dzielenie przez sto. To przeliczenie jednostek, nie próg z przepisu.
+      SELECT r.uprawa, r.powierzchnia_ar,
+             COALESCE(SUM(n.azot_kg_ha * zp.powierzchnia_ar / 100), 0) AS azot_kg
+      FROM dzialka_rolna r
+      LEFT JOIN zabieg_pole zp ON zp.dzialka_rolna_id = r.id
+      LEFT JOIN zabieg z ON z.id = zp.zabieg_id
+                        AND z.usuniety = 0
+                        AND strftime('%Y', z.data) = ?
+      LEFT JOIN zabieg_nawozenie n ON n.zabieg_id = z.id
+      WHERE r.gospodarstwo_id = ? AND r.usuniety = 0 AND r.sezon = ?
+      GROUP BY r.id
+    ''',
+      ['$rok', gospodarstwoId, rok],
+    );
+
+    var arIntensywnych = 0;
+    for (final wiersz in wiersze) {
+      final uprawa = lista.dopasuj((wiersz['uprawa'] as String?) ?? '');
+      if (uprawa == null) {
+        continue;
+      }
+      final ar = (wiersz['powierzchnia_ar'] as int?) ?? 0;
+      final azotKg = (wiersz['azot_kg'] as num?)?.toDouble() ?? 0;
+      final azotNaHa = ar > 0 ? azotKg / (ar / 100) : 0.0;
+      if (uprawa.liczySie(azotKgNaHa: azotNaHa)) {
+        arIntensywnych += ar;
+      }
+    }
+    return arIntensywnych / 100;
   }
 }

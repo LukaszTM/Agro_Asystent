@@ -471,6 +471,25 @@ class _TerminyJesienne extends StatelessWidget {
                 style: Theme.of(context).textTheme.bodyMedium,
               ),
           ],
+          if (zasady.odleglosciOdWod.odleglosci.isNotEmpty) ...[
+            const SizedBox(height: MotywProsty.odstep),
+            Text(
+              'Jak blisko wody',
+              style: Theme.of(context).textTheme.bodyLarge,
+            ),
+            for (final odleglosc in zasady.odleglosciOdWod.odleglosci)
+              Text(
+                '${odleglosc.metry.toStringAsFixed(0)} m — '
+                '${odleglosc.nazwa.toLowerCase()}',
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+            Text(
+              'Przy uprawie wolno o połowę mniej, ale nie bliżej niż '
+              '${zasady.odleglosciOdWod.zmniejszenieNieMniejNizM.toStringAsFixed(0)} m: '
+              '${zasady.odleglosciOdWod.warunkiZmniejszenia.join(' albo ')}.',
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+          ],
           if (zasady.wczesniejszeWiosna.jest) ...[
             const SizedBox(height: MotywProsty.odstep),
             Text(

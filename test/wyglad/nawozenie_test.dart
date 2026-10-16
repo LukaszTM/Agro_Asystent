@@ -359,9 +359,18 @@ void main() {
     expect(find.textContaining('5°C'), findsOneWidget);
     expect(
       find.textContaining('czeka na sprawdzenie w przepisie'),
-      findsOneWidget,
-      reason: 'zakaz z ustawy o nawozach nie był czytany',
+      findsNothing,
+      reason: 'wszystkie zasady są dziś potwierdzone w swoim dokumencie',
     );
+    expect(
+      find.textContaining('Mocznik w formie granulowanej'),
+      findsOneWidget,
+      reason: 'zakaz z art. 20b ustawy o nawozach',
+    );
+
+    await przewijajDo(tester, find.textContaining('Jak blisko wody'));
+    expect(find.textContaining('10 m — gnojowica'), findsOneWidget);
+    expect(find.textContaining('nie bliżej niż 3 m'), findsOneWidget);
   });
 
   testWidgets('gmina z wykazu zmienia termin na gruntach ornych', (

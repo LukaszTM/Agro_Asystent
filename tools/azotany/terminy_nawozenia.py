@@ -359,6 +359,197 @@ WZORCE = [
     ),
 ]
 
+
+#: Lista upraw intensywnych (załącznik nr 7). Osiem pierwszych jest
+#: warunkowych: uprawa jest intensywna dopiero powyżej podanej dawki azotu.
+#: Od powierzchni tych upraw zależy obowiązek planu nawożenia (powyżej 50 ha
+#: — Prawo wodne, art. 105a ust. 1 pkt 2).
+UPRAWY_INTENSYWNE = [
+    {"nazwa": "pszenica", "prog_azotu_kg_na_ha": 120},
+    {"nazwa": "pszenżyto", "prog_azotu_kg_na_ha": 100},
+    {"nazwa": "żyto mieszańcowe", "prog_azotu_kg_na_ha": 100},
+    {"nazwa": "kukurydza", "prog_azotu_kg_na_ha": 160},
+    {"nazwa": "rzepak", "prog_azotu_kg_na_ha": 150},
+    {"nazwa": "burak cukrowy", "prog_azotu_kg_na_ha": 150},
+    {"nazwa": "burak pastewny", "prog_azotu_kg_na_ha": 150},
+    {"nazwa": "ziemniak późny", "prog_azotu_kg_na_ha": 120},
+    {"nazwa": "kapusta głowiasta biała"},
+    {"nazwa": "kalafior"},
+    {"nazwa": "brokuł"},
+    {"nazwa": "kapusta brukselka"},
+    {"nazwa": "marchew"},
+    {"nazwa": "seler korzeniowy"},
+    {"nazwa": "burak ćwikłowy"},
+    {"nazwa": "ogórek"},
+    {"nazwa": "cukinia"},
+    {"nazwa": "cebula"},
+    {"nazwa": "por"},
+    {"nazwa": "pomidor", "pod_oslonami": True},
+    {"nazwa": "ogórek", "pod_oslonami": True},
+    {"nazwa": "papryka", "pod_oslonami": True},
+]
+
+#: Odległości od wód powierzchniowych, w jakich nie stosuje się nawozów
+#: (tabela 1, rozdział 1.2.2).
+ODLEGLOSCI_OD_WOD = [
+    {
+        "id": "nawozy_bez_gnojowicy",
+        "nazwa": "Nawozy z wyłączeniem gnojowicy",
+        "metry": 5,
+        "od_czego": "brzeg jezior i zbiorników do 50 ha, cieków naturalnych, "
+                    "rowów (bez rowów do 5 m) i kanałów",
+    },
+    {
+        "id": "gnojowica",
+        "nazwa": "Gnojowica",
+        "metry": 10,
+        "od_czego": "brzeg jezior i zbiorników do 50 ha, cieków naturalnych, "
+                    "rowów (bez rowów do 5 m) i kanałów",
+    },
+    {
+        "id": "wszystkie_20_m",
+        "nazwa": "Wszystkie rodzaje nawozów",
+        "metry": 20,
+        "od_czego": "ujęcia wody bez strefy ochronnej, brzeg jezior "
+                    "i zbiorników powyżej 50 ha, obszar morskiego pasa "
+                    "nadbrzeżnego",
+    },
+]
+
+#: Kiedy odległość z tabeli 1 wolno zmniejszyć o połowę.
+ZMNIEJSZENIE_ODLEGLOSCI = {
+    "o_ile": "o połowę",
+    "nie_mniej_niz_m": 3,
+    "warunki": [
+        "nawozy aplikowane urządzeniami wprost do gleby",
+        "pełna dawka podzielona co najmniej na 3 równe części",
+    ],
+    "uwagi": "Tylko na gruntach rolnych z uprawą roślin.",
+}
+
+#: Zakazy z ustawy z dnia 10 lipca 2007 r. o nawozach i nawożeniu
+#: (Dz.U. 2021 poz. 76). Program azotanowy tylko do nich odsyła.
+ZAKAZY_Z_USTAWY = [
+    {
+        "id": "gleba_niezdatna",
+        "nazwa": "Gleba zamarznięta, zalana, nasycona wodą albo pod śniegiem",
+        "opis": "Nawożenia takich gleb zabrania ustawa. Za zamarzniętą nie "
+                "uznaje się gleby, która rozmarza co najmniej powierzchniowo "
+                "w ciągu dnia.",
+        "status_weryfikacji": "potwierdzone",
+        "zrodlo": "art. 20 ust. 1 pkt 1 i ust. 3 ustawy z dnia 10 lipca "
+                  "2007 r. o nawozach i nawożeniu (Dz.U. 2021 poz. 76)",
+        "uwagi": "Zakaz nie dotyczy stawów do chowu lub hodowli ryb.",
+    },
+    {
+        "id": "plynne_na_warzywa",
+        "nazwa": "Gnojowica i gnojówka na rośliny do bezpośredniego spożycia",
+        "opis": "Nawozów naturalnych w postaci płynnej nie stosuje się "
+                "podczas wegetacji roślin przeznaczonych do bezpośredniego "
+                "spożycia przez ludzi.",
+        "status_weryfikacji": "potwierdzone",
+        "zrodlo": "art. 20 ust. 1 pkt 2 ustawy o nawozach i nawożeniu",
+    },
+    {
+        "id": "nawozy_amonowo_weglanowe",
+        "nazwa": "Nawozy amonowo-węglanowe",
+        "opis": "Stosowanie takich nawozów jest zabronione.",
+        "status_weryfikacji": "potwierdzone",
+        "zrodlo": "art. 20a ustawy o nawozach i nawożeniu",
+    },
+    {
+        "id": "mocznik_granulowany",
+        "nazwa": "Mocznik w formie granulowanej",
+        "opis": "Zabroniony, chyba że zawiera inhibitor ureazy albo powłokę "
+                "biodegradowalną.",
+        "status_weryfikacji": "potwierdzone",
+        "zrodlo": "art. 20b ustawy o nawozach i nawożeniu",
+    },
+]
+
+#: Wzorce sprawdzane w ustawie o nawozach i nawożeniu.
+WZORCE_USTAWA_NAWOZY = [
+    (
+        "art. 20 ust. 1 — zakaz na glebach niezdatnych",
+        "Zabrania się stosowania nawozów: 1) na glebach zamarzniętych, "
+        "zalanych wodą, nasyconych wodą, pokrytych śniegiem",
+    ),
+    (
+        "art. 20 ust. 1 pkt 2 — nawozy płynne na rośliny do spożycia",
+        "naturalnych w postaci płynnej podczas wegetacji roślin "
+        "przeznaczonych do bezpośredniego spożycia przez ludzi",
+    ),
+    (
+        "art. 20 ust. 3 — gleba rozmarzająca powierzchniowo",
+        "Za glebę zamarzniętą nie uznaje się gleby, która rozmarza co "
+        "najmniej powierzchniowo w ciągu dnia",
+    ),
+    (
+        "art. 20a — nawozy amonowo-węglanowe",
+        "Zabrania się stosowania nawozów amonowo-węglanowych",
+    ),
+    (
+        "art. 20b — mocznik granulowany",
+        "Zabrania się stosowania mocznika w formie granulowanej, "
+        "z wyłączeniem stosowania mocznika w formie granulowanej "
+        "zawierającego inhibitor ureazy albo powłokę biodegradowalną",
+    ),
+]
+
+#: Wzorce sprawdzane w ustawie – Prawo wodne.
+WZORCE_PRAWO_WODNE = [
+    (
+        "art. 105a ust. 1 pkt 2 — progi obowiązku planu nawożenia",
+        "posiadają gospodarstwo rolne o powierzchni powyżej 100 ha użytków "
+        "rolnych, uprawiają uprawy intensywne na gruntach ornych na "
+        "powierzchni powyżej 50 ha lub utrzymują obsadę większą niż 60 "
+        "dużych jednostek przeliczeniowych",
+    ),
+    (
+        "art. 105a ust. 1 — obowiązek planu nawożenia azotem",
+        "są obowiązane do opracowania planu nawożenia azotem",
+    ),
+    (
+        "art. 105a ust. 7 — wyjątek dla niestosujących nawozów naturalnych",
+        "które nie stosują nawozów naturalnych lub produktów "
+        "pofermentacyjnych na działkach rolnych, których są posiadaczami, "
+        "nie opracowują planu nawożenia azotem",
+    ),
+    (
+        "art. 105a ust. 9 — przechowywanie planu 3 lata",
+        "Plan nawożenia azotem przechowuje się w gospodarstwie rolnym przez "
+        "3 lata",
+    ),
+]
+
+#: Wzorce z programu dla listy upraw intensywnych i tabeli 1.
+WZORCE_PROGRAMU_DODATKOWE = [
+    (
+        "załącznik nr 7 — lista upraw intensywnych w uprawie polowej",
+        "Lista upraw intensywnych w uprawie polowej: 1. pszenica, powyżej "
+        "120 kg N/ha; 2. pszenżyto, powyżej 100 kg N/ha; 3. żyto "
+        "mieszańcowe, powyżej 100 kg N/ha; 4. kukurydza, powyżej 160 kg "
+        "N/ha; 5. rzepak, powyżej 150 kg N/ha; 6. burak cukrowy, powyżej "
+        "150 kg N/ha; 7. burak pastewny, powyżej 150 kg N/ha; 8. ziemniak "
+        "późny, powyżej 120 kg N/ha",
+    ),
+    (
+        "załącznik nr 7 — lista upraw intensywnych pod osłonami",
+        "Lista upraw intensywnych w uprawie pod osłonami: 1. pomidor; "
+        "2. ogórek; 3. papryka",
+    ),
+    (
+        "tabela 1 — odległości od wód",
+        "Tabela 1. Odległości, w jakich nie stosuje się nawozów w pobliżu "
+        "wód powierzchniowych",
+    ),
+    (
+        "tabela 1 — zmniejszenie odległości o połowę",
+        "mogą zostać zmniejszone o połowę (odległość jednak nie może być "
+        "mniejsza niż 3 m)",
+    ),
+]
+
 #: Wiersz wykazu gmin: województwo, siedmiocyfrowy kod TERYT, nazwa.
 WIERSZ_WYKAZU = re.compile(r"^\s*([a-ząćęłńóśźż-]+)\s+(\d{7})\s+(.+?)\s*$")
 
@@ -386,7 +577,13 @@ def tekst_pdf(sciezka: Path) -> str:
         strony = [strona.extract_text() or "" for strona in dokument.pages]
     prosto = [re.sub(r"\s+", " ", strona) for strona in strony]
     wspak = [strona[::-1] for strona in prosto]
-    return " ".join(prosto + wspak)
+    # Dziennik Ustaw przenosi wyrazy na końcu wiersza („na grun- tach"),
+    # więc doklejamy wariant bez przeniesień. Łącznik bez odstępu
+    # („amonowo-węglanowych") zostaje nietknięty.
+    bez_przeniesien = [
+        re.sub(r"(?<=\w)-\s+(?=\w)", "", strona) for strona in prosto
+    ]
+    return " ".join(prosto + wspak + bez_przeniesien)
 
 
 def wzorzec_tolerancyjny(fragment: str) -> re.Pattern[str]:
@@ -546,9 +743,32 @@ def zapisz_slownik(slownik: Path, sprawdzono: date) -> int:
         "zrodlo": ZRODLO + ", rozdział 1.3",
         "sprawdzono": sprawdzono.isoformat(),
         "odstepstwa": ODSTEPSTWA,
-        "zakazy": ZAKAZY,
+        # Zakazy z programu i z ustawy o nawozach — te drugie mają swoje
+        # źródło przy każdym wpisie.
+        "zakazy": [
+            zakaz for zakaz in ZAKAZY if zakaz["id"] != "gleba_niezdatna"
+        ]
+        + ZAKAZY_Z_USTAWY,
         "nie_dotyczy": WYLACZENIA,
         "wczesniejsze_wiosna": WCZESNIEJSZE_WIOSNA,
+        "odleglosci_od_wod": {
+            "status_weryfikacji": "potwierdzone",
+            "zrodlo": ZRODLO + ", rozdział 1.2.2, tabela 1",
+            "odleglosci": ODLEGLOSCI_OD_WOD,
+            "zmniejszenie": ZMNIEJSZENIE_ODLEGLOSCI,
+        },
+    }
+
+    dane["uprawy_intensywne"] = {
+        "status_weryfikacji": "potwierdzone",
+        "zrodlo": ZRODLO + ", załącznik nr 7",
+        "sprawdzono": sprawdzono.isoformat(),
+        "opis": "Uprawy, których powierzchnia powyżej 50 ha na gruntach "
+                "ornych włącza obowiązek planu nawożenia azotem "
+                "(Prawo wodne, art. 105a ust. 1 pkt 2). Przy ośmiu "
+                "pierwszych uprawa jest intensywna dopiero powyżej podanej "
+                "dawki azotu.",
+        "uprawy": UPRAWY_INTENSYWNE,
     }
 
     # Obowiązek ewidencji nawożenia: progi i wzór ewidencji są teraz
@@ -567,6 +787,26 @@ def zapisz_slownik(slownik: Path, sprawdzono: date) -> int:
         for limit in obowiazek.get("limity", []):
             if limit["id"] == "limit_azotu_z_nawozow_naturalnych":
                 limit["zrodlo"] = ZRODLO + ", rozdział 1.5 ust. 1"
+
+    for obowiazek in dane["obowiazki"]:
+        if obowiazek["id"] != "program_azotanowy_plan":
+            continue
+        obowiazek["podstawa"] = (
+            "ustawa z dnia 20 lipca 2017 r. – Prawo wodne, art. 105a ust. 1; "
+            "lista upraw intensywnych: " + ZRODLO + ", załącznik nr 7"
+        )
+        obowiazek["przechowywanie_lat"] = 3
+        obowiazek["uwagi"] = (
+            "Progi z art. 105a ust. 1 pkt 2 sprawdzone w ustawie: powyżej "
+            "100 ha UR, powyżej 50 ha upraw intensywnych na gruntach ornych "
+            "albo powyżej 60 DJP. Plan wymagany jest też przy chowie drobiu "
+            "powyżej 40 000 stanowisk, świń powyżej 2000 stanowisk (albo 750 "
+            "stanowisk dla macior) oraz przy nabywaniu nawozu naturalnego od "
+            "importera — tego aplikacja nie ocenia. Nie dotyczy podmiotów, "
+            "które nie stosują nawozów naturalnych na swoich działkach "
+            "(art. 105a ust. 7). Plan przechowuje się 3 lata "
+            "(art. 105a ust. 9)."
+        )
 
     slownik.write_text(
         json.dumps(dane, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
@@ -600,6 +840,18 @@ def main() -> int:
         help="załącznik nr 3: wykaz gmin z terminem do 25 października",
     )
     parser.add_argument(
+        "--ustawa-nawozy",
+        type=Path,
+        default=None,
+        help="ustawa o nawozach i nawożeniu (Dz.U. 2021 poz. 76) — zakazy",
+    )
+    parser.add_argument(
+        "--prawo-wodne",
+        type=Path,
+        default=None,
+        help="ustawa – Prawo wodne (art. 105a) — progi planu nawożenia",
+    )
+    parser.add_argument(
         "--slownik",
         type=Path,
         default=Path("assets/dane/reguly_prawne.json"),
@@ -623,10 +875,39 @@ def main() -> int:
     tekst = tekst_pdf(argumenty.program)
     bledy += sprawdz_wzorce(tekst)
     bledy += sprawdz_pola_ewidencji(tekst)
+    bledy += [
+        f"{opis}: nie ma tego w rozporządzeniu"
+        for opis, fragment in WZORCE_PROGRAMU_DODATKOWE
+        if not wzorzec_tolerancyjny(fragment).search(tekst)
+    ]
     print(
-        f"wzorców sprawdzonych w rozporządzeniu: {len(WZORCE)}, "
+        f"wzorców sprawdzonych w rozporządzeniu: "
+        f"{len(WZORCE) + len(WZORCE_PROGRAMU_DODATKOWE)}, "
         f"kolumn ewidencji: {len(POLA_EWIDENCJI)}"
     )
+
+    # Zakazy i progi planu są w ustawach, nie w programie — każdą wartość
+    # sprawdzamy w jej własnym dokumencie.
+    for opis_pliku, sciezka, wzorce in (
+        ("ustawa o nawozach i nawożeniu", argumenty.ustawa_nawozy,
+         WZORCE_USTAWA_NAWOZY),
+        ("ustawa – Prawo wodne", argumenty.prawo_wodne, WZORCE_PRAWO_WODNE),
+    ):
+        if sciezka is None:
+            bledy.append(
+                f"{opis_pliku}: nie podano pliku, a bez niego nie wolno "
+                "zapisać zakazów ani progów z tej ustawy"
+            )
+            continue
+        tekst_ustawy = tekst_pdf(sciezka)
+        brakujace = [
+            f"{opis_pliku} / {opis}: nie ma tego w dokumencie"
+            for opis, fragment in wzorce
+            if not wzorzec_tolerancyjny(fragment).search(tekst_ustawy)
+        ]
+        bledy += brakujace
+        if not brakujace:
+            print(f"{opis_pliku}: {len(wzorce)} wzorców odnalezionych")
 
     warianty: list[dict] = []
     for wariant, sciezka in (
@@ -668,7 +949,9 @@ def main() -> int:
 
     print(
         f"terminy: {len(TERMINY)}, odstępstwa: {len(ODSTEPSTWA)}, "
-        f"zakazy: {len(ZAKAZY)} — wszystko odnalezione w rozporządzeniu"
+        f"zakazy: {len(ZAKAZY) - 1 + len(ZAKAZY_Z_USTAWY)}, "
+        f"uprawy intensywne: {len(UPRAWY_INTENSYWNE)}, "
+        f"odległości od wód: {len(ODLEGLOSCI_OD_WOD)}"
     )
 
     if argumenty.sprawdz_tylko:

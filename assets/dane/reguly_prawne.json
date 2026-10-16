@@ -1,5 +1,5 @@
 {
-  "wersja": "2026.10.16.3",
+  "wersja": "2026.10.16.4",
   "obowiazuje_od": "2026-10-16",
   "opis": "Progi, limity i terminy obowiązków dokumentacyjnych. Dane, nie kod — aktualizowane bez przebudowy aplikacji. Zestawienie służy do planowania i nie jest poradą prawną.",
   "obowiazki": [
@@ -175,7 +175,7 @@
     {
       "id": "program_azotanowy_plan",
       "nazwa": "Program azotanowy: plan nawożenia azotem",
-      "podstawa": "program działań mających na celu zmniejszenie zanieczyszczenia wód azotanami",
+      "podstawa": "ustawa z dnia 20 lipca 2017 r. – Prawo wodne, art. 105a ust. 1; lista upraw intensywnych: Dz.U. 2023 poz. 244 — rozporządzenie Rady Ministrów z 31 stycznia 2023 r. w sprawie Programu działań mających na celu zmniejszenie zanieczyszczenia wód azotanami pochodzącymi ze źródeł rolniczych, załącznik nr 7",
       "kogo_dotyczy": "powyżej 100 ha UR, 50 ha upraw intensywnych albo 60 DJP",
       "progi": [
         {
@@ -198,7 +198,7 @@
       "limity": [],
       "przechowywanie_lat": 3,
       "status_weryfikacji": "potwierdzone",
-      "uwagi": "Włącza się samoczynnie po przekroczeniu progu."
+      "uwagi": "Progi z art. 105a ust. 1 pkt 2 sprawdzone w ustawie: powyżej 100 ha UR, powyżej 50 ha upraw intensywnych na gruntach ornych albo powyżej 60 DJP. Plan wymagany jest też przy chowie drobiu powyżej 40 000 stanowisk, świń powyżej 2000 stanowisk (albo 750 stanowisk dla macior) oraz przy nabywaniu nawozu naturalnego od importera — tego aplikacja nie ocenia. Nie dotyczy podmiotów, które nie stosują nawozów naturalnych na swoich działkach (art. 105a ust. 7). Plan przechowuje się 3 lata (art. 105a ust. 9)."
     },
     {
       "id": "ekoschematy_rejestr",
@@ -1024,10 +1024,31 @@
       {
         "id": "gleba_niezdatna",
         "nazwa": "Gleba zamarznięta, zalana, nasycona wodą albo pod śniegiem",
-        "opis": "Nawożenia takich gleb dotyczą przepisy ustawy o nawozach i nawożeniu — potwierdź u doradcy, zanim wyjedziesz w pole.",
-        "status_weryfikacji": "do_weryfikacji",
-        "zrodlo": "rozdział 1.2.1; zakaz wynika z art. 20 ust. 1 pkt 1 i ust. 3 ustawy z dnia 10 lipca 2007 r. o nawozach i nawożeniu",
-        "uwagi": "Treść zakazu jest w ustawie, nie w Programie — nie czytaliśmy jej."
+        "opis": "Nawożenia takich gleb zabrania ustawa. Za zamarzniętą nie uznaje się gleby, która rozmarza co najmniej powierzchniowo w ciągu dnia.",
+        "status_weryfikacji": "potwierdzone",
+        "zrodlo": "art. 20 ust. 1 pkt 1 i ust. 3 ustawy z dnia 10 lipca 2007 r. o nawozach i nawożeniu (Dz.U. 2021 poz. 76)",
+        "uwagi": "Zakaz nie dotyczy stawów do chowu lub hodowli ryb."
+      },
+      {
+        "id": "plynne_na_warzywa",
+        "nazwa": "Gnojowica i gnojówka na rośliny do bezpośredniego spożycia",
+        "opis": "Nawozów naturalnych w postaci płynnej nie stosuje się podczas wegetacji roślin przeznaczonych do bezpośredniego spożycia przez ludzi.",
+        "status_weryfikacji": "potwierdzone",
+        "zrodlo": "art. 20 ust. 1 pkt 2 ustawy o nawozach i nawożeniu"
+      },
+      {
+        "id": "nawozy_amonowo_weglanowe",
+        "nazwa": "Nawozy amonowo-węglanowe",
+        "opis": "Stosowanie takich nawozów jest zabronione.",
+        "status_weryfikacji": "potwierdzone",
+        "zrodlo": "art. 20a ustawy o nawozach i nawożeniu"
+      },
+      {
+        "id": "mocznik_granulowany",
+        "nazwa": "Mocznik w formie granulowanej",
+        "opis": "Zabroniony, chyba że zawiera inhibitor ureazy albo powłokę biodegradowalną.",
+        "status_weryfikacji": "potwierdzone",
+        "zrodlo": "art. 20b ustawy o nawozach i nawożeniu"
       }
     ],
     "nie_dotyczy": [
@@ -1054,6 +1075,124 @@
       "uwagi": "Wykazy powiatów są publikowane codziennie od 1 do ostatniego dnia lutego. Gospodarstwo na terenie dwóch lub więcej powiatów bierze termin powiatu, w którym ma większą część powierzchni.",
       "status_weryfikacji": "potwierdzone",
       "zrodlo": "rozdział 1.3 ust. 4–7"
+    },
+    "odleglosci_od_wod": {
+      "status_weryfikacji": "potwierdzone",
+      "zrodlo": "Dz.U. 2023 poz. 244 — rozporządzenie Rady Ministrów z 31 stycznia 2023 r. w sprawie Programu działań mających na celu zmniejszenie zanieczyszczenia wód azotanami pochodzącymi ze źródeł rolniczych, rozdział 1.2.2, tabela 1",
+      "odleglosci": [
+        {
+          "id": "nawozy_bez_gnojowicy",
+          "nazwa": "Nawozy z wyłączeniem gnojowicy",
+          "metry": 5,
+          "od_czego": "brzeg jezior i zbiorników do 50 ha, cieków naturalnych, rowów (bez rowów do 5 m) i kanałów"
+        },
+        {
+          "id": "gnojowica",
+          "nazwa": "Gnojowica",
+          "metry": 10,
+          "od_czego": "brzeg jezior i zbiorników do 50 ha, cieków naturalnych, rowów (bez rowów do 5 m) i kanałów"
+        },
+        {
+          "id": "wszystkie_20_m",
+          "nazwa": "Wszystkie rodzaje nawozów",
+          "metry": 20,
+          "od_czego": "ujęcia wody bez strefy ochronnej, brzeg jezior i zbiorników powyżej 50 ha, obszar morskiego pasa nadbrzeżnego"
+        }
+      ],
+      "zmniejszenie": {
+        "o_ile": "o połowę",
+        "nie_mniej_niz_m": 3,
+        "warunki": [
+          "nawozy aplikowane urządzeniami wprost do gleby",
+          "pełna dawka podzielona co najmniej na 3 równe części"
+        ],
+        "uwagi": "Tylko na gruntach rolnych z uprawą roślin."
+      }
     }
+  },
+  "uprawy_intensywne": {
+    "status_weryfikacji": "potwierdzone",
+    "zrodlo": "Dz.U. 2023 poz. 244 — rozporządzenie Rady Ministrów z 31 stycznia 2023 r. w sprawie Programu działań mających na celu zmniejszenie zanieczyszczenia wód azotanami pochodzącymi ze źródeł rolniczych, załącznik nr 7",
+    "sprawdzono": "2026-10-16",
+    "opis": "Uprawy, których powierzchnia powyżej 50 ha na gruntach ornych włącza obowiązek planu nawożenia azotem (Prawo wodne, art. 105a ust. 1 pkt 2). Przy ośmiu pierwszych uprawa jest intensywna dopiero powyżej podanej dawki azotu.",
+    "uprawy": [
+      {
+        "nazwa": "pszenica",
+        "prog_azotu_kg_na_ha": 120
+      },
+      {
+        "nazwa": "pszenżyto",
+        "prog_azotu_kg_na_ha": 100
+      },
+      {
+        "nazwa": "żyto mieszańcowe",
+        "prog_azotu_kg_na_ha": 100
+      },
+      {
+        "nazwa": "kukurydza",
+        "prog_azotu_kg_na_ha": 160
+      },
+      {
+        "nazwa": "rzepak",
+        "prog_azotu_kg_na_ha": 150
+      },
+      {
+        "nazwa": "burak cukrowy",
+        "prog_azotu_kg_na_ha": 150
+      },
+      {
+        "nazwa": "burak pastewny",
+        "prog_azotu_kg_na_ha": 150
+      },
+      {
+        "nazwa": "ziemniak późny",
+        "prog_azotu_kg_na_ha": 120
+      },
+      {
+        "nazwa": "kapusta głowiasta biała"
+      },
+      {
+        "nazwa": "kalafior"
+      },
+      {
+        "nazwa": "brokuł"
+      },
+      {
+        "nazwa": "kapusta brukselka"
+      },
+      {
+        "nazwa": "marchew"
+      },
+      {
+        "nazwa": "seler korzeniowy"
+      },
+      {
+        "nazwa": "burak ćwikłowy"
+      },
+      {
+        "nazwa": "ogórek"
+      },
+      {
+        "nazwa": "cukinia"
+      },
+      {
+        "nazwa": "cebula"
+      },
+      {
+        "nazwa": "por"
+      },
+      {
+        "nazwa": "pomidor",
+        "pod_oslonami": true
+      },
+      {
+        "nazwa": "ogórek",
+        "pod_oslonami": true
+      },
+      {
+        "nazwa": "papryka",
+        "pod_oslonami": true
+      }
+    ]
   }
 }
