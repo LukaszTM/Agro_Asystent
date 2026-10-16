@@ -1,9 +1,12 @@
 # Budowanie pliku APK do wgrania na telefon.
 #
-# Uruchamia się ręcznie (Actions → „Zbuduj APK" → Run workflow) albo po
-# wypchnięciu znacznika `apk-*` — ten drugi sposób działa z każdej gałęzi,
-# także przed scaleniem do `main`. Nie buduje przy każdym commicie, bo pełny
-# build trwa kilka minut.
+# Buduje się sam po każdej zmianie kodu na gałęzi roboczej i na `main`,
+# żeby świeży plik .apk był zawsze do pobrania na telefonie — bez komputera
+# i bez wiersza poleceń. Commity z samą dokumentacją budowania nie wywołują
+# (`paths-ignore`), bo pełny build trwa kilka minut.
+#
+# Można też uruchomić ręcznie (Actions → „Zbuduj APK" → Run workflow) albo
+# wypchnąć znacznik `apk-*`.
 # Wynik można pobrać dwojako: jako artefakt (plik .zip) albo — wygodniej na
 # telefonie — jako plik .apk dołączony do wydania „apk-test".
 name: Zbuduj APK
@@ -16,8 +19,14 @@ on:
         type: boolean
         default: true
   push:
-    branches: [main]
+    branches: [main, 'claude/**']
     tags: ['apk-*']
+    paths-ignore:
+      - 'docs/**'
+      - '**/*.md'
+      - 'tools/**'
+      - 'dane/**'
+      - '.github/workflows/ci.yml' 
 
 permissions:
   contents: write
