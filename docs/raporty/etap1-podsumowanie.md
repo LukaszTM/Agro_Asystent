@@ -65,27 +65,73 @@ telefonie, bez serwera i bez żadnej opłaty za to, czego wymagają przepisy.
 
 ## Luki do uzupełnienia
 
-1. ~~**Dane prawne**~~ — zrobione 16.10.2026 poza **tabelą 14** (maksymalne
-   ilości azotu działającego, załącznik nr 9): wymaga własnego ekranu
-   i ostrzeżenia, nie tylko wpisu w słowniku.
-2. ~~**Kody EPPO bez decyzji**~~ — uzupełnione 16.10.2026 dla upraw
-   konwencjonalnych w Polsce: 347 upraw z kodem, **83,3%** zastosowań
-   z rejestru (było 44,7%). Przy 23 nazwach rodzajowych („łubin",
-   „gorczyca", „dynia"…) rejestr nie podaje gatunku, więc **aplikacja pyta
-   rolnika** i pokazuje gatunki do wyboru; gdy uprawy nie ma na liście,
-   rolnik wpisuje własną nazwę i kod zostaje pusty.
-   Raport `kody-eppo-uprawy-polskie.md`.
-3. **Rejestr stada do wydruku** — wymaga urzędowego układu kolumn IRZplus;
-   dotyczy ścieżki rozwoju (produkcja zwierzęca poza zakresem, ADR-0007).
-4. **Pytanie do ministerstwa** o hurtowy dostęp do etykiet (P2) bez odpowiedzi.
-5. **Format „maszynowo odczytywalny"** wymagany od 1.01.2027 — nieogłoszony.
-   Decyzja z 16.10.2026: dodamy go po 1.01.2027, gdy będzie znany; do tego
-   czasu eksport CSV/XLSX i kody EPPO w ewidencji przygotowują na niego grunt.
-6. ~~**Wygląd „Nowoczesny"**~~ — zrobiony 16.10.2026 razem z przełącznikiem
-   w obu wyglądach. Zostają w nim cztery ekrany formularzowe, które ma tylko
-   wygląd prosty (działki z ULDK, import wniosku z PDF, nawozy i zestawienie
-   azotu, dane gospodarstwa) — do wyjęcia do `lib/rdzen/wspolne/`, nie do
-   przepisania drugi raz; szczegóły w `etap1-wyglad-nowoczesny.md`.
+Stan na 16.10.2026, wieczór. Zamknięte zostawiam przekreślone, żeby było
+widać, co już nie wraca.
+
+### Zanim aplikacja trafi na telefon
+
+1. **Aplikacja nie była ani raz uruchomiona na prawdziwym telefonie.**
+   Cała weryfikacja to 361 testów i analizator — w kontenerze sesji nie ma
+   Android SDK. Pierwsze uruchomienie może pokazać rzeczy, których test nie
+   widzi: wielkość tekstu w ręce, zachowanie klawiatury, czas startu,
+   uprawnienia do aparatu i powiadomień.
+2. **Podpis wydawniczy.** `android/app/build.gradle.kts` podpisuje wydanie
+   kluczem debugowym (TODO z szablonu Fluttera). Skutki: każdy build ma inny
+   podpis, więc nowszy plik nie wgra się „na wierzch" starego, a do Google
+   Play taki plik nie wejdzie. Potrzebny keystore i cztery sekrety
+   w repozytorium.
+3. **Przepływ „Zbuduj APK" nie został przetestowany** — nie udało się go
+   uruchomić z gałęzi roboczej (znaczniki zablokowane dla sesji, przycisk
+   „Run workflow" tylko dla gałęzi głównej). Pierwszy przebieg może wymagać
+   poprawki (wersja build-tools albo żądanie NDK 28.2.13676358).
+
+### Prawo i dane
+
+4. ~~**Dane prawne**~~ — zrobione poza **tabelą 14** (maksymalne ilości azotu
+   działającego, załącznik nr 9): wymaga własnego ekranu i ostrzeżenia, nie
+   tylko wpisu w słowniku. Pozostałe pozycje słownika reguł są sprawdzone
+   w aktach — zero wpisów `do_weryfikacji`.
+5. ~~**Kody EPPO bez decyzji**~~ — 347 upraw z kodem, **83,3%** zastosowań
+   z rejestru (było 44,7%). Zostaje ogon: **253 nazwy** do wyboru bez kodu
+   (każda poniżej 15 zastosowań, np. „kapusta choy-sum") — rolnik je wybierze,
+   ale w ewidencji wyjdzie „brak". 23 nazwy rodzajowe są obsłużone pytaniem
+   o gatunek.
+6. **Karencja znana dla 84,5% środków** (zadanie P2). Dla reszty rolnik
+   przepisuje liczbę z opakowania — aplikacja o to prosi i zapisuje, że to
+   jego źródło. Luka jest w danych MRiRW, nie w kodzie.
+7. **Pytanie do ministerstwa** o hurtowy dostęp do etykiet (P2) — bez
+   odpowiedzi.
+8. **Format „maszynowo odczytywalny"** wymagany od 1.01.2027 — nieogłoszony.
+   Decyzja: dodajemy po 1.01.2027; eksport CSV/XLSX i kody EPPO już teraz
+   zbierają wszystkie wymagane pola.
+
+### Funkcje w aplikacji
+
+9. ~~**Wygląd „Nowoczesny"**~~ — zrobiony razem z przełącznikiem. Zostają
+   w nim **cztery ekrany formularzowe**, które ma tylko wygląd prosty:
+   działki z ULDK, import wniosku z PDF, nawozy i zestawienie azotu, dane
+   gospodarstwa. Do wyjęcia do `lib/rdzen/wspolne/`, nie do przepisania
+   drugi raz.
+10. **Nie da się kupić premium** — `lib/rdzen/dostep/` rozstrzyga dostęp, ale
+    nie ma płatności (brak zależności do Google Play Billing). Wszystko,
+    czego wymaga prawo, jest darmowe, więc to nie blokuje rolnika; blokuje
+    przychód.
+11. **Synchronizacja i program na Windows** — plan (pkt 2) obiecuje
+    synchronizację przez dysk użytkownika; dziś jest tylko kopia do pliku
+    i wczytanie jej do pustej aplikacji. Katalog `windows/` istnieje
+    z szablonu, ale program nie był budowany ani raz.
+12. **Rejestr stada do wydruku** — wymaga urzędowego układu kolumn IRZplus;
+    dotyczy ścieżki rozwoju (produkcja zwierzęca poza zakresem, ADR-0007).
+
+### Poza kodem
+
+13. **Próba z rolnikami 60+** (plan, pkt 10) — nikt poza nami nie dotknął
+    tych ekranów. To jedyny sposób sprawdzenia miary z planu: wpis zabiegu
+    w pięciu dotknięciach.
+14. **Regulamin, polityka prywatności, zastrzeżenie o braku gwarancji
+    zgodności** — do pokazania prawnikowi przed publikacją.
+15. **Konto w Google Play, prowizja, VAT, rozliczenie przychodu** oraz
+    coroczny przegląd progów i terminów przez doradcę (plan, pkt 10).
 
 Dalej według planu: program na Windows i synchronizacja, potem etap 2
 (kontrola warunkowości, magazyn) i etap 3 (API IRZplus, koszty
