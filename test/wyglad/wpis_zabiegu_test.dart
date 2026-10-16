@@ -20,6 +20,7 @@ import 'package:agro_asystent/funkcje/terminy/kalendarz_terminow.dart';
 import 'package:agro_asystent/funkcje/terminy/przypomnienia.dart';
 import 'package:agro_asystent/funkcje/terminy/ustawienia_przypomnien.dart';
 import 'package:agro_asystent/funkcje/ustawienia/gospodarstwa.dart';
+import 'package:agro_asystent/funkcje/ustawienia/zwierzeta_w_gospodarstwie.dart';
 import 'package:agro_asystent/funkcje/zabiegi/rejestr_zabiegow.dart';
 import 'package:agro_asystent/funkcje/zabiegi/repozytorium_zabiegow.dart';
 import 'package:agro_asystent/funkcje/zabiegi/slownik_srodkow.dart';
@@ -180,6 +181,7 @@ void main() {
         gminy: SlownikGminTerminow.pusty,
       ),
       stado: RepozytoriumStada(baza: gospodarstwo, reguly: reguly),
+      zwierzetaWGospodarstwie: ZwierzetaWGospodarstwie(gospodarstwo),
       kopia: KopiaDanych(baza: gospodarstwo, wersjaSchematu: najnowszaWersja),
       gospodarstwa: RepozytoriumGospodarstw(baza: gospodarstwo),
       kalendarz: KalendarzTerminow(

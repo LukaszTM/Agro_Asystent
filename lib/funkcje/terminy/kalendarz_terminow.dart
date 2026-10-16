@@ -2,6 +2,7 @@ import 'package:sqflite_common/sqlite_api.dart';
 
 import '../../rdzen/reguly/regula_prawna.dart';
 import '../zabiegi/rejestr_zabiegow.dart';
+import '../ustawienia/zwierzeta_w_gospodarstwie.dart';
 import '../zwierzeta/stado.dart';
 
 /// Skąd wziął się termin.
@@ -380,12 +381,17 @@ class KalendarzTerminow {
 /// Liczy profil gospodarstwa z danych w bazie: od niego zależy, które
 /// obowiązki się włączają (plan, pkt 3).
 class ProfilZBazy {
-  const ProfilZBazy(this._baza, {this.stado});
+  const ProfilZBazy(this._baza, {this.stado, this.zwierzeta});
 
   final DatabaseExecutor _baza;
 
-  /// Rejestr stada — bez niego DJP zostaje zerem i mówimy o tym w raporcie.
+  /// Rejestr stada. Produkcja zwierzęca jest poza zakresem tej wersji
+  /// (plan, pkt 2), więc aplikacja go nie podaje — parametr zostaje dla
+  /// ścieżki rozwoju: gdy rejestr jest, DJP liczy się z niego.
   final RepozytoriumStada? stado;
+
+  /// Odpowiedź rolnika „czy masz zwierzęta" — stąd DJP, gdy rejestru nie ma.
+  final ZwierzetaWGospodarstwie? zwierzeta;
 
   Future<ProfilGospodarstwa> policz(String gospodarstwoId, {int? sezon}) async {
     final rok = sezon ?? DateTime.now().year;
@@ -400,13 +406,25 @@ class ProfilZBazy {
     final ar = (wiersze.first['ar'] as num?)?.toDouble() ?? 0;
 
     final stanStada = await stado?.djp(gospodarstwoId);
+    if (stanStada != null) {
+      return ProfilGospodarstwa(
+        powierzchniaUrHa: ar / 100,
+        djp: stanStada.djp,
+        posiadaczZwierzat: stanStada.sztuk > 0,
+      );
+    }
+
+    // Bez rejestru stada bierzemy odpowiedź rolnika. Gdy nie odpowiedział
+    // albo ma zwierzęta, DJP zostaje nieznane — obowiązki od DJP wyjdą
+    // jako „do sprawdzenia", a nie jako niedotyczące.
+    final odpowiedz = await zwierzeta?.odczytaj();
 
     // Deklaracja ekoschematów dojdzie z importu wniosku; do tego czasu
     // liczymy tylko to, co naprawdę wiemy.
     return ProfilGospodarstwa(
       powierzchniaUrHa: ar / 100,
-      djp: stanStada?.djp ?? 0,
-      posiadaczZwierzat: (stanStada?.sztuk ?? 0) > 0,
+      djp: odpowiedz?.djp,
+      posiadaczZwierzat: odpowiedz?.posiadaczZwierzat,
     );
   }
 }

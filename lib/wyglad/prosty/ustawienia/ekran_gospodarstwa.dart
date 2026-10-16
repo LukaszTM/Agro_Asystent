@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../app/uslugi.dart';
 import '../../../funkcje/ustawienia/gospodarstwa.dart';
+import '../../../funkcje/ustawienia/zwierzeta_w_gospodarstwie.dart';
 import '../motyw.dart';
 import '../widgety/duzy_przycisk.dart';
 import 'ekran_kopia.dart';
@@ -47,6 +48,7 @@ class _EkranGospodarstwaState extends State<EkranGospodarstwa> {
       biezace: await repozytorium.jedno(_uslugi.gospodarstwoId),
       konto: await repozytorium.konto(),
       moznaDodac: await repozytorium.czyMoznaDodac(),
+      zwierzeta: await _uslugi.zwierzetaWGospodarstwie.odczytaj(),
     );
   }
 
@@ -113,6 +115,13 @@ class _EkranGospodarstwaState extends State<EkranGospodarstwa> {
     );
     if (dodane != null) {
       await _przelacz(dodane);
+    }
+  }
+
+  Future<void> _zapiszZwierzeta(OdpowiedzZwierzeta odpowiedz) async {
+    await _uslugi.zwierzetaWGospodarstwie.zapisz(odpowiedz);
+    if (mounted) {
+      setState(_odswiez);
     }
   }
 
@@ -203,6 +212,8 @@ class _EkranGospodarstwaState extends State<EkranGospodarstwa> {
                       'Gospodarstwo, które prowadzisz, działa w całości bez '
                       'opłaty — wpisy, rejestry, wydruk i eksport.',
                 ),
+              const SizedBox(height: MotywProsty.odstep * 2),
+              _Zwierzeta(odpowiedz: dane.zwierzeta, onZmiana: _zapiszZwierzeta),
               const SizedBox(height: MotywProsty.odstep),
               DuzyPrzycisk(
                 etykieta: 'Kopia danych',
@@ -238,12 +249,14 @@ class _Dane {
     required this.biezace,
     required this.konto,
     required this.moznaDodac,
+    required this.zwierzeta,
   });
 
   final List<Gospodarstwo> lista;
   final Gospodarstwo? biezace;
   final Konto? konto;
   final bool moznaDodac;
+  final OdpowiedzZwierzeta zwierzeta;
 }
 
 /// Nazwa konta — po nic więcej nie służy. Aplikacja nie ma serwera i nie
@@ -529,6 +542,80 @@ class _EkranDaneGospodarstwaState extends State<EkranDaneGospodarstwa> {
           ],
         ],
       ),
+    );
+  }
+}
+
+/// Pytanie o zwierzęta gospodarskie.
+///
+/// Ta wersja aplikacji nie prowadzi rejestru stada — produkcja zwierzęca
+/// jest ścieżką rozwoju (plan, pkt 2). Ale od liczby DJP zależą obowiązki
+/// z programu azotanowego, więc nie wolno zakładać, że zwierząt nie ma:
+/// dopóki rolnik nie odpowie, obowiązki od DJP są „do sprawdzenia".
+class _Zwierzeta extends StatelessWidget {
+  const _Zwierzeta({required this.odpowiedz, required this.onZmiana});
+
+  final OdpowiedzZwierzeta odpowiedz;
+  final void Function(OdpowiedzZwierzeta) onZmiana;
+
+  static const Map<OdpowiedzZwierzeta, String> _etykiety = {
+    OdpowiedzZwierzeta.nie: 'Nie mam zwierząt',
+    OdpowiedzZwierzeta.tak: 'Mam zwierzęta',
+  };
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Zwierzęta gospodarskie',
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
+        const SizedBox(height: 8),
+        Text(
+          'Od liczby zwierząt zależy, czy musisz prowadzić ewidencję '
+          'nawożenia. Ta wersja aplikacji nie prowadzi rejestru stada, '
+          'więc pytamy raz.',
+          style: Theme.of(context).textTheme.bodyMedium,
+        ),
+        const SizedBox(height: 10),
+        Wrap(
+          spacing: 10,
+          runSpacing: 10,
+          children: [
+            for (final wpis in _etykiety.entries)
+              ChoiceChip(
+                label: Text(
+                  wpis.value,
+                  style: Theme.of(context).textTheme.labelLarge,
+                ),
+                selected: odpowiedz == wpis.key,
+                onSelected: (_) => onZmiana(wpis.key),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 12,
+                ),
+              ),
+          ],
+        ),
+        const SizedBox(height: 10),
+        if (odpowiedz == OdpowiedzZwierzeta.nieWiem)
+          const Ostrzezenie(
+            tresc: 'Nie wiemy, czy masz zwierzęta.',
+            coZrobic:
+                'Odpowiedz powyżej — inaczej obowiązki zależne od liczby '
+                'zwierząt zostają oznaczone jako do sprawdzenia.',
+          )
+        else if (odpowiedz == OdpowiedzZwierzeta.tak)
+          const Ostrzezenie(
+            tresc: 'Liczby DJP aplikacja nie policzy.',
+            coZrobic:
+                'Rejestr stada dojdzie w przyszłej wersji. Do tego czasu '
+                'sprawdź u doradcy, czy przekraczasz 10 DJP — od tego '
+                'zależy ewidencja nawożenia.',
+          ),
+      ],
     );
   }
 }

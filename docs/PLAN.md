@@ -15,7 +15,7 @@ internetu, a z programem na PC synchronizuje się tylko wtedy, gdy użytkownik t
 | Temat | Decyzja |
 | --- | --- |
 | Odbiorca | Produkt dla wielu gospodarstw; jedno konto może prowadzić kilka gospodarstw |
-| Profil | Produkcja roślinna i zwierzęca |
+| Profil | **Produkcja roślinna.** Produkcja zwierzęca wychodzi z zakresu aplikacji i czeka jako ścieżka rozwoju po jej ukończeniu (decyzja z 16.10.2026) |
 | Platformy | Android (pierwszy) i Windows. Wersja Apple dopiero po pozytywnych testach na Androidzie |
 | Technologia | Jeden kod: Flutter + lokalna baza SQLite (propozycja; do potwierdzenia na starcie) |
 | Wygląd | Na telefonie dwa do wyboru (Prosty i Nowoczesny), przełączane w ustawieniach; na Windows jeden dla wszystkich |
@@ -42,12 +42,12 @@ Progi i terminy muszą być aktualizowanym słownikiem (dane), nie stałymi w ko
 | Obowiązek | Kogo dotyczy | Co robi aplikacja |
 | --- | --- | --- |
 | Ewidencja zabiegów środkami ochrony roślin (rozp. UE 2023/564) | Każdy profesjonalny użytkownik | Zapisuje: środek, nr zezwolenia, datę i godzinę, dawkę, powierzchnię, uprawę z kodem EPPO, fazę BBCH, przyczynę zabiegu, rodzaj zastosowania, działkę z wniosku. Od 1.01.2027 r. tylko elektronicznie, w formacie do odczytu maszynowego |
-| Program azotanowy: ewidencja nawożenia azotem | Od 10 ha UR lub od 10 DJP | Ewidencja, liczenie N/ha, limit 170 kg N/ha z nawozów naturalnych, terminy nawożenia. Przechowywanie 3 lata |
+| Program azotanowy: ewidencja nawożenia azotem | Od 10 ha UR lub od 10 DJP (DJP poza zakresem — patrz niżej) | Ewidencja, liczenie N/ha, limit 170 kg N/ha z nawozów naturalnych, terminy nawożenia. Przechowywanie 3 lata |
 | Program azotanowy: plan nawożenia azotem | Powyżej 100 ha UR, 50 ha upraw intensywnych lub 60 DJP | Plan dla każdej działki; włącza się sam po przekroczeniu progu |
 | Ekoschematy: rejestr zabiegów agrotechnicznych | Rolnicy z zadeklarowanym ekoschematem | Rejestr: nr działki ewidencyjnej, powierzchnia, data, uprawa, rodzaj zabiegu, nawóz i ilość |
 | Warunkowość (GAEC, SMR) | Powyżej 10 ha (mniejsze zwolnione z kontroli i kar) | Kontrola zmianowania i dywersyfikacji (GAEC 7), okrywy 80% GO do 15.10 (GAEC 6), pasa 3 m od wód (GAEC 4), zakazu przycinania drzew 15.04–31.07 (GAEC 8) |
 | Wniosek o płatności | Wszyscy | Zestawienie działek i upraw, przypomnienie o naborze. Wniosek składa się w eWniosekPlus |
-| IRZplus | Posiadacze zwierząt | Rejestr stada, terminy zgłoszeń (np. 7 dni na urodzenie cielęcia), liczenie DJP. Później wysyłka przez API IRZplus |
+| ~~IRZplus~~ | Posiadacze zwierząt | **Poza zakresem** (decyzja z 16.10.2026). Rejestr stada, terminy zgłoszeń i liczenie DJP są napisane i przetestowane, ale nie są dostępne z ekranów — wracają jako ścieżka rozwoju. Aplikacja pyta tylko, czy gospodarstwo ma zwierzęta: od tego zależy, czy obowiązki zależne od DJP oznaczyć jako „do sprawdzenia" |
 
 Aplikacja nie zastępuje systemów urzędowych (eWniosekPlus, Mobilna ARiMR, IRZplus).
 Terminy nawożenia pochodzą ze strony ARiMR z 2019 r.; trzeba je sprawdzić w aktualnym rozporządzeniu.
@@ -64,11 +64,21 @@ Kolejność wewnątrz etapu; każdy krok ma dawać działającą aplikację:
 6. Nawożenie: ewidencja, limit N, plan nawożenia azotem od progu.
 7. Odczyt zdjęć: etykieta środka (rozpoznanie), opakowanie nawozu (nazwa, NPK).
 8. Karencja z bazy etykiet (jeśli próba z zadania P2 wypadnie dobrze).
-9. Zwierzęta: rejestr stada, terminy, DJP.
+9. ~~Zwierzęta: rejestr stada, terminy, DJP.~~ Zrobione, potem **wyjęte
+   z zakresu** (decyzja z 16.10.2026) — kod i testy zostają jako ścieżka
+   rozwoju, ekrany nie są dostępne.
 10. Konta i kilka gospodarstw.
 
+Dodatkowo, poza dziesięcioma krokami: trzy rejestry do wydruku i eksportu (pkt 8)
+oraz kopia danych do pliku.
+
 Później: program na Windows i synchronizacja; etap 2 — kontrola warunkowości, magazyn;
-etap 3 — API IRZplus, koszty i przychody, wersja na iPhone'a.
+etap 3 — koszty i przychody, wersja na iPhone'a.
+
+**Ścieżka rozwoju: produkcja zwierzęca.** Rejestr stada, liczenie DJP, terminy
+zgłoszeń do IRZplus i później wysyłka przez API IRZplus. Moduł jest napisany
+i przetestowany (krok 9), tylko odłączony od ekranów — wraca po ukończeniu
+aplikacji dla produkcji roślinnej.
 
 ## 5. Zasady interfejsu (użytkownicy 60+)
 
@@ -200,7 +210,7 @@ i eksport wymagany przepisami są zawsze darmowe. Podczas wpisu zabiegu żadnych
 | Terminy | Kalendarz obowiązków | Ostrzeżenia przed błędem (azot, zmianowanie, okrywa) |
 | Nawożenie | Ewidencja i limit 170 kg N/ha | Plan nawożenia azotem |
 | Urządzenia | Telefon, kopia do pliku | Program na Windows, synchronizacja, automatyczna kopia |
-| Zwierzęta | Rejestr stada i terminy | Wysyłka do IRZplus |
+| Zwierzęta | *(poza zakresem — ścieżka rozwoju)* | *(poza zakresem — ścieżka rozwoju)* |
 | Dodatki | Jedno gospodarstwo | Kilka gospodarstw, magazyn, koszty i przychody |
 
 Ceny (do potwierdzenia w rozmowach z rolnikami): cały 2027 r. premium za darmo dla wszystkich;

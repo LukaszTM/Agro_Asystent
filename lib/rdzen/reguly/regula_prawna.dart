@@ -56,9 +56,17 @@ class ProfilGospodarstwa {
 
   final double powierzchniaUrHa;
   final double powierzchniaUprawIntensywnychHa;
-  final double djp;
+
+  /// Duże jednostki przeliczeniowe. `null` znaczy „aplikacja nie wie" —
+  /// tak jest, gdy gospodarstwo ma zwierzęta, a ta wersja nie prowadzi
+  /// rejestru stada. Obowiązek od DJP jest wtedy „do sprawdzenia", nigdy
+  /// „nie dotyczy".
+  final double? djp;
+
   final bool zadeklarowanyEkoschemat;
-  final bool posiadaczZwierzat;
+
+  /// `null`, dopóki rolnik nie odpowiedział, czy ma zwierzęta.
+  final bool? posiadaczZwierzat;
 
   /// `null`, gdy aplikacja nie zna tej miary.
   double? wartosc(Miara miara) => switch (miara) {
@@ -66,7 +74,11 @@ class ProfilGospodarstwa {
     Miara.powierzchniaUprawIntensywnychHa => powierzchniaUprawIntensywnychHa,
     Miara.djp => djp,
     Miara.zadeklarowanyEkoschemat => zadeklarowanyEkoschemat ? 1 : 0,
-    Miara.posiadaczZwierzat => posiadaczZwierzat ? 1 : 0,
+    Miara.posiadaczZwierzat => switch (posiadaczZwierzat) {
+      null => null,
+      true => 1,
+      false => 0,
+    },
     Miara.nieznana => null,
   };
 }

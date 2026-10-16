@@ -14,6 +14,7 @@ import '../funkcje/terminy/kalendarz_terminow.dart';
 import '../funkcje/terminy/przypomnienia.dart';
 import '../funkcje/terminy/ustawienia_przypomnien.dart';
 import '../funkcje/ustawienia/gospodarstwa.dart';
+import '../funkcje/ustawienia/zwierzeta_w_gospodarstwie.dart';
 import '../funkcje/zwierzeta/stado.dart';
 import '../funkcje/zabiegi/rejestr_zabiegow.dart';
 import '../funkcje/zabiegi/repozytorium_zabiegow.dart';
@@ -48,6 +49,7 @@ class Uslugi {
     required this.stado,
     required this.gospodarstwa,
     required this.kopia,
+    required this.zwierzetaWGospodarstwie,
     required this.kalendarz,
     required this.profil,
     required this.przypomnienia,
@@ -110,6 +112,11 @@ class Uslugi {
   /// Kopia danych do pliku — zawsze darmowa (plan, pkt 8).
   final KopiaDanych kopia;
 
+  /// Czy gospodarstwo ma zwierzęta. Aplikacja nie prowadzi rejestru stada
+  /// (produkcja zwierzęca poza zakresem), więc pyta o to raz — od tego
+  /// zależy, czy obowiązki od DJP są „do sprawdzenia".
+  final ZwierzetaWGospodarstwie zwierzetaWGospodarstwie;
+
   /// Kalendarz obowiązków: terminy z przepisów i karencje z własnych zabiegów.
   final KalendarzTerminow kalendarz;
 
@@ -155,6 +162,7 @@ class Uslugi {
     stado: stado,
     gospodarstwa: gospodarstwa,
     kopia: kopia,
+    zwierzetaWGospodarstwie: zwierzetaWGospodarstwie,
     kalendarz: kalendarz,
     profil: profil,
     przypomnienia: przypomnienia,

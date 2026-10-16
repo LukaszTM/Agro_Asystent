@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:agro_asystent/funkcje/terminy/kalendarz_terminow.dart';
+import 'package:agro_asystent/funkcje/ustawienia/zwierzeta_w_gospodarstwie.dart';
 import 'package:agro_asystent/funkcje/zabiegi/rejestr_zabiegow.dart';
 import 'package:agro_asystent/funkcje/zabiegi/repozytorium_zabiegow.dart';
 import 'package:agro_asystent/rdzen/baza/baza_gospodarstwa.dart';
@@ -293,7 +294,74 @@ void main() {
 
       final profil = await ProfilZBazy(baza).policz('g1', sezon: 2026);
       expect(profil.powierzchniaUrHa, 20);
-      expect(profil.djp, 0, reason: 'zwierzęta dojdą w kroku 9');
+      expect(
+        profil.djp,
+        isNull,
+        reason:
+            'bez rejestru stada i bez odpowiedzi rolnika DJP jest '
+            'nieznane — nie zerowe',
+      );
+    });
+  });
+
+  group('zwierzęta poza zakresem aplikacji', () {
+    test('bez odpowiedzi rolnika obowiązki od DJP są niepewne', () {
+      // Program azotanowy włącza się od 10 ha UR **albo** 10 DJP. Przy
+      // zerowej powierzchni i nieznanych DJP nie wolno powiedzieć
+      // „nie dotyczy".
+      final obowiazek = reguly.obowiazek('program_azotanowy_ewidencja')!;
+      expect(
+        obowiazek.ocena(const ProfilGospodarstwa(djp: null)),
+        Ocena.nieWiadomo,
+      );
+
+      final pozycje =
+          KalendarzTerminow(
+            reguly: reguly,
+            rejestr: RejestrZabiegow(baza),
+          ).zPrzepisow(
+            profil: const ProfilGospodarstwa(djp: null),
+            teraz: DateTime(2026, 10, 1),
+          );
+      final nawozenie = pozycje.where(
+        (p) => p.nazwa.contains('Obornik na gruntach ornych'),
+      );
+      expect(nawozenie, hasLength(1));
+      expect(nawozenie.single.obowiazekNiepewny, isTrue);
+    });
+
+    test('odpowiedź „nie mam zwierząt" daje pewne zero', () async {
+      await ZwierzetaWGospodarstwie(baza).zapisz(OdpowiedzZwierzeta.nie);
+      final profil = await ProfilZBazy(
+        baza,
+        zwierzeta: ZwierzetaWGospodarstwie(baza),
+      ).policz('g1');
+
+      expect(profil.djp, 0);
+      expect(profil.posiadaczZwierzat, isFalse);
+      expect(
+        reguly.obowiazek('program_azotanowy_ewidencja')!.ocena(profil),
+        Ocena.nieDotyczy,
+      );
+    });
+
+    test('odpowiedź „mam zwierzęta" zostawia DJP nieznane', () async {
+      await ZwierzetaWGospodarstwie(baza).zapisz(OdpowiedzZwierzeta.tak);
+      final profil = await ProfilZBazy(
+        baza,
+        zwierzeta: ZwierzetaWGospodarstwie(baza),
+      ).policz('g1');
+
+      expect(
+        profil.djp,
+        isNull,
+        reason: 'aplikacja nie prowadzi rejestru stada, więc nie zna DJP',
+      );
+      expect(profil.posiadaczZwierzat, isTrue);
+      expect(
+        reguly.obowiazek('program_azotanowy_ewidencja')!.ocena(profil),
+        Ocena.nieWiadomo,
+      );
     });
   });
 }

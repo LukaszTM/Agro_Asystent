@@ -19,6 +19,7 @@ import 'package:agro_asystent/funkcje/terminy/kalendarz_terminow.dart';
 import 'package:agro_asystent/funkcje/terminy/przypomnienia.dart';
 import 'package:agro_asystent/funkcje/terminy/ustawienia_przypomnien.dart';
 import 'package:agro_asystent/funkcje/ustawienia/gospodarstwa.dart';
+import 'package:agro_asystent/funkcje/ustawienia/zwierzeta_w_gospodarstwie.dart';
 import 'package:agro_asystent/funkcje/zabiegi/rejestr_zabiegow.dart';
 import 'package:agro_asystent/funkcje/zabiegi/repozytorium_zabiegow.dart';
 import 'package:agro_asystent/funkcje/zabiegi/slownik_srodkow.dart';
@@ -146,6 +147,7 @@ void main() {
       gminy: SlownikGminTerminow.pusty,
     ),
     stado: RepozytoriumStada(baza: baza, reguly: reguly),
+    zwierzetaWGospodarstwie: ZwierzetaWGospodarstwie(baza),
     kopia: KopiaDanych(baza: baza, wersjaSchematu: najnowszaWersja),
     gospodarstwa: RepozytoriumGospodarstw(baza: baza),
     kalendarz: KalendarzTerminow(
@@ -170,6 +172,14 @@ void main() {
     await tester.pumpAndSettle();
   }
 
+  /// Przewija listę, aż szukany tekst się zbuduje.
+  Future<void> przewinDo(WidgetTester tester, Finder czego) async {
+    for (var proba = 0; proba < 40 && czego.evaluate().isEmpty; proba++) {
+      await tester.drag(find.byType(Scrollable).first, const Offset(0, -300));
+      await tester.pumpAndSettle();
+    }
+  }
+
   testWidgets('bez pól widać tylko terminy, które dotyczą każdego', (
     tester,
   ) async {
@@ -177,11 +187,33 @@ void main() {
 
     // Ewidencja środków ochrony roślin obowiązuje każdego — ten termin jest
     // zawsze; warunkowość włącza się dopiero powyżej progu powierzchni.
+    await przewinDo(
+      tester,
+      find.textContaining('Ewidencja zabiegów wyłącznie elektronicznie'),
+    );
     expect(
       find.textContaining('Ewidencja zabiegów wyłącznie elektronicznie'),
       findsOneWidget,
     );
     expect(find.textContaining('Okrywa na 80%'), findsNothing);
+  });
+
+  testWidgets('niepewny obowiązek jest na ekranie opisany, nie ukryty', (
+    tester,
+  ) async {
+    // Aplikacja nie prowadzi rejestru stada, więc nie wolno jej twierdzić,
+    // że program azotanowy nie dotyczy gospodarstwa. Który termin wypada
+    // przy jakiej odpowiedzi — sprawdza test kalendarza.
+    await pokaz(tester);
+
+    await przewinDo(
+      tester,
+      find.textContaining('Nie wiemy, czy ten obowiązek dotyczy'),
+    );
+    expect(
+      find.textContaining('Nie wiemy, czy ten obowiązek dotyczy'),
+      findsWidgets,
+    );
   });
 
   testWidgets('duże gospodarstwo dostaje terminy warunkowości', (tester) async {
