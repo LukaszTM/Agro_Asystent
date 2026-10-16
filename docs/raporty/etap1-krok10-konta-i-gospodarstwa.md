@@ -126,10 +126,13 @@ Wszystkie dziesięć kroków z planu (pkt 4) jest zrobione:
 ### Co trzeba zrobić przed wydaniem
 
 1. ~~**Przeliczniki DJP** — sprawdzić w załączniku do przepisów
-   o nawozach.~~ **Zrobione 15.10.2026**: tabela 3 z programu działań
-   (Dz.U. 2020 poz. 243) — `docs/raporty/djp-weryfikacja.md`.
-2. **Terminy nawożenia** pochodzą ze strony ARiMR z 2019 r. — sprawdzić
-   w aktualnym rozporządzeniu (plan, pkt 3).
+   o nawozach.~~ **Zrobione 16.10.2026**: tabela 3 z obowiązującego
+   programu azotanowego (Dz.U. 2023 poz. 244) —
+   `docs/raporty/djp-weryfikacja.md`.
+2. ~~**Terminy nawożenia** pochodzą ze strony ARiMR z 2019 r.~~
+   **Zrobione 16.10.2026**: tabela 2 i rozdział 1.3 programu azotanowego,
+   razem z wykazami gmin, limitem 170 kg N/ha i wzorem ewidencji —
+   `docs/raporty/terminy-nawozenia-azotem.md`.
 3. **Uprawy bez decyzji o kodzie EPPO** —
    `dane/wynik/uprawy_eppo_do_decyzji.csv` z zadania P3.
 4. **Pytanie do ministerstwa** o hurtowy dostęp do etykiet (P2) wciąż bez

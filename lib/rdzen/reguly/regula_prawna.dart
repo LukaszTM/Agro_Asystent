@@ -426,8 +426,11 @@ class OdstepstwoNawozenia {
     required this.doDnia,
     required this.wymagaDokumentowania,
     required this.wymaganeZapisy,
+    required this.statusWeryfikacji,
+    this.dotyczyGruntow,
     this.limitAzotuKgNaHa,
     this.limitDotyczy,
+    this.zrodlo = '',
     this.uwagi = '',
   });
 
@@ -442,8 +445,11 @@ class OdstepstwoNawozenia {
             ((json['wymagane_zapisy'] as List<dynamic>?) ?? const [])
                 .map((z) => z as String)
                 .toList(growable: false),
+        statusWeryfikacji: json['status_weryfikacji'] as String? ?? 'nieznany',
+        dotyczyGruntow: json['dotyczy_gruntow'] as String?,
         limitAzotuKgNaHa: (json['limit_azotu_kg_na_ha'] as num?)?.toDouble(),
         limitDotyczy: json['limit_dotyczy'] as String?,
+        zrodlo: json['zrodlo'] as String? ?? '',
         uwagi: json['uwagi'] as String? ?? '',
       );
 
@@ -453,8 +459,17 @@ class OdstepstwoNawozenia {
   /// W jakiej sytuacji odstępstwo działa.
   final String kiedy;
 
-  /// „MM-DD" — do kiedy wolno nawozić w tej sytuacji.
+  /// „MM-DD" — do kiedy wolno nawozić w tej sytuacji. `null` znaczy, że
+  /// przepis znosi termin, ale nowego nie podaje; wtedy nie wymyślamy daty.
   final String? doDnia;
+
+  /// Rodzaj gruntów, którego odstępstwo dotyczy (oba dotyczą gruntów ornych).
+  final String? dotyczyGruntow;
+
+  final String statusWeryfikacji;
+  final String zrodlo;
+
+  bool get doWeryfikacji => statusWeryfikacji != 'potwierdzone';
 
   final bool wymagaDokumentowania;
 
@@ -472,17 +487,98 @@ class ZakazNawozenia {
     required this.id,
     required this.nazwa,
     required this.opis,
+    required this.statusWeryfikacji,
+    this.zrodlo = '',
+    this.uwagi = '',
   });
 
   factory ZakazNawozenia.zJson(Map<String, dynamic> json) => ZakazNawozenia(
     id: json['id'] as String,
     nazwa: json['nazwa'] as String,
     opis: json['opis'] as String? ?? '',
+    statusWeryfikacji: json['status_weryfikacji'] as String? ?? 'nieznany',
+    zrodlo: json['zrodlo'] as String? ?? '',
+    uwagi: json['uwagi'] as String? ?? '',
   );
 
   final String id;
   final String nazwa;
   final String opis;
+  final String statusWeryfikacji;
+  final String zrodlo;
+  final String uwagi;
+
+  bool get doWeryfikacji => statusWeryfikacji != 'potwierdzone';
+}
+
+/// Wcześniejsze nawożenie w lutym: wolno przed terminem z tabeli 2, gdy
+/// średnia dobowa temperatura przejdzie przez próg. Progi, liczba dni
+/// i udział powierzchni powiatu są danymi.
+class WczesniejszeWiosna {
+  const WczesniejszeWiosna({
+    required this.okresOd,
+    required this.okresDo,
+    required this.opis,
+    required this.progi,
+    required this.dniPowyzejProgu,
+    required this.udzialPowiatuProcent,
+    required this.ktoOglasza,
+    required this.statusWeryfikacji,
+    this.uwagi = '',
+  });
+
+  static const WczesniejszeWiosna puste = WczesniejszeWiosna(
+    okresOd: '',
+    okresDo: '',
+    opis: '',
+    progi: [],
+    dniPowyzejProgu: 0,
+    udzialPowiatuProcent: 0,
+    ktoOglasza: '',
+    statusWeryfikacji: 'brak',
+  );
+
+  factory WczesniejszeWiosna.zJson(Map<String, dynamic> json) =>
+      WczesniejszeWiosna(
+        okresOd: json['okres_od'] as String? ?? '',
+        okresDo: json['okres_do'] as String? ?? '',
+        opis: json['opis'] as String? ?? '',
+        progi: ((json['progi_temperatury'] as List<dynamic>?) ?? const [])
+            .map((p) => ProgTemperatury.zJson(p as Map<String, dynamic>))
+            .toList(growable: false),
+        dniPowyzejProgu: (json['dni_powyzej_progu'] as num?)?.toInt() ?? 0,
+        udzialPowiatuProcent:
+            (json['udzial_powiatu_procent'] as num?)?.toInt() ?? 0,
+        ktoOglasza: json['kto_oglasza'] as String? ?? '',
+        statusWeryfikacji: json['status_weryfikacji'] as String? ?? 'nieznany',
+        uwagi: json['uwagi'] as String? ?? '',
+      );
+
+  final String okresOd;
+  final String okresDo;
+  final String opis;
+  final List<ProgTemperatury> progi;
+  final int dniPowyzejProgu;
+  final int udzialPowiatuProcent;
+  final String ktoOglasza;
+  final String statusWeryfikacji;
+  final String uwagi;
+
+  bool get jest => progi.isNotEmpty;
+  bool get doWeryfikacji => statusWeryfikacji != 'potwierdzone';
+}
+
+/// Próg temperatury i uprawy, których dotyczy.
+class ProgTemperatury {
+  const ProgTemperatury({required this.stopnieC, required this.dotyczy});
+
+  factory ProgTemperatury.zJson(Map<String, dynamic> json) => ProgTemperatury(
+    stopnieC: (json['stopnie_c'] as num).toDouble(),
+    dotyczy: json['dotyczy'] as String? ?? '',
+  );
+
+  final double stopnieC;
+  final String dotyczy;
 }
 
 /// Zasady stosowania nawozów azotowych poza samymi datami: odstępstwa,
@@ -494,6 +590,7 @@ class ZasadyNawozeniaAzotem {
     required this.odstepstwa,
     required this.zakazy,
     required this.nieDotyczy,
+    this.wczesniejszeWiosna = WczesniejszeWiosna.puste,
   });
 
   static const ZasadyNawozeniaAzotem puste = ZasadyNawozeniaAzotem(
@@ -517,6 +614,11 @@ class ZasadyNawozeniaAzotem {
         nieDotyczy: ((json['nie_dotyczy'] as List<dynamic>?) ?? const [])
             .map((w) => w as String)
             .toList(growable: false),
+        wczesniejszeWiosna: json['wczesniejsze_wiosna'] == null
+            ? WczesniejszeWiosna.puste
+            : WczesniejszeWiosna.zJson(
+                json['wczesniejsze_wiosna'] as Map<String, dynamic>,
+              ),
       );
 
   final String statusWeryfikacji;
@@ -526,6 +628,9 @@ class ZasadyNawozeniaAzotem {
 
   /// Uprawy, których terminy nie dotyczą (np. pod osłonami).
   final List<String> nieDotyczy;
+
+  /// Wcześniejsze nawożenie w lutym po przejściu temperatury przez próg.
+  final WczesniejszeWiosna wczesniejszeWiosna;
 
   bool get doWeryfikacji => statusWeryfikacji != 'potwierdzone';
 }

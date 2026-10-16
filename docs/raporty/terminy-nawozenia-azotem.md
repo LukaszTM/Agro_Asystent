@@ -1,146 +1,187 @@
-# Terminy stosowania nawozów azotowych — weryfikacja i wejście do aplikacji
+# Okresy nawożenia azotem — weryfikacja i wejście do aplikacji
 
-16 października 2026 r. Zamyka (częściowo) otwartą sprawę z planu (pkt 3)
-i z kroku 6: „Terminy nawożenia pochodzą ze strony ARiMR z 2019 r. — do
-sprawdzenia w aktualnym rozporządzeniu".
+16 października 2026 r. Zamyka otwartą sprawę z planu (pkt 3) i z kroku 6:
+„Terminy nawożenia pochodzą ze strony ARiMR z 2019 r. — do sprawdzenia
+w aktualnym rozporządzeniu".
 
 Dotąd tych terminów **w ogóle nie było w danych** — stały tylko jako uwaga
-przy obowiązku `program_azotanowy_ewidencja`. Teraz są, razem z czymś, czego
-nie było w planie: **wykazami gmin**, które dają dokładną datę dla
-konkretnego pola.
+przy obowiązku `program_azotanowy_ewidencja`. Teraz są, sprawdzone w samym
+rozporządzeniu, razem z czymś, czego plan nie przewidywał: **wykazami gmin**,
+które dają dokładną datę dla konkretnego pola.
 
-## Źródła i poziom pewności
+## Źródło
 
-| Co | Skąd | Status w słowniku |
-| --- | --- | --- |
-| Wykazy gmin (15 X i 25 X) | **Dz.U. 2023 poz. 244**, załączniki nr 2 i 3 (tabele 4 i 5) — PDF-y ze strony ARiMR | `potwierdzone` |
-| Same daty graniczne (31 X, 30 XI, 20 X, 31 X) | komunikat MRiRW „Zasady i terminy stosowania jesienią nawozów zawierających azot" (22.10.2024) | **`ze_strony_ministerstwa`** |
-| Odstępstwa, zakazy, wyłączenia | ten sam komunikat | **`ze_strony_ministerstwa`** |
+**Dz.U. 2023 poz. 244** — rozporządzenie Rady Ministrów z dnia 31 stycznia
+2023 r. w sprawie „Programu działań mających na celu zmniejszenie
+zanieczyszczenia wód azotanami pochodzącymi ze źródeł rolniczych oraz
+zapobieganie dalszemu zanieczyszczeniu". Pełny tekst (130 stron) z Dziennika
+Ustaw, załączniki osobno ze strony ARiMR „Program azotanowy".
 
-Różnica jest celowa. Wykazy gmin przeczytaliśmy w samym rozporządzeniu.
-Dat **nie** — tabela 2 z rozdziału 1.3 programu jest w treści
-rozporządzenia, a `dziennikustaw.gov.pl` i `isap.sejm.gov.pl` są
-zablokowane przez politykę sieci środowiska, w którym pracujemy (403 na
-CONNECT). Komunikat ministerstwa jest źródłem urzędowym, ale
-**streszczeniem**, więc zgodnie z regułą 5 z CLAUDE.md aplikacja mówi
-wprost: „Daty pochodzą ze streszczenia ministerstwa — potwierdź u doradcy".
-Gdy tabela 2 będzie dostępna, wystarczy sprawdzić wartości i zmienić
-`status_weryfikacji`. Kod się nie zmieni.
+Weryfikacja szła w dwóch podejściach. Najpierw, przy zablokowanym dostępie
+do Dziennika Ustaw, daty wzięliśmy z komunikatu Ministerstwa Rolnictwa
+i oznaczyliśmy jako `ze_strony_ministerstwa` — aplikacja mówiła wtedy „daty
+ze streszczenia, potwierdź u doradcy". Po udostępnieniu
+`dziennikustaw.gov.pl` przeczytaliśmy tabelę 2 i rozdział 1.3 w oryginale.
+**Wszystkie cztery daty się potwierdziły**, więc status to dziś
+`potwierdzone`. Pełny tekst pokazał jednak cztery rzeczy, których
+w streszczeniu nie było — opisane niżej.
 
 ## Co wie teraz aplikacja
 
-Cztery terminy graniczne — bo przepis daje inną datę dla obornika i dla
-gnojowicy, a inną dla gruntów ornych i dla łąk:
+Tabela 2 podaje **okresy**, nie same daty graniczne:
 
-| Nawóz | Grunty orne | Łąki, pastwiska, uprawy wieloletnie i trwałe |
+| Nawóz | Grunty orne | Uprawy trwałe, wieloletnie, TUZ |
 | --- | --- | --- |
-| Naturalne stałe (obornik, pomiot ptasi) | 31 października | 30 listopada |
-| Azotowe mineralne i naturalne płynne (saletra, gnojowica, gnojówka) | **20 października, a w wykazanych gminach 15 albo 25 października** | 31 października |
+| Azotowe mineralne i naturalne płynne | 1 marca – **20 października** | 1 marca – **31 października** |
+| Naturalne stałe (obornik, pomiot ptasi) | 1 marca – **31 października** | 1 marca – **30 listopada** |
 
-Odstępstwa (rozdział 1.3 programu), też jako dane:
+Dla gruntów ornych tabela 2 ma dodatkowo dwa wiersze gminne: 1 marca –
+**15 października** dla gmin z załącznika nr 2 i 1 marca –
+**25 października** dla gmin z załącznika nr 3.
 
-- **Niekorzystne warunki pogodowe** (nadmierne uwilgotnienie, susza) — do
-  30 listopada, bez osobnych zapisów; rolnik sam ocenia warunki.
-- **Uprawa zakładana jesienią po późno zbieranych** (burak cukrowy,
-  kukurydza, przedplony, późne warzywa) — do 30 listopada, ale najwyżej
-  **30 kg N/ha** z wieloskładnikowych nawozów mineralnych i z obowiązkiem
-  zapisania pięciu rzeczy: termin zbioru przedplonu, data stosowania,
-  zastosowane nawozy, dawka, termin siewu.
+W słowniku zapisujemy datę graniczną **i** początek okresu (`okres_od`).
+Kalendarz pokazuje jeden dzień, bo trwający pół roku okres zapchałby grupę
+„dziś"; karta na ekranie nawożenia pokazuje oba końce („do 31 października,
+wolno od 1 marca").
 
-Zakaz niezależny od terminu: gleba zamarznięta, zalana, nasycona wodą albo
-pod śniegiem. Terminy nie dotyczą upraw pod osłonami i kontenerowych.
+## Cztery rzeczy, których nie było w streszczeniu
+
+1. **Odstępstwa dotyczą tylko gruntów ornych.** Rozdział 1.3 ust. 8 i 9
+   wymienia wyłącznie grunty orne (w tym gminne). Wcześniej traktowaliśmy je
+   jako ogólne.
+2. **Odstępstwo „uprawa po późno zbieranych" nie ma daty granicznej.**
+   Przepis znosi terminy z tabeli 2 i nie podaje nowej daty; komunikat
+   ministerstwa mówił o końcu listopada. Dane mają więc `do_dnia: null`,
+   a ekran pisze „termin z tabeli nie obowiązuje" plus uwagę o końcu
+   listopada do potwierdzenia. **Nie wymyślamy daty, której w przepisie nie ma.**
+3. **Zakaz nawożenia gruntów odłogowanych** (ust. 11) — nowy wpis, razem
+   z wyjątkiem: przed planowanym zakończeniem odłogowania wolno zastosować
+   nawozy jesienią.
+4. **Wcześniejsze nawożenie w lutym** (ust. 4–7) — wolno przed terminem
+   z tabeli 2, gdy średnia dobowa temperatura przejdzie przez próg **3°C**
+   (rośliny zasiane jesienią, uprawy trwałe, wieloletnie, TUZ) albo **5°C**
+   (pozostałe uprawy); przejściem jest **5 dni z rzędu** powyżej progu na
+   **95%** powierzchni powiatu, a daty ogłasza IMGW-PIB codziennie w lutym.
+
+Przy okazji poprawione: zakaz dla gleb zamarzniętych, zalanych, nasyconych
+wodą i pod śniegiem jest w Programie tylko **odesłaniem** do art. 20 ustawy
+o nawozach i nawożeniu. Treści tego artykułu nie czytaliśmy, więc ten jeden
+wpis ma `do_weryfikacji`, a ekran pisze przy nim „do sprawdzenia". To
+jedyne ostrzeżenie, jakie karta dziś pokazuje.
+
+## Co jeszcze potwierdził pełny tekst
+
+- **Limit 170 kg N/ha** z nawozów naturalnych — rozdział 1.5 ust. 1,
+  dosłownie. Limit miał status `potwierdzone` od czasów planu; teraz ma przy
+  sobie dokładną sygnaturę.
+- **Progi obowiązku: ≥ 10 ha UR albo ≥ 10 DJP** (stan średnioroczny) —
+  rozdział 1.6 ust. 2. Dokładnie to, co było w słowniku.
+- **Przechowywanie dokumentów 3 lata** — ust. 2 pkt 3.
+- **Wzór ewidencji nawożenia azotem** — tabela 15 (załącznik nr 10):
+  dziewięć kolumn, od daty zastosowania po dawkę azotu na zastosowaną
+  powierzchnię, plus datę przyorania na terenie o dużym nachyleniu. Wpisane
+  do `wymagane_pola` obowiązku.
+- **Wyłączenia**: terminy nie dotyczą upraw pod osłonami (szklarnie,
+  inspekty, namioty foliowe) ani upraw kontenerowych z zamkniętym obiegiem
+  nawozów i wody.
 
 ## Wykazy gmin: dokładna data dla konkretnego pola
 
-To największa praktyczna zmiana. Załączniki podają gminy z **kodami
-TERYT**, a identyfikator działki ewidencyjnej, który aplikacja i tak ma
-(`061506_2.0007.138`), zawiera kod gminy w pierwszych siedmiu cyfrach
-(`0615062`). Aplikacja dopasowuje więc termin bez pytania rolnika o cokolwiek.
+Załączniki podają gminy z **kodami TERYT**, a identyfikator działki
+ewidencyjnej, który aplikacja i tak ma (`061506_2.0007.138`), zawiera kod
+gminy w pierwszych siedmiu cyfrach (`0615062`). Aplikacja dopasowuje więc
+termin bez pytania rolnika o cokolwiek.
 
 | Wykaz | Gmin | Termin na gruntach ornych |
 | --- | --- | --- |
 | Załącznik nr 2 (tabela 4) | **171** w 6 województwach | do 15 października |
 | Załącznik nr 3 (tabela 5) | **1987** w 16 województwach | do 25 października |
-| Poza wykazami | pozostałe | do 20 października (domyślny) |
+| Poza wykazami | pozostałe | do 20 października |
 
 Gdy działki leżą w gminach o różnych terminach, ekran pokazuje
 **najwcześniejszy** i mówi, że pola różnią się między sobą — bo to ten
 wcześniejszy wiąże, jeśli rolnik nie pilnuje każdego pola osobno. Działki
 o nierozczytanym identyfikatorze są policzone i wymienione, nie przemilczane.
 
-## Jak sprawdzaliśmy wykazy
+## Jak sprawdza to skrypt
 
-Skrypt `tools/azotany/terminy_nawozenia.py` (Python, `pdfplumber`),
-uruchamiany **na komputerze dewelopera** (CLAUDE.md, reguła 3):
+`tools/azotany/terminy_nawozenia.py` (Python, `pdfplumber`), uruchamiany
+**na komputerze dewelopera** (CLAUDE.md, reguła 3). Dostaje pełny tekst
+rozporządzenia i oba wykazy, a potem:
 
-1. Każdy wiersz wykazu musi mieć kształt „województwo — siedmiocyfrowy kod
-   — nazwa", a województwo musi być jednym z szesnastu.
-2. **Najważniejsza kontrola**: żadna pominięta linia nie może zawierać
-   siedmiocyfrowego kodu. Inaczej zgubiliśmy wiersz.
-3. Kody nie mogą się powtarzać w jednym wykazie ani występować w obu —
-   termin byłby niejednoznaczny.
-4. Dopiero wtedy skrypt zapisuje pliki.
+1. Szuka w tekście **16 wzorców** — całych wierszy tabeli 2, zdań
+   z odstępstwami, limitu azotu, progów obowiązku, trzyletniego
+   przechowywania i tytułu tabeli 15.
+2. Sprawdza **9 kolumn** wzoru ewidencji po słowach wypisanych wprost przy
+   każdej kolumnie (nagłówki w tabeli są łamane i poprzeplatane, więc całych
+   zdań tam nie ma).
+3. Czyta wykazy gmin i pilnuje, by **żadna pominięta linia nie zawierała
+   kodu gminy**, by kody się nie powtarzały i by gmina nie była w dwóch
+   wykazach naraz.
+4. Dopiero wtedy zapisuje `reguly_prawne.json` i
+   `gminy_terminy_azotowe.json`.
 
-Kontrola z punktu 2 od razu się przydała: warstwa tekstowa załączników
-gubi „ń" („warmiosko-mazurskie" zamiast „warmińsko-mazurskie"), tak samo
-jak w załączniku nr 1 („afrykaoskie"). Bez wypisanej wprost poprawki
-z wykazów wypadłoby **72 gminy warmińsko-mazurskie** — po cichu, bo
-wiersze wyglądałyby jak nagłówki stron.
+Dwie wady warstwy tekstowej Dziennika Ustaw są wypisane wprost, zamiast
+osłabiać sprawdzanie po cichu:
 
-## Co powstało
+- **„ć" czyta się jako „d"** („przekroczyd"), a **„ń" jako „o"** („dzieo",
+  „warmiosko-mazurskie"). Wzorce dopuszczają w tych miejscach obie litery.
+  Bez poprawki nazwy województwa z wykazów wypadłoby **72 gminy** —
+  wyłapała to kontrola z punktu 3.
+- **Strona z tabelą 15 ma tekst złożony wspak** („.51 alebaT" zamiast
+  „Tabela 15."). Do przeszukiwania dokładamy każdą stronę także odwróconą;
+  fałszywe trafienie jest niemożliwe, bo wzorce są długimi zdaniami.
 
-| Plik | Zadanie |
-| --- | --- |
-| `assets/dane/gminy_terminy_azotowe.json` | wykazy gmin (same kody TERYT, 42 kB) |
-| `assets/dane/reguly_prawne.json` | 4 terminy graniczne + dział `zasady_nawozenia_azotem` |
-| `tools/azotany/terminy_nawozenia.py` | odczyt i sprawdzenie wykazów, zapis danych |
-| `lib/rdzen/reguly/gminy_terminy.dart` | słownik wykazów + kod gminy z identyfikatora działki |
-| `lib/funkcje/nawozenie/terminy_azotowe.dart` | termin dla gospodarstwa z działek |
-| `lib/rdzen/reguly/regula_prawna.dart` | `Termin` wie o rodzaju nawozu i gruntu; `ZasadyNawozeniaAzotem` |
-| `lib/wyglad/prosty/nawozenie/ekran_nawozenie.dart` | karta „Do kiedy wolno nawozić" |
-
-Terminy wchodzą też do kalendarza obowiązków bez żadnej zmiany w kodzie
-kalendarza — to zwykłe terminy roczne ze słownika, a oznaczenie „do
-sprawdzenia" obsługiwał już krok 5.
+Kontrola negatywna: po podmianie jednej daty we wzorcu (20 → 21
+października) skrypt odmawia zapisu.
 
 ## Liczby
 
 | Miara | Wartość |
 | --- | --- |
-| Terminy graniczne w słowniku | 4 |
-| Odstępstwa / zakazy | 2 / 1 |
+| Wzorców sprawdzonych w rozporządzeniu | 16 |
+| Kolumn wzoru ewidencji | 9 |
+| Terminy graniczne | 4 (wszystkie `potwierdzone`) |
+| Odstępstwa / zakazy | 2 / 2 |
 | Gminy w wykazach | 171 + 1987 = **2158** |
 | Gmin zgubionych bez poprawki „ń" | 72 (wyłapane przez kontrolę) |
-| Nowe pliki kodu | 2 (+ zmiany w pięciu) |
+| Nowe pliki kodu | 2 (+ zmiany w sześciu) |
 | Nowe pliki testów | 1 |
-| Testy dodane | 14 (12 logiki, 2 ekranu) |
-| Testy w całym projekcie | 275 (było 261) |
+| Testy dodane | 18 (16 logiki, 2 ekranu) |
+| Testy w całym projekcie | 279 (było 261) |
 | `flutter analyze` | bez ostrzeżeń |
 
 ## Czego pilnują testy
 
 - Cztery terminy mają właściwe daty dla obu rodzajów nawozu i obu rodzajów
-  gruntu.
-- Daty są oznaczone jako wymagające sprawdzenia, wykazy gmin jako
-  potwierdzone.
+  gruntu, a okres zaczyna się 1 marca.
+- Daty i zasady są `potwierdzone` i wskazują tabelę 2; zakaz z ustawy
+  o nawozach — `do_weryfikacji`.
+- Odstępstwa dotyczą gruntów ornych; to po późno zbieranych **nie ma** daty
+  granicznej i mówi o tym wprost.
+- Progi 3°C i 5°C, 5 dni, 95% powierzchni powiatu i nazwa instytutu są
+  danymi ze słownika.
+- Wzór ewidencji ma dziewięć kolumn z tabeli 15.
 - Kod gminy wyciąga się z identyfikatora działki; dziwnego identyfikatora
   nie zgadujemy.
-- Gmina z załącznika nr 2 dostaje 15 X, z nr 3 — 25 X, poza wykazami — 20 X.
-- Działki w różnych gminach dają najwcześniejszy termin.
-- Karta na ekranie pokazuje daty po rolniczemu („do 31 października"),
-  zakaz, oba odstępstwa z limitem 30 kg N/ha i ostrzeżenie o źródle dat.
+- Gmina z załącznika nr 2 dostaje 15 X, z nr 3 — 25 X, poza wykazami 20 X;
+  działki w różnych gminach dają najwcześniejszy termin.
 
 ## Co zostaje otwarte
 
-1. **Tabela 2 z rozdziału 1.3 programu** — potrzebna, żeby daty przestały
-   być „ze strony ministerstwa". Wymaga dostępu do pełnego tekstu
-   rozporządzenia (`dziennikustaw.gov.pl` albo `isap.sejm.gov.pl`).
-2. **Wcześniejsze nawożenie wiosną** — przepis dopuszcza start przed datą
-   z tabeli 2 po przejściu średniej temperatury dobowej przez próg; tego
-   nie wpisujemy, dopóki nie przeczytamy warunku w rozporządzeniu.
-3. **Limit 170 kg N/ha i progi planu nawożenia** mają w słowniku status
-   `potwierdzone` z czasów planu — warto je potwierdzić w tym samym
-   dokumencie, przy okazji tabeli 2.
-4. **Odłogi** — materiały wspominają o zakazie nawożenia gruntów
-   odłogowanych z wyjątkiem przed zakończeniem odłogowania; nie ma tego
-   w komunikacie ministerstwa, więc nie wpisujemy.
+1. **Art. 20 ustawy o nawozach i nawożeniu** — treść zakazu dla gleb
+   zamarzniętych, zalanych, nasyconych wodą i pod śniegiem. Program tylko
+   do niego odsyła.
+2. **Progi obowiązku planu nawożenia azotem** (> 100 ha UR, > 50 ha upraw
+   intensywnych, > 60 DJP) są w ustawie – Prawo wodne, art. 105a ust. 1,
+   a nie w Programie. Program podaje tylko listę upraw intensywnych
+   (załącznik nr 7) — ta lista też czeka na wpisanie do danych.
+3. **Tabela 14 (maksymalne ilości azotu działającego)** z załącznika nr 9 —
+   dla gospodarstw bez obowiązku planu. Duża tabela, osobne zadanie.
+4. **Tabela 1 (odległości od wód)** i tabela 9 (produkcja nawozów
+   naturalnych i koncentracja azotu) — warto wciągnąć przy kolejnych krokach.
+5. **Wzór ewidencji nawożenia a wydruk.** Kolumny z tabeli 15 są już
+   w danych, ale dokument nawożenia nadal drukuje się po kolumnach
+   ekoschematów (Plan Strategiczny WPR). Przełączenie wydruku na wzór
+   urzędowy to osobny krok — wymaga mapowania wpisów na dziewięć kolumn
+   i własnych testów.

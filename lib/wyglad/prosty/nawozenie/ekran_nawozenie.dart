@@ -366,8 +366,12 @@ class _TerminyJesienne extends StatelessWidget {
     if (terminy.isEmpty) {
       return const SizedBox.shrink();
     }
+    // Daty są potwierdzone w rozporządzeniu; ostrzegamy tylko wtedy, gdy
+    // któryś zapis naprawdę czeka na sprawdzenie.
     final niepewne =
-        zasady.doWeryfikacji || terminy.any((t) => t.doWeryfikacji);
+        terminy.any((t) => t.doWeryfikacji) ||
+        zasady.odstepstwa.any((o) => o.doWeryfikacji) ||
+        zasady.zakazy.any((z) => z.doWeryfikacji);
 
     return Container(
       width: double.infinity,
@@ -396,6 +400,11 @@ class _TerminyJesienne extends StatelessWidget {
                     'do ${_dzien(_data(termin) ?? '')}',
                     style: Theme.of(context).textTheme.bodyLarge,
                   ),
+                  if (termin.okresOd != null)
+                    Text(
+                      'wolno od ${_dzien(termin.okresOd!)}',
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
                   Text(
                     termin.rodzajGruntu == 'grunty_orne'
                         ? 'grunty orne'
@@ -425,13 +434,20 @@ class _TerminyJesienne extends StatelessWidget {
           ],
           for (final zakaz in zasady.zakazy) ...[
             const SizedBox(height: MotywProsty.odstep),
-            Ostrzezenie(tresc: zakaz.nazwa, coZrobic: zakaz.opis),
+            Ostrzezenie(
+              tresc: zakaz.doWeryfikacji
+                  ? '${zakaz.nazwa} — do sprawdzenia'
+                  : zakaz.nazwa,
+              coZrobic: zakaz.opis,
+            ),
           ],
           for (final odstepstwo in zasady.odstepstwa) ...[
             const SizedBox(height: MotywProsty.odstep),
             Text(
-              '${odstepstwo.nazwa} — wolno do '
-              '${_dzien(odstepstwo.doDnia ?? '')}',
+              odstepstwo.doDnia == null
+                  ? '${odstepstwo.nazwa} — termin z tabeli nie obowiązuje'
+                  : '${odstepstwo.nazwa} — wolno do '
+                        '${_dzien(odstepstwo.doDnia!)}',
               style: Theme.of(context).textTheme.bodyLarge,
             ),
             Text(
@@ -449,14 +465,39 @@ class _TerminyJesienne extends StatelessWidget {
                 'Trzeba zapisać: ${odstepstwo.wymaganeZapisy.join(', ')}.',
                 style: Theme.of(context).textTheme.bodyMedium,
               ),
+            if (odstepstwo.doDnia == null && odstepstwo.uwagi.isNotEmpty)
+              Text(
+                odstepstwo.uwagi,
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+          ],
+          if (zasady.wczesniejszeWiosna.jest) ...[
+            const SizedBox(height: MotywProsty.odstep),
+            Text(
+              'Wiosną wolno wcześniej',
+              style: Theme.of(context).textTheme.bodyLarge,
+            ),
+            Text(
+              zasady.wczesniejszeWiosna.opis,
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+            for (final prog in zasady.wczesniejszeWiosna.progi)
+              Text(
+                '${prog.stopnieC.toStringAsFixed(0)}°C — ${prog.dotyczy}',
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+            Text(
+              'Próg uznaje się za przejście po '
+              '${zasady.wczesniejszeWiosna.dniPowyzejProgu} dniach z rzędu. '
+              'Daty ogłasza ${zasady.wczesniejszeWiosna.ktoOglasza}.',
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
           ],
           if (niepewne) ...[
             const SizedBox(height: MotywProsty.odstep),
             const Ostrzezenie(
-              tresc: 'Daty pochodzą ze streszczenia ministerstwa.',
-              coZrobic:
-                  'Potwierdź u doradcy, zanim wyjedziesz w pole — wykaz gmin '
-                  'jest z rozporządzenia, same daty nie.',
+              tresc: 'Część zasad czeka na sprawdzenie w przepisie.',
+              coZrobic: 'Potwierdź u doradcy, zanim wyjedziesz w pole.',
             ),
           ],
         ],

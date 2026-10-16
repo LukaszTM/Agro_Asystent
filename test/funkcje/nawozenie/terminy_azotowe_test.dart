@@ -93,14 +93,50 @@ void main() {
       );
     });
 
-    test('daty czekają na sprawdzenie w rozporządzeniu', () {
-      // Daty wzięliśmy z komunikatu ministerstwa, a nie z tabeli 2
-      // programu — aplikacja musi o tym mówić (CLAUDE.md, reguła 5).
+    test('daty są sprawdzone w tabeli 2 rozporządzenia', () {
       for (final termin in reguly.terminyNawozenia) {
-        expect(termin.doWeryfikacji, isTrue, reason: termin.id);
-        expect(termin.zrodlo.isNotEmpty, isTrue, reason: termin.id);
+        expect(termin.doWeryfikacji, isFalse, reason: termin.id);
+        expect(termin.zrodlo, contains('Dz.U. 2023 poz. 244'));
+        expect(termin.zrodlo, contains('tabela 2'), reason: termin.id);
       }
-      expect(reguly.zasadyNawozeniaAzotem.doWeryfikacji, isTrue);
+      expect(reguly.zasadyNawozeniaAzotem.doWeryfikacji, isFalse);
+    });
+
+    test('okres stosowania zaczyna się 1 marca', () {
+      for (final termin in reguly.terminyNawozenia) {
+        expect(termin.okresOd, '03-01', reason: termin.id);
+      }
+    });
+
+    test('wcześniejsze nawożenie w lutym ma progi z przepisu', () {
+      final wiosna = reguly.zasadyNawozeniaAzotem.wczesniejszeWiosna;
+      expect(wiosna.jest, isTrue);
+      expect(wiosna.okresOd, '02-01');
+      expect(wiosna.progi.map((p) => p.stopnieC), containsAll([3.0, 5.0]));
+      expect(wiosna.dniPowyzejProgu, 5);
+      expect(wiosna.udzialPowiatuProcent, 95);
+      expect(wiosna.ktoOglasza, contains('Meteorologii'));
+      expect(wiosna.doWeryfikacji, isFalse);
+    });
+
+    test('wzór ewidencji nawożenia ma kolumny z tabeli 15', () {
+      final obowiazek = reguly.obowiazek('program_azotanowy_ewidencja')!;
+      expect(obowiazek.wymaganePola, hasLength(9));
+      expect(
+        obowiazek.wymaganePola.map((p) => p.id),
+        containsAll([
+          'data',
+          'pole',
+          'uprawa',
+          'powierzchnia_uprawy',
+          'powierzchnia_nawozona',
+          'rodzaj_nawozu',
+          'dawka_azotu_na_ha',
+          'dawka_azotu_razem',
+          'data_przyorania',
+        ]),
+      );
+      expect(obowiazek.podstawa, contains('Dz.U. 2023 poz. 244'));
     });
 
     test('wykazy gmin są z rozporządzenia, więc potwierdzone', () {
@@ -119,14 +155,16 @@ void main() {
 
     test('odstępstwa i zakazy są danymi, nie warunkami w kodzie', () {
       final zasady = reguly.zasadyNawozeniaAzotem;
-      expect(zasady.zakazy, isNotEmpty);
-      expect(zasady.nieDotyczy, contains('uprawy pod osłonami'));
+      expect(zasady.zakazy, hasLength(2));
+      expect(zasady.nieDotyczy.first, contains('pod osłonami'));
 
       final pogoda = zasady.odstepstwa.firstWhere(
         (o) => o.id == 'niekorzystna_pogoda',
       );
       expect(pogoda.doDnia, '11-30');
       expect(pogoda.wymagaDokumentowania, isFalse);
+      expect(pogoda.dotyczyGruntow, 'grunty_orne');
+      expect(pogoda.doWeryfikacji, isFalse);
 
       final poZbiorze = zasady.odstepstwa.firstWhere(
         (o) => o.id == 'uprawa_po_pozno_zbieranych',
@@ -134,6 +172,33 @@ void main() {
       expect(poZbiorze.wymagaDokumentowania, isTrue);
       expect(poZbiorze.limitAzotuKgNaHa, 30);
       expect(poZbiorze.wymaganeZapisy, hasLength(5));
+      expect(
+        poZbiorze.doDnia,
+        isNull,
+        reason:
+            'Program znosi termin, ale nowej daty nie podaje — '
+            'nie wymyślamy jej',
+      );
+      expect(poZbiorze.uwagi, contains('ministerstwa'));
+    });
+
+    test('zakaz z ustawy o nawozach jest oznaczony do sprawdzenia', () {
+      final zasady = reguly.zasadyNawozeniaAzotem;
+      final odlogi = zasady.zakazy.firstWhere(
+        (z) => z.id == 'gleby_odlogowane',
+      );
+      expect(odlogi.doWeryfikacji, isFalse);
+      expect(odlogi.zrodlo, contains('1.3'));
+
+      final niezdatna = zasady.zakazy.firstWhere(
+        (z) => z.id == 'gleba_niezdatna',
+      );
+      expect(
+        niezdatna.doWeryfikacji,
+        isTrue,
+        reason: 'treść zakazu jest w ustawie o nawozach, której nie czytaliśmy',
+      );
+      expect(niezdatna.zrodlo, contains('o nawozach i nawożeniu'));
     });
   });
 

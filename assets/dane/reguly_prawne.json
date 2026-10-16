@@ -1,5 +1,5 @@
 {
-  "wersja": "2026.10.16.1",
+  "wersja": "2026.10.16.2",
   "obowiazuje_od": "2026-10-16",
   "opis": "Progi, limity i terminy obowiązków dokumentacyjnych. Dane, nie kod — aktualizowane bez przebudowy aplikacji. Zestawienie służy do planowania i nie jest poradą prawną.",
   "obowiazki": [
@@ -68,7 +68,7 @@
     {
       "id": "program_azotanowy_ewidencja",
       "nazwa": "Program azotanowy: ewidencja nawożenia azotem",
-      "podstawa": "program działań mających na celu zmniejszenie zanieczyszczenia wód azotanami",
+      "podstawa": "Dz.U. 2023 poz. 244 — rozporządzenie Rady Ministrów z 31 stycznia 2023 r. w sprawie Programu działań mających na celu zmniejszenie zanieczyszczenia wód azotanami pochodzącymi ze źródeł rolniczych, rozdział 1.6 ust. 2",
       "kogo_dotyczy": "gospodarstwa od 10 ha użytków rolnych albo od 10 DJP",
       "progi": [
         {
@@ -88,12 +88,89 @@
           "id": "limit_azotu_z_nawozow_naturalnych",
           "nazwa": "Limit azotu z nawozów naturalnych",
           "wartosc": 170,
-          "jednostka": "kg N/ha/rok"
+          "jednostka": "kg N/ha/rok",
+          "zrodlo": "Dz.U. 2023 poz. 244 — rozporządzenie Rady Ministrów z 31 stycznia 2023 r. w sprawie Programu działań mających na celu zmniejszenie zanieczyszczenia wód azotanami pochodzącymi ze źródeł rolniczych, rozdział 1.5 ust. 1"
         }
       ],
       "przechowywanie_lat": 3,
       "status_weryfikacji": "potwierdzone",
-      "uwagi": "Terminy nawożenia z planu pochodzą ze strony ARiMR z 2019 r. — do sprawdzenia w aktualnym rozporządzeniu."
+      "uwagi": "Progi 10 ha UR i 10 DJP, trzyletnie przechowywanie i wzór ewidencji sprawdzone w rozporządzeniu. Wymagania nie dotyczą upraw pod osłonami i kontenerowych.",
+      "wymagane_pola": [
+        {
+          "id": "data",
+          "nazwa": "Data zastosowania nawozu",
+          "slowa_w_dokumencie": [
+            "Data",
+            "zastosowania"
+          ]
+        },
+        {
+          "id": "pole",
+          "nazwa": "Pole, na którym zastosowano nawóz",
+          "slowa_w_dokumencie": [
+            "Pole, na którym",
+            "zastosowano"
+          ]
+        },
+        {
+          "id": "uprawa",
+          "nazwa": "Uprawa, na której zastosowano nawóz (gatunek)",
+          "slowa_w_dokumencie": [
+            "Uprawa, na",
+            "gatunek"
+          ]
+        },
+        {
+          "id": "powierzchnia_uprawy",
+          "nazwa": "Powierzchnia uprawy (ha)",
+          "slowa_w_dokumencie": [
+            "Powierzchnia",
+            "uprawy (ha)"
+          ]
+        },
+        {
+          "id": "powierzchnia_nawozona",
+          "nazwa": "Powierzchnia, na której zastosowano nawóz (ha)",
+          "slowa_w_dokumencie": [
+            "Powierzchnia, na",
+            "nawóz (ha)"
+          ]
+        },
+        {
+          "id": "rodzaj_nawozu",
+          "nazwa": "Rodzaj nawozu (zawartość N)",
+          "slowa_w_dokumencie": [
+            "Rodzaj nawozu",
+            "zawartość N"
+          ]
+        },
+        {
+          "id": "dawka_azotu_na_ha",
+          "nazwa": "Dawka zastosowanego nawozu (kg N/ha)",
+          "slowa_w_dokumencie": [
+            "Dawka",
+            "nawozu (kg N/ha)"
+          ]
+        },
+        {
+          "id": "dawka_azotu_razem",
+          "nazwa": "Dawka zastosowanego nawozu (N na zastosowaną powierzchnię uprawy)",
+          "slowa_w_dokumencie": [
+            "zastosowaną",
+            "powierzchnię"
+          ]
+        },
+        {
+          "id": "data_przyorania",
+          "nazwa": "Data przyorania nawozu naturalnego",
+          "kiedy_wymagane": "teren o dużym nachyleniu",
+          "slowa_w_dokumencie": [
+            "datę przyorania lub wymieszania nawozu naturalnego z glebą",
+            "na terenie o dużym nachyleniu"
+          ]
+        }
+      ],
+      "wzor": "tabela 15 (załącznik nr 10 do Programu)"
     },
     {
       "id": "program_azotanowy_plan",
@@ -254,55 +331,59 @@
     {
       "id": "azotany_naturalne_stale_grunty_orne",
       "obowiazek": "program_azotanowy_ewidencja",
-      "nazwa": "Ostatni dzień na obornik na gruntach ornych",
+      "nazwa": "Obornik na gruntach ornych",
       "rodzaj": "data_roczna",
       "data_roczna": "10-31",
+      "okres_od": "03-01",
       "rodzaj_nawozu": "naturalne_stale",
       "rodzaj_gruntu": "grunty_orne",
       "co_to_za_nawoz": "obornik, pomiot ptasi",
-      "status_weryfikacji": "ze_strony_ministerstwa",
-      "zrodlo": "Ministerstwo Rolnictwa i Rozwoju Wsi, komunikat „Zasady i terminy stosowania jesienią nawozów zawierających azot” (22.10.2024), na podstawie Dz.U. 2023 poz. 244, rozdział 1.3, tabela 2",
-      "uwagi": "Data ze streszczenia ministerstwa; tabela 2 z rozdziału 1.3 programu nie była czytana. Potwierdź u doradcy."
+      "status_weryfikacji": "potwierdzone",
+      "zrodlo": "Dz.U. 2023 poz. 244 — rozporządzenie Rady Ministrów z 31 stycznia 2023 r. w sprawie Programu działań mających na celu zmniejszenie zanieczyszczenia wód azotanami pochodzącymi ze źródeł rolniczych, rozdział 1.3, tabela 2",
+      "uwagi": "Okres stosowania zaczyna się 1 marca; w lutym wolno wcześniej po przejściu temperatury przez próg."
     },
     {
       "id": "azotany_naturalne_stale_tuz",
       "obowiazek": "program_azotanowy_ewidencja",
-      "nazwa": "Ostatni dzień na obornik na łąkach i pastwiskach",
+      "nazwa": "Obornik na łąkach, pastwiskach i uprawach trwałych",
       "rodzaj": "data_roczna",
       "data_roczna": "11-30",
+      "okres_od": "03-01",
       "rodzaj_nawozu": "naturalne_stale",
       "rodzaj_gruntu": "tuz_uprawy_wieloletnie_trwale",
       "co_to_za_nawoz": "obornik, pomiot ptasi",
-      "status_weryfikacji": "ze_strony_ministerstwa",
-      "zrodlo": "Ministerstwo Rolnictwa i Rozwoju Wsi, komunikat „Zasady i terminy stosowania jesienią nawozów zawierających azot” (22.10.2024), na podstawie Dz.U. 2023 poz. 244, rozdział 1.3, tabela 2",
-      "uwagi": "Data ze streszczenia ministerstwa; tabela 2 z rozdziału 1.3 programu nie była czytana. Potwierdź u doradcy."
+      "status_weryfikacji": "potwierdzone",
+      "zrodlo": "Dz.U. 2023 poz. 244 — rozporządzenie Rady Ministrów z 31 stycznia 2023 r. w sprawie Programu działań mających na celu zmniejszenie zanieczyszczenia wód azotanami pochodzącymi ze źródeł rolniczych, rozdział 1.3, tabela 2",
+      "uwagi": "Okres stosowania zaczyna się 1 marca; w lutym wolno wcześniej po przejściu temperatury przez próg."
     },
     {
       "id": "azotany_mineralne_i_plynne_grunty_orne",
       "obowiazek": "program_azotanowy_ewidencja",
-      "nazwa": "Ostatni dzień na gnojowicę i saletrę na gruntach ornych",
+      "nazwa": "Gnojowica i nawozy azotowe na gruntach ornych",
       "rodzaj": "data_roczna",
       "data_roczna": "10-20",
+      "okres_od": "03-01",
       "rodzaj_nawozu": "mineralne_azotowe_i_naturalne_plynne",
       "rodzaj_gruntu": "grunty_orne",
       "co_to_za_nawoz": "nawozy azotowe mineralne, gnojowica, gnojówka",
       "warianty_gmin": "nawozy_azotowe_grunty_orne",
-      "status_weryfikacji": "ze_strony_ministerstwa",
-      "zrodlo": "Ministerstwo Rolnictwa i Rozwoju Wsi, komunikat „Zasady i terminy stosowania jesienią nawozów zawierających azot” (22.10.2024), na podstawie Dz.U. 2023 poz. 244, rozdział 1.3, tabela 2",
-      "uwagi": "Data ze streszczenia ministerstwa; tabela 2 z rozdziału 1.3 programu nie była czytana. Potwierdź u doradcy."
+      "status_weryfikacji": "potwierdzone",
+      "zrodlo": "Dz.U. 2023 poz. 244 — rozporządzenie Rady Ministrów z 31 stycznia 2023 r. w sprawie Programu działań mających na celu zmniejszenie zanieczyszczenia wód azotanami pochodzącymi ze źródeł rolniczych, rozdział 1.3, tabela 2",
+      "uwagi": "Okres stosowania zaczyna się 1 marca; w lutym wolno wcześniej po przejściu temperatury przez próg."
     },
     {
       "id": "azotany_mineralne_i_plynne_tuz",
       "obowiazek": "program_azotanowy_ewidencja",
-      "nazwa": "Ostatni dzień na gnojowicę i saletrę na łąkach i pastwiskach",
+      "nazwa": "Gnojowica i nawozy azotowe na łąkach i uprawach trwałych",
       "rodzaj": "data_roczna",
       "data_roczna": "10-31",
+      "okres_od": "03-01",
       "rodzaj_nawozu": "mineralne_azotowe_i_naturalne_plynne",
       "rodzaj_gruntu": "tuz_uprawy_wieloletnie_trwale",
       "co_to_za_nawoz": "nawozy azotowe mineralne, gnojowica, gnojówka",
-      "status_weryfikacji": "ze_strony_ministerstwa",
-      "zrodlo": "Ministerstwo Rolnictwa i Rozwoju Wsi, komunikat „Zasady i terminy stosowania jesienią nawozów zawierających azot” (22.10.2024), na podstawie Dz.U. 2023 poz. 244, rozdział 1.3, tabela 2",
-      "uwagi": "Data ze streszczenia ministerstwa; tabela 2 z rozdziału 1.3 programu nie była czytana. Potwierdź u doradcy."
+      "status_weryfikacji": "potwierdzone",
+      "zrodlo": "Dz.U. 2023 poz. 244 — rozporządzenie Rady Ministrów z 31 stycznia 2023 r. w sprawie Programu działań mających na celu zmniejszenie zanieczyszczenia wód azotanami pochodzącymi ze źródeł rolniczych, rozdział 1.3, tabela 2",
+      "uwagi": "Okres stosowania zaczyna się 1 marca; w lutym wolno wcześniej po przejściu temperatury przez próg."
     }
   ],
   "parametry_warunkowosci": [
@@ -888,45 +969,83 @@
     ]
   },
   "zasady_nawozenia_azotem": {
-    "status_weryfikacji": "ze_strony_ministerstwa",
-    "zrodlo": "Ministerstwo Rolnictwa i Rozwoju Wsi, komunikat „Zasady i terminy stosowania jesienią nawozów zawierających azot” (22.10.2024), na podstawie Dz.U. 2023 poz. 244, rozdział 1.3, tabela 2",
+    "status_weryfikacji": "potwierdzone",
+    "zrodlo": "Dz.U. 2023 poz. 244 — rozporządzenie Rady Ministrów z 31 stycznia 2023 r. w sprawie Programu działań mających na celu zmniejszenie zanieczyszczenia wód azotanami pochodzącymi ze źródeł rolniczych, rozdział 1.3",
     "sprawdzono": "2026-10-16",
     "odstepstwa": [
       {
         "id": "niekorzystna_pogoda",
         "nazwa": "Niekorzystne warunki pogodowe",
+        "dotyczy_gruntow": "grunty_orne",
         "do_dnia": "11-30",
-        "kiedy": "nadmierne uwilgotnienie gleby albo susza uniemożliwiły zbiór i nawożenie w terminie",
+        "kiedy": "nie można było dokonać zbiorów lub nawożenia z uwagi na niekorzystne warunki pogodowe, w szczególności nadmierne uwilgotnienie gleby",
         "dokumentowanie": "nie_wymaga",
-        "uwagi": "Rolnik sam ocenia warunki; program nie wymaga osobnych zapisów. Nawożenie nie może wyjść za koniec listopada."
+        "status_weryfikacji": "potwierdzone",
+        "zrodlo": "rozdział 1.3 ust. 9",
+        "uwagi": "Program nie wymaga osobnych zapisów. Termin graniczny to 30 listopada."
       },
       {
         "id": "uprawa_po_pozno_zbieranych",
         "nazwa": "Uprawa zakładana jesienią po późno zbieranych",
-        "do_dnia": "11-30",
-        "kiedy": "zakładanie uprawy po buraku cukrowym, kukurydzy, przedplonach albo późnych warzywach",
+        "dotyczy_gruntow": "grunty_orne",
+        "do_dnia": null,
+        "kiedy": "zakładanie uprawy jesienią po późno zbieranych przedplonach, buraku cukrowym, kukurydzy lub późnych warzywach",
         "dokumentowanie": "wymaga",
         "limit_azotu_kg_na_ha": 30,
         "limit_dotyczy": "wieloskładnikowe nawozy mineralne dla zakładanej uprawy",
         "wymagane_zapisy": [
-          "termin zbioru przedplonu",
-          "data zastosowania nawozu",
+          "termin zbioru",
+          "data stosowania nawozu",
           "zastosowane nawozy",
           "dawka nawozu",
           "termin siewu jesiennej uprawy"
-        ]
+        ],
+        "status_weryfikacji": "potwierdzone",
+        "zrodlo": "rozdział 1.3 ust. 8",
+        "uwagi": "Program nie podaje dla tego odstępstwa daty granicznej — znosi terminy z tabeli 2. Komunikat ministerstwa mówi o końcu listopada; potwierdź u doradcy."
       }
     ],
     "zakazy": [
       {
+        "id": "gleby_odlogowane",
+        "nazwa": "Grunty odłogowane",
+        "opis": "Nie stosuje się nawożenia na glebach odłogowanych. Przed planowanym zakończeniem odłogowania wolno zastosować nawozy jesienią.",
+        "status_weryfikacji": "potwierdzone",
+        "zrodlo": "rozdział 1.3 ust. 11"
+      },
+      {
         "id": "gleba_niezdatna",
         "nazwa": "Gleba zamarznięta, zalana, nasycona wodą albo pod śniegiem",
-        "opis": "Nawożenie jest zabronione bez względu na termin."
+        "opis": "Nawożenia takich gleb dotyczą przepisy ustawy o nawozach i nawożeniu — potwierdź u doradcy, zanim wyjedziesz w pole.",
+        "status_weryfikacji": "do_weryfikacji",
+        "zrodlo": "rozdział 1.2.1; zakaz wynika z art. 20 ust. 1 pkt 1 i ust. 3 ustawy z dnia 10 lipca 2007 r. o nawozach i nawożeniu",
+        "uwagi": "Treść zakazu jest w ustawie, nie w Programie — nie czytaliśmy jej."
       }
     ],
     "nie_dotyczy": [
-      "uprawy pod osłonami",
-      "uprawy kontenerowe"
-    ]
+      "uprawy pod osłonami (szklarnie, inspekty, namioty foliowe)",
+      "uprawy kontenerowe wykorzystujące technologię zamkniętego obiegu nawozów i wody"
+    ],
+    "wczesniejsze_wiosna": {
+      "okres_od": "02-01",
+      "okres_do": "02-29",
+      "opis": "Przed terminem z tabeli 2 wolno nawozić w lutym, gdy średnia dobowa temperatura powietrza przejdzie przez próg.",
+      "progi_temperatury": [
+        {
+          "stopnie_c": 3,
+          "dotyczy": "rośliny zasiane jesienią, uprawy trwałe, uprawy wieloletnie i trwałe użytki zielone"
+        },
+        {
+          "stopnie_c": 5,
+          "dotyczy": "pozostałe uprawy"
+        }
+      ],
+      "dni_powyzej_progu": 5,
+      "udzial_powiatu_procent": 95,
+      "kto_oglasza": "Instytut Meteorologii i Gospodarki Wodnej — Państwowy Instytut Badawczy",
+      "uwagi": "Wykazy powiatów są publikowane codziennie od 1 do ostatniego dnia lutego. Gospodarstwo na terenie dwóch lub więcej powiatów bierze termin powiatu, w którym ma większą część powierzchni.",
+      "status_weryfikacji": "potwierdzone",
+      "zrodlo": "rozdział 1.3 ust. 4–7"
+    }
   }
 }

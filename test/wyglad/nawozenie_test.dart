@@ -175,7 +175,7 @@ void main() {
   /// Przewija listę aż szukany tekst się zbuduje. `scrollUntilVisible`
   /// tu nie wystarcza, bo tekst występuje w kilku miejscach naraz.
   Future<void> przewijajDo(WidgetTester tester, Finder czego) async {
-    for (var proba = 0; proba < 12 && czego.evaluate().isEmpty; proba++) {
+    for (var proba = 0; proba < 40 && czego.evaluate().isEmpty; proba++) {
       await tester.drag(find.byType(Scrollable).first, const Offset(0, -300));
       await tester.pumpAndSettle();
     }
@@ -331,18 +331,31 @@ void main() {
     // Gnojowica i saletra na gruntach ornych — termin domyślny 20 października.
     expect(find.textContaining('do 20 października'), findsOneWidget);
     expect(find.textContaining('gnojowica'), findsWidgets);
+    expect(find.textContaining('wolno od 1 marca'), findsWidgets);
 
-    await przewinDo(tester, find.textContaining('zamarznięta'));
+    await przewijajDo(tester, find.textContaining('zamarznięta'));
     expect(find.textContaining('zamarznięta'), findsOneWidget);
+    expect(find.textContaining('Grunty odłogowane'), findsOneWidget);
+
+    await przewijajDo(tester, find.textContaining('30 kg N/ha'));
     expect(
       find.textContaining('Niekorzystne warunki pogodowe'),
       findsOneWidget,
     );
     expect(find.textContaining('30 kg N/ha'), findsOneWidget);
     expect(
-      find.textContaining('ze streszczenia ministerstwa'),
+      find.textContaining('termin z tabeli nie obowiązuje'),
       findsOneWidget,
-      reason: 'daty nie są potwierdzone w tabeli 2 rozporządzenia',
+      reason: 'dla tego odstępstwa przepis nie podaje daty granicznej',
+    );
+
+    await przewijajDo(tester, find.textContaining('Wiosną wolno wcześniej'));
+    expect(find.textContaining('3°C'), findsOneWidget);
+    expect(find.textContaining('5°C'), findsOneWidget);
+    expect(
+      find.textContaining('czeka na sprawdzenie w przepisie'),
+      findsOneWidget,
+      reason: 'zakaz z ustawy o nawozach nie był czytany',
     );
   });
 
