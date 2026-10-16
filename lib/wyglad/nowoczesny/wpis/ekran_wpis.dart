@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../app/uslugi.dart';
 import '../../../funkcje/dzialki/repozytorium_pol.dart';
 import '../../../funkcje/nawozenie/nawoz.dart';
+import '../../../funkcje/nawozenie/plan_nawozenia.dart';
 import '../../../funkcje/odczyt/czytnik_zdjecia.dart';
 import '../../../funkcje/odczyt/odczyt_etykiety.dart';
 import '../../../funkcje/zabiegi/dane_wpisu.dart';
@@ -45,6 +46,10 @@ class _EkranWpisuState extends State<EkranWpisu> {
   Future<List<DopuszczonySrodek>>? _srodki;
   Future<List<Nawoz>>? _nawozy;
 
+  /// Azot już zapisany na wybranych polach i limity z tabeli 14 programu
+  /// azotanowego. Przeliczamy po zmianie pól, nie po zmianie dawki.
+  Future<List<SkutekDlaMaksymalnejDawki>>? _stanPol;
+
   String _szukane = '';
   bool _czytaEtykiete = false;
   OdczytEtykiety? _odczyt;
@@ -66,6 +71,17 @@ class _EkranWpisuState extends State<EkranWpisu> {
       _dane.pola.add(widget.poleNaStart!);
     }
     _pola = widget.uslugi.pola.wszystkie(widget.uslugi.gospodarstwoId);
+    _odswiezStanPol();
+  }
+
+  void _odswiezStanPol() {
+    _stanPol = _dane.pola.isEmpty
+        ? null
+        : widget.uslugi.planNawozenia.skutkiDlaMaksymalnejDawki(
+            pola: List.of(_dane.pola),
+            azotWpisuKgNaHa: 0,
+            kiedy: _dane.kiedy,
+          );
   }
 
   String get _uprawa => _dane.pola.firstOrNull?.uprawa ?? '';
@@ -101,6 +117,7 @@ class _EkranWpisuState extends State<EkranWpisu> {
         ..srodek = null
         ..dawka = null;
       _odswiezSrodki();
+      _odswiezStanPol();
     });
   }
 
@@ -615,13 +632,15 @@ class _EkranWpisuState extends State<EkranWpisu> {
           onZmiana: (nowa) => setState(() => _dane.dawka = nowa),
         ),
         const SizedBox(height: 8),
-        if (_dane.azotKgNaHa case final double azot)
+        if (_dane.azotKgNaHa case final double azot) ...[
           Text(
             'To ${azot.toStringAsFixed(1).replaceAll('.', ',')} kg azotu '
             'na hektar.',
             style: teksty.bodyLarge,
-          )
-        else
+          ),
+          if (_stanPol case final Future<List<SkutekDlaMaksymalnejDawki>> stan)
+            _MaksymalnaDawka(stanPol: stan, azotWpisu: azot),
+        ] else
           const OstrzezenieNowoczesne(
             tresc: 'Nie znamy zawartości azotu w tym nawozie.',
             coZrobic:
@@ -631,6 +650,68 @@ class _EkranWpisuState extends State<EkranWpisu> {
       ],
     ];
   }
+}
+
+/// Maksymalna dawka azotu dla uprawy (tabela 14 programu azotanowego).
+///
+/// Wpisu nie blokujemy — rolnik mógł nawóz już wysiać i musi móc to
+/// zapisać. Mówimy tylko, co o tym wie tabela.
+class _MaksymalnaDawka extends StatelessWidget {
+  const _MaksymalnaDawka({required this.stanPol, required this.azotWpisu});
+
+  final Future<List<SkutekDlaMaksymalnejDawki>> stanPol;
+  final double azotWpisu;
+
+  @override
+  Widget build(BuildContext context) =>
+      FutureBuilder<List<SkutekDlaMaksymalnejDawki>>(
+        future: stanPol,
+        builder: (context, stan) {
+          if (!stan.hasData) {
+            return const SizedBox.shrink();
+          }
+          final pola = [for (final pole in stan.data!) pole.zDawka(azotWpisu)];
+          final ostrzezenia = pola
+              .where((pole) => pole.ostrzezenie != null)
+              .toList(growable: false);
+          final teksty = Theme.of(context).textTheme;
+
+          if (ostrzezenia.isNotEmpty) {
+            return Column(
+              children: [
+                for (final pole in ostrzezenia) ...[
+                  const SizedBox(height: 8),
+                  OstrzezenieNowoczesne(
+                    tresc: pole.ostrzezenie!,
+                    coZrobic: pole.coZrobic ?? '',
+                  ),
+                ],
+              ],
+            );
+          }
+
+          final zLimitem = pola
+              .where((pole) => pole.limitKgNaHa != null)
+              .toList(growable: false);
+          if (zLimitem.isEmpty) {
+            return const SizedBox.shrink();
+          }
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              for (final pole in zLimitem) ...[
+                const SizedBox(height: 4),
+                Text(
+                  '${pole.nazwaPola}: razem '
+                  '${pole.azotRazemKgNaHa.toStringAsFixed(0)} '
+                  'z ${pole.limitKgNaHa} kg azotu na hektar.',
+                  style: teksty.bodyMedium,
+                ),
+              ],
+            ],
+          );
+        },
+      );
 }
 
 class _PozycjaListy extends StatelessWidget {

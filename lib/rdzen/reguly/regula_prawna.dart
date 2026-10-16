@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import '../wspolne/tekst.dart';
+
 /// Miara, po której sprawdzamy próg obowiązku.
 enum Miara {
   powierzchniaUrHa('powierzchnia_ur_ha'),
@@ -828,6 +830,282 @@ class UprawyIntensywne {
   }
 }
 
+/// O ile program każe pomniejszyć limit azotu na słabszych glebach.
+class ObnizkaDawkiAzotu {
+  const ObnizkaDawkiAzotu({
+    required this.rodzajGleby,
+    required this.procent,
+    required this.opis,
+  });
+
+  factory ObnizkaDawkiAzotu.zJson(Map<String, dynamic> json) =>
+      ObnizkaDawkiAzotu(
+        rodzajGleby: json['rodzaj_gleby'] as String? ?? '',
+        procent: (json['procent'] as num?)?.toInt() ?? 0,
+        opis: json['opis'] as String? ?? '',
+      );
+
+  final String rodzajGleby;
+  final int procent;
+  final String opis;
+}
+
+/// Limit dla roślin bobowatych — tabela podaje go nie w kilogramach na
+/// hektar ze wszystkich źródeł, a osobno dla nawozów mineralnych
+/// i naturalnych.
+class LimitBobowatych {
+  const LimitBobowatych({
+    required this.kgNHaMineralne,
+    required this.kgNHaNaturalne,
+    required this.opis,
+  });
+
+  factory LimitBobowatych.zJson(Map<String, dynamic> json) => LimitBobowatych(
+    kgNHaMineralne: (json['kg_n_ha_mineralne'] as num?)?.toInt(),
+    kgNHaNaturalne: (json['kg_n_ha_naturalne'] as num?)?.toInt(),
+    opis: json['opis'] as String? ?? '',
+  );
+
+  final int? kgNHaMineralne;
+  final int? kgNHaNaturalne;
+  final String opis;
+}
+
+/// Jeden wiersz tabeli 14: ile azotu działającego wolno dać pod tę uprawę.
+class MaksymalnaDawkaAzotu {
+  const MaksymalnaDawkaAzotu({
+    required this.grupa,
+    required this.uprawa,
+    this.kgNHa,
+    this.bobowate = false,
+    this.ogolna = false,
+  });
+
+  factory MaksymalnaDawkaAzotu.zJson(Map<String, dynamic> json) =>
+      MaksymalnaDawkaAzotu(
+        grupa: json['grupa'] as String? ?? '',
+        uprawa: json['uprawa'] as String? ?? '',
+        kgNHa: (json['kg_n_ha'] as num?)?.toInt(),
+        bobowate: json['bobowate'] as bool? ?? false,
+        ogolna: json['ogolna'] as bool? ?? false,
+      );
+
+  final String grupa;
+  final String uprawa;
+
+  /// Limit ze wszystkich źródeł. `null` przy bobowatych — tam limit ma
+  /// inną postać, patrz [LimitBobowatych].
+  final int? kgNHa;
+
+  final bool bobowate;
+
+  /// Wiersz zbiorczy („Inne oleiste") — wybiera go tylko rolnik wprost,
+  /// nigdy dopasowanie po fragmencie nazwy.
+  final bool ogolna;
+}
+
+/// Co tabela mówi o uprawie z pola.
+enum StanMaksymalnejDawki {
+  /// Tabela podaje jedną liczbę.
+  znany,
+
+  /// Uprawa bobowata — limit osobno dla nawozów mineralnych i naturalnych.
+  bobowate,
+
+  /// Nazwa pasuje do kilku wierszy o różnych limitach (np. „rzepak" jest
+  /// w oleistych z limitem 240 i w pastewnych z limitem 200). Aplikacja
+  /// nie wybiera za rolnika.
+  niejednoznaczny,
+
+  /// Tabela nie zna tej uprawy. Nie zgadujemy limitu.
+  brak,
+}
+
+/// Odpowiedź na pytanie „ile azotu wolno dać pod tę uprawę".
+class LimitAzotuDlaUprawy {
+  const LimitAzotuDlaUprawy({
+    required this.stan,
+    this.dopasowania = const [],
+    this.bobowate,
+  });
+
+  static const LimitAzotuDlaUprawy brak = LimitAzotuDlaUprawy(
+    stan: StanMaksymalnejDawki.brak,
+  );
+
+  final StanMaksymalnejDawki stan;
+
+  /// Wiersze tabeli, które pasują do nazwy uprawy.
+  final List<MaksymalnaDawkaAzotu> dopasowania;
+
+  /// Limit bobowatych — wypełniony tylko przy [StanMaksymalnejDawki.bobowate].
+  final LimitBobowatych? bobowate;
+
+  /// Limit w kilogramach azotu na hektar. `null`, gdy tabela limitu nie
+  /// podaje albo gdy dopasowań jest więcej niż jedno.
+  int? get kgNHa =>
+      stan == StanMaksymalnejDawki.znany ? dopasowania.single.kgNHa : null;
+
+  /// Najniższy z dopasowanych limitów — przy dopasowaniu
+  /// niejednoznacznym pozwala powiedzieć rolnikowi, że dawka na pewno
+  /// przekracza *któryś* z limitów z tabeli.
+  int? get najnizszyKgNHa {
+    final liczby = dopasowania
+        .map((u) => u.kgNHa)
+        .whereType<int>()
+        .toList(growable: false);
+    if (liczby.isEmpty) {
+      return null;
+    }
+    return liczby.reduce((a, b) => a < b ? a : b);
+  }
+
+  /// Dopasowania w postaci „240 kg w oleistych, 200 kg w pastewnych" —
+  /// do pokazania przy limicie niejednoznacznym.
+  String get opisDopasowan => dopasowania
+      .map((u) => '${u.kgNHa} kg: ${u.grupa.toLowerCase()}')
+      .join(', ');
+
+  /// Czy dawka przekracza limit. `false`, gdy limitu nie znamy — brak
+  /// wiedzy nie jest ostrzeżeniem.
+  bool przekroczony(double azotKgNaHa) {
+    final limit = kgNHa;
+    return limit != null && azotKgNaHa > limit;
+  }
+}
+
+/// Tabela 14 programu azotanowego: maksymalne ilości azotu działającego
+/// ze wszystkich źródeł dla upraw w plonie głównym.
+class MaksymalneDawkiAzotu {
+  const MaksymalneDawkiAzotu({
+    required this.statusWeryfikacji,
+    required this.zrodlo,
+    required this.opis,
+    required this.obnizki,
+    required this.uprawy,
+    this.bobowate,
+  });
+
+  static const MaksymalneDawkiAzotu puste = MaksymalneDawkiAzotu(
+    statusWeryfikacji: 'brak',
+    zrodlo: '',
+    opis: '',
+    obnizki: [],
+    uprawy: [],
+  );
+
+  factory MaksymalneDawkiAzotu.zJson(Map<String, dynamic> json) =>
+      MaksymalneDawkiAzotu(
+        statusWeryfikacji: json['status_weryfikacji'] as String? ?? 'nieznany',
+        zrodlo: json['zrodlo'] as String? ?? '',
+        opis: json['opis'] as String? ?? '',
+        obnizki: ((json['obnizki'] as List<dynamic>?) ?? const [])
+            .map((o) => ObnizkaDawkiAzotu.zJson(o as Map<String, dynamic>))
+            .toList(growable: false),
+        uprawy: ((json['uprawy'] as List<dynamic>?) ?? const [])
+            .map((u) => MaksymalnaDawkaAzotu.zJson(u as Map<String, dynamic>))
+            .toList(growable: false),
+        bobowate: json['bobowate'] == null
+            ? null
+            : LimitBobowatych.zJson(json['bobowate'] as Map<String, dynamic>),
+      );
+
+  final String statusWeryfikacji;
+  final String zrodlo;
+  final String opis;
+  final List<ObnizkaDawkiAzotu> obnizki;
+  final List<MaksymalnaDawkaAzotu> uprawy;
+  final LimitBobowatych? bobowate;
+
+  bool get doWeryfikacji => statusWeryfikacji != 'potwierdzone';
+
+  bool get pusta => uprawy.isEmpty;
+
+  /// Limit dla uprawy zapisanej na polu.
+  ///
+  /// Nazwy na polach bywają dłuższe niż w tabeli („pszenica zwyczajna
+  /// ozima" wobec „Pszenica ozima"), więc po nieudanym dopasowaniu
+  /// dosłownym szukamy nazwy z tabeli w nazwie z pola — ale całymi
+  /// słowami i wybierając dopasowanie najdłuższe, żeby „burak cukrowy"
+  /// nie trafił w sam „burak pastewny". Gdy po takim zawężeniu zostaje
+  /// kilka różnych limitów, oddajemy je wszystkie z [StanMaksymalnejDawki
+  /// .niejednoznaczny] — wybór należy do rolnika.
+  LimitAzotuDlaUprawy dlaUprawy(String nazwaUprawy) {
+    final slowa = Tekst.slowaDoSzukania(nazwaUprawy);
+    if (slowa.isEmpty) {
+      return LimitAzotuDlaUprawy.brak;
+    }
+
+    final dokladne = uprawy
+        .where((u) => Tekst.znormalizuj(u.uprawa) == slowa.join(' '))
+        .toList(growable: false);
+    final pasujace = dokladne.isNotEmpty ? dokladne : _poFragmencie(slowa);
+
+    if (pasujace.isEmpty) {
+      return LimitAzotuDlaUprawy.brak;
+    }
+    final limity = pasujace.map((u) => u.bobowate ? null : u.kgNHa).toSet();
+    if (limity.length > 1) {
+      return LimitAzotuDlaUprawy(
+        stan: StanMaksymalnejDawki.niejednoznaczny,
+        dopasowania: pasujace,
+      );
+    }
+    if (pasujace.first.bobowate) {
+      return LimitAzotuDlaUprawy(
+        stan: StanMaksymalnejDawki.bobowate,
+        dopasowania: pasujace,
+        bobowate: bobowate,
+      );
+    }
+    return LimitAzotuDlaUprawy(
+      stan: StanMaksymalnejDawki.znany,
+      dopasowania: [pasujace.first],
+    );
+  }
+
+  /// Wiersze, których nazwa stoi całymi słowami w nazwie uprawy z pola.
+  /// Zostawiamy tylko te z najdłuższą pasującą nazwą.
+  List<MaksymalnaDawkaAzotu> _poFragmencie(List<String> slowa) {
+    var najdluzsze = 0;
+    final znalezione = <MaksymalnaDawkaAzotu>[];
+    for (final uprawa in uprawy) {
+      if (uprawa.ogolna) {
+        continue;
+      }
+      final wzor = Tekst.slowaDoSzukania(uprawa.uprawa);
+      if (wzor.isEmpty || !_zawiera(slowa, wzor)) {
+        continue;
+      }
+      if (wzor.length > najdluzsze) {
+        najdluzsze = wzor.length;
+        znalezione.clear();
+      }
+      if (wzor.length == najdluzsze) {
+        znalezione.add(uprawa);
+      }
+    }
+    return znalezione;
+  }
+
+  /// Czy [wzor] stoi w [slowa] jako ciąg kolejnych słów.
+  static bool _zawiera(List<String> slowa, List<String> wzor) {
+    for (var i = 0; i + wzor.length <= slowa.length; i++) {
+      var zgodne = true;
+      for (var j = 0; j < wzor.length; j++) {
+        if (slowa[i + j] != wzor[j]) {
+          zgodne = false;
+          break;
+        }
+      }
+      if (zgodne) {
+        return true;
+      }
+    }
+    return false;
+  }
+}
+
 /// Cały słownik reguł prawnych — dane z numerem wersji, nie kod.
 class SlownikRegul {
   const SlownikRegul({
@@ -839,6 +1117,7 @@ class SlownikRegul {
     this.wspolczynnikiDjp = WspolczynnikiDjp.puste,
     this.zasadyNawozeniaAzotem = ZasadyNawozeniaAzotem.puste,
     this.uprawyIntensywne = UprawyIntensywne.puste,
+    this.maksymalneDawkiAzotu = MaksymalneDawkiAzotu.puste,
   });
 
   factory SlownikRegul.zTekstuJson(String tekst) =>
@@ -872,6 +1151,11 @@ class SlownikRegul {
         : UprawyIntensywne.zJson(
             json['uprawy_intensywne'] as Map<String, dynamic>,
           ),
+    maksymalneDawkiAzotu: json['maksymalne_dawki_azotu'] == null
+        ? MaksymalneDawkiAzotu.puste
+        : MaksymalneDawkiAzotu.zJson(
+            json['maksymalne_dawki_azotu'] as Map<String, dynamic>,
+          ),
   );
 
   final String wersja;
@@ -888,6 +1172,9 @@ class SlownikRegul {
 
   /// Lista upraw intensywnych (załącznik nr 7 programu azotanowego).
   final UprawyIntensywne uprawyIntensywne;
+
+  /// Maksymalne dawki azotu dla upraw (tabela 14, załącznik nr 9).
+  final MaksymalneDawkiAzotu maksymalneDawkiAzotu;
 
   /// Graniczne terminy stosowania nawozów — te, które mówią o rodzaju
   /// nawozu i rodzaju gruntu.

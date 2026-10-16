@@ -33,6 +33,8 @@ import 'package:agro_asystent/rdzen/reguly/gminy_terminy.dart';
 import 'package:agro_asystent/rdzen/reguly/regula_prawna.dart';
 import 'package:agro_asystent/rdzen/uslugi/kopia/kopia_danych.dart';
 import 'package:agro_asystent/wyglad/prosty/motyw.dart';
+import 'package:agro_asystent/funkcje/zabiegi/dane_wpisu.dart';
+import 'package:agro_asystent/wyglad/prosty/nawozenie/ekran_dawka_nawozu.dart';
 import 'package:agro_asystent/wyglad/prosty/nawozenie/ekran_nawozenie.dart';
 import 'package:agro_asystent/wyglad/prosty/nawozenie/ekran_nawozy.dart';
 import 'package:flutter/material.dart';
@@ -328,6 +330,105 @@ void main() {
       findsOneWidget,
     );
     expect(find.textContaining('Plan sporządza doradca'), findsOneWidget);
+  });
+
+  testWidgets('maksymalna dawka dla uprawy stoi obok azotu na polu', (
+    tester,
+  ) async {
+    await dodajPole(ar: 1000);
+    await dodajNawozenie(azotProcent: 0.5, dawkaTonNaHa: 20, ar: 1000);
+    await pokaz(tester, EkranNawozenie(uslugi: zbudujUslugi()));
+
+    // 100 kg N/ha na kukurydzy na ziarno; tabela 14 daje 240 kg.
+    await przewijajDo(tester, find.textContaining('100 z 240 kg N/ha'));
+    expect(find.textContaining('100 z 240 kg N/ha'), findsOneWidget);
+    expect(find.textContaining('ponad limit'), findsNothing);
+  });
+
+  testWidgets('przekroczona maksymalna dawka dla uprawy jest widoczna', (
+    tester,
+  ) async {
+    await dodajPole(ar: 1000);
+    // 60 t/ha × 0,5% = 300 kg N/ha, a kukurydza ma w tabeli 240 kg.
+    await dodajNawozenie(azotProcent: 0.5, dawkaTonNaHa: 60, ar: 1000);
+    await pokaz(tester, EkranNawozenie(uslugi: zbudujUslugi()));
+
+    await przewijajDo(tester, find.textContaining('wolno dać pod tę uprawę'));
+    expect(find.textContaining('wolno dać pod tę uprawę'), findsOneWidget);
+    await przewijajDo(tester, find.textContaining('ponad limit'));
+    expect(find.textContaining('ponad limit'), findsOneWidget);
+  });
+
+  testWidgets('dawka ponad tabelę ostrzega jeszcze przed zapisem', (
+    tester,
+  ) async {
+    await dodajPole(ar: 1000);
+    const saletra = Nawoz(
+      id: 'n-saletra',
+      gospodarstwoId: 'g1',
+      nazwa: 'Saletra z worka',
+      naturalny: false,
+      azotProcent: 34,
+      zrodlo: 'worek',
+    );
+    final dane = DaneWpisu(gospodarstwoId: 'g1', urzadzenie: 'telefon')
+      ..pola.add(
+        const Pole(
+          id: 'pole-1000',
+          gospodarstwoId: 'g1',
+          nazwa: 'Za stodołą',
+          uprawa: 'kukurydza na ziarno',
+          powierzchniaAr: 1000,
+        ),
+      )
+      ..rodzaj = RodzajZabiegu.nawozenie
+      ..nawoz = saletra
+      ..jednostkaDawki = JednostkaDawki.kilogramyNaHektar
+      ..dawka = 800;
+
+    await pokaz(tester, EkranDawkaNawozu(uslugi: zbudujUslugi(), dane: dane));
+
+    // 800 kg saletry 34% to 272 kg azotu na hektar — ponad 240 z tabeli.
+    expect(find.textContaining('wolno dać'), findsOneWidget);
+    expect(find.textContaining('Zmniejsz dawkę'), findsOneWidget);
+    // Ostrzeżenie nie blokuje zapisu: rolnik mógł już wysiać.
+    expect(
+      tester
+          .widget<FilledButton>(find.widgetWithText(FilledButton, 'Zapisz'))
+          .onPressed,
+      isNotNull,
+    );
+  });
+
+  testWidgets('dawka w granicach tabeli nie straszy rolnika', (tester) async {
+    await dodajPole(ar: 1000);
+    const saletra = Nawoz(
+      id: 'n-saletra',
+      gospodarstwoId: 'g1',
+      nazwa: 'Saletra z worka',
+      naturalny: false,
+      azotProcent: 34,
+      zrodlo: 'worek',
+    );
+    final dane = DaneWpisu(gospodarstwoId: 'g1', urzadzenie: 'telefon')
+      ..pola.add(
+        const Pole(
+          id: 'pole-1000',
+          gospodarstwoId: 'g1',
+          nazwa: 'Za stodołą',
+          uprawa: 'kukurydza na ziarno',
+          powierzchniaAr: 1000,
+        ),
+      )
+      ..rodzaj = RodzajZabiegu.nawozenie
+      ..nawoz = saletra
+      ..jednostkaDawki = JednostkaDawki.kilogramyNaHektar
+      ..dawka = 200;
+
+    await pokaz(tester, EkranDawkaNawozu(uslugi: zbudujUslugi(), dane: dane));
+
+    expect(find.textContaining('wolno dać'), findsNothing);
+    expect(find.textContaining('z 240 kg azotu na hektar'), findsOneWidget);
   });
 
   testWidgets('karta terminów mówi, do kiedy wolno nawozić i czym', (

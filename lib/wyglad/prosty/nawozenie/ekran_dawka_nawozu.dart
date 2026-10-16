@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../app/uslugi.dart';
 import '../../../funkcje/nawozenie/nawoz.dart';
+import '../../../funkcje/nawozenie/plan_nawozenia.dart';
 import '../../../funkcje/zabiegi/dane_wpisu.dart';
 import '../../../rdzen/modele/zabieg.dart';
 import '../motyw.dart';
@@ -23,6 +24,17 @@ class EkranDawkaNawozu extends StatefulWidget {
 
 class _EkranDawkaNawozuState extends State<EkranDawkaNawozu> {
   bool _zapisuje = false;
+
+  /// Azot już zapisany na wybranych polach i limity z tabeli 14 —
+  /// czytamy raz, bo przy każdym „+" zmienia się tylko dawka.
+  late final Future<List<SkutekDlaMaksymalnejDawki>> _stanPol = widget
+      .uslugi
+      .planNawozenia
+      .skutkiDlaMaksymalnejDawki(
+        pola: widget.dane.pola,
+        azotWpisuKgNaHa: 0,
+        kiedy: widget.dane.kiedy,
+      );
 
   double get _dawka => widget.dane.dawka ?? _domyslnaDawka;
 
@@ -124,6 +136,10 @@ class _EkranDawkaNawozuState extends State<EkranDawkaNawozu> {
                   'Wpis zapiszemy, ale nie policzymy go do limitu '
                   'azotu — uzupełnij zawartość w spisie nawozów.',
             ),
+          if (azot != null) ...[
+            const SizedBox(height: MotywProsty.odstep),
+            _MaksymalnaDawka(stanPol: _stanPol, azotWpisu: azot),
+          ],
           const SizedBox(height: MotywProsty.odstep * 2),
           FilledButton(
             onPressed: _zapisuje ? null : _zapisz,
@@ -133,4 +149,66 @@ class _EkranDawkaNawozuState extends State<EkranDawkaNawozu> {
       ),
     );
   }
+}
+
+/// Ostrzeżenie o maksymalnej dawce azotu dla uprawy (tabela 14 programu
+/// azotanowego).
+///
+/// Ekran nie blokuje zapisu — rolnik mógł dać nawóz i musi móc to zapisać.
+/// Pokazujemy to, co wie tabela, i co z tym zrobić.
+class _MaksymalnaDawka extends StatelessWidget {
+  const _MaksymalnaDawka({required this.stanPol, required this.azotWpisu});
+
+  final Future<List<SkutekDlaMaksymalnejDawki>> stanPol;
+  final double azotWpisu;
+
+  @override
+  Widget build(BuildContext context) =>
+      FutureBuilder<List<SkutekDlaMaksymalnejDawki>>(
+        future: stanPol,
+        builder: (context, stan) {
+          if (!stan.hasData) {
+            return const SizedBox.shrink();
+          }
+          final pola = [for (final pole in stan.data!) pole.zDawka(azotWpisu)];
+          final ostrzezenia = pola
+              .where((pole) => pole.ostrzezenie != null)
+              .toList(growable: false);
+          if (ostrzezenia.isNotEmpty) {
+            return Column(
+              children: [
+                for (final pole in ostrzezenia)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 10),
+                    child: Ostrzezenie(
+                      tresc: pole.ostrzezenie!,
+                      coZrobic: pole.coZrobic ?? '',
+                    ),
+                  ),
+              ],
+            );
+          }
+
+          // Bez ostrzeżenia mówimy tylko, ile zostało — i tylko wtedy, gdy
+          // tabela limit dla tej uprawy podaje.
+          final zLimitem = pola
+              .where((pole) => pole.limitKgNaHa != null)
+              .toList(growable: false);
+          if (zLimitem.isEmpty) {
+            return const SizedBox.shrink();
+          }
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              for (final pole in zLimitem)
+                Text(
+                  '${pole.nazwaPola}: razem '
+                  '${pole.azotRazemKgNaHa.toStringAsFixed(0)} '
+                  'z ${pole.limitKgNaHa} kg azotu na hektar.',
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+            ],
+          );
+        },
+      );
 }

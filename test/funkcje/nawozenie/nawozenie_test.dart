@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:agro_asystent/funkcje/nawozenie/ewidencja_nawozenia.dart';
 import 'package:agro_asystent/funkcje/nawozenie/nawoz.dart';
+import 'package:agro_asystent/funkcje/dzialki/repozytorium_pol.dart';
 import 'package:agro_asystent/funkcje/nawozenie/plan_nawozenia.dart';
 import 'package:agro_asystent/funkcje/zabiegi/rejestr_zabiegow.dart';
 import 'package:agro_asystent/funkcje/zabiegi/repozytorium_zabiegow.dart';
@@ -302,6 +303,129 @@ void main() {
       );
       expect(duze.planWymagany, isTrue);
       expect(duze.kogoDotyczyPlan, contains('100 ha'));
+    });
+  });
+
+  group('maksymalna dawka azotu dla uprawy (tabela 14)', () {
+    const pole = Pole(
+      id: 'p1',
+      gospodarstwoId: 'g1',
+      nazwa: 'Pole p1',
+      uprawa: 'kukurydza na ziarno',
+      powierzchniaAr: 1000,
+    );
+
+    setUp(() => dodajPole('p1', 1000));
+
+    test('limit bierze się z tabeli, nie z kodu', () async {
+      final plan = PlanNawozenia(baza: baza, reguly: reguly);
+      final skutki = await plan.skutkiDlaMaksymalnejDawki(
+        pola: const [pole],
+        azotWpisuKgNaHa: 100,
+        kiedy: DateTime(2026, 4, 1),
+      );
+
+      expect(skutki, hasLength(1));
+      expect(skutki.single.limitKgNaHa, 240);
+      expect(skutki.single.azotRazemKgNaHa, 100);
+      expect(skutki.single.przekroczony, isFalse);
+      expect(skutki.single.ostrzezenie, isNull);
+    });
+
+    test('azot zapisany w sezonie wchodzi do rachunku', () async {
+      // 600 kg saletry 34% to 204 kg azotu na hektar.
+      await ewidencja.zapisz(
+        gospodarstwoId: 'g1',
+        nawoz: saletra,
+        pola: const [PoleZabiegu(dzialkaRolnaId: 'p1', powierzchniaAr: 1000)],
+        dawka: 600,
+        jednostka: JednostkaDawki.kilogramyNaHektar,
+        urzadzenie: 'telefon',
+        kiedy: DateTime(2026, 4, 1),
+      );
+
+      final plan = PlanNawozenia(baza: baza, reguly: reguly);
+      final skutki = await plan.skutkiDlaMaksymalnejDawki(
+        pola: const [pole],
+        azotWpisuKgNaHa: 50,
+        kiedy: DateTime(2026, 5, 1),
+      );
+
+      final stan = skutki.single;
+      expect(stan.azotWSezonieKgNaHa, closeTo(204, 0.001));
+      expect(stan.azotRazemKgNaHa, closeTo(254, 0.001));
+      expect(stan.przekroczony, isTrue);
+      expect(stan.pozostaloKgNaHa, closeTo(36, 0.001));
+      expect(stan.ostrzezenie, contains('Pole p1'));
+      expect(stan.ostrzezenie, contains('240'));
+      expect(stan.coZrobic, contains('36'));
+    });
+
+    test('wpis z innego sezonu nie podbija rachunku', () async {
+      await ewidencja.zapisz(
+        gospodarstwoId: 'g1',
+        nawoz: saletra,
+        pola: const [PoleZabiegu(dzialkaRolnaId: 'p1', powierzchniaAr: 1000)],
+        dawka: 600,
+        jednostka: JednostkaDawki.kilogramyNaHektar,
+        urzadzenie: 'telefon',
+        kiedy: DateTime(2025, 4, 1),
+      );
+
+      final plan = PlanNawozenia(baza: baza, reguly: reguly);
+      final skutki = await plan.skutkiDlaMaksymalnejDawki(
+        pola: const [pole],
+        azotWpisuKgNaHa: 50,
+        kiedy: DateTime(2026, 5, 1),
+      );
+
+      expect(skutki.single.azotWSezonieKgNaHa, 0);
+      expect(skutki.single.przekroczony, isFalse);
+    });
+
+    test('uprawa wpisana ręcznie nie dostaje zgadywanego limitu', () async {
+      const wlasna = Pole(
+        id: 'p1',
+        gospodarstwoId: 'g1',
+        nazwa: 'Pole p1',
+        uprawa: 'mieszanka z miedzy',
+        powierzchniaAr: 1000,
+      );
+      final plan = PlanNawozenia(baza: baza, reguly: reguly);
+      final skutki = await plan.skutkiDlaMaksymalnejDawki(
+        pola: const [wlasna],
+        azotWpisuKgNaHa: 500,
+        kiedy: DateTime(2026, 4, 1),
+      );
+
+      expect(skutki.single.limitKgNaHa, isNull);
+      expect(skutki.single.przekroczony, isFalse);
+      expect(skutki.single.ostrzezenie, isNull);
+    });
+
+    test('zestawienie pokazuje pola ponad limitem', () async {
+      await ewidencja.zapisz(
+        gospodarstwoId: 'g1',
+        nawoz: saletra,
+        pola: const [PoleZabiegu(dzialkaRolnaId: 'p1', powierzchniaAr: 1000)],
+        dawka: 800,
+        jednostka: JednostkaDawki.kilogramyNaHektar,
+        urzadzenie: 'telefon',
+        kiedy: DateTime(2026, 4, 1),
+      );
+
+      final plan = PlanNawozenia(baza: baza, reguly: reguly);
+      final zestawienie = await plan.zestawienie(
+        gospodarstwoId: 'g1',
+        profil: const ProfilGospodarstwa(powierzchniaUrHa: 15),
+        sezon: 2026,
+      );
+
+      final polePlanu = zestawienie.pola.single;
+      expect(polePlanu.limit.kgNHa, 240);
+      expect(polePlanu.azotKgNaHa, closeTo(272, 0.001));
+      expect(polePlanu.limitPrzekroczony, isTrue);
+      expect(zestawienie.polaPonadLimit, hasLength(1));
     });
   });
 }

@@ -125,6 +125,18 @@ class _EkranNawozenieState extends State<EkranNawozenie> {
                     'Azot na polach w ${zestawienie.sezon} r.',
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
+                  if (zestawienie.polaPonadLimit.isNotEmpty) ...[
+                    const SizedBox(height: 8),
+                    Ostrzezenie(
+                      tresc:
+                          'Na ${zestawienie.polaPonadLimit.length} '
+                          '${zestawienie.polaPonadLimit.length == 1 ? 'polu' : 'polach'} '
+                          'azotu jest więcej, niż wolno dać pod tę uprawę.',
+                      coZrobic:
+                          'Sprawdź pola oznaczone niżej. Na glebach lekkich '
+                          'limit jest jeszcze niższy — zapytaj doradcy.',
+                    ),
+                  ],
                   const SizedBox(height: 8),
                   if (zestawienie.pola.isEmpty)
                     Text(
@@ -157,9 +169,33 @@ class _EkranNawozenieState extends State<EkranNawozenie> {
                                 ],
                               ),
                             ),
-                            Text(
-                              '${pole.azotKgNaHa.toStringAsFixed(0)} kg N/ha',
-                              style: Theme.of(context).textTheme.bodyLarge,
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Text(
+                                  pole.limit.kgNHa == null
+                                      ? '${pole.azotKgNaHa.toStringAsFixed(0)} kg N/ha'
+                                      : '${pole.azotKgNaHa.toStringAsFixed(0)} '
+                                            'z ${pole.limit.kgNHa} kg N/ha',
+                                  style: Theme.of(context).textTheme.bodyLarge
+                                      ?.copyWith(
+                                        color: pole.limitPrzekroczony
+                                            ? MotywProsty.ostrzezenieObramowanie
+                                            : null,
+                                      ),
+                                ),
+                                if (pole.limitPrzekroczony)
+                                  Text(
+                                    'ponad limit',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium
+                                        ?.copyWith(
+                                          color: MotywProsty
+                                              .ostrzezenieObramowanie,
+                                        ),
+                                  ),
+                              ],
                             ),
                           ],
                         ),

@@ -1,5 +1,5 @@
 {
-  "wersja": "2026.10.16.4",
+  "wersja": "2026.10.16.5",
   "obowiazuje_od": "2026-10-16",
   "opis": "Progi, limity i terminy obowiązków dokumentacyjnych. Dane, nie kod — aktualizowane bez przebudowy aplikacji. Zestawienie służy do planowania i nie jest poradą prawną.",
   "obowiazki": [
@@ -1192,6 +1192,665 @@
       {
         "nazwa": "papryka",
         "pod_oslonami": true
+      }
+    ]
+  },
+  "maksymalne_dawki_azotu": {
+    "status_weryfikacji": "potwierdzone",
+    "zrodlo": "Dz.U. 2023 poz. 244 — rozporządzenie Rady Ministrów z 31 stycznia 2023 r. w sprawie Programu działań mających na celu zmniejszenie zanieczyszczenia wód azotanami pochodzącymi ze źródeł rolniczych, załącznik nr 9, tabela 14",
+    "sprawdzono": "2026-10-16",
+    "opis": "Maksymalne ilości azotu działającego ze wszystkich źródeł dla upraw w plonie głównym. Azot działający liczy się z równoważnikami z tabeli 11 (załącznik nr 8).",
+    "obnizki": [
+      {
+        "rodzaj_gleby": "bardzo_lekka",
+        "procent": 20,
+        "opis": "gleby bardzo lekkie (do 10% cząstek < 0,02 mm)"
+      },
+      {
+        "rodzaj_gleby": "lekka",
+        "procent": 10,
+        "opis": "gleby lekkie (11–20% cząstek < 0,02 mm)"
+      }
+    ],
+    "bobowate": {
+      "kg_n_ha_mineralne": 30,
+      "kg_n_ha_naturalne": 50,
+      "opis": "Rośliny bobowate: najwyżej 30 kg N/ha z nawozów azotowych mineralnych albo 50 kg N/ha z nawozów naturalnych."
+    },
+    "uprawy": [
+      {
+        "grupa": "Zboża",
+        "uprawa": "Gryka",
+        "kg_n_ha": 100
+      },
+      {
+        "grupa": "Zboża",
+        "uprawa": "Jęczmień jary browarny",
+        "kg_n_ha": 80
+      },
+      {
+        "grupa": "Zboża",
+        "uprawa": "Jęczmień jary pastewny",
+        "kg_n_ha": 140
+      },
+      {
+        "grupa": "Zboża",
+        "uprawa": "Jęczmień ozimy",
+        "kg_n_ha": 140
+      },
+      {
+        "grupa": "Zboża",
+        "uprawa": "Kukurydza na ziarno",
+        "kg_n_ha": 240
+      },
+      {
+        "grupa": "Zboża",
+        "uprawa": "Mieszanki zbożowe na ziarno",
+        "kg_n_ha": 140
+      },
+      {
+        "grupa": "Zboża",
+        "uprawa": "Mieszanki zbożowo-strączkowe na ziarno",
+        "kg_n_ha": 100
+      },
+      {
+        "grupa": "Zboża",
+        "uprawa": "Owies",
+        "kg_n_ha": 120
+      },
+      {
+        "grupa": "Zboża",
+        "uprawa": "Pszenica jara",
+        "kg_n_ha": 160
+      },
+      {
+        "grupa": "Zboża",
+        "uprawa": "Pszenica ozima",
+        "kg_n_ha": 200
+      },
+      {
+        "grupa": "Zboża",
+        "uprawa": "Pszenżyto",
+        "kg_n_ha": 180
+      },
+      {
+        "grupa": "Zboża",
+        "uprawa": "Żyto populacyjne",
+        "kg_n_ha": 120
+      },
+      {
+        "grupa": "Zboża",
+        "uprawa": "Żyto mieszańcowe",
+        "kg_n_ha": 150
+      },
+      {
+        "grupa": "Bobowate",
+        "uprawa": "Bobik",
+        "bobowate": true
+      },
+      {
+        "grupa": "Bobowate",
+        "uprawa": "Grochy",
+        "bobowate": true
+      },
+      {
+        "grupa": "Bobowate",
+        "uprawa": "Lędźwian",
+        "bobowate": true
+      },
+      {
+        "grupa": "Bobowate",
+        "uprawa": "Łubiny",
+        "bobowate": true
+      },
+      {
+        "grupa": "Bobowate",
+        "uprawa": "Seradela",
+        "bobowate": true
+      },
+      {
+        "grupa": "Bobowate",
+        "uprawa": "Soczewica",
+        "bobowate": true
+      },
+      {
+        "grupa": "Bobowate",
+        "uprawa": "Soja",
+        "bobowate": true
+      },
+      {
+        "grupa": "Bobowate",
+        "uprawa": "Wyka",
+        "bobowate": true
+      },
+      {
+        "grupa": "Oleiste",
+        "uprawa": "Gorczyca",
+        "kg_n_ha": 120
+      },
+      {
+        "grupa": "Oleiste",
+        "uprawa": "Rzepak",
+        "kg_n_ha": 240
+      },
+      {
+        "grupa": "Oleiste",
+        "uprawa": "Rzepik",
+        "kg_n_ha": 180
+      },
+      {
+        "grupa": "Oleiste",
+        "uprawa": "Słonecznik (nasiona)",
+        "kg_n_ha": 130
+      },
+      {
+        "grupa": "Oleiste",
+        "uprawa": "Inne oleiste",
+        "kg_n_ha": 160,
+        "ogolna": true
+      },
+      {
+        "grupa": "Okopowe",
+        "uprawa": "Burak cukrowy",
+        "kg_n_ha": 180
+      },
+      {
+        "grupa": "Okopowe",
+        "uprawa": "Burak pastewny",
+        "kg_n_ha": 200
+      },
+      {
+        "grupa": "Okopowe",
+        "uprawa": "Ziemniak późny",
+        "kg_n_ha": 180
+      },
+      {
+        "grupa": "Okopowe",
+        "uprawa": "Ziemniak wczesny",
+        "kg_n_ha": 90
+      },
+      {
+        "grupa": "Okopowe",
+        "uprawa": "Inne",
+        "kg_n_ha": 150,
+        "ogolna": true
+      },
+      {
+        "grupa": "Pastewne",
+        "uprawa": "Dynia pastewna",
+        "kg_n_ha": 80
+      },
+      {
+        "grupa": "Pastewne",
+        "uprawa": "Kapusta pastewna",
+        "kg_n_ha": 280
+      },
+      {
+        "grupa": "Pastewne",
+        "uprawa": "Kukurydza na zielonkę",
+        "kg_n_ha": 240
+      },
+      {
+        "grupa": "Pastewne",
+        "uprawa": "Grunt w użytkowaniu kośno-pastwiskowym",
+        "kg_n_ha": 160
+      },
+      {
+        "grupa": "Pastewne",
+        "uprawa": "Łąka 1 pokos",
+        "kg_n_ha": 60
+      },
+      {
+        "grupa": "Pastewne",
+        "uprawa": "Łąka 2 pokosy",
+        "kg_n_ha": 120
+      },
+      {
+        "grupa": "Pastewne",
+        "uprawa": "Łąka 3 pokosy",
+        "kg_n_ha": 160
+      },
+      {
+        "grupa": "Pastewne",
+        "uprawa": "Łąka 4 pokosy",
+        "kg_n_ha": 220
+      },
+      {
+        "grupa": "Pastewne",
+        "uprawa": "Mieszanki zbożowo-strączkowe na zieloną masę",
+        "kg_n_ha": 100
+      },
+      {
+        "grupa": "Pastewne",
+        "uprawa": "Bobowate na zielonkę: esparceta, komonica, koniczyna, Lucerna, nostrzyk i inne",
+        "bobowate": true
+      },
+      {
+        "grupa": "Pastewne",
+        "uprawa": "Mieszanki bobowate z trawami",
+        "kg_n_ha": 150
+      },
+      {
+        "grupa": "Pastewne",
+        "uprawa": "Owies na zielonkę",
+        "kg_n_ha": 120
+      },
+      {
+        "grupa": "Pastewne",
+        "uprawa": "Perko",
+        "kg_n_ha": 140
+      },
+      {
+        "grupa": "Pastewne",
+        "uprawa": "Rzepak",
+        "kg_n_ha": 200
+      },
+      {
+        "grupa": "Pastewne",
+        "uprawa": "Słonecznik",
+        "kg_n_ha": 120
+      },
+      {
+        "grupa": "Pastewne",
+        "uprawa": "Trawy w uprawie polowej",
+        "kg_n_ha": 300
+      },
+      {
+        "grupa": "Pastewne",
+        "uprawa": "Żyto na zielonkę",
+        "kg_n_ha": 120
+      },
+      {
+        "grupa": "Inne, w tym uprawy trwałe",
+        "uprawa": "Chmiel",
+        "kg_n_ha": 350
+      },
+      {
+        "grupa": "Inne, w tym uprawy trwałe",
+        "uprawa": "Facelia",
+        "kg_n_ha": 100
+      },
+      {
+        "grupa": "Inne, w tym uprawy trwałe",
+        "uprawa": "Konopie",
+        "kg_n_ha": 120
+      },
+      {
+        "grupa": "Inne, w tym uprawy trwałe",
+        "uprawa": "Len oleisty, nasiona",
+        "kg_n_ha": 80
+      },
+      {
+        "grupa": "Inne, w tym uprawy trwałe",
+        "uprawa": "Len włóknisty, słoma",
+        "kg_n_ha": 80
+      },
+      {
+        "grupa": "Inne, w tym uprawy trwałe",
+        "uprawa": "Mak",
+        "kg_n_ha": 90
+      },
+      {
+        "grupa": "Inne, w tym uprawy trwałe",
+        "uprawa": "Proso",
+        "kg_n_ha": 140
+      },
+      {
+        "grupa": "Inne, w tym uprawy trwałe",
+        "uprawa": "Sorgo, w tym zasiewy mieszane z kukurydzą",
+        "kg_n_ha": 200
+      },
+      {
+        "grupa": "Inne, w tym uprawy trwałe",
+        "uprawa": "Tytoń",
+        "kg_n_ha": 160
+      },
+      {
+        "grupa": "Rośliny energetyczne",
+        "uprawa": "Miskant olbrzymi",
+        "kg_n_ha": 100
+      },
+      {
+        "grupa": "Rośliny energetyczne",
+        "uprawa": "Ślazowiec pensylwański",
+        "kg_n_ha": 100
+      },
+      {
+        "grupa": "Rośliny energetyczne",
+        "uprawa": "Pozostałe",
+        "kg_n_ha": 80,
+        "ogolna": true
+      },
+      {
+        "grupa": "Warzywa wieloletnie",
+        "uprawa": "Rabarbar",
+        "kg_n_ha": 200
+      },
+      {
+        "grupa": "Warzywa wieloletnie",
+        "uprawa": "Szczaw",
+        "kg_n_ha": 150
+      },
+      {
+        "grupa": "Warzywa wieloletnie",
+        "uprawa": "Chrzan",
+        "kg_n_ha": 200
+      },
+      {
+        "grupa": "Warzywa wieloletnie",
+        "uprawa": "Szparag",
+        "kg_n_ha": 150
+      },
+      {
+        "grupa": "Warzywa polowe",
+        "uprawa": "Arbuz",
+        "kg_n_ha": 150
+      },
+      {
+        "grupa": "Warzywa polowe",
+        "uprawa": "Bób",
+        "kg_n_ha": 60
+      },
+      {
+        "grupa": "Warzywa polowe",
+        "uprawa": "Brokuł",
+        "kg_n_ha": 250
+      },
+      {
+        "grupa": "Warzywa polowe",
+        "uprawa": "Brukiew",
+        "kg_n_ha": 150
+      },
+      {
+        "grupa": "Warzywa polowe",
+        "uprawa": "Brukselka",
+        "kg_n_ha": 250
+      },
+      {
+        "grupa": "Warzywa polowe",
+        "uprawa": "Burak ćwikłowy",
+        "kg_n_ha": 150
+      },
+      {
+        "grupa": "Warzywa polowe",
+        "uprawa": "Cebula",
+        "kg_n_ha": 200
+      },
+      {
+        "grupa": "Warzywa polowe",
+        "uprawa": "Cukinia",
+        "kg_n_ha": 180
+      },
+      {
+        "grupa": "Warzywa polowe",
+        "uprawa": "Cykoria",
+        "kg_n_ha": 150
+      },
+      {
+        "grupa": "Warzywa polowe",
+        "uprawa": "Czosnek",
+        "kg_n_ha": 120
+      },
+      {
+        "grupa": "Warzywa polowe",
+        "uprawa": "Dynia",
+        "kg_n_ha": 200
+      },
+      {
+        "grupa": "Warzywa polowe",
+        "uprawa": "Endywia",
+        "kg_n_ha": 120
+      },
+      {
+        "grupa": "Warzywa polowe",
+        "uprawa": "Fasola",
+        "kg_n_ha": 60
+      },
+      {
+        "grupa": "Warzywa polowe",
+        "uprawa": "Jarmuż",
+        "kg_n_ha": 200
+      },
+      {
+        "grupa": "Warzywa polowe",
+        "uprawa": "Kabaczek",
+        "kg_n_ha": 180
+      },
+      {
+        "grupa": "Warzywa polowe",
+        "uprawa": "Kalafior",
+        "kg_n_ha": 350
+      },
+      {
+        "grupa": "Warzywa polowe",
+        "uprawa": "Kalarepa",
+        "kg_n_ha": 150
+      },
+      {
+        "grupa": "Warzywa polowe",
+        "uprawa": "Kapusta",
+        "kg_n_ha": 300
+      },
+      {
+        "grupa": "Warzywa polowe",
+        "uprawa": "Koper",
+        "kg_n_ha": 120
+      },
+      {
+        "grupa": "Warzywa polowe",
+        "uprawa": "Koper włoski (fenkuł)",
+        "kg_n_ha": 120
+      },
+      {
+        "grupa": "Warzywa polowe",
+        "uprawa": "Marchew",
+        "kg_n_ha": 200
+      },
+      {
+        "grupa": "Warzywa polowe",
+        "uprawa": "Melon",
+        "kg_n_ha": 150
+      },
+      {
+        "grupa": "Warzywa polowe",
+        "uprawa": "Oberżyna",
+        "kg_n_ha": 180
+      },
+      {
+        "grupa": "Warzywa polowe",
+        "uprawa": "Ogórek",
+        "kg_n_ha": 200
+      },
+      {
+        "grupa": "Warzywa polowe",
+        "uprawa": "Papryka",
+        "kg_n_ha": 300
+      },
+      {
+        "grupa": "Warzywa polowe",
+        "uprawa": "Pasternak",
+        "kg_n_ha": 150
+      },
+      {
+        "grupa": "Warzywa polowe",
+        "uprawa": "Pietruszka",
+        "kg_n_ha": 100
+      },
+      {
+        "grupa": "Warzywa polowe",
+        "uprawa": "Pomidor",
+        "kg_n_ha": 180
+      },
+      {
+        "grupa": "Warzywa polowe",
+        "uprawa": "Por",
+        "kg_n_ha": 250
+      },
+      {
+        "grupa": "Warzywa polowe",
+        "uprawa": "Rzepa",
+        "kg_n_ha": 140
+      },
+      {
+        "grupa": "Warzywa polowe",
+        "uprawa": "Rzodkiew",
+        "kg_n_ha": 140
+      },
+      {
+        "grupa": "Warzywa polowe",
+        "uprawa": "Rzodkiewka",
+        "kg_n_ha": 100
+      },
+      {
+        "grupa": "Warzywa polowe",
+        "uprawa": "Sałata",
+        "kg_n_ha": 100
+      },
+      {
+        "grupa": "Warzywa polowe",
+        "uprawa": "Seler korzeniowy",
+        "kg_n_ha": 250
+      },
+      {
+        "grupa": "Warzywa polowe",
+        "uprawa": "Seler naciowy",
+        "kg_n_ha": 200
+      },
+      {
+        "grupa": "Warzywa polowe",
+        "uprawa": "Szczypiorek",
+        "kg_n_ha": 110
+      },
+      {
+        "grupa": "Warzywa polowe",
+        "uprawa": "Szparag",
+        "kg_n_ha": 200
+      },
+      {
+        "grupa": "Warzywa polowe",
+        "uprawa": "Szpinak",
+        "kg_n_ha": 150
+      },
+      {
+        "grupa": "Rośliny sadownicze",
+        "uprawa": "Sady",
+        "kg_n_ha": 100
+      },
+      {
+        "grupa": "Rośliny sadownicze",
+        "uprawa": "Krzewy owocowe",
+        "kg_n_ha": 80
+      },
+      {
+        "grupa": "Rośliny sadownicze",
+        "uprawa": "Truskawka",
+        "kg_n_ha": 60
+      },
+      {
+        "grupa": "Uprawy szkółkarskie (sadownicze i ozdobne)",
+        "uprawa": "Drzewa i krzewy owocowe, truskawki",
+        "kg_n_ha": 120
+      },
+      {
+        "grupa": "Uprawy szkółkarskie (sadownicze i ozdobne)",
+        "uprawa": "Siewki ozdobnych gatunków liściastych",
+        "kg_n_ha": 150
+      },
+      {
+        "grupa": "Uprawy szkółkarskie (sadownicze i ozdobne)",
+        "uprawa": "Siewki roślin iglastych",
+        "kg_n_ha": 120
+      },
+      {
+        "grupa": "Uprawy szkółkarskie (sadownicze i ozdobne)",
+        "uprawa": "Krzewy liściaste",
+        "kg_n_ha": 140
+      },
+      {
+        "grupa": "Uprawy szkółkarskie (sadownicze i ozdobne)",
+        "uprawa": "Krzewy iglaste",
+        "kg_n_ha": 80
+      },
+      {
+        "grupa": "Uprawy szkółkarskie (sadownicze i ozdobne)",
+        "uprawa": "Byliny",
+        "kg_n_ha": 60
+      },
+      {
+        "grupa": "Uprawy szkółkarskie (sadownicze i ozdobne)",
+        "uprawa": "Róże",
+        "kg_n_ha": 150
+      },
+      {
+        "grupa": "Rośliny ozdobne",
+        "uprawa": "Hiacynt",
+        "kg_n_ha": 250
+      },
+      {
+        "grupa": "Rośliny ozdobne",
+        "uprawa": "Irys holenderski",
+        "kg_n_ha": 200
+      },
+      {
+        "grupa": "Rośliny ozdobne",
+        "uprawa": "Konwalia",
+        "kg_n_ha": 120
+      },
+      {
+        "grupa": "Rośliny ozdobne",
+        "uprawa": "Krokus",
+        "kg_n_ha": 200
+      },
+      {
+        "grupa": "Rośliny ozdobne",
+        "uprawa": "Lilia",
+        "kg_n_ha": 180
+      },
+      {
+        "grupa": "Rośliny ozdobne",
+        "uprawa": "Mieczyk",
+        "kg_n_ha": 250
+      },
+      {
+        "grupa": "Rośliny ozdobne",
+        "uprawa": "Narcyz",
+        "kg_n_ha": 200
+      },
+      {
+        "grupa": "Rośliny ozdobne",
+        "uprawa": "Piwonia",
+        "kg_n_ha": 60
+      },
+      {
+        "grupa": "Rośliny ozdobne",
+        "uprawa": "Rośliny na suche bukiety",
+        "kg_n_ha": 80
+      },
+      {
+        "grupa": "Rośliny ozdobne",
+        "uprawa": "Słonecznik na kwiat cięty",
+        "kg_n_ha": 160
+      },
+      {
+        "grupa": "Rośliny ozdobne",
+        "uprawa": "Szafirek",
+        "kg_n_ha": 200
+      },
+      {
+        "grupa": "Rośliny ozdobne",
+        "uprawa": "Tulipan",
+        "kg_n_ha": 200
+      },
+      {
+        "grupa": "Rośliny ozdobne",
+        "uprawa": "Zimowit",
+        "kg_n_ha": 250
+      },
+      {
+        "grupa": "Rośliny ozdobne",
+        "uprawa": "Inne gatunki gruntowych roślin ozdobnych",
+        "kg_n_ha": 170,
+        "ogolna": true
       }
     ]
   }

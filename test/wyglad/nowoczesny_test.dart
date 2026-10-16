@@ -679,6 +679,41 @@ void main() {
       );
       expect(find.textContaining('Nie znamy zawartości azotu'), findsOneWidget);
     });
+
+    testWidgets('przy dawce widać maksimum z tabeli dla uprawy', (
+      tester,
+    ) async {
+      await uslugi.nawozy.zapisz(
+        nawoz: const Nawoz(
+          id: 'n2',
+          gospodarstwoId: 'g1',
+          nazwa: 'Saletra z worka',
+          naturalny: false,
+          azotProcent: 34,
+          zrodlo: 'worek',
+        ),
+        urzadzenie: 'telefon',
+      );
+      await otworz(tester);
+      await tester.tap(find.bySemanticsLabel('Dodaj zabieg'));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Nawożenie'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.textContaining('Za stodołą'));
+      await tester.pumpAndSettle();
+      await przewinDo(tester, find.text('Saletra z worka'));
+      await tester.tap(find.text('Saletra z worka'));
+      await tester.pumpAndSettle();
+
+      // Pszenica ozima ma w tabeli 14 limit 200 kg N/ha; domyślne 100 kg
+      // saletry 34% to 34 kg azotu.
+      await przewinDo(tester, find.textContaining('z 200 kg azotu'));
+      expect(
+        find.textContaining('Za stodołą: razem 34 z 200 kg azotu na hektar.'),
+        findsOneWidget,
+      );
+    });
   });
 
   /// Wpis oprysku zrobiony przez ekran — tak jak u rolnika, nie wprost

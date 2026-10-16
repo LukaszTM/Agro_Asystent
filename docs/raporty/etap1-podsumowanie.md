@@ -32,18 +32,19 @@ telefonie, bez serwera i bez żadnej opłaty za to, czego wymagają przepisy.
 | **Kody EPPO: tylko potwierdzone wchodzą do słownika** (luka 2) | propozycja nie może trafić na urzędowy wydruk jako pewny kod | dopisek w `P3-raport.md` |
 | **Drugi wygląd telefonu „Nowoczesny"** + przełącznik (luka 6) | plan (pkt 5) obiecuje dwa wyglądy przełączane w ustawieniach | `etap1-wyglad-nowoczesny.md` |
 | **Kody EPPO upraw konwencjonalnych** (luka 2) | ewidencja SOR wymaga kodu EPPO uprawy; automat z P3 dał 44,7% i miał pięć kodów gatunków dzikich | `kody-eppo-uprawy-polskie.md` |
+| **Maksymalne dawki azotu dla 126 upraw** (luka 4) | tabela 14 programu azotanowego — ostrzeżenie pada przed zapisem dawki, a nie po kontroli | `maksymalne-dawki-azotu.md` |
 
 ## Liczby
 
 | Miara | Wartość |
 | --- | --- |
 | Pliki kodu w `lib/` | 107 |
-| Pliki testów | 37 |
-| Testy | **361** |
+| Pliki testów | 38 |
+| Testy | **383** |
 | `flutter analyze` | bez ostrzeżeń |
 | `dart format` | bez zmian |
 | Migracje bazy | 4 |
-| Wersja słownika reguł | 2026.10.16.4 |
+| Wersja słownika reguł | 2026.10.16.5 |
 | Gminy w wykazach terminów | 2158 |
 | Grupy DJP | 93 |
 
@@ -71,7 +72,7 @@ widać, co już nie wraca.
 ### Zanim aplikacja trafi na telefon
 
 1. **Aplikacja nie była ani raz uruchomiona na prawdziwym telefonie.**
-   Cała weryfikacja to 361 testów i analizator — w kontenerze sesji nie ma
+   Cała weryfikacja to 383 testy i analizator — w kontenerze sesji nie ma
    Android SDK. Pierwsze uruchomienie może pokazać rzeczy, których test nie
    widzi: wielkość tekstu w ręce, zachowanie klawiatury, czas startu,
    uprawnienia do aparatu i powiadomień.
@@ -80,17 +81,21 @@ widać, co już nie wraca.
    podpis, więc nowszy plik nie wgra się „na wierzch" starego, a do Google
    Play taki plik nie wejdzie. Potrzebny keystore i cztery sekrety
    w repozytorium.
-3. **Przepływ „Zbuduj APK" nie został przetestowany** — nie udało się go
-   uruchomić z gałęzi roboczej (znaczniki zablokowane dla sesji, przycisk
-   „Run workflow" tylko dla gałęzi głównej). Pierwszy przebieg może wymagać
-   poprawki (wersja build-tools albo żądanie NDK 28.2.13676358).
+3. ~~**Przepływ „Zbuduj APK" nie został przetestowany**~~ — trzeci
+   przebieg przeszedł: plik `agro-asystent-0.1.0+1.apk` (94 MB) leży
+   w wydaniu `apk-test`. Dwie poprawki po drodze: `setup-android`
+   instalował nieistniejący pakiet „tools", a R8 przerywał budowanie
+   wydania na klasach rozpoznawania pisma, których nie dołączamy
+   (reguły w `android/app/proguard-rules.pro` — to była prawdziwa
+   usterka wydania, nie usterka CI).
 
 ### Prawo i dane
 
-4. ~~**Dane prawne**~~ — zrobione poza **tabelą 14** (maksymalne ilości azotu
-   działającego, załącznik nr 9): wymaga własnego ekranu i ostrzeżenia, nie
-   tylko wpisu w słowniku. Pozostałe pozycje słownika reguł są sprawdzone
-   w aktach — zero wpisów `do_weryfikacji`.
+4. ~~**Dane prawne**~~ — zrobione w całości, razem z **tabelą 14**
+   (maksymalne ilości azotu działającego dla 126 upraw, załącznik nr 9):
+   ostrzeżenie pada przy wpisie dawki, `maksymalne-dawki-azotu.md`.
+   Wszystkie pozycje słownika reguł są sprawdzone w aktach — zero wpisów
+   `do_weryfikacji`.
 5. ~~**Kody EPPO bez decyzji**~~ — 347 upraw z kodem, **83,3%** zastosowań
    z rejestru (było 44,7%). Zostaje ogon: **253 nazwy** do wyboru bez kodu
    (każda poniżej 15 zastosowań, np. „kapusta choy-sum") — rolnik je wybierze,
