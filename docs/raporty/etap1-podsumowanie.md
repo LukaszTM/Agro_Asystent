@@ -33,14 +33,15 @@ telefonie, bez serwera i bez żadnej opłaty za to, czego wymagają przepisy.
 | **Drugi wygląd telefonu „Nowoczesny"** + przełącznik (luka 6) | plan (pkt 5) obiecuje dwa wyglądy przełączane w ustawieniach | `etap1-wyglad-nowoczesny.md` |
 | **Kody EPPO upraw konwencjonalnych** (luka 2) | ewidencja SOR wymaga kodu EPPO uprawy; automat z P3 dał 44,7% i miał pięć kodów gatunków dzikich | `kody-eppo-uprawy-polskie.md` |
 | **Maksymalne dawki azotu dla 126 upraw** (luka 4) | tabela 14 programu azotanowego — ostrzeżenie pada przed zapisem dawki, a nie po kontroli | `maksymalne-dawki-azotu.md` |
+| **Cztery ekrany formularzowe w wyglądzie nowoczesnym** (luka 9) | rolnik musiał przełączać wygląd, żeby dodać działkę, wczytać wniosek, dopisać nawóz albo poprawić dane gospodarstwa | `etap1-nowoczesny-ekrany-formularzowe.md` |
 
 ## Liczby
 
 | Miara | Wartość |
 | --- | --- |
-| Pliki kodu w `lib/` | 107 |
-| Pliki testów | 38 |
-| Testy | **383** |
+| Pliki kodu w `lib/` | 113 |
+| Pliki testów | 39 |
+| Testy | **394** |
 | `flutter analyze` | bez ostrzeżeń |
 | `dart format` | bez zmian |
 | Migracje bazy | 4 |
@@ -72,7 +73,7 @@ widać, co już nie wraca.
 ### Zanim aplikacja trafi na telefon
 
 1. **Aplikacja nie była ani raz uruchomiona na prawdziwym telefonie.**
-   Cała weryfikacja to 383 testy i analizator — w kontenerze sesji nie ma
+   Cała weryfikacja to 394 testy i analizator — w kontenerze sesji nie ma
    Android SDK. Pierwsze uruchomienie może pokazać rzeczy, których test nie
    widzi: wielkość tekstu w ręce, zachowanie klawiatury, czas startu,
    uprawnienia do aparatu i powiadomień.
@@ -112,11 +113,13 @@ widać, co już nie wraca.
 
 ### Funkcje w aplikacji
 
-9. ~~**Wygląd „Nowoczesny"**~~ — zrobiony razem z przełącznikiem. Zostają
-   w nim **cztery ekrany formularzowe**, które ma tylko wygląd prosty:
-   działki z ULDK, import wniosku z PDF, nawozy i zestawienie azotu, dane
-   gospodarstwa. Do wyjęcia do `lib/rdzen/wspolne/`, nie do przepisania
-   drugi raz.
+9. ~~**Wygląd „Nowoczesny"**~~ — zrobiony razem z przełącznikiem
+   i z czterema brakującymi ekranami formularzowymi (działki z ULDK,
+   import wniosku, nawozy i zestawienie azotu, dane gospodarstwa):
+   `etap1-nowoczesny-ekrany-formularzowe.md`. Wspólna karta terminów
+   nawożenia stoi w `lib/rdzen/wspolne/`, nie w dwóch kopiach. Pełnego
+   ekranu rejestru stada nowoczesny nadal nie ma — produkcja zwierzęca
+   jest ścieżką rozwoju (ADR-0007).
 10. **Nie da się kupić premium** — `lib/rdzen/dostep/` rozstrzyga dostęp, ale
     nie ma płatności (brak zależności do Google Play Billing). Wszystko,
     czego wymaga prawo, jest darmowe, więc to nie blokuje rolnika; blokuje

@@ -1,8 +1,48 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id("dev.flutter.flutter-gradle-plugin")
 }
+
+// ── Podpis wydania ──────────────────────────────────────────────────────
+// Klucz podpisujący nigdy nie leży w repozytorium (CLAUDE.md, reguła 2 —
+// i tak samo każe Google). Gradle szuka go w dwóch miejscach:
+//
+//  1. `android/key.properties` — plik na komputerze dewelopera
+//     (w .gitignore), z wpisami: storeFile, storePassword, keyAlias,
+//     keyPassword;
+//  2. zmiennych środowiskowych AGRO_KEYSTORE_PLIK, AGRO_KEYSTORE_HASLO,
+//     AGRO_KLUCZ_ALIAS, AGRO_KLUCZ_HASLO — tak podaje go przepływ
+//     GitHub Actions z sekretów repozytorium.
+//
+// Gdy klucza nie ma w żadnym z nich, wydanie podpisuje się kluczem
+// debugowym: `flutter build apk --release` nadal działa, a plik nadaje
+// się do testów na telefonie — ale nie do Google Play. Mówi o tym
+// ostrzeżenie w logu, żeby nikt nie wysłał testowego pliku do sklepu.
+val wlasnosciKlucza = Properties().apply {
+    val plik = rootProject.file("key.properties")
+    if (plik.exists()) {
+        plik.inputStream().use { load(it) }
+    }
+}
+
+fun wartoscKlucza(nazwaWPliku: String, nazwaZmiennej: String): String? =
+    wlasnosciKlucza.getProperty(nazwaWPliku)
+        ?: System.getenv(nazwaZmiennej)
+
+val keystorePlik = wartoscKlucza("storeFile", "AGRO_KEYSTORE_PLIK")
+val keystoreHaslo = wartoscKlucza("storePassword", "AGRO_KEYSTORE_HASLO")
+val kluczAlias = wartoscKlucza("keyAlias", "AGRO_KLUCZ_ALIAS")
+val kluczHaslo = wartoscKlucza("keyPassword", "AGRO_KLUCZ_HASLO")
+
+val wlasnyPodpis = listOf(
+    keystorePlik,
+    keystoreHaslo,
+    kluczAlias,
+    kluczHaslo,
+).all { !it.isNullOrBlank() } && file(keystorePlik!!).exists()
 
 android {
     namespace = "pl.agroasystent.agro_asystent"
@@ -32,11 +72,30 @@ android {
         versionName = flutter.versionName
     }
 
+    signingConfigs {
+        if (wlasnyPodpis) {
+            create("wydanie") {
+                storeFile = file(keystorePlik!!)
+                storePassword = keystoreHaslo
+                keyAlias = kluczAlias
+                keyPassword = kluczHaslo
+            }
+        }
+    }
+
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig = signingConfigs.getByName("debug")
+            signingConfig = if (wlasnyPodpis) {
+                signingConfigs.getByName("wydanie")
+            } else {
+                logger.warn(
+                    "Agro Asystent: brak klucza podpisującego — wydanie " +
+                        "podpisuję kluczem debugowym. Plik nadaje się do " +
+                        "testów na telefonie, ale nie do Google Play. " +
+                        "Patrz docs/wydanie-android.md.",
+                )
+                signingConfigs.getByName("debug")
+            }
             // Reguły dla R8: patrz `proguard-rules.pro` — bez nich wydanie
             // nie buduje się przez brakujące klasy rozpoznawania pisma
             // azjatyckiego we wtyczce odczytu zdjęć.

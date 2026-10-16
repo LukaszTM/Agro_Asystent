@@ -33,7 +33,7 @@ permissions:
 
 jobs:
   apk:
-    name: APK (release, podpis testowy)
+    name: APK (release)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -60,10 +60,27 @@ jobs:
       - name: Składniki Android SDK
         run: sdkmanager --install "platforms;android-36" "build-tools;36.0.0"
 
+      # Klucz podpisujący leży w sekretach repozytorium, nie w kodzie.
+      # Gdy sekretów nie ma, krok nic nie robi, a Gradle podpisuje wydanie
+      # kluczem debugowym (i mówi o tym w logu). Patrz
+      # `docs/wydanie-android.md`.
+      - name: Klucz podpisujący z sekretów
+        if: ${{ secrets.AGRO_KEYSTORE_BASE64 != '' }}
+        env:
+          KEYSTORE_BASE64: ${{ secrets.AGRO_KEYSTORE_BASE64 }}
+        run: |
+          echo "$KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/agro-upload.jks"
+          echo "AGRO_KEYSTORE_PLIK=$RUNNER_TEMP/agro-upload.jks" >> "$GITHUB_ENV"
+          echo "podpis=wlasny" >> "$GITHUB_ENV"
+
       - name: Zależności
         run: flutter pub get
 
       - name: Budowanie APK
+        env:
+          AGRO_KEYSTORE_HASLO: ${{ secrets.AGRO_KEYSTORE_HASLO }}
+          AGRO_KLUCZ_ALIAS: ${{ secrets.AGRO_KLUCZ_ALIAS }}
+          AGRO_KLUCZ_HASLO: ${{ secrets.AGRO_KLUCZ_HASLO }}
         run: flutter build apk --release
 
       - name: Nazwa pliku z numerem wersji
@@ -85,13 +102,21 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          if [ "${podpis:-debugowy}" = "wlasny" ]; then
+            opis="Wersja testowa do wgrania na telefon. Podpisana kluczem
+          wydawniczym z sekretów repozytorium, więc kolejne pliki wgrywają
+          się na wierzch poprzedniego. W telefonie trzeba raz zezwolić na
+          instalację z nieznanych źródeł."
+          else
+            opis="Wersja testowa do wgrania na telefon. Podpisana kluczem
+          debugowym, więc: w telefonie trzeba zezwolić na instalację z
+          nieznanych źródeł, a przed wgraniem nowszego pliku odinstalować
+          poprzedni (każdy build ma inny podpis). Nie nadaje się do Google
+          Play — jak dodać własny klucz, mówi docs/wydanie-android.md."
+          fi
           gh release create apk-test \
             --target "$GITHUB_SHA" \
             --prerelease \
             --title "Agro Asystent — APK do testów" \
-            --notes "Wersja testowa do wgrania na telefon. Podpisana kluczem
-          debugowym, więc: w telefonie trzeba zezwolić na instalację z
-          nieznanych źródeł, a przed wgraniem nowszego pliku odinstalować
-          poprzedni (każdy build ma inny podpis). Nie nadaje się do Google
-          Play." || true
+            --notes "$opis" || true
           gh release upload apk-test "$plik" --clobber
