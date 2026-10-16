@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../app/uslugi.dart';
 import '../../../rdzen/uslugi/kopia/kopia_danych.dart';
+import '../../../rdzen/uslugi/kopia/scalanie.dart';
 import '../motyw.dart';
 import '../widgety/duzy_przycisk.dart';
 
@@ -15,8 +16,8 @@ class EkranKopia extends StatefulWidget {
 
   final Uslugi uslugi;
 
-  /// Po wczytaniu kopii wszystkie ekrany mają inne dane — start aplikacji
-  /// musi się o tym dowiedzieć.
+  /// Po wczytaniu kopii albo po scaleniu wszystkie ekrany mają inne dane —
+  /// start aplikacji musi się o tym dowiedzieć.
   final VoidCallback? onWczytano;
 
   @override
@@ -121,6 +122,79 @@ class _EkranKopiaState extends State<EkranKopia> {
     }
   }
 
+  /// Dołączenie danych z kopii zrobionej na drugim urządzeniu.
+  ///
+  /// Zasada jest jedna i mówimy ją rolnikowi wprost: nowszy wpis wygrywa,
+  /// starszy zostaje w dzienniku zmian. Nic nie jest usuwane.
+  Future<void> _dolaczDane() async {
+    if (_pracuje) {
+      return;
+    }
+    final plik = await widget.uslugi.zrodloPliku.wybierzKopie();
+    if (plik == null) {
+      return;
+    }
+    setState(() {
+      _pracuje = true;
+      _wynik = null;
+      _ostrzezenie = null;
+    });
+
+    final wynik = await widget.uslugi.scalanie.scal(plik.bajty);
+    if (!mounted) {
+      return;
+    }
+    setState(() {
+      _pracuje = false;
+      switch (wynik) {
+        case ScalenieZrobione(:final raport):
+          _wynik = _opisScalenia(raport);
+        case ScalenieOdrzucone(:final blad):
+          _ostrzezenie = switch (blad) {
+            BladKopii.nieNaszPlik => (
+              tresc: 'To nie jest kopia z tej aplikacji.',
+              coZrobic:
+                  'Wybierz plik o nazwie zaczynającej się od '
+                  '„agro-asystent-kopia".',
+            ),
+            BladKopii.nowszaWersja => (
+              tresc: 'Plik pochodzi z nowszej wersji aplikacji.',
+              coZrobic: 'Zaktualizuj aplikację i spróbuj jeszcze raz.',
+            ),
+            BladKopii.saJuzDane => (
+              tresc: 'Tego pliku nie da się dołączyć.',
+              coZrobic: 'Zrób nową kopię na drugim urządzeniu.',
+            ),
+          };
+      }
+    });
+    if (wynik is ScalenieZrobione) {
+      widget.onWczytano?.call();
+    }
+  }
+
+  static String _opisScalenia(RaportScalenia raport) {
+    if (!raport.cokolwiekSieZmienilo) {
+      return 'Plik z ${_dzien(raport.zrobiona)} nie wnosi nic nowego — '
+          'wszystko z niego już tu jest.';
+    }
+    final czesci = <String>[
+      if (raport.zabiegiDodane > 0) '${raport.zabiegiDodane} zabiegów',
+      if (raport.polaDodane > 0) '${raport.polaDodane} pól',
+      if (raport.zwierzetaDodane > 0) '${raport.zwierzetaDodane} zwierząt',
+    ];
+    return [
+      'Dołączono dane z ${_dzien(raport.zrobiona)}.',
+      if (czesci.isNotEmpty) 'Doszło: ${czesci.join(', ')}.',
+      if (raport.zastapioneRazem > 0)
+        '${raport.zastapioneRazem} wpisów było w pliku nowszych — '
+            'poprzednie wersje zostały w dzienniku zmian.',
+      if (raport.pominieteRazem > 0)
+        '${raport.pominieteRazem} wpisów z pliku było starszych — '
+            'zostawiliśmy nowsze, a starsze zapisaliśmy w dzienniku.',
+    ].join(' ');
+  }
+
   static String _dzien(DateTime kiedy) =>
       '${kiedy.day.toString().padLeft(2, '0')}.'
       '${kiedy.month.toString().padLeft(2, '0')}.${kiedy.year}';
@@ -152,6 +226,13 @@ class _EkranKopiaState extends State<EkranKopia> {
             ikona: Icons.restore_outlined,
             onTap: _pracuje ? null : _wczytajKopie,
           ),
+          const SizedBox(height: MotywProsty.odstep),
+          DuzyPrzycisk(
+            etykieta: 'Dołącz dane z drugiego urządzenia',
+            opis: 'nowszy wpis wygrywa, starszy zostaje w dzienniku',
+            ikona: Icons.merge_outlined,
+            onTap: _pracuje ? null : _dolaczDane,
+          ),
           if (_pracuje) ...[
             const SizedBox(height: MotywProsty.odstep),
             const Center(child: CircularProgressIndicator()),
@@ -172,6 +253,15 @@ class _EkranKopiaState extends State<EkranKopia> {
             'Kopia jest darmowa i zawsze będzie — dokumentacji nie zamykamy '
             'za opłatą. W pliku jest zwykły zapis danych, który otworzysz '
             'też na komputerze.',
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
+          const SizedBox(height: MotywProsty.odstep),
+          Text(
+            'Dwa urządzenia: zrób kopię na jednym i dołącz ją na drugim. '
+            'Aplikacja nie ma serwera, więc plik przenosisz sam — pendrivem, '
+            'dyskiem w telefonie albo mailem do siebie. Scalanie nigdy nie '
+            'usuwa wpisów: gdy ten sam wpis poprawiono po obu stronach, '
+            'zostaje nowszy, a starszy jest widoczny w dzienniku zmian.',
             style: Theme.of(context).textTheme.bodyMedium,
           ),
         ],

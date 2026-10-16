@@ -5,6 +5,7 @@ import '../../../funkcje/ustawienia/gospodarstwa.dart';
 import '../../../funkcje/ustawienia/wybor_wygladu.dart';
 import '../../../funkcje/ustawienia/zwierzeta_w_gospodarstwie.dart';
 import '../../../rdzen/uslugi/kopia/kopia_danych.dart';
+import '../../../rdzen/uslugi/kopia/scalanie.dart';
 import '../motyw.dart';
 import '../widgety/karta.dart';
 import '../widgety/wybor.dart';
@@ -248,6 +249,76 @@ class _EkranUstawieniaState extends State<EkranUstawienia> {
     }
   }
 
+  /// Dołączenie danych z kopii zrobionej na drugim urządzeniu —
+  /// synchronizacja przez dysk użytkownika, bez serwera (plan, pkt 2).
+  Future<void> _dolaczDane() async {
+    if (_pracuje) {
+      return;
+    }
+    final plik = await _uslugi.zrodloPliku.wybierzKopie();
+    if (plik == null) {
+      return;
+    }
+    setState(() {
+      _pracuje = true;
+      _wynikKopii = null;
+      _bladKopii = null;
+    });
+    final wynik = await _uslugi.scalanie.scal(plik.bajty);
+    if (!mounted) {
+      return;
+    }
+    setState(() {
+      _pracuje = false;
+      switch (wynik) {
+        case ScalenieZrobione(:final raport):
+          _wynikKopii = _opisScalenia(raport);
+        case ScalenieOdrzucone(:final blad):
+          _bladKopii = switch (blad) {
+            BladKopii.nieNaszPlik => (
+              tresc: 'To nie jest kopia z tej aplikacji.',
+              coZrobic:
+                  'Wybierz plik o nazwie zaczynającej się od '
+                  '„agro-asystent-kopia".',
+            ),
+            BladKopii.nowszaWersja => (
+              tresc: 'Plik pochodzi z nowszej wersji aplikacji.',
+              coZrobic: 'Zaktualizuj aplikację i spróbuj jeszcze raz.',
+            ),
+            BladKopii.saJuzDane => (
+              tresc: 'Tego pliku nie da się dołączyć.',
+              coZrobic: 'Zrób nową kopię na drugim urządzeniu.',
+            ),
+          };
+      }
+    });
+    if (wynik is ScalenieZrobione) {
+      _odswiez();
+    }
+  }
+
+  /// Treść jest ta sama co w wyglądzie prostym — scalanie znaczy to samo.
+  static String _opisScalenia(RaportScalenia raport) {
+    if (!raport.cokolwiekSieZmienilo) {
+      return 'Plik nie wnosi nic nowego — wszystko z niego już tu jest.';
+    }
+    final czesci = <String>[
+      if (raport.zabiegiDodane > 0) '${raport.zabiegiDodane} zabiegów',
+      if (raport.polaDodane > 0) '${raport.polaDodane} pól',
+      if (raport.zwierzetaDodane > 0) '${raport.zwierzetaDodane} zwierząt',
+    ];
+    return [
+      'Dołączono dane z drugiego urządzenia.',
+      if (czesci.isNotEmpty) 'Doszło: ${czesci.join(', ')}.',
+      if (raport.zastapioneRazem > 0)
+        '${raport.zastapioneRazem} wpisów było w pliku nowszych — '
+            'poprzednie wersje zostały w dzienniku zmian.',
+      if (raport.pominieteRazem > 0)
+        '${raport.pominieteRazem} wpisów z pliku było starszych — '
+            'zostawiliśmy nowsze, a starsze zapisaliśmy w dzienniku.',
+    ].join(' ');
+  }
+
   @override
   Widget build(BuildContext context) {
     final teksty = Theme.of(context).textTheme;
@@ -416,6 +487,21 @@ class _EkranUstawieniaState extends State<EkranUstawienia> {
                     ),
                   ],
                 ),
+              if (!_pracuje) ...[
+                const SizedBox(height: 8),
+                OutlinedButton.icon(
+                  onPressed: _dolaczDane,
+                  icon: const Icon(Icons.merge_outlined, size: 20),
+                  label: const Text('Dołącz dane z drugiego urządzenia'),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'Zrób kopię na jednym telefonie i dołącz ją na drugim. '
+                  'Gdy ten sam wpis poprawiono po obu stronach, zostaje '
+                  'nowszy — starszy jest widoczny w dzienniku zmian.',
+                  style: teksty.bodyMedium,
+                ),
+              ],
               if (_wynikKopii != null) ...[
                 const SizedBox(height: 8),
                 Text(_wynikKopii!, style: teksty.bodyLarge),

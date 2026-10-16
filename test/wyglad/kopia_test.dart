@@ -33,6 +33,7 @@ import 'package:agro_asystent/rdzen/reguly/regula_prawna.dart';
 import 'package:agro_asystent/rdzen/uslugi/kopia/kopia_danych.dart';
 import 'package:agro_asystent/wyglad/prosty/motyw.dart';
 import 'package:agro_asystent/rdzen/dostep/dostep_funkcji.dart';
+import 'package:agro_asystent/rdzen/modele/zabieg.dart';
 import 'package:agro_asystent/wyglad/prosty/ustawienia/ekran_kopia.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -210,6 +211,110 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('To nie jest kopia z tej aplikacji.'), findsOneWidget);
+  });
+
+  /// Plik kopii z „drugiego urządzenia" — osobna baza w pliku, bo baza
+  /// pamięciowa jest dla sqflite jedną i tą samą bazą.
+  Future<Uint8List> kopiaZDrugiegoUrzadzenia() async {
+    final katalog = Directory.systemTemp.createTempSync('agro-tablet');
+    addTearDown(() => katalog.deleteSync(recursive: true));
+    final tablet = await BazaGospodarstwa.otworz(
+      fabryka: fabryka,
+      sciezka: '${katalog.path}/tablet.db',
+    );
+    addTearDown(tablet.close);
+
+    await tablet.insert('gospodarstwo', {
+      'id': 'g1',
+      'nazwa': 'Gospodarstwo próbne',
+      'numer_producenta': '012345678',
+      'utworzono': '2026-03-01T08:00:00',
+      'zmieniono': '2026-03-01T08:00:00',
+      'urzadzenie': 'tablet',
+    });
+    await tablet.insert('dzialka_rolna', {
+      'id': 'pole-2',
+      'gospodarstwo_id': 'g1',
+      'nazwa_wlasna': 'Pod lasem',
+      'sezon': 2026,
+      'uprawa': 'kukurydza na ziarno',
+      'powierzchnia_ar': 150,
+      'utworzono': '2026-03-02T08:00:00',
+      'zmieniono': '2026-03-02T08:00:00',
+      'urzadzenie': 'tablet',
+    });
+    await RepozytoriumZabiegow(tablet).zapisz(
+      zabieg: Zabieg(
+        id: 'z-tablet',
+        gospodarstwoId: 'g1',
+        rodzaj: RodzajZabiegu.oprysk,
+        data: DateTime(2026, 5, 10),
+        godzina: '08:30',
+        powierzchniaAr: 150,
+        urzadzenie: 'tablet',
+      ),
+      pola: const [PoleZabiegu(dzialkaRolnaId: 'pole-2', powierzchniaAr: 150)],
+      oprysk: const SzczegolyOprysku(
+        zabiegId: 'z-tablet',
+        srodekNazwa: 'Abydos 750 EC',
+        nrZezwolenia: 'R-14/2025 h.r.',
+        karencjaDni: 42,
+      ),
+      teraz: DateTime(2026, 5, 10, 8, 35),
+    );
+
+    return KopiaDanych(
+      baza: tablet,
+      wersjaSchematu: najnowszaWersja,
+    ).zrob(teraz: DateTime(2026, 5, 10, 9));
+  }
+
+  testWidgets('dane z drugiego urządzenia dołączają się do tych na miejscu', (
+    tester,
+  ) async {
+    await dodajPole();
+    zrodlo.kopia = await tester.runAsync(kopiaZDrugiegoUrzadzenia);
+
+    await pokaz(tester, EkranKopia(uslugi: zbudujUslugi()));
+    await tester.tap(find.text('Dołącz dane z drugiego urządzenia'));
+    await tester.pumpAndSettle();
+
+    expect(find.textContaining('Dołączono dane'), findsOneWidget);
+    expect(find.textContaining('1 zabiegów'), findsOneWidget);
+    // Pole z telefonu zostaje, pole z tabletu dochodzi — nic nie ginie.
+    final pola = await baza.query('dzialka_rolna', orderBy: 'id');
+    expect(pola.map((p) => p['id']), ['pole-1', 'pole-2']);
+    expect(await baza.query('zabieg'), hasLength(1));
+  });
+
+  testWidgets('ponowne dołączenie tego samego pliku nic nie zmienia', (
+    tester,
+  ) async {
+    await dodajPole();
+    zrodlo.kopia = await tester.runAsync(kopiaZDrugiegoUrzadzenia);
+
+    await pokaz(tester, EkranKopia(uslugi: zbudujUslugi()));
+    await tester.tap(find.text('Dołącz dane z drugiego urządzenia'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Dołącz dane z drugiego urządzenia'));
+    await tester.pumpAndSettle();
+
+    expect(find.textContaining('nie wnosi nic nowego'), findsOneWidget);
+    expect(await baza.query('zabieg'), hasLength(1));
+    expect(await baza.query('dzialka_rolna'), hasLength(2));
+  });
+
+  testWidgets('ekran mówi, jak pogodzić dwa urządzenia', (tester) async {
+    await pokaz(tester, EkranKopia(uslugi: zbudujUslugi()));
+
+    // Objaśnienie stoi pod przyciskami — trzeba do niego przewinąć.
+    expect(find.textContaining('nowszy wpis wygrywa'), findsOneWidget);
+    await tester.scrollUntilVisible(
+      find.textContaining('Scalanie nigdy nie usuwa'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    expect(find.textContaining('Scalanie nigdy nie usuwa'), findsOneWidget);
   });
 }
 

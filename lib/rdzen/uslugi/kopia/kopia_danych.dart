@@ -214,6 +214,11 @@ class KopiaDanych {
     return false;
   }
 
+  /// Zawartość pliku kopii dla scalania (`Scalanie`) — ta sama kontrola
+  /// znacznika, ten sam format. Zwraca `null`, gdy plik nie jest kopią
+  /// z tej aplikacji.
+  Map<String, dynamic>? rozpakujDoScalania(Uint8List bajty) => _rozpakuj(bajty);
+
   Map<String, dynamic>? _rozpakuj(Uint8List bajty) {
     try {
       final archiwum = ZipDecoder().decodeBytes(bajty);

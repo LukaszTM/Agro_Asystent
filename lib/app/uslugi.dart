@@ -24,6 +24,7 @@ import '../funkcje/zabiegi/slownik_srodkow.dart';
 import '../rdzen/dostep/dostep_funkcji.dart';
 import '../rdzen/reguly/regula_prawna.dart';
 import '../rdzen/uslugi/kopia/kopia_danych.dart';
+import '../rdzen/uslugi/kopia/scalanie.dart';
 
 /// To, czego ekrany potrzebują do pracy. Składane raz, przy starcie aplikacji,
 /// i podawane dalej w konstruktorach — bez globalnych zmiennych, żeby testy
@@ -119,6 +120,16 @@ class Uslugi {
 
   /// Kopia danych do pliku — zawsze darmowa (plan, pkt 8).
   final KopiaDanych kopia;
+
+  /// Dołączenie danych z kopii zrobionej na **drugim** urządzeniu —
+  /// synchronizacja przez dysk użytkownika (plan, pkt 2). Pracuje na tej
+  /// samej bazie i w tym samym formacie pliku co kopia, więc bierze je
+  /// od niej, a nie z osobnego wstrzyknięcia.
+  Scalanie get scalanie => Scalanie(
+    baza: kopia.baza,
+    wersjaSchematu: kopia.wersjaSchematu,
+    urzadzenie: urzadzenie,
+  );
 
   /// Czy gospodarstwo ma zwierzęta. Aplikacja nie prowadzi rejestru stada
   /// (produkcja zwierzęca poza zakresem), więc pyta o to raz — od tego
