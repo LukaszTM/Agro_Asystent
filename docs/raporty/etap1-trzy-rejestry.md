@@ -89,10 +89,8 @@ wydrukiem, bo wpis jest wtedy „niekompletny" — tak jak przy opryskach.
 Dziesięć kroków z planu (pkt 4) jest zrobione, a obietnica trzech
 rejestrów z pkt 8 — spełniona. Znane luki do uzupełnienia później:
 
-1. **Kopia danych do pliku** — w tabeli wersji darmowej (pkt 8) jest
-   „telefon, kopia do pliku"; `DostepFunkcji` traktuje ją jako darmową,
-   ale ekranu jeszcze nie ma. Od niej zależy też usuwanie gospodarstwa
-   z ekranu (krok 10).
+1. ~~**Kopia danych do pliku**~~ — **zrobione 16.10.2026**, razem
+   z usuwaniem gospodarstwa: `docs/raporty/etap1-kopia-danych.md`.
 2. **Rejestr stada do wydruku** — IRZplus prowadzi własny rejestr;
    gdybyśmy chcieli go drukować, potrzebny jest urzędowy układ kolumn.
 3. **Dane prawne do uzupełnienia**: art. 20 ustawy o nawozach (zakaz dla

@@ -23,4 +23,19 @@ class ZrodloPlikuUrzadzenia implements ZrodloPliku {
     }
     return WybranyPlik(nazwa: plik.name, bajty: await plik.readAsBytes());
   }
+
+  @override
+  Future<WybranyPlik?> wybierzKopie() async {
+    const rodzaj = XTypeGroup(
+      label: 'Kopia danych',
+      extensions: ['zip'],
+      mimeTypes: ['application/zip'],
+      uniformTypeIdentifiers: ['public.zip-archive'],
+    );
+    final plik = await openFile(acceptedTypeGroups: const [rodzaj]);
+    if (plik == null) {
+      return null;
+    }
+    return WybranyPlik(nazwa: plik.name, bajty: await plik.readAsBytes());
+  }
 }

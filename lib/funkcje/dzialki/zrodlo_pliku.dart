@@ -14,4 +14,7 @@ class WybranyPlik {
 /// w aplikacji podstawiamy okno systemowe, w testach zwykły plik z dysku.
 abstract interface class ZrodloPliku {
   Future<WybranyPlik?> wybierzPdf();
+
+  /// Plik kopii danych aplikacji (ZIP). `null`, gdy rolnik się rozmyślił.
+  Future<WybranyPlik?> wybierzKopie();
 }

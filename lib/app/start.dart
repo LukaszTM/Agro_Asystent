@@ -22,9 +22,11 @@ import '../funkcje/zabiegi/rejestr_zabiegow.dart';
 import '../funkcje/zabiegi/repozytorium_zabiegow.dart';
 import '../funkcje/zabiegi/slownik_srodkow.dart';
 import '../rdzen/baza/baza_gospodarstwa.dart';
+import '../rdzen/baza/migracje.dart';
 import '../rdzen/baza/przygotowanie_slownikow.dart';
 import '../rdzen/dostep/dostep_funkcji.dart';
 import '../rdzen/reguly/zrodlo_regul.dart';
+import '../rdzen/uslugi/kopia/kopia_danych.dart';
 import 'uslugi.dart';
 import 'czytnik_zdjecia_urzadzenia.dart';
 import 'przypomnienia_urzadzenia.dart';
@@ -103,6 +105,7 @@ Future<Uslugi> uruchom({
     ),
     stado: stado,
     gospodarstwa: gospodarstwa,
+    kopia: KopiaDanych(baza: baza, wersjaSchematu: najnowszaWersja),
     kalendarz: KalendarzTerminow(
       reguly: reguly,
       rejestr: RejestrZabiegow(baza),

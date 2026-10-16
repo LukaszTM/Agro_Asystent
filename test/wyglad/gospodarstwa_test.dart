@@ -24,8 +24,10 @@ import 'package:agro_asystent/funkcje/zabiegi/repozytorium_zabiegow.dart';
 import 'package:agro_asystent/funkcje/zabiegi/slownik_srodkow.dart';
 import 'package:agro_asystent/funkcje/zwierzeta/stado.dart';
 import 'package:agro_asystent/rdzen/baza/baza_gospodarstwa.dart';
+import 'package:agro_asystent/rdzen/baza/migracje.dart';
 import 'package:agro_asystent/rdzen/reguly/gminy_terminy.dart';
 import 'package:agro_asystent/rdzen/reguly/regula_prawna.dart';
+import 'package:agro_asystent/rdzen/uslugi/kopia/kopia_danych.dart';
 import 'package:agro_asystent/wyglad/prosty/motyw.dart';
 import 'package:agro_asystent/rdzen/dostep/dostep_funkcji.dart';
 import 'package:agro_asystent/wyglad/prosty/ustawienia/ekran_gospodarstwa.dart';
@@ -103,6 +105,7 @@ void main() {
       gminy: SlownikGminTerminow.pusty,
     ),
     stado: RepozytoriumStada(baza: baza, reguly: reguly),
+    kopia: KopiaDanych(baza: baza, wersjaSchematu: najnowszaWersja),
     gospodarstwa: RepozytoriumGospodarstw(
       baza: baza,
       dostep: DostepFunkcji(maPremium: premium),
@@ -276,6 +279,75 @@ void main() {
     expect(find.text('Gospodarstwo nie ma nazwy.'), findsOneWidget);
     expect(find.textContaining('Wpisz nazwę'), findsOneWidget);
   });
+
+  testWidgets('ostatniego gospodarstwa nie można usunąć i ekran wyjaśnia', (
+    tester,
+  ) async {
+    await pokaz(tester, EkranGospodarstwa(uslugi: zbudujUslugi()));
+
+    await tester.tap(find.text('Gospodarstwo próbne'));
+    await tester.pumpAndSettle();
+    await przewinDo(tester, find.text('Usuń gospodarstwo'));
+    await tester.tap(find.text('Usuń gospodarstwo'));
+    await tester.pumpAndSettle();
+
+    expect(find.textContaining('Zrób najpierw kopię danych'), findsOneWidget);
+    await tester.tap(find.text('Usuń'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('To jedyne gospodarstwo w aplikacji.'), findsOneWidget);
+    expect(
+      (await RepozytoriumGospodarstw(baza: baza).wszystkie()),
+      hasLength(1),
+    );
+  });
+
+  testWidgets('usunięcie przełącza na gospodarstwo, które zostało', (
+    tester,
+  ) async {
+    final repozytorium = RepozytoriumGospodarstw(
+      baza: baza,
+      dostep: const DostepFunkcji(maPremium: true),
+    );
+    await repozytorium.dodaj(
+      nazwa: 'Gospodarstwo po dziadku',
+      urzadzenie: 'telefon',
+    );
+    await repozytorium.ustawAktywne('g1');
+
+    Uslugi? poZmianie;
+    await pokaz(
+      tester,
+      EkranGospodarstwa(
+        uslugi: zbudujUslugi(premium: true),
+        onZmiana: (nowe) => poZmianie = nowe,
+      ),
+    );
+
+    // Nazwa stoi i w karcie danych, i na liście gospodarstw.
+    await tester.tap(find.text('Gospodarstwo próbne').first);
+    await tester.pumpAndSettle();
+    await przewinDo(tester, find.text('Usuń gospodarstwo'));
+    await tester.tap(find.text('Usuń gospodarstwo'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Usuń'));
+    await tester.pumpAndSettle();
+
+    expect(
+      (await repozytorium.wszystkie()).single.nazwa,
+      'Gospodarstwo po dziadku',
+    );
+    expect(poZmianie!.nazwaGospodarstwa, 'Gospodarstwo po dziadku');
+    // Wpisy zostają w bazie — wymaga tego kontrola (CLAUDE.md).
+    expect(
+      (await baza.query(
+        'gospodarstwo',
+        where: 'id = ?',
+        whereArgs: ['g1'],
+      )).single['usuniety'],
+      1,
+    );
+  });
 }
 
 class _BrakZrodlaPliku implements ZrodloPliku {
@@ -283,6 +355,9 @@ class _BrakZrodlaPliku implements ZrodloPliku {
 
   @override
   Future<WybranyPlik?> wybierzPdf() async => null;
+
+  @override
+  Future<WybranyPlik?> wybierzKopie() async => null;
 }
 
 Future<CzcionkiWydruku> _brakCzcionek() async =>

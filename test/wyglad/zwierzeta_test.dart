@@ -24,8 +24,10 @@ import 'package:agro_asystent/funkcje/zabiegi/repozytorium_zabiegow.dart';
 import 'package:agro_asystent/funkcje/zabiegi/slownik_srodkow.dart';
 import 'package:agro_asystent/funkcje/zwierzeta/stado.dart';
 import 'package:agro_asystent/rdzen/baza/baza_gospodarstwa.dart';
+import 'package:agro_asystent/rdzen/baza/migracje.dart';
 import 'package:agro_asystent/rdzen/reguly/gminy_terminy.dart';
 import 'package:agro_asystent/rdzen/reguly/regula_prawna.dart';
+import 'package:agro_asystent/rdzen/uslugi/kopia/kopia_danych.dart';
 import 'package:agro_asystent/wyglad/prosty/motyw.dart';
 import 'package:agro_asystent/wyglad/prosty/zwierzeta/ekran_zwierzeta.dart';
 import 'package:flutter/material.dart';
@@ -101,6 +103,7 @@ void main() {
       gminy: SlownikGminTerminow.pusty,
     ),
     stado: RepozytoriumStada(baza: baza, reguly: reguly),
+    kopia: KopiaDanych(baza: baza, wersjaSchematu: najnowszaWersja),
     gospodarstwa: RepozytoriumGospodarstw(baza: baza),
     kalendarz: KalendarzTerminow(
       reguly: reguly,
@@ -252,6 +255,9 @@ class _BrakZrodlaPliku implements ZrodloPliku {
 
   @override
   Future<WybranyPlik?> wybierzPdf() async => null;
+
+  @override
+  Future<WybranyPlik?> wybierzKopie() async => null;
 }
 
 Future<CzcionkiWydruku> _brakCzcionek() async =>

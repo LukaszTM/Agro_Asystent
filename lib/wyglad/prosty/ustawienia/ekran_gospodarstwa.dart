@@ -4,6 +4,7 @@ import '../../../app/uslugi.dart';
 import '../../../funkcje/ustawienia/gospodarstwa.dart';
 import '../motyw.dart';
 import '../widgety/duzy_przycisk.dart';
+import 'ekran_kopia.dart';
 
 /// Gospodarstwo i konto (krok 10 etapu 1): dane na wydruki, przełączanie
 /// między gospodarstwami i nazwa konta.
@@ -72,6 +73,23 @@ class _EkranGospodarstwaState extends State<EkranGospodarstwa> {
       ),
     );
     if (poprawione == null) {
+      return;
+    }
+    if (poprawione.id.isEmpty) {
+      // Gospodarstwo usunięte — repozytorium już przełączyło na to, które
+      // zostało; ekrany muszą dostać nowy zestaw usług.
+      final zostale = await _uslugi.gospodarstwa.aktywne();
+      if (zostale != null) {
+        final nowe = _uslugi.dlaGospodarstwa(
+          id: zostale.id,
+          nazwa: zostale.nazwa,
+        );
+        widget.onZmiana?.call(nowe);
+        _uslugi = nowe;
+      }
+      if (mounted) {
+        setState(_odswiez);
+      }
       return;
     }
     if (poprawione.id == _uslugi.gospodarstwoId) {
@@ -185,6 +203,25 @@ class _EkranGospodarstwaState extends State<EkranGospodarstwa> {
                       'Gospodarstwo, które prowadzisz, działa w całości bez '
                       'opłaty — wpisy, rejestry, wydruk i eksport.',
                 ),
+              const SizedBox(height: MotywProsty.odstep),
+              DuzyPrzycisk(
+                etykieta: 'Kopia danych',
+                opis: 'zapisz wszystko do jednego pliku',
+                ikona: Icons.save_outlined,
+                onTap: () => Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (_) => EkranKopia(
+                      uslugi: _uslugi,
+                      onWczytano: () {
+                        widget.onZmiana?.call(_uslugi);
+                        if (mounted) {
+                          setState(_odswiez);
+                        }
+                      },
+                    ),
+                  ),
+                ),
+              ),
               const SizedBox(height: MotywProsty.odstep * 2),
               _Konto(konto: dane.konto, onZapisz: _zapiszKonto),
             ],
@@ -293,6 +330,59 @@ class _EkranDaneGospodarstwaState extends State<EkranDaneGospodarstwa> {
   bool _zapisuje = false;
 
   bool get _nowe => widget.gospodarstwo == null;
+
+  Future<void> _usun() async {
+    final gospodarstwo = widget.gospodarstwo!;
+    final potwierdzone = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Usunąć „${gospodarstwo.nazwa}"?'),
+        content: Text(
+          'Wpisy zostają w bazie, ale gospodarstwo zniknie z listy. '
+          'Zrób najpierw kopię danych do pliku.',
+          style: Theme.of(context).textTheme.bodyLarge,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('Zostaw'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: const Text('Usuń'),
+          ),
+        ],
+      ),
+    );
+    if (!(potwierdzone ?? false)) {
+      return;
+    }
+
+    final usuniete = await widget.uslugi.gospodarstwa.usun(
+      gospodarstwoId: gospodarstwo.id,
+    );
+    if (!mounted) {
+      return;
+    }
+    if (!usuniete) {
+      setState(() {
+        _blad = (
+          tresc: 'To jedyne gospodarstwo w aplikacji.',
+          coZrobic:
+              'Nie można go usunąć — zostałbyś bez miejsca na dokumentację. '
+              'Najpierw dodaj drugie.',
+        );
+      });
+      return;
+    }
+    Navigator.of(context).pop(_usunieteGospodarstwo);
+  }
+
+  /// Zwracane po usunięciu — ekran listy pozna je po pustej nazwie.
+  static const Gospodarstwo _usunieteGospodarstwo = Gospodarstwo(
+    id: '',
+    nazwa: '',
+  );
 
   @override
   void dispose() {
@@ -430,6 +520,13 @@ class _EkranDaneGospodarstwaState extends State<EkranDaneGospodarstwa> {
             onPressed: _zapisuje ? null : _zapisz,
             child: Text(_nowe ? 'Dodaj gospodarstwo' : 'Zapisz dane'),
           ),
+          if (!_nowe) ...[
+            const SizedBox(height: MotywProsty.odstep * 2),
+            OutlinedButton(
+              onPressed: _zapisuje ? null : _usun,
+              child: const Text('Usuń gospodarstwo'),
+            ),
+          ],
         ],
       ),
     );

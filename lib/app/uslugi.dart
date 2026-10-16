@@ -20,6 +20,7 @@ import '../funkcje/zabiegi/repozytorium_zabiegow.dart';
 import '../funkcje/zabiegi/slownik_srodkow.dart';
 import '../rdzen/dostep/dostep_funkcji.dart';
 import '../rdzen/reguly/regula_prawna.dart';
+import '../rdzen/uslugi/kopia/kopia_danych.dart';
 
 /// To, czego ekrany potrzebują do pracy. Składane raz, przy starcie aplikacji,
 /// i podawane dalej w konstruktorach — bez globalnych zmiennych, żeby testy
@@ -46,6 +47,7 @@ class Uslugi {
     required this.terminyAzotowe,
     required this.stado,
     required this.gospodarstwa,
+    required this.kopia,
     required this.kalendarz,
     required this.profil,
     required this.przypomnienia,
@@ -105,6 +107,9 @@ class Uslugi {
   /// Lista gospodarstw, wybór aktywnego i konto (plan, pkt 7).
   final RepozytoriumGospodarstw gospodarstwa;
 
+  /// Kopia danych do pliku — zawsze darmowa (plan, pkt 8).
+  final KopiaDanych kopia;
+
   /// Kalendarz obowiązków: terminy z przepisów i karencje z własnych zabiegów.
   final KalendarzTerminow kalendarz;
 
@@ -149,6 +154,7 @@ class Uslugi {
     terminyAzotowe: terminyAzotowe,
     stado: stado,
     gospodarstwa: gospodarstwa,
+    kopia: kopia,
     kalendarz: kalendarz,
     profil: profil,
     przypomnienia: przypomnienia,
