@@ -12,6 +12,7 @@ import '../funkcje/dzialki/repozytorium_pol.dart';
 import '../funkcje/nawozenie/ewidencja_nawozenia.dart';
 import '../funkcje/nawozenie/nawoz.dart';
 import '../funkcje/nawozenie/plan_nawozenia.dart';
+import '../funkcje/nawozenie/terminy_azotowe.dart';
 import '../funkcje/odczyt/odczyt_etykiety.dart';
 import '../funkcje/terminy/kalendarz_terminow.dart';
 import '../funkcje/terminy/ustawienia_przypomnien.dart';
@@ -65,6 +66,7 @@ Future<Uslugi> uruchom({
   );
 
   final reguly = await ZrodloRegul().wczytaj();
+  final gminyTerminow = await ZrodloGminTerminow().wczytaj();
   final stado = RepozytoriumStada(baza: baza, reguly: reguly);
 
   return Uslugi(
@@ -94,6 +96,11 @@ Future<Uslugi> uruchom({
       reguly: reguly,
     ),
     planNawozenia: PlanNawozenia(baza: baza, reguly: reguly),
+    terminyAzotowe: TerminyAzotowe(
+      baza: baza,
+      reguly: reguly,
+      gminy: gminyTerminow,
+    ),
     stado: stado,
     gospodarstwa: gospodarstwa,
     kalendarz: KalendarzTerminow(

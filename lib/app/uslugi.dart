@@ -7,6 +7,7 @@ import '../funkcje/dzialki/zrodlo_pliku.dart';
 import '../funkcje/nawozenie/ewidencja_nawozenia.dart';
 import '../funkcje/nawozenie/nawoz.dart';
 import '../funkcje/nawozenie/plan_nawozenia.dart';
+import '../funkcje/nawozenie/terminy_azotowe.dart';
 import '../funkcje/odczyt/czytnik_zdjecia.dart';
 import '../funkcje/odczyt/odczyt_etykiety.dart';
 import '../funkcje/terminy/kalendarz_terminow.dart';
@@ -42,6 +43,7 @@ class Uslugi {
     required this.nawozy,
     required this.nawozenie,
     required this.planNawozenia,
+    required this.terminyAzotowe,
     required this.stado,
     required this.gospodarstwa,
     required this.kalendarz,
@@ -94,6 +96,9 @@ class Uslugi {
   /// Zestawienie azotu i sprawdzenie, czy przepis wymaga planu nawożenia.
   final PlanNawozenia planNawozenia;
 
+  /// Graniczne terminy stosowania nawozów azotowych — z wykazem gmin.
+  final TerminyAzotowe terminyAzotowe;
+
   /// Rejestr stada: zwierzęta, zdarzenia i DJP.
   final RepozytoriumStada stado;
 
@@ -141,6 +146,7 @@ class Uslugi {
     nawozy: nawozy,
     nawozenie: nawozenie,
     planNawozenia: planNawozenia,
+    terminyAzotowe: terminyAzotowe,
     stado: stado,
     gospodarstwa: gospodarstwa,
     kalendarz: kalendarz,

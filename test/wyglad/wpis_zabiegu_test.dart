@@ -13,6 +13,7 @@ import 'package:agro_asystent/funkcje/dzialki/zrodlo_pliku.dart';
 import 'package:agro_asystent/funkcje/nawozenie/ewidencja_nawozenia.dart';
 import 'package:agro_asystent/funkcje/nawozenie/nawoz.dart';
 import 'package:agro_asystent/funkcje/nawozenie/plan_nawozenia.dart';
+import 'package:agro_asystent/funkcje/nawozenie/terminy_azotowe.dart';
 import 'package:agro_asystent/funkcje/odczyt/czytnik_zdjecia.dart';
 import 'package:agro_asystent/funkcje/odczyt/odczyt_etykiety.dart';
 import 'package:agro_asystent/funkcje/terminy/kalendarz_terminow.dart';
@@ -24,6 +25,7 @@ import 'package:agro_asystent/funkcje/zabiegi/repozytorium_zabiegow.dart';
 import 'package:agro_asystent/funkcje/zabiegi/slownik_srodkow.dart';
 import 'package:agro_asystent/funkcje/zwierzeta/stado.dart';
 import 'package:agro_asystent/rdzen/baza/baza_gospodarstwa.dart';
+import 'package:agro_asystent/rdzen/reguly/gminy_terminy.dart';
 import 'package:agro_asystent/rdzen/reguly/regula_prawna.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
@@ -170,6 +172,11 @@ void main() {
         reguly: reguly,
       ),
       planNawozenia: PlanNawozenia(baza: gospodarstwo, reguly: reguly),
+      terminyAzotowe: TerminyAzotowe(
+        baza: gospodarstwo,
+        reguly: reguly,
+        gminy: SlownikGminTerminow.pusty,
+      ),
       stado: RepozytoriumStada(baza: gospodarstwo, reguly: reguly),
       gospodarstwa: RepozytoriumGospodarstw(baza: gospodarstwo),
       kalendarz: KalendarzTerminow(

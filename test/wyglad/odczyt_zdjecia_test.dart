@@ -12,6 +12,7 @@ import 'package:agro_asystent/funkcje/dzialki/zrodlo_pliku.dart';
 import 'package:agro_asystent/funkcje/nawozenie/ewidencja_nawozenia.dart';
 import 'package:agro_asystent/funkcje/nawozenie/nawoz.dart';
 import 'package:agro_asystent/funkcje/nawozenie/plan_nawozenia.dart';
+import 'package:agro_asystent/funkcje/nawozenie/terminy_azotowe.dart';
 import 'package:agro_asystent/funkcje/odczyt/czytnik_zdjecia.dart';
 import 'package:agro_asystent/funkcje/odczyt/odczyt_etykiety.dart';
 import 'package:agro_asystent/funkcje/terminy/kalendarz_terminow.dart';
@@ -23,6 +24,7 @@ import 'package:agro_asystent/funkcje/zabiegi/repozytorium_zabiegow.dart';
 import 'package:agro_asystent/funkcje/zabiegi/slownik_srodkow.dart';
 import 'package:agro_asystent/funkcje/zwierzeta/stado.dart';
 import 'package:agro_asystent/rdzen/baza/baza_gospodarstwa.dart';
+import 'package:agro_asystent/rdzen/reguly/gminy_terminy.dart';
 import 'package:agro_asystent/rdzen/reguly/regula_prawna.dart';
 import 'package:agro_asystent/wyglad/prosty/motyw.dart';
 import 'package:agro_asystent/funkcje/zabiegi/dane_wpisu.dart';
@@ -140,6 +142,11 @@ void main() {
       reguly: reguly,
     ),
     planNawozenia: PlanNawozenia(baza: baza, reguly: reguly),
+    terminyAzotowe: TerminyAzotowe(
+      baza: baza,
+      reguly: reguly,
+      gminy: SlownikGminTerminow.pusty,
+    ),
     stado: RepozytoriumStada(baza: baza, reguly: reguly),
     gospodarstwa: RepozytoriumGospodarstw(baza: baza),
     kalendarz: KalendarzTerminow(

@@ -1,5 +1,5 @@
 {
-  "wersja": "2026.10.16",
+  "wersja": "2026.10.16.1",
   "obowiazuje_od": "2026-10-16",
   "opis": "Progi, limity i terminy obowiązków dokumentacyjnych. Dane, nie kod — aktualizowane bez przebudowy aplikacji. Zestawienie służy do planowania i nie jest poradą prawną.",
   "obowiazki": [
@@ -250,6 +250,59 @@
       "data": "2027-01-01",
       "status_weryfikacji": "potwierdzone",
       "uwagi": "Termin przenoszenia notatek za 2027 r. — sprawa otwarta (plan, pkt 10)."
+    },
+    {
+      "id": "azotany_naturalne_stale_grunty_orne",
+      "obowiazek": "program_azotanowy_ewidencja",
+      "nazwa": "Ostatni dzień na obornik na gruntach ornych",
+      "rodzaj": "data_roczna",
+      "data_roczna": "10-31",
+      "rodzaj_nawozu": "naturalne_stale",
+      "rodzaj_gruntu": "grunty_orne",
+      "co_to_za_nawoz": "obornik, pomiot ptasi",
+      "status_weryfikacji": "ze_strony_ministerstwa",
+      "zrodlo": "Ministerstwo Rolnictwa i Rozwoju Wsi, komunikat „Zasady i terminy stosowania jesienią nawozów zawierających azot” (22.10.2024), na podstawie Dz.U. 2023 poz. 244, rozdział 1.3, tabela 2",
+      "uwagi": "Data ze streszczenia ministerstwa; tabela 2 z rozdziału 1.3 programu nie była czytana. Potwierdź u doradcy."
+    },
+    {
+      "id": "azotany_naturalne_stale_tuz",
+      "obowiazek": "program_azotanowy_ewidencja",
+      "nazwa": "Ostatni dzień na obornik na łąkach i pastwiskach",
+      "rodzaj": "data_roczna",
+      "data_roczna": "11-30",
+      "rodzaj_nawozu": "naturalne_stale",
+      "rodzaj_gruntu": "tuz_uprawy_wieloletnie_trwale",
+      "co_to_za_nawoz": "obornik, pomiot ptasi",
+      "status_weryfikacji": "ze_strony_ministerstwa",
+      "zrodlo": "Ministerstwo Rolnictwa i Rozwoju Wsi, komunikat „Zasady i terminy stosowania jesienią nawozów zawierających azot” (22.10.2024), na podstawie Dz.U. 2023 poz. 244, rozdział 1.3, tabela 2",
+      "uwagi": "Data ze streszczenia ministerstwa; tabela 2 z rozdziału 1.3 programu nie była czytana. Potwierdź u doradcy."
+    },
+    {
+      "id": "azotany_mineralne_i_plynne_grunty_orne",
+      "obowiazek": "program_azotanowy_ewidencja",
+      "nazwa": "Ostatni dzień na gnojowicę i saletrę na gruntach ornych",
+      "rodzaj": "data_roczna",
+      "data_roczna": "10-20",
+      "rodzaj_nawozu": "mineralne_azotowe_i_naturalne_plynne",
+      "rodzaj_gruntu": "grunty_orne",
+      "co_to_za_nawoz": "nawozy azotowe mineralne, gnojowica, gnojówka",
+      "warianty_gmin": "nawozy_azotowe_grunty_orne",
+      "status_weryfikacji": "ze_strony_ministerstwa",
+      "zrodlo": "Ministerstwo Rolnictwa i Rozwoju Wsi, komunikat „Zasady i terminy stosowania jesienią nawozów zawierających azot” (22.10.2024), na podstawie Dz.U. 2023 poz. 244, rozdział 1.3, tabela 2",
+      "uwagi": "Data ze streszczenia ministerstwa; tabela 2 z rozdziału 1.3 programu nie była czytana. Potwierdź u doradcy."
+    },
+    {
+      "id": "azotany_mineralne_i_plynne_tuz",
+      "obowiazek": "program_azotanowy_ewidencja",
+      "nazwa": "Ostatni dzień na gnojowicę i saletrę na łąkach i pastwiskach",
+      "rodzaj": "data_roczna",
+      "data_roczna": "10-31",
+      "rodzaj_nawozu": "mineralne_azotowe_i_naturalne_plynne",
+      "rodzaj_gruntu": "tuz_uprawy_wieloletnie_trwale",
+      "co_to_za_nawoz": "nawozy azotowe mineralne, gnojowica, gnojówka",
+      "status_weryfikacji": "ze_strony_ministerstwa",
+      "zrodlo": "Ministerstwo Rolnictwa i Rozwoju Wsi, komunikat „Zasady i terminy stosowania jesienią nawozów zawierających azot” (22.10.2024), na podstawie Dz.U. 2023 poz. 244, rozdział 1.3, tabela 2",
+      "uwagi": "Data ze streszczenia ministerstwa; tabela 2 z rozdziału 1.3 programu nie była czytana. Potwierdź u doradcy."
     }
   ],
   "parametry_warunkowosci": [
@@ -832,6 +885,48 @@
         "nazwa": "Inne zwierzęta o łącznej masie 500 kg, z wyłączeniem ryb",
         "wspolczynnik": 1
       }
+    ]
+  },
+  "zasady_nawozenia_azotem": {
+    "status_weryfikacji": "ze_strony_ministerstwa",
+    "zrodlo": "Ministerstwo Rolnictwa i Rozwoju Wsi, komunikat „Zasady i terminy stosowania jesienią nawozów zawierających azot” (22.10.2024), na podstawie Dz.U. 2023 poz. 244, rozdział 1.3, tabela 2",
+    "sprawdzono": "2026-10-16",
+    "odstepstwa": [
+      {
+        "id": "niekorzystna_pogoda",
+        "nazwa": "Niekorzystne warunki pogodowe",
+        "do_dnia": "11-30",
+        "kiedy": "nadmierne uwilgotnienie gleby albo susza uniemożliwiły zbiór i nawożenie w terminie",
+        "dokumentowanie": "nie_wymaga",
+        "uwagi": "Rolnik sam ocenia warunki; program nie wymaga osobnych zapisów. Nawożenie nie może wyjść za koniec listopada."
+      },
+      {
+        "id": "uprawa_po_pozno_zbieranych",
+        "nazwa": "Uprawa zakładana jesienią po późno zbieranych",
+        "do_dnia": "11-30",
+        "kiedy": "zakładanie uprawy po buraku cukrowym, kukurydzy, przedplonach albo późnych warzywach",
+        "dokumentowanie": "wymaga",
+        "limit_azotu_kg_na_ha": 30,
+        "limit_dotyczy": "wieloskładnikowe nawozy mineralne dla zakładanej uprawy",
+        "wymagane_zapisy": [
+          "termin zbioru przedplonu",
+          "data zastosowania nawozu",
+          "zastosowane nawozy",
+          "dawka nawozu",
+          "termin siewu jesiennej uprawy"
+        ]
+      }
+    ],
+    "zakazy": [
+      {
+        "id": "gleba_niezdatna",
+        "nazwa": "Gleba zamarznięta, zalana, nasycona wodą albo pod śniegiem",
+        "opis": "Nawożenie jest zabronione bez względu na termin."
+      }
+    ],
+    "nie_dotyczy": [
+      "uprawy pod osłonami",
+      "uprawy kontenerowe"
     ]
   }
 }

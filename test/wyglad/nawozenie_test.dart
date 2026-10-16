@@ -12,6 +12,7 @@ import 'package:agro_asystent/funkcje/dzialki/zrodlo_pliku.dart';
 import 'package:agro_asystent/funkcje/nawozenie/ewidencja_nawozenia.dart';
 import 'package:agro_asystent/funkcje/nawozenie/nawoz.dart';
 import 'package:agro_asystent/funkcje/nawozenie/plan_nawozenia.dart';
+import 'package:agro_asystent/funkcje/nawozenie/terminy_azotowe.dart';
 import 'package:agro_asystent/funkcje/odczyt/czytnik_zdjecia.dart';
 import 'package:agro_asystent/funkcje/odczyt/odczyt_etykiety.dart';
 import 'package:agro_asystent/funkcje/terminy/kalendarz_terminow.dart';
@@ -24,6 +25,7 @@ import 'package:agro_asystent/funkcje/zabiegi/slownik_srodkow.dart';
 import 'package:agro_asystent/funkcje/zwierzeta/stado.dart';
 import 'package:agro_asystent/rdzen/baza/baza_gospodarstwa.dart';
 import 'package:agro_asystent/rdzen/modele/zabieg.dart';
+import 'package:agro_asystent/rdzen/reguly/gminy_terminy.dart';
 import 'package:agro_asystent/rdzen/reguly/regula_prawna.dart';
 import 'package:agro_asystent/wyglad/prosty/motyw.dart';
 import 'package:agro_asystent/wyglad/prosty/nawozenie/ekran_nawozenie.dart';
@@ -44,6 +46,16 @@ void main() {
 
   late Database baza;
   late Database slowniki;
+
+  Future<void> dodajDzialke(String identyfikator) =>
+      baza.insert('dzialka_ewidencyjna', {
+        'id': 'dz-$identyfikator',
+        'gospodarstwo_id': 'g1',
+        'identyfikator': identyfikator,
+        'utworzono': '2026-03-01T08:00:00',
+        'zmieniono': '2026-03-01T08:00:00',
+        'urzadzenie': 'telefon',
+      });
 
   Future<void> dodajPole({required int ar}) => baza.insert('dzialka_rolna', {
     'id': 'pole-$ar',
@@ -107,7 +119,7 @@ void main() {
     await slowniki.close();
   });
 
-  Uslugi zbudujUslugi() => Uslugi(
+  Uslugi zbudujUslugi({SlownikGminTerminow? gminy}) => Uslugi(
     gospodarstwoId: 'g1',
     nazwaGospodarstwa: 'Gospodarstwo próbne',
     urzadzenie: 'telefon',
@@ -134,6 +146,11 @@ void main() {
       reguly: reguly,
     ),
     planNawozenia: PlanNawozenia(baza: baza, reguly: reguly),
+    terminyAzotowe: TerminyAzotowe(
+      baza: baza,
+      reguly: reguly,
+      gminy: gminy ?? SlownikGminTerminow.pusty,
+    ),
     stado: RepozytoriumStada(baza: baza, reguly: reguly),
     gospodarstwa: RepozytoriumGospodarstw(baza: baza),
     kalendarz: KalendarzTerminow(
@@ -153,6 +170,15 @@ void main() {
       MaterialApp(theme: MotywProsty.zbuduj(), home: ekran),
     );
     await tester.pumpAndSettle();
+  }
+
+  /// Przewija listę aż szukany tekst się zbuduje. `scrollUntilVisible`
+  /// tu nie wystarcza, bo tekst występuje w kilku miejscach naraz.
+  Future<void> przewijajDo(WidgetTester tester, Finder czego) async {
+    for (var proba = 0; proba < 12 && czego.evaluate().isEmpty; proba++) {
+      await tester.drag(find.byType(Scrollable).first, const Offset(0, -300));
+      await tester.pumpAndSettle();
+    }
   }
 
   Future<void> przewinDo(WidgetTester tester, Finder czego) async {
@@ -218,6 +244,8 @@ void main() {
     // 20 t/ha × 0,5% = 100 kg N/ha na 10 ha; limit 170 kg N/ha.
     expect(find.textContaining('100 z 170 kg N/ha'), findsOneWidget);
     expect(find.textContaining('Zostało 700 kg azotu'), findsOneWidget);
+    // Karta terminów zepchnęła listę wpisów poniżej ekranu.
+    await przewijajDo(tester, find.textContaining('Obornik bydlęcy'));
     expect(find.textContaining('Obornik bydlęcy'), findsWidgets);
   });
 
@@ -288,6 +316,59 @@ void main() {
       findsOneWidget,
     );
     expect(find.textContaining('Plan sporządza doradca'), findsOneWidget);
+  });
+
+  testWidgets('karta terminów mówi, do kiedy wolno nawozić i czym', (
+    tester,
+  ) async {
+    await dodajPole(ar: 1000);
+    await pokaz(tester, EkranNawozenie(uslugi: zbudujUslugi()));
+
+    expect(find.textContaining('Do kiedy wolno nawozić'), findsOneWidget);
+    // Obornik na gruntach ornych do 31 października, na łąkach do 30 listopada.
+    expect(find.textContaining('do 31 października'), findsWidgets);
+    expect(find.textContaining('do 30 listopada'), findsWidgets);
+    // Gnojowica i saletra na gruntach ornych — termin domyślny 20 października.
+    expect(find.textContaining('do 20 października'), findsOneWidget);
+    expect(find.textContaining('gnojowica'), findsWidgets);
+
+    await przewinDo(tester, find.textContaining('zamarznięta'));
+    expect(find.textContaining('zamarznięta'), findsOneWidget);
+    expect(
+      find.textContaining('Niekorzystne warunki pogodowe'),
+      findsOneWidget,
+    );
+    expect(find.textContaining('30 kg N/ha'), findsOneWidget);
+    expect(
+      find.textContaining('ze streszczenia ministerstwa'),
+      findsOneWidget,
+      reason: 'daty nie są potwierdzone w tabeli 2 rozporządzenia',
+    );
+  });
+
+  testWidgets('gmina z wykazu zmienia termin na gruntach ornych', (
+    tester,
+  ) async {
+    final gminy = SlownikGminTerminow.zTekstuJson(
+      File('assets/dane/gminy_terminy_azotowe.json').readAsStringSync(),
+    );
+    final doPietnastego = gminy.warianty
+        .firstWhere((w) => w.dataRoczna == '10-15')
+        .gminy
+        .first;
+    await dodajPole(ar: 1000);
+    await dodajDzialke(
+      '${doPietnastego.substring(0, 6)}_${doPietnastego.substring(6)}.0001.1',
+    );
+
+    await pokaz(tester, EkranNawozenie(uslugi: zbudujUslugi(gminy: gminy)));
+
+    expect(find.textContaining('do 15 października'), findsOneWidget);
+    expect(
+      find.textContaining('do 20 października'),
+      findsNothing,
+      reason: 'w tej gminie termin domyślny nie obowiązuje',
+    );
   });
 }
 

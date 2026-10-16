@@ -254,6 +254,11 @@ class Termin {
     this.dni,
     this.data,
     this.zdarzenie,
+    this.rodzajNawozu,
+    this.rodzajGruntu,
+    this.coToZaNawoz,
+    this.wariantyGmin,
+    this.zrodlo = '',
   });
 
   factory Termin.zJson(Map<String, dynamic> json) => Termin(
@@ -269,6 +274,11 @@ class Termin {
     dni: json['dni'] as int?,
     data: json['data'] as String?,
     zdarzenie: json['zdarzenie'] as String?,
+    rodzajNawozu: json['rodzaj_nawozu'] as String?,
+    rodzajGruntu: json['rodzaj_gruntu'] as String?,
+    coToZaNawoz: json['co_to_za_nawoz'] as String?,
+    wariantyGmin: json['warianty_gmin'] as String?,
+    zrodlo: json['zrodlo'] as String? ?? '',
   );
 
   final String id;
@@ -290,6 +300,21 @@ class Termin {
   /// Zdarzenie, od którego liczy się termin (np. „urodzenie”). Mapowanie
   /// jest danymi, więc nowy termin nie wymaga zmiany kodu.
   final String? zdarzenie;
+
+  /// Czego termin dotyczy: rodzaj nawozu i rodzaj gruntu ze słownika.
+  /// Terminy nawożenia zależą od obu, więc muszą być danymi.
+  final String? rodzajNawozu;
+  final String? rodzajGruntu;
+
+  /// Nazwy nawozów po rolniczemu — na ekran, nie na wydruk.
+  final String? coToZaNawoz;
+
+  /// Nazwa zestawu wykazów gmin, które zmieniają ten termin
+  /// (`assets/dane/gminy_terminy_azotowe.json`).
+  final String? wariantyGmin;
+
+  /// Skąd wzięliśmy datę — pokazujemy to przy terminie do sprawdzenia.
+  final String zrodlo;
 
   /// Termin wymagający sprawdzenia u doradcy przed naborem (plan, pkt 10).
   bool get doWeryfikacji => statusWeryfikacji != 'potwierdzone';
@@ -391,6 +416,120 @@ class WspolczynnikiDjp {
       grupy.where((g) => g.gatunek == gatunek).toList(growable: false);
 }
 
+/// Odstępstwo od granicznego terminu nawożenia — kiedy wolno później
+/// i czego przepis wtedy wymaga.
+class OdstepstwoNawozenia {
+  const OdstepstwoNawozenia({
+    required this.id,
+    required this.nazwa,
+    required this.kiedy,
+    required this.doDnia,
+    required this.wymagaDokumentowania,
+    required this.wymaganeZapisy,
+    this.limitAzotuKgNaHa,
+    this.limitDotyczy,
+    this.uwagi = '',
+  });
+
+  factory OdstepstwoNawozenia.zJson(Map<String, dynamic> json) =>
+      OdstepstwoNawozenia(
+        id: json['id'] as String,
+        nazwa: json['nazwa'] as String,
+        kiedy: json['kiedy'] as String? ?? '',
+        doDnia: json['do_dnia'] as String?,
+        wymagaDokumentowania: json['dokumentowanie'] == 'wymaga',
+        wymaganeZapisy:
+            ((json['wymagane_zapisy'] as List<dynamic>?) ?? const [])
+                .map((z) => z as String)
+                .toList(growable: false),
+        limitAzotuKgNaHa: (json['limit_azotu_kg_na_ha'] as num?)?.toDouble(),
+        limitDotyczy: json['limit_dotyczy'] as String?,
+        uwagi: json['uwagi'] as String? ?? '',
+      );
+
+  final String id;
+  final String nazwa;
+
+  /// W jakiej sytuacji odstępstwo działa.
+  final String kiedy;
+
+  /// „MM-DD" — do kiedy wolno nawozić w tej sytuacji.
+  final String? doDnia;
+
+  final bool wymagaDokumentowania;
+
+  /// Co trzeba zapisać, gdy rolnik korzysta z odstępstwa.
+  final List<String> wymaganeZapisy;
+
+  final double? limitAzotuKgNaHa;
+  final String? limitDotyczy;
+  final String uwagi;
+}
+
+/// Zakaz nawożenia niezależny od terminu.
+class ZakazNawozenia {
+  const ZakazNawozenia({
+    required this.id,
+    required this.nazwa,
+    required this.opis,
+  });
+
+  factory ZakazNawozenia.zJson(Map<String, dynamic> json) => ZakazNawozenia(
+    id: json['id'] as String,
+    nazwa: json['nazwa'] as String,
+    opis: json['opis'] as String? ?? '',
+  );
+
+  final String id;
+  final String nazwa;
+  final String opis;
+}
+
+/// Zasady stosowania nawozów azotowych poza samymi datami: odstępstwa,
+/// zakazy i wyłączenia. Wszystko danymi, bo zmienia się z przepisem.
+class ZasadyNawozeniaAzotem {
+  const ZasadyNawozeniaAzotem({
+    required this.statusWeryfikacji,
+    required this.zrodlo,
+    required this.odstepstwa,
+    required this.zakazy,
+    required this.nieDotyczy,
+  });
+
+  static const ZasadyNawozeniaAzotem puste = ZasadyNawozeniaAzotem(
+    statusWeryfikacji: 'brak',
+    zrodlo: '',
+    odstepstwa: [],
+    zakazy: [],
+    nieDotyczy: [],
+  );
+
+  factory ZasadyNawozeniaAzotem.zJson(Map<String, dynamic> json) =>
+      ZasadyNawozeniaAzotem(
+        statusWeryfikacji: json['status_weryfikacji'] as String? ?? 'nieznany',
+        zrodlo: json['zrodlo'] as String? ?? '',
+        odstepstwa: ((json['odstepstwa'] as List<dynamic>?) ?? const [])
+            .map((o) => OdstepstwoNawozenia.zJson(o as Map<String, dynamic>))
+            .toList(growable: false),
+        zakazy: ((json['zakazy'] as List<dynamic>?) ?? const [])
+            .map((z) => ZakazNawozenia.zJson(z as Map<String, dynamic>))
+            .toList(growable: false),
+        nieDotyczy: ((json['nie_dotyczy'] as List<dynamic>?) ?? const [])
+            .map((w) => w as String)
+            .toList(growable: false),
+      );
+
+  final String statusWeryfikacji;
+  final String zrodlo;
+  final List<OdstepstwoNawozenia> odstepstwa;
+  final List<ZakazNawozenia> zakazy;
+
+  /// Uprawy, których terminy nie dotyczą (np. pod osłonami).
+  final List<String> nieDotyczy;
+
+  bool get doWeryfikacji => statusWeryfikacji != 'potwierdzone';
+}
+
 /// Cały słownik reguł prawnych — dane z numerem wersji, nie kod.
 class SlownikRegul {
   const SlownikRegul({
@@ -400,6 +539,7 @@ class SlownikRegul {
     required this.terminy,
     required this.parametryWarunkowosci,
     this.wspolczynnikiDjp = WspolczynnikiDjp.puste,
+    this.zasadyNawozeniaAzotem = ZasadyNawozeniaAzotem.puste,
   });
 
   factory SlownikRegul.zTekstuJson(String tekst) =>
@@ -423,6 +563,11 @@ class SlownikRegul {
         : WspolczynnikiDjp.zJson(
             json['wspolczynniki_djp'] as Map<String, dynamic>,
           ),
+    zasadyNawozeniaAzotem: json['zasady_nawozenia_azotem'] == null
+        ? ZasadyNawozeniaAzotem.puste
+        : ZasadyNawozeniaAzotem.zJson(
+            json['zasady_nawozenia_azotem'] as Map<String, dynamic>,
+          ),
   );
 
   final String wersja;
@@ -433,6 +578,14 @@ class SlownikRegul {
 
   /// Przeliczniki zwierząt na DJP — dane, nie stałe w kodzie.
   final WspolczynnikiDjp wspolczynnikiDjp;
+
+  /// Odstępstwa, zakazy i wyłączenia przy nawożeniu azotem.
+  final ZasadyNawozeniaAzotem zasadyNawozeniaAzotem;
+
+  /// Graniczne terminy stosowania nawozów — te, które mówią o rodzaju
+  /// nawozu i rodzaju gruntu.
+  List<Termin> get terminyNawozenia =>
+      terminy.where((t) => t.rodzajNawozu != null).toList(growable: false);
 
   Obowiazek? obowiazek(String id) =>
       obowiazki.where((o) => o.id == id).firstOrNull;

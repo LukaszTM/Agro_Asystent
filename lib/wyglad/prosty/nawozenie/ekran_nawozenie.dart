@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import '../../../app/uslugi.dart';
 import '../../../funkcje/nawozenie/ewidencja_nawozenia.dart';
 import '../../../funkcje/nawozenie/plan_nawozenia.dart';
+import '../../../funkcje/nawozenie/terminy_azotowe.dart';
+import '../../../rdzen/reguly/regula_prawna.dart';
 import '../motyw.dart';
 import '../widgety/duzy_przycisk.dart';
 import 'ekran_nawozy.dart';
@@ -24,6 +26,7 @@ class _EkranNawozenieState extends State<EkranNawozenie> {
       StanLimituAzotu limit,
       ZestawienieAzotu zestawienie,
       List<WpisNawozenia> wpisy,
+      TerminyGospodarstwa terminyGmin,
     })
   >
   _dane;
@@ -43,6 +46,7 @@ class _EkranNawozenieState extends State<EkranNawozenie> {
       StanLimituAzotu limit,
       ZestawienieAzotu zestawienie,
       List<WpisNawozenia> wpisy,
+      TerminyGospodarstwa terminyGmin,
     })
   >
   _policz() async {
@@ -61,7 +65,15 @@ class _EkranNawozenieState extends State<EkranNawozenie> {
       widget.uslugi.gospodarstwoId,
       sezon: limit.sezon,
     );
-    return (limit: limit, zestawienie: zestawienie, wpisy: wpisy);
+    final terminyGmin = await widget.uslugi.terminyAzotowe.dlaGospodarstwa(
+      widget.uslugi.gospodarstwoId,
+    );
+    return (
+      limit: limit,
+      zestawienie: zestawienie,
+      wpisy: wpisy,
+      terminyGmin: terminyGmin,
+    );
   }
 
   @override
@@ -74,6 +86,7 @@ class _EkranNawozenieState extends State<EkranNawozenie> {
               StanLimituAzotu limit,
               ZestawienieAzotu zestawienie,
               List<WpisNawozenia> wpisy,
+              TerminyGospodarstwa terminyGmin,
             })
           >(
             future: _dane,
@@ -102,6 +115,12 @@ class _EkranNawozenieState extends State<EkranNawozenie> {
                     ),
                     const SizedBox(height: MotywProsty.odstep),
                   ],
+                  _TerminyJesienne(
+                    terminy: widget.uslugi.reguly.terminyNawozenia,
+                    zasady: widget.uslugi.reguly.zasadyNawozeniaAzotem,
+                    wGminach: stan.data!.terminyGmin,
+                  ),
+                  const SizedBox(height: MotywProsty.odstep),
                   Text(
                     'Azot na polach w ${zestawienie.sezon} r.',
                     style: Theme.of(context).textTheme.titleLarge,
@@ -282,6 +301,162 @@ class _Limit extends StatelessWidget {
               'azotu — te nie są policzone.',
               style: Theme.of(context).textTheme.bodyMedium
                   ?.copyWith(color: MotywProsty.ostrzezenieObramowanie),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+/// Do kiedy wolno stosować nawozy azotowe — z rozbiciem na rodzaj nawozu
+/// i rodzaj gruntu, bo przepis daje inną datę dla obornika i dla gnojowicy.
+///
+/// Dla gruntów ornych termin zależy od gminy: wykazy z załączników do
+/// programu azotanowego są danymi, a kod tylko dopasowuje gminę działki.
+class _TerminyJesienne extends StatelessWidget {
+  const _TerminyJesienne({
+    required this.terminy,
+    required this.zasady,
+    required this.wGminach,
+  });
+
+  final List<Termin> terminy;
+  final ZasadyNawozeniaAzotem zasady;
+  final TerminyGospodarstwa wGminach;
+
+  static String _dzien(String dataRoczna) {
+    final czesci = dataRoczna.split('-');
+    if (czesci.length != 2) {
+      return dataRoczna;
+    }
+    const miesiace = [
+      'stycznia',
+      'lutego',
+      'marca',
+      'kwietnia',
+      'maja',
+      'czerwca',
+      'lipca',
+      'sierpnia',
+      'września',
+      'października',
+      'listopada',
+      'grudnia',
+    ];
+    final miesiac = int.tryParse(czesci.first);
+    final dzien = int.tryParse(czesci.last);
+    if (miesiac == null || dzien == null || miesiac < 1 || miesiac > 12) {
+      return dataRoczna;
+    }
+    return '$dzien ${miesiace[miesiac - 1]}';
+  }
+
+  /// Data dla tego terminu: z wykazu gmin, gdy przepis go przewiduje
+  /// i gminy działek są znane; inaczej domyślna ze słownika.
+  String? _data(Termin termin) {
+    if (termin.wariantyGmin != null && !wGminach.pusty) {
+      return wGminach.najwczesniejszy;
+    }
+    return termin.dataRoczna;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (terminy.isEmpty) {
+      return const SizedBox.shrink();
+    }
+    final niepewne =
+        zasady.doWeryfikacji || terminy.any((t) => t.doWeryfikacji);
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(MotywProsty.odstep),
+      decoration: BoxDecoration(
+        color: MotywProsty.powierzchnia,
+        borderRadius: BorderRadius.circular(MotywProsty.zaokraglenieDuze),
+        border: Border.all(color: MotywProsty.powierzchniaDruga, width: 2),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Do kiedy wolno nawozić',
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
+          const SizedBox(height: 8),
+          for (final termin in terminy) ...[
+            Padding(
+              padding: const EdgeInsets.only(bottom: 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '${termin.coToZaNawoz ?? termin.nazwa}: '
+                    'do ${_dzien(_data(termin) ?? '')}',
+                    style: Theme.of(context).textTheme.bodyLarge,
+                  ),
+                  Text(
+                    termin.rodzajGruntu == 'grunty_orne'
+                        ? 'grunty orne'
+                        : 'łąki, pastwiska, uprawy wieloletnie i trwałe',
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                ],
+              ),
+            ),
+          ],
+          if (wGminach.rozneTerminy) ...[
+            const SizedBox(height: 4),
+            Text(
+              'Twoje działki leżą w gminach o różnych terminach. '
+              'Powyżej stoi najwcześniejszy — pilnuj go, albo sprawdź '
+              'termin osobno dla każdego pola.',
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+          ],
+          if (wGminach.dzialkiBezKoduGminy > 0) ...[
+            const SizedBox(height: 4),
+            Text(
+              'Przy ${wGminach.dzialkiBezKoduGminy} działkach nie rozpoznaliśmy '
+              'gminy — dla nich termin może być inny.',
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+          ],
+          for (final zakaz in zasady.zakazy) ...[
+            const SizedBox(height: MotywProsty.odstep),
+            Ostrzezenie(tresc: zakaz.nazwa, coZrobic: zakaz.opis),
+          ],
+          for (final odstepstwo in zasady.odstepstwa) ...[
+            const SizedBox(height: MotywProsty.odstep),
+            Text(
+              '${odstepstwo.nazwa} — wolno do '
+              '${_dzien(odstepstwo.doDnia ?? '')}',
+              style: Theme.of(context).textTheme.bodyLarge,
+            ),
+            Text(
+              odstepstwo.kiedy,
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+            if (odstepstwo.limitAzotuKgNaHa != null)
+              Text(
+                'Najwyżej ${odstepstwo.limitAzotuKgNaHa!.toStringAsFixed(0)} '
+                'kg N/ha — ${odstepstwo.limitDotyczy ?? ''}.',
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+            if (odstepstwo.wymagaDokumentowania)
+              Text(
+                'Trzeba zapisać: ${odstepstwo.wymaganeZapisy.join(', ')}.',
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+          ],
+          if (niepewne) ...[
+            const SizedBox(height: MotywProsty.odstep),
+            const Ostrzezenie(
+              tresc: 'Daty pochodzą ze streszczenia ministerstwa.',
+              coZrobic:
+                  'Potwierdź u doradcy, zanim wyjedziesz w pole — wykaz gmin '
+                  'jest z rozporządzenia, same daty nie.',
             ),
           ],
         ],
