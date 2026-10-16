@@ -1,6 +1,6 @@
 {
-  "wersja": "2026.10.15.2",
-  "obowiazuje_od": "2026-10-15",
+  "wersja": "2026.10.16",
+  "obowiazuje_od": "2026-10-16",
   "opis": "Progi, limity i terminy obowiązków dokumentacyjnych. Dane, nie kod — aktualizowane bez przebudowy aplikacji. Zestawienie służy do planowania i nie jest poradą prawną.",
   "obowiazki": [
     {
@@ -270,9 +270,9 @@
   ],
   "wspolczynniki_djp": {
     "status_weryfikacji": "potwierdzone",
-    "zrodlo": "Dz.U. 2020 poz. 243 — Program działań mających na celu zmniejszenie zanieczyszczenia wód azotanami pochodzącymi ze źródeł rolniczych, załącznik nr 1, tabela 3",
-    "sprawdzono": "2026-10-15",
-    "uwagi": "Pełna tabela 3 z programu działań: nazwy grup przepisane dosłownie z rozporządzenia, bo tak czyta je kontrola. Gatunki stoją w kolejności od najczęstszych w polskich gospodarstwach — ekran wyboru pokazuje pierwsze z listy, resztę po naciśnięciu „Więcej zwierząt”.",
+    "zrodlo": "Dz.U. 2023 poz. 244 — rozporządzenie Rady Ministrów z 31 stycznia 2023 r. w sprawie Programu działań mających na celu zmniejszenie zanieczyszczenia wód azotanami pochodzącymi ze źródeł rolniczych, załącznik nr 1, tabela 3",
+    "sprawdzono": "2026-10-16",
+    "uwagi": "Pełna tabela 3 z programu azotanowego: nazwy grup przepisane dosłownie z rozporządzenia, bo tak czyta je kontrola. Gatunki stoją w kolejności od najczęstszych w polskich gospodarstwach — ekran wyboru pokazuje pierwsze z listy, resztę po naciśnięciu „Więcej zwierząt”.",
     "grupy": [
       {
         "id": "bydlo_buhaj",
@@ -343,14 +343,14 @@
       {
         "id": "swinie_warchlak",
         "gatunek": "świnie",
-        "nazwa": "Warchlaki od 2 miesiąca do 4 miesiąca",
-        "wspolczynnik": 0.07
+        "nazwa": "Warchlaki",
+        "wspolczynnik": 0.04
       },
       {
         "id": "swinie_prosie",
         "gatunek": "świnie",
-        "nazwa": "Prosięta do 2 miesiąca",
-        "wspolczynnik": 0.02
+        "nazwa": "Prosięta",
+        "wspolczynnik": 0.01
       },
       {
         "id": "swinie_tucznik",
@@ -579,6 +579,54 @@
         "gatunek": "osioł",
         "nazwa": "Osioł do 1 roku",
         "wspolczynnik": 0.07
+      },
+      {
+        "id": "lamy_samice_powyzej_1_roku",
+        "gatunek": "lamy",
+        "nazwa": "Samice powyżej 1 roku",
+        "wspolczynnik": 0.2
+      },
+      {
+        "id": "lamy_samce_powyzej_1_roku",
+        "gatunek": "lamy",
+        "nazwa": "Samce powyżej 1 roku",
+        "wspolczynnik": 0.19
+      },
+      {
+        "id": "lamy_mlode_od_pol_do_1_roku",
+        "gatunek": "lamy",
+        "nazwa": "Młode od ½ do 1 roku",
+        "wspolczynnik": 0.12
+      },
+      {
+        "id": "lamy_cieleta_do_pol_roku",
+        "gatunek": "lamy",
+        "nazwa": "Cielęta/cria do ½ roku",
+        "wspolczynnik": 0.05
+      },
+      {
+        "id": "alpaki_samice_powyzej_1_roku",
+        "gatunek": "alpaki",
+        "nazwa": "Samice powyżej 1 roku",
+        "wspolczynnik": 0.11
+      },
+      {
+        "id": "alpaki_samce_powyzej_1_roku",
+        "gatunek": "alpaki",
+        "nazwa": "Samce powyżej 1 roku",
+        "wspolczynnik": 0.12
+      },
+      {
+        "id": "alpaki_mlode_od_pol_do_1_roku",
+        "gatunek": "alpaki",
+        "nazwa": "Młode od ½ do 1 roku",
+        "wspolczynnik": 0.05
+      },
+      {
+        "id": "alpaki_cieleta_do_pol_roku",
+        "gatunek": "alpaki",
+        "nazwa": "Cielęta/cria do ½ roku",
+        "wspolczynnik": 0.03
       },
       {
         "id": "jelenie_sika_byki",

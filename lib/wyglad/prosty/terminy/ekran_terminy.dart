@@ -11,9 +11,13 @@ import '../widgety/duzy_przycisk.dart';
 /// Terminy pochodzą ze słownika reguł i z karencji po własnych zabiegach.
 /// Każdy ma jedno zdanie „co zrobić" — zgodnie z zasadą z planu (pkt 5).
 class EkranTerminy extends StatefulWidget {
-  const EkranTerminy({super.key, required this.uslugi});
+  const EkranTerminy({super.key, required this.uslugi, this.teraz});
 
   final Uslugi uslugi;
+
+  /// Dzień, od którego liczymy terminy. W aplikacji zawsze „dzisiaj";
+  /// testy podają stałą datę, żeby wynik nie zmieniał się z dnia na dzień.
+  final DateTime? teraz;
 
   @override
   State<EkranTerminy> createState() => _EkranTerminyState();
@@ -21,6 +25,9 @@ class EkranTerminy extends StatefulWidget {
 
 class _EkranTerminyState extends State<EkranTerminy> {
   late Future<List<PozycjaKalendarza>> _pozycje;
+
+  DateTime get _teraz => widget.teraz ?? DateTime.now();
+
   late Future<bool> _przypomnieniaWlaczone;
   bool _przelaczam = false;
 
@@ -42,6 +49,7 @@ class _EkranTerminyState extends State<EkranTerminy> {
     return widget.uslugi.kalendarz.najblizsze(
       gospodarstwoId: widget.uslugi.gospodarstwoId,
       profil: profil,
+      teraz: widget.teraz,
     );
   }
 
@@ -83,7 +91,7 @@ class _EkranTerminyState extends State<EkranTerminy> {
 
       final pozycje = await _pozycje;
       await widget.uslugi.przypomnienia.zaplanuj(
-        PlanPrzypomnien.uloz(pozycje, teraz: DateTime.now()),
+        PlanPrzypomnien.uloz(pozycje, teraz: _teraz),
       );
       await widget.uslugi.ustawieniaPrzypomnien.zapisz(wlaczone: true);
       if (mounted) {
@@ -109,7 +117,7 @@ class _EkranTerminyState extends State<EkranTerminy> {
             return const Center(child: CircularProgressIndicator());
           }
           final pozycje = stan.data!;
-          final teraz = DateTime.now();
+          final teraz = _teraz;
 
           return ListView(
             padding: const EdgeInsets.all(MotywProsty.odstep),

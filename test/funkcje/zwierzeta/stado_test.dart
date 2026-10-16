@@ -72,9 +72,9 @@ void main() {
       expect(
         wspolczynniki.doWeryfikacji,
         isFalse,
-        reason: 'tabela 3 z programu działań została sprawdzona',
+        reason: 'tabela 3 z programu azotanowego została sprawdzona',
       );
-      expect(wspolczynniki.zrodlo, contains('Dz.U. 2020 poz. 243'));
+      expect(wspolczynniki.zrodlo, contains('Dz.U. 2023 poz. 244'));
     });
 
     test('nazwy grup są przepisane z rozporządzenia', () {
@@ -85,10 +85,43 @@ void main() {
         'Tuczniki, loszki i knurki hodowlane',
       );
       expect(
+        wspolczynniki.grupa('swinie_prosie')?.wspolczynnik,
+        0.01,
+        reason: 'program z 2023 r. zmienił prosięta z 0,02 na 0,01',
+      );
+      expect(
+        wspolczynniki.grupa('swinie_warchlak')?.wspolczynnik,
+        0.04,
+        reason: 'program z 2023 r. zmienił warchlaki z 0,07 na 0,04',
+      );
+      expect(
         wspolczynniki.grupa('inne_zwierzeta_500_kg')?.wspolczynnik,
         1.0,
         reason: 'wiersz „inne zwierzęta o łącznej masie 500 kg"',
       );
+    });
+
+    test('lamy i alpaki nie są pomylone mimo tych samych nazw grup', () {
+      // W rozporządzeniu stoją w dwóch kolumnach obok siebie i mają
+      // identyczne nazwy grup — łatwo je pomylić przy przepisywaniu.
+      final wspolczynniki = reguly.wspolczynnikiDjp;
+      expect(
+        wspolczynniki.grupa('lamy_samice_powyzej_1_roku')?.wspolczynnik,
+        0.2,
+      );
+      expect(
+        wspolczynniki.grupa('lamy_samce_powyzej_1_roku')?.wspolczynnik,
+        0.19,
+      );
+      expect(
+        wspolczynniki.grupa('alpaki_samice_powyzej_1_roku')?.wspolczynnik,
+        0.11,
+      );
+      expect(
+        wspolczynniki.grupa('alpaki_samce_powyzej_1_roku')?.wspolczynnik,
+        0.12,
+      );
+      expect(wspolczynniki.gatunki, containsAll(['lamy', 'alpaki']));
     });
 
     test('niesprawdzony słownik nadal każe potwierdzić wynik u doradcy', () {

@@ -58,13 +58,17 @@ void main() {
     });
   }
 
+  // Stały dzień odniesienia: inaczej test pękałby za każdym razem, gdy
+  // dzisiejsza data minie termin ze słownika (GAEC 6 to 15 października).
+  final teraz = DateTime(2026, 10, 1);
+
   Future<void> dodajOpryskZKarencja() async {
     await RepozytoriumZabiegow(baza).zapisz(
       zabieg: Zabieg(
         id: 'z1',
         gospodarstwoId: 'g1',
         rodzaj: RodzajZabiegu.oprysk,
-        data: DateTime.now().subtract(const Duration(days: 2)),
+        data: teraz.subtract(const Duration(days: 2)),
         powierzchniaAr: 2400,
         urzadzenie: 'telefon',
       ),
@@ -150,7 +154,7 @@ void main() {
     await tester.pumpWidget(
       MaterialApp(
         theme: MotywProsty.zbuduj(),
-        home: EkranTerminy(uslugi: zbudujUslugi()),
+        home: EkranTerminy(uslugi: zbudujUslugi(), teraz: teraz),
       ),
     );
     await tester.pumpAndSettle();
