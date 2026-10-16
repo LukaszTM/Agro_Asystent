@@ -15,6 +15,10 @@ dependencies:
 
   # Lokalna baza — rdzeń trybu offline-first (Android: natywne SQLite).
   sqflite: ^2.4.4+1
+  # SQLite na komputerze (Windows, Linux) — program na PC z planu (pkt 1)
+  # nie ma natywnego SQLite systemu, więc bierze bibliotekę ze sobą.
+  # Ta sama droga służy testom bazy i migracji bez emulatora.
+  sqflite_common_ffi: ^2.4.3
   # Ścieżki plików i katalogi systemowe (baza, kopie zapasowe, eksport).
   path: ^1.9.1
   path_provider: ^2.1.6
@@ -39,9 +43,6 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0
-  # SQLite na komputerze — testy bazy i migracji bez emulatora;
-  # ta sama droga posłuży programowi na Windows.
-  sqflite_common_ffi: ^2.4.3
 
 flutter:
   uses-material-design: true

@@ -1,7 +1,6 @@
 import 'package:path/path.dart' as sciezki;
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:path_provider/path_provider.dart';
-import 'package:sqflite/sqflite.dart' as sqflite;
 import 'package:sqflite_common/sqlite_api.dart';
 
 import '../funkcje/dokumenty/usluga_dokumentow.dart';
@@ -30,8 +29,8 @@ import '../rdzen/baza/przygotowanie_slownikow.dart';
 import '../rdzen/dostep/dostep_funkcji.dart';
 import '../rdzen/reguly/zrodlo_regul.dart';
 import '../rdzen/uslugi/kopia/kopia_danych.dart';
+import 'platforma.dart';
 import 'uslugi.dart';
-import 'czytnik_zdjecia_urzadzenia.dart';
 import 'przypomnienia_urzadzenia.dart';
 import 'wyjscie_dokumentu_urzadzenia.dart';
 import 'zrodlo_pliku_urzadzenia.dart';
@@ -44,28 +43,33 @@ import 'zrodlo_pliku_urzadzenia.dart';
 Future<Uslugi> uruchom({
   DatabaseFactory? fabryka,
   String? katalogDanych,
-  String urzadzenie = 'telefon',
+  String? urzadzenie,
+  Platforma? platforma,
   DostepFunkcji dostep = const DostepFunkcji.darmowa(),
 }) async {
-  final fabrykaBazy = fabryka ?? sqflite.databaseFactory;
+  // Telefon i komputer dostają się do SQLite inaczej (patrz `platforma.dart`);
+  // dalszy kod widzi już tę samą bazę.
+  final gdzie = platforma ?? Platforma.biezaca();
+  final nazwaUrzadzenia = urzadzenie ?? gdzie.nazwaUrzadzenia;
+  final fabrykaDanych = fabryka ?? fabrykaBazy(gdzie);
   final katalog =
       katalogDanych ?? (await getApplicationDocumentsDirectory()).path;
 
   final baza = await BazaGospodarstwa.otworz(
-    fabryka: fabrykaBazy,
+    fabryka: fabrykaDanych,
     sciezka: sciezki.join(katalog, BazaGospodarstwa.nazwaPliku),
   );
   final gospodarstwa = RepozytoriumGospodarstw(baza: baza, dostep: dostep);
   final gospodarstwo = await _zapewnijGospodarstwo(
     gospodarstwa,
     baza,
-    urzadzenie,
+    nazwaUrzadzenia,
   );
 
   final sciezkaSlownikow = await const PrzygotowanieSlownikow().przygotuj(
     katalog: katalog,
   );
-  final slowniki = await fabrykaBazy.openDatabase(
+  final slowniki = await fabrykaDanych.openDatabase(
     sciezkaSlownikow,
     options: OpenDatabaseOptions(readOnly: true, singleInstance: false),
   );
@@ -77,7 +81,7 @@ Future<Uslugi> uruchom({
   return Uslugi(
     gospodarstwoId: gospodarstwo.id,
     nazwaGospodarstwa: gospodarstwo.nazwa,
-    urzadzenie: urzadzenie,
+    urzadzenie: nazwaUrzadzenia,
     pola: RepozytoriumPol(baza),
     dzialki: RepozytoriumDzialek(baza),
     zabiegi: RepozytoriumZabiegow(baza),
@@ -93,7 +97,7 @@ Future<Uslugi> uruchom({
       czcionki: wczytajCzcionkiWydruku,
       wyjscie: const WyjscieDokumentuUrzadzenia(),
     ),
-    czytnikZdjecia: CzytnikZdjeciaUrzadzenia(),
+    czytnikZdjecia: czytnikZdjecia(gdzie),
     czytnikEtykiety: CzytnikEtykiety(SlownikSrodkow(slowniki)),
     nawozy: RepozytoriumNawozow(baza),
     nawozenie: EwidencjaNawozenia(

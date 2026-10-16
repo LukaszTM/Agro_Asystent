@@ -34,14 +34,16 @@ telefonie, bez serwera i bez żadnej opłaty za to, czego wymagają przepisy.
 | **Kody EPPO upraw konwencjonalnych** (luka 2) | ewidencja SOR wymaga kodu EPPO uprawy; automat z P3 dał 44,7% i miał pięć kodów gatunków dzikich | `kody-eppo-uprawy-polskie.md` |
 | **Maksymalne dawki azotu dla 126 upraw** (luka 4) | tabela 14 programu azotanowego — ostrzeżenie pada przed zapisem dawki, a nie po kontroli | `maksymalne-dawki-azotu.md` |
 | **Cztery ekrany formularzowe w wyglądzie nowoczesnym** (luka 9) | rolnik musiał przełączać wygląd, żeby dodać działkę, wczytać wniosek, dopisać nawóz albo poprawić dane gospodarstwa | `etap1-nowoczesny-ekrany-formularzowe.md` |
+| **Podpis wydawniczy i instrukcja wydania** (luka 2) | wydanie podpisywało się kluczem debugowym: nowszy plik nie wgrywał się na wierzch, a Google Play takiego nie przyjmie | `docs/wydanie-android.md` |
+| **Dołączanie danych z drugiego urządzenia** (luka 11, część) | plan (pkt 2) obiecuje synchronizację przez dysk użytkownika; dwa telefony nie dały się pogodzić | `etap1-synchronizacja-przez-plik.md` |
 
 ## Liczby
 
 | Miara | Wartość |
 | --- | --- |
-| Pliki kodu w `lib/` | 113 |
-| Pliki testów | 39 |
-| Testy | **394** |
+| Pliki kodu w `lib/` | 114 |
+| Pliki testów | 40 |
+| Testy | **407** |
 | `flutter analyze` | bez ostrzeżeń |
 | `dart format` | bez zmian |
 | Migracje bazy | 4 |
@@ -73,15 +75,17 @@ widać, co już nie wraca.
 ### Zanim aplikacja trafi na telefon
 
 1. **Aplikacja nie była ani raz uruchomiona na prawdziwym telefonie.**
-   Cała weryfikacja to 394 testy i analizator — w kontenerze sesji nie ma
+   Cała weryfikacja to 407 testów i analizator — w kontenerze sesji nie ma
    Android SDK. Pierwsze uruchomienie może pokazać rzeczy, których test nie
    widzi: wielkość tekstu w ręce, zachowanie klawiatury, czas startu,
    uprawnienia do aparatu i powiadomień.
-2. **Podpis wydawniczy.** `android/app/build.gradle.kts` podpisuje wydanie
-   kluczem debugowym (TODO z szablonu Fluttera). Skutki: każdy build ma inny
-   podpis, więc nowszy plik nie wgra się „na wierzch" starego, a do Google
-   Play taki plik nie wejdzie. Potrzebny keystore i cztery sekrety
-   w repozytorium.
+2. ~~**Podpis wydawniczy**~~ — strona kodu gotowa: Gradle bierze klucz
+   z `android/key.properties` albo z sekretów repozytorium, a bez klucza
+   podpisuje kluczem debugowym i mówi o tym w logu
+   (`docs/wydanie-android.md`). **Zostaje do zrobienia przez właściciela:**
+   wygenerowanie pliku `.jks` (`keytool`, potrzebny komputer) i dodanie
+   czterech sekretów. Klucza nie generuję i nie mam go widzieć — jego
+   utrata zamyka drogę do aktualizacji w Google Play.
 3. ~~**Przepływ „Zbuduj APK" nie został przetestowany**~~ — trzeci
    przebieg przeszedł: plik `agro-asystent-0.1.0+1.apk` (94 MB) leży
    w wydaniu `apk-test`. Dwie poprawki po drodze: `setup-android`
@@ -124,10 +128,13 @@ widać, co już nie wraca.
     nie ma płatności (brak zależności do Google Play Billing). Wszystko,
     czego wymaga prawo, jest darmowe, więc to nie blokuje rolnika; blokuje
     przychód.
-11. **Synchronizacja i program na Windows** — plan (pkt 2) obiecuje
-    synchronizację przez dysk użytkownika; dziś jest tylko kopia do pliku
-    i wczytanie jej do pustej aplikacji. Katalog `windows/` istnieje
-    z szablonu, ale program nie był budowany ani raz.
+11. **Program na Windows** — katalog `windows/` istnieje z szablonu, ale
+    program nie był budowany ani raz (w kontenerze sesji nie ma Windows).
+    Synchronizacja przez dysk użytkownika **jest zrobiona**: „Dołącz dane
+    z drugiego urządzenia" scala plik kopii z tym, co w telefonie —
+    nowszy wpis wygrywa, starszy zostaje w dzienniku zmian
+    (`etap1-synchronizacja-przez-plik.md`). Nie ma jeszcze automatycznego
+    wykrywania nowszego pliku na dysku — rolnik wskazuje go sam.
 12. **Rejestr stada do wydruku** — wymaga urzędowego układu kolumn IRZplus;
     dotyczy ścieżki rozwoju (produkcja zwierzęca poza zakresem, ADR-0007).
 
