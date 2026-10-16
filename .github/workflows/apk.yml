@@ -1,7 +1,9 @@
 # Budowanie pliku APK do wgrania na telefon.
 #
-# Uruchamia się ręcznie (Actions → „Zbuduj APK" → Run workflow), bo pełny
-# build trwa kilka minut i nie ma sensu po każdym commicie z dokumentacją.
+# Uruchamia się ręcznie (Actions → „Zbuduj APK" → Run workflow) albo po
+# wypchnięciu znacznika `apk-*` — ten drugi sposób działa z każdej gałęzi,
+# także przed scaleniem do `main`. Nie buduje przy każdym commicie, bo pełny
+# build trwa kilka minut.
 # Wynik można pobrać dwojako: jako artefakt (plik .zip) albo — wygodniej na
 # telefonie — jako plik .apk dołączony do wydania „apk-test".
 name: Zbuduj APK
@@ -15,6 +17,7 @@ on:
         default: true
   push:
     branches: [main]
+    tags: ['apk-*']
 
 permissions:
   contents: write
@@ -64,7 +67,7 @@ jobs:
           retention-days: 14
 
       - name: Wydanie do pobrania na telefon
-        if: inputs.wydanie
+        if: github.event_name != 'workflow_dispatch' || inputs.wydanie
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
