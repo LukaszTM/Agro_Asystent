@@ -1,4 +1,153 @@
 nazwa_uprawy;kod_eppo;nazwa_eppo;stan;zrodlo;data
+aksamitka;;"aksamitka wniesiona=TAGER; aksamitka rozpierzchla=TAGPA; aksamitka wanskolistna=TAGTE";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+aktinidia;;"aktinidia chinska=ATICH; aktinidia ostrolistna=ATIAR; aktinidia pstrolistna=ATIKO";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+arbuz;;"arbuz kolokwinta=CITCO; arbuz zwyczajny=CITLA";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+aronia;;"aronia czerwona=ABOAR; aronia czarna=ABOME; aronia czarnoowocowa=ABOME; aronia sliwolistna=ABOPR";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+aster;;"aster solny=ASTTR; aster gawedka=ASTAM; aster wierzbolistny=ZMYSA; aster alpejski=ASTAL; aster karlowaty=ASTDU";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+azalia;;"azalia japonska=RHOJA; azalia letnia=GODGR; azalia pontyjska=RHOLV";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+banan;;MUBPA;do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+begonia;;"begonia stale kwitnaca=BEGCH; begonia bulwiasta=BEGKH";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+berberys;;"berberys mieszancowy=BEBHY; berberys koreanski=BEBKO; berberys ottawski=BEBOT; berberys brodawkowaty=BEBVR; berberys zwy";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+bluszcz;;HEEHE;do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+buk;;"buk pospolity podolski=FAUMO; buk zwyczajny=FAUSY; buk pospolity=FAUSY; buk pospolity wschodni=FAUSO";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+burak;;"burak cukrowy=BEAVA; burak pospolity=BEAVX; burak zwyczajny=BEAVX; burak dziki=BEAVM";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+chmiel;;"chmiel japonski=HUMJA; chmiel zwyczajny=HUMLU";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+chryzantema;;"chryzantema zawadskiego=CHYZA; chryzantema rozowa=CHYCC";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+chrzan;;ARWLA;do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+ciecierzyca;;CIEAR;do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+cis;;"cis pospolity=TAXBA; cis japonski=TAXCU; cis posredni=TAXME";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+cyklamen;;CYZPU;do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+cykoria;;"cykoria endywia=CICEN; cykoria podroznik=CICIN; cykoria podroznik siewna=CICIS";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+cynia;;"cynia wytworna=ZIIEL; cynia zdobna=ZIIEL; cynia haagego=ZIIHA; cynia waskolistna=ZIIHA";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+cyprysik;;"cyprysik nutkajski=CHCNO; cyprysik lawsona=CHCLA; cyprysik groszkowy=CHCPI; cyprysik zywotnikowaty=CHCTH";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+cytryna;;CIDLI;do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+czeremcha;;"czeremcha amerykanska=PRNSO; czeremcha wirginijska=PRNVG; czeremcha skalna=PRNPW; czeremcha zwyczajna=PRNPA";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+czosnek;;"czosnek dety=ALLFI; czosnek olbrzymi=ALLGI; czosnek katowaty=ALLAN; czosnek szczypiorek=ALLSC; czosnek niedzwiedzi=ALLUR";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+dalia;;"dalia szkarlatna=DAHCO; dalia ogrodowa=DAHHY";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+dynia;;"dynia olbrzymia=CUUMA; dynia pizmowa=CUUMO; dynia zwyczajna=CUUPE";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+dzięgiel;;"dziegiel lesny=ANKSY; dziegiel litwor=ANKAR";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+dąb;;"dab bialy=QUEAL; dab kaukaski=QUEMA; dab wielkoowosowy=QUEMC; dab czerwony=QUERU; dab skalny=QUECC";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+fasola;;"fasola wielokwiatowa=PHSCO; fasola zwykla=PHSVX";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+fenkuł;;FOEVU;do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+floks;;"floks kanadyjski=POXDI; floks wiechowaty=POXPA; floks szydlasty=POXSU; floks roczny=POXDR; floks letni=POXDR";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+forsycja;;"forsycja zwisla=FOSSU; forsycja posrednia=FOSIN";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+funkia;;"funkia bialobrzega=HSTSB; funkia bialoobrzezona=HSTSB; funkia niebieska=HSTVE; funkia sina=HSTSI; funkia siebolda=HSTSI";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+gorczyca;;"gorczyca polna=SINAR; gorczyca jasna=SINAL; gorczyca biala=SINAL; gorczyca czarna=BRSNI";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+goździk;;"gozdzik chinski=DINCH; gozdzik skupiony=DINBC; gozdzik widelkowaty=DINDE; gozdzik kropkowany=DINDE; gozdzik kosmaty=DINA";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+groch;;"groch zwyczajny=PIBSX; groch zwyczajny polny=PIBSA; groch polny=PIBSX";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+grusza;;"grusza ussuryjska=PYUUS; grusza polna=PYUPS; grusza dzika=PYUPS; grusza sniezna=PYUNI; grusza pospolita=PYUCO";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+gryka;;"gryka zwyczajna=FAGES; gryka tatarka=FAGTA; gryka zielona=FAGTA";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+głóg;;"glog jednoszykowy=CSCMO; glog dwuszyjkowy=CSCOX; glog wachlarzowaty=CSCFL; glog odgietodzialkowy lindmanna=CSCLI; glog w";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+irys;;"irys brodkowy=IRIGE; irys niski=IRIPU";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+jałowiec;;"jalowiec kolczasty=IUPOO; jalowiec plozacy=IUPHO; jalowiec sawina=IUPSA; jalowiec sabinski=IUPSA; jalowiec skalny=IUPSE";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+jaśmin;;IASNU;do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+jeżyna;;"jezyna krzewiasta=RUBFR; jezyna faldowana=RUBFR; jezyna popielica=RUBCA; jezyna kaukaska=RUBAE; jezyna dwubarwna=RUBBF";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+jodła;;"jodla pospolita=ABIAL; jodla grecka=ABICE; jodla olbrzymia=ABIGR; jodla kaukaska=ABINO; jodla borysa=ABIBO";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+jęczmień;;"jeczmien plony=HORMU; jeczmien plonny=HORMU; jeczmien dwurzedowy=HORDI; jeczmien pawi=HORDZ; jeczmien grzywiasty=HORJU";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+kalia;;ZNTAE;do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+kapusta;;"kapusta chinska=BRSCH; kapusta pekinska=BRSPK; kapusta warzywna glowiasta=BRSOL; kapusta warzywna brukselka=BRSOF; kapus";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+kawa;;"kawa arabska=COFAR; kawa kongijska=COFCA";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+kolendra;;CORSA;do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+komonica;;"komonica skrzydlatostrakowa=TTGMA; komonica zwyczajna=LOTCO; komonica blotna=LOTUL; komonica rozkowa=LOTCO; komonica was";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+koniczyna;;"koniczyna polna=TRFAR; koniczyna roznoogonkowa=TRFCA; koniczyna drobnoglowkowa=TRFDU; koniczyna rozdeta=TRFFR; koniczyna";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+konopie;;"konopie siewne=CNISA; konopie dzikie=CNIRU";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+koper;;"koper ogrodowy=AFEGR; koper wlocki=FOEVU; koper wloski=FOEVS";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+krokus;;"krokus neapolitanski=CVONA; krokus zlocisty=CVOCH; krokus zolty=CVOFL; krokus wiosenny=CVOVE; krokus dwukwiatowy=CVOBI";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+krwawnik;;"krwawnik wiazowkowaty zolty=ACHFI; krwawnik sudecki=ACHMS; krwawnik pospolity=ACHMI; krwawnik pagorkowy=ACHCO; krwawnik ";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+laurowiśnia;;PRNLR;do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+lawenda;;LAVAN;do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+len;;"len trwaly=LIUPE; len zwyczajny=LIUUT; len przeczyszczajacy=LIUCA; len wlochaty=LIUHI; len zlocisty=LIUFL";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+leszczyna;;"leszczyna turecka=CYLCO; leszczyna drzewiasta=CYLCO; leszczyna poludniowa=CYLMA; leszczyna dlugookrywowa=CYLMA; leszczyn";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+ligustr;;"ligustr tepolistny=LIGOB; ligustr japonski=LIGJA";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+lilia;;"lilia stepowa=EMUEL; lilia zlocista=LILAU; lilia henryego=LILHE; lilia zlotoglow=LILMA; lilia bulwkowata=LILBU";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+lobelia;;"lobelia jeziorna=LOBDO; lobelia przyladkowa=LOBER";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+lubczyk;;LEWOF;do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+lucerna;;"lucerna sztywna=MEDRI; lucerna nerkowata=MEDLU; lucerna sierpowata=MEDFA; lucerna piaskowa=MEDVA; lucerna posrednia=MEDV";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+lukrecja;;"lukrecja gladka=GYCGL; lukrecja najezona=GYCEC";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+magnolia;;"magnolia drzewiasta=MAGAC; magnolia parasolowata=MAGTR; magnolia purpurowa=MAGLI; magnolia gwiazdzista=MAGST; magnolia s";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+mak;;"mak atlantycki=PAPAT; mak niebieski=MEPBE; mak lekarski=PAPSO; mak wschodni=PAPOR; mak przytulonowlosy=PAPRH";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+malina;;"malina wlasciwa=RUBID; malina moroszka=RUBCH; malina kamionka=RUBSA";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+marchew;;DAUCA;do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+mieczyk;;"mieczyk ogrodowy=GLAHY; mieczyk drobnokwiatowy=GLAPA; mieczyk blotny=GLAPA; mieczyk dachowkowaty=GLAIM";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+mietlica;;"mietlica olbrzymia=AGSGI; mietlica rozlogowa=AGSST; mietlica wakolisciowa=AGSCA; mietlica psia=AGSCA; mietlica piaskowa=";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+miskant;;MISSI;do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+mięta;;"mieta pieprzowa=MENPC; mieta okragolistna=MENRO; mieta dlugolistna=MENLO; mieta okregowa=MENVE; mieta wodna=MENAQ";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+modrzew;;"modrzew japonski=LAXLE; modrzew posredni=LAXEU; modrzew eurojaponski=LAXEU; modrzew dahurski=LAXGM; modrzew syberyjski=L";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+morela;;PRNAR;do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+morwa;;"morwa czerwona=MORRU; morwa czarna=MORNI; morwa biala=MORAL";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+nagietek;;"nagietek polny=CLDAR; nagietek lekarski=CLDOF";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+narcyz;;"narcyz trabkowy=NARPS; narcyz bialy=NARPO; narcyz wielokwiatowy=NARTA; narcyz cyklamenowaty=NARCY; narcyz zonkil=NARJO";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+nasiona;;CRIHA;do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+nasturcja;;TOPMA;do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+niecierpek;;"niecierpek gruczolowaty=IPAGL; niecierpek balsamina=IPABA; niecierpek pospolity=IPANT; niecierpek pomaranczowy=IPACA; ni";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+nostrzyk;;"nostrzyk zolty=MEUOF; nostrzyk bialy=MEUAL; nostrzyk wolzanski=MEUWO; nostrzyk zabkowany=MEUDE; nostrzyk wyniosly=MEUAT";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+ogórek;;"ogorek melon=CUMME; ogorek siewny=CUMSA";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+oleander;;NEROL;do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+orzech;;"orzech laskowy=CYLAV; orzech siebolda=IUGAI; orzech ajlantolistny=IUGAI; orzech szary=IUGCI; orzech czarny=IUGNI";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+papryka;;CPSAN;do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+pasternak;;"pasternak zwyczajny=PAVSA; pasternak cmy=PAVUR";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+pelargonia;;"pelargonia pasiasta=PELZO; pelargonia wielkokwiatowa=PELGR";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+petunia;;PEUHY;do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+pierwiosnek;;"pierwiosnek zabkowany=PRIDE; pierwiosnek gruzinski=PRIJH; pierwiosnek lyszczak=PRIAU; pierwiosnek wyniosly=PRIEL; pierwi";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+pietruszka;;PARCR;do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+pigwa;;CYDOB;do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+pigwowiec;;"pigwowiec japonski=CNMJA; pigwowiec chinski=CNMSP; pigwowiec okazaly=CNMSP; pigwowiec wlasciwy=CNMSP; pigwowiec posredni";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+piwonia;;"piwonia krzewiasta=PAOSU; piwonia lekarska=PAOOF; piwonia chinska=PAOLA; piwonia koralowa=PAOMA";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+pomarańcza;;"pomarancza gorzka=CIDAU; pomarancza olbrzymia=CIDGR; pomarancza trojlistkowa=PMITR; pomarancza slodka=CIDSI; pomarancza ";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+portulaka;;"portulaka pospolita=POROL; portulaka wielkokwiatowa=PORGR; portulaka pospolita siewna=POROS";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+porzeczka;;"porzeczka zwyczajna=RIBRU; porzeczka alpejska=RIBAP; porzeczka krwista=RIBSA; porzeczka zlota=RIBAU; porzeczka agrest=RI";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+poziomka;;"poziomka pospolita=FRAVE; poziomka truskawka=FRAAN; poziomka wysoka=FRAMO; poziomka twardawa=FRAVR";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+przelot;;"przelot pospolity=AYLVU; przelot alpejski=AYLVA";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+pszenica;;TRZMO;do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+rabarbar;;"rabarbar kedzierzawy=RHERH; rabarbar syberyjski=RHERH; rabarbar ogrodowy=RHERH; rabarbar lekarski=RHEOF; rabarbar dlonia";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+rajgras;;"rajgras wyniosly=ARREL; rajgras francuski=ARREL; rajgras angielski=LOLPE";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+rojnik;;"rojnik pospolity=IOVSO; rojnik wlochaty=IOVHI; rojnik pajeczynowaty=SEPAR; rojnik gorski=SEPMO; rojnik murowy=SEPTE";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+rokitnik;;HIORH;do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+rukiew;;"rukiew drobnolistna=NAAMI; rukiew wodna=NAAOF";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+rzodkiew;;"rzodkiew swirzepa=RAPRA; rzodkiew zwyczajna=RAPSR";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+róża;;"roza dahurska=ROSDV; roza karolinska=ROSCL; roza igielkowata=ROSAC; roza dzika=ROSCN; roza wielokwiatowa=ROSMU";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+różanecznik;;"rozanecznik katawbijski=RHOCW; rozanecznik olbrzymi=RHOMX; rozanecznik japonski=RHOJA; rozanecznik alpejski=RHOFE; rozan";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+sałata;;"salata trwala=LACPE; salata siewna=LACSA; salata kompasowa=LACSE; salata solna=LACSL; salata wierzbolistna=LACSL";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+seradela;;"seradela siewna=OROSA; seradela pastewna=OROSA; seradela drobna=OROPE";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+soczewica;;LENCU;do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+sorgo;;SORHA;do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+sosna;;"sosna armanda=PIUAR; sosna limba syberyjska=PIUSB; sosna koreanska=PIUKO; sosna drzewokosa=PIURH; sosna schwerina=PIUSH";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+szałwia;;"szalwia drobnolistna=SALMC; szalwia blyszczaca=SALSP; szalwia lepka=SALGL; szalwia omszona=SALNE; szalwia gajowa=SALNE";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+szczaw;;"szczaw polny=RUMAA; szczaw tarczolistny=RUMSC; szczaw gorski=RUMAR; szczaw zwyczajny=RUMAC; szczaw alpejski=RUMAL";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+szczodrzeniec;;"szczodrzeniec czerniejacy=LBTNI; szczodrzeniec wlochaty=CCJHI; szczodrzeniec szorstki=CCJHI; szczodrzeniec rozeslany=CCJ";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+szpinak;;"szpinak warzywny=SPQOL; szpinak nowozelandzki=TEATE";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+sępolia;;SNPIO;do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+słonecznik;;"slonecznik zwyczajny=HELAN; slonecznik pozny=HELTU; slonecznik bulwiasty=HELTU; slonecznik dziesiecioplatkowy=HELDA; slo";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+tawułka;;ATLAH;do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+tytoń;;"tyton skrzydlaty=NIOAL; tyton oskrzydlony=NIOAL; tyton szlachetny=NIOTA; tyton bakun=NIORU";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+werbena;;"werbena ogrodowa=VEBHY; werbena pospolita=VEBOF; werbena lekarska=VEBOF; werbena patagonska=VEBBO; werbena cytrynowa=ALY";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+wierzba;;"wierzba mupinska=SAXMP; wierzba slaska=SAXSJ; wierzba placzaca=SAXSC; wierzba sniada=SAXSK; wierzba zylkowana=SAXRE";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+wilczomlecz;;"wilczomlecz blyszczacy=EPHLU; wilczomlecz lancetowaty=EPHES; wilczomlecz obrotny=EPHHE; wilczomlecz wlosisty=EPHVI; wilc";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+winorośl;;"winorosl balonowa=CRIHA; winorosl wlasciwa=VITVI; winorosl szminka=AYNLO; winorosl wlasciwa typowa=VITVI; winorosl wlasc";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+wiśnia;;"wisnia karlowata=PRNFR; wisnia pilkowana=PRNSL; wisnia wonna=PRNMH; wisnia szkliwka=PRNCE; wisnia pospolita=PRNCE";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+wyka;;"wyka pstra=VICVV; wyka plotowa=VICSE; wyka waskolistna=VICAN; wyka drobnokwiatowa=VICHI; wyka ptasia=VICCR";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+wyżlin;;"wyzlin wiekszy=ATHMM; wyzlin polny=ATHOR";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+zawilec;;"zawilec wiencowy=ANMCO; zawilec gajowy=ANMNE; zawilec zolty=ANMRA; zawilec wielkokwiatowy=ANMSY; zawilec lesny=ANMSY";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+złocień;;"zlocien zawadskiego=CHYZA; zlocien rozowy=CHYCC; zlocien zlasciwy=CHYLE; zlocien krzewiasty=CHYFR; zlocien wiencowy=CHYC";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+łubin;;"lubin indyjski=LUPMU; lubin waskolistny=LUPAN; lubin bialy=LUPAL; lubin zolty=LUPLU; lubin trwaly=LUPPO";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+łyszczec;;"lyszczec nadobny=GYPEL; lyszczec wiechowaty=GYPPA; lyszczec polny=GYPMU; lyszczec rozeslany=GYPRE; lyszczec baldaszkogro";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+śliwa;;"sliwa domowa renkloda=PRNDI; sliwa domowa mirabelka=PRNDS; sliwa tarnina=PRNSN; sliwa domowa=PRNDO; sliwa wisniowa=PRNCF";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+świerk;;"swierk pospolity=PIEAB; swierk sitkajski=PIESI; swierk serbski=PIEOM; swierk engelmanna=PIEEN; swierk bialy=PIEGA";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+żarnowiec;;SAOSC;do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+żurawina;;VACOX;do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+żyto;;SECCE;do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+żywotnik;;"zywotnik wschodni=THUOR; zywotnik olbrzymi=THUPL; zywotnik zachodni=THUOC; zywotnik koreanski=THUKO";do_decyzji;podpowiedź z bazy EPPO — wymaga rozstrzygnięcia, dopowiedzenie może oznaczać inny gatunek;2026-10-16
+doniczki;;;nie_uprawa;miejsce stosowania albo przedmiot, nie roślina (raport P3);2026-10-16
+nasypy;;;nie_uprawa;miejsce stosowania albo przedmiot, nie roślina (raport P3);2026-10-16
+noże;;;nie_uprawa;miejsce stosowania albo przedmiot, nie roślina (raport P3);2026-10-16
+sekatory;;;nie_uprawa;miejsce stosowania albo przedmiot, nie roślina (raport P3);2026-10-16
+siew jesienny;;;nie_uprawa;miejsce stosowania albo przedmiot, nie roślina (raport P3);2026-10-16
+siew wiosenny;;;nie_uprawa;miejsce stosowania albo przedmiot, nie roślina (raport P3);2026-10-16
+skrzynie do przechowywania;;;nie_uprawa;miejsce stosowania albo przedmiot, nie roślina (raport P3);2026-10-16
+stoły;;;nie_uprawa;miejsce stosowania albo przedmiot, nie roślina (raport P3);2026-10-16
+uprawa pod osłonami;;;nie_uprawa;miejsce stosowania albo przedmiot, nie roślina (raport P3);2026-10-16
+uprawa w szklarni;;;nie_uprawa;miejsce stosowania albo przedmiot, nie roślina (raport P3);2026-10-16
+worki;;;nie_uprawa;miejsce stosowania albo przedmiot, nie roślina (raport P3);2026-10-16
 jabłoń;MABSD;Malus domestica;potwierdzone;propozycja z bazy EPPO, potwierdzona przez użytkownika;2026-10-15
 jęczmień jary;HORVS;barley (spring);potwierdzone;propozycja z bazy EPPO, potwierdzona przez użytkownika;2026-10-15
 jęczmień ozimy;HORVW;barley (winter);potwierdzone;decyzja użytkownika;2026-10-15
@@ -17,3 +166,7 @@ rzepak jary;BRSNS;rape (spring);potwierdzone;propozycja z bazy EPPO, potwierdzon
 rzepak ozimy;BRSNW;rape (winter);potwierdzone;decyzja użytkownika;2026-10-15
 żyto jare;SECCS;rye (spring);potwierdzone;propozycja z bazy EPPO, potwierdzona przez użytkownika;2026-10-15
 żyto ozime;SECCW;rye (winter);potwierdzone;propozycja z bazy EPPO, potwierdzona przez użytkownika;2026-10-15
+bukszpan;BUXSE;"bukszpan zwyczajny; bukszpan wiecznie zielony";propozycja;wszyscy kandydaci z bazy EPPO wskazują ten sam kod;2026-10-16
+facelia;PHCTA;"facelia mniejsza; facelia wrotyczolistna; facelia błękitna";propozycja;wszyscy kandydaci z bazy EPPO wskazują ten sam kod;2026-10-16
+lewkonia;MTLIN;"maciejka ogrodowa; lewkonia szara; lewkonia letnia";propozycja;wszyscy kandydaci z bazy EPPO wskazują ten sam kod;2026-10-16
+soja;GLXMA;"soja warzywna; soja owłosiona";propozycja;wszyscy kandydaci z bazy EPPO wskazują ten sam kod;2026-10-16

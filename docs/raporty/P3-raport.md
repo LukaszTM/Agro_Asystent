@@ -196,3 +196,73 @@ z pliku.
 Dostarczy trzecią stronę słownika: nazwy upraw używane przez ARiMR we wniosku.
 Potrzebny będzie zanonimizowany wzorzec wniosku (prawdziwy nie może trafić do
 repozytorium).
+
+## Kody EPPO — druga próba automatu, 16.10.2026
+
+Zadanie: ruszyć listę 63 upraw czekających na decyzję, nie wymyślając kodów.
+Powstał `tools/p3_slownik_upraw/propozycje_eppo.py`.
+
+### Co się dało rozstrzygnąć bez domysłu
+
+Jedna reguła jest logicznie wymuszona: gdy nazwa z rejestru ma w EPPO
+kilku kandydatów, ale **wszyscy wskazują ten sam kod**, to kod jest ten sam
+niezależnie od tego, którą nazwę uznamy za właściwą.
+
+| Uprawa | Kod | Nazwy w EPPO |
+| --- | --- | --- |
+| soja | GLXMA | soja warzywna; soja owłosiona |
+| bukszpan | BUXSE | bukszpan zwyczajny; bukszpan wiecznie zielony |
+| lewkonia | MTLIN | maciejka ogrodowa; lewkonia szara; lewkonia letnia |
+| facelia | PHCTA | facelia mniejsza; facelia wrotyczolistna |
+
+Razem 284 zastosowania w rejestrze. Każdy kod skrypt sprawdza w bazie EPPO:
+musi istnieć i mieć aktualną polską nazwę. Wpisy mają `stan = propozycja` —
+czekają na potwierdzenie właściciela projektu.
+
+### Czego **nie** wolno automatyzować — i dlaczego
+
+Druga reguła wyglądała równie bezpiecznie: jeden kandydat z dopowiedzeniem,
+np. „marchew" → „marchew zwyczajna" `DAUCA`. Uruchomiona na całej liście dała
+32 propozycje, wśród nich trzy fałszywe:
+
+| Uprawa z rejestru | Automat proponował | Co to naprawdę jest |
+| --- | --- | --- |
+| pszenica | TRZMO — „pszenica płaskurka" | inny gatunek; pszenica zwyczajna to TRZAX |
+| sorgo | SORHA — „sorgo alepskie" | **chwast**, nie uprawa |
+| nasiona | CRIHA — „winorośl balonowa" | „nasiona" nie jest rośliną |
+
+Dopowiedzenie w nazwie EPPO potrafi oznaczać **inny gatunek**, a kształt
+nazwy tego nie odróżnia („sorgo alepskie" wygląda tak samo jak „marchew
+zwyczajna"). Reguła została więc wycofana: te nazwy trafiają do pliku
+decyzji ze stanem `do_decyzji` i podpowiedzią — widać je, ale aplikacja ich
+nie użyje. Reguła z P3 („kodów dla tych upraw nie wpiszę sam") obroniła się.
+
+### Dziura w zabezpieczeniu, znaleziona przy okazji
+
+`wczytaj_kody_eppo` brało z pliku decyzji **każdy wiersz z kodem**, nie
+patrząc na kolumnę `stan`. Dopóki plik miał tylko decyzje potwierdzone,
+nic się nie działo; po dopisaniu propozycji kod niepotwierdzony wszedłby do
+słownika jako pewny i wyszedł na wydruku ewidencji jako fakt. Teraz do
+słownika wchodzą **tylko wiersze `potwierdzone`**, a skrypt wypisuje, ile
+i jakich pominął.
+
+### Co uprawą nie jest
+
+Jedenaście nazw z kolumny „uprawa" rejestru dostało `stan = nie_uprawa`:
+uprawa pod osłonami, uprawa w szklarni, doniczki, noże, sekatory, stoły,
+worki, skrzynie do przechowywania, nasypy, siew jesienny, siew wiosenny.
+Nigdy nie dostaną kodu EPPO i nie mają zaniżać pokrycia — to miejsca
+stosowania i przedmioty, zgodnie z wnioskiem z P3.
+
+### Stan pliku decyzji
+
+| Stan | Wpisów |
+| --- | --- |
+| `potwierdzone` | 18 |
+| `propozycja` (do potwierdzenia) | 4 |
+| `do_decyzji` (z podpowiedzią) | 138 |
+| `nie_uprawa` | 11 |
+
+Pokrycie zastosowań gotowym kodem: **44,7%**. Potwierdzenie czterech
+propozycji daje 45,5%; dalszy wzrost wymaga rozstrzygnięć z listy
+`do_decyzji` — ułożonej od upraw najczęstszych w rejestrze.

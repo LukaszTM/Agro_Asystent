@@ -138,26 +138,52 @@ def zbierz_warianty(baza: Path) -> dict[str, set[str]]:
 
 
 def wczytaj_kody_eppo(sciezka: Path) -> dict[str, str]:
-    """Kody EPPO z pliku CSV (kolumny: nazwa, kod) jako postać porównawcza → kod.
+    """Kody EPPO z pliku decyzji jako postać porównawcza → kod.
 
     Kodów nie wymyślamy ani nie zgadujemy — pochodzą wyłącznie z pliku
     wskazanego przez użytkownika (baza EPPO albo wykaz urzędowy).
+
+    Gdy plik ma kolumnę `stan`, bierzemy **tylko wiersze potwierdzone**.
+    Propozycja i podpowiedź nie mogą wejść do słownika jako kod pewny:
+    trafiłyby na wydruk ewidencji jako fakt (P3).
     """
     kody: dict[str, str] = {}
+    pominiete: dict[str, int] = {}
     with sciezka.open(encoding="utf-8-sig", newline="") as plik:
         próbka = plik.read(2048)
         plik.seek(0)
         rozdzielnik = ";" if próbka.count(";") >= próbka.count(",") else ","
-        czytnik = csv.reader(plik, delimiter=rozdzielnik)
-        naglowek = next(czytnik, None)
-        if naglowek and not re.fullmatch(r"[A-Z0-9]{5,6}", (naglowek[1] or "").strip()):
-            pass  # pierwszy wiersz to nagłówek — pomijamy
+        pierwszy = next(csv.reader(plik, delimiter=rozdzielnik), None) or []
+        plik.seek(0)
+
+        ma_naglowek = not re.fullmatch(
+            r"[A-Z0-9]{5,6}", (pierwszy[1] if len(pierwszy) > 1 else "").strip()
+        )
+        if ma_naglowek:
+            czytnik = csv.DictReader(plik, delimiter=rozdzielnik)
+            nazwy_kolumn = czytnik.fieldnames or []
+            kolumna_nazwy = nazwy_kolumn[0]
+            kolumna_kodu = nazwy_kolumn[1]
+            for wiersz in czytnik:
+                stan = (wiersz.get("stan") or "potwierdzone").strip()
+                nazwa = (wiersz.get(kolumna_nazwy) or "").strip()
+                kod = (wiersz.get(kolumna_kodu) or "").strip().upper()
+                if not nazwa or not kod:
+                    continue
+                if stan != "potwierdzone":
+                    pominiete[stan] = pominiete.get(stan, 0) + 1
+                    continue
+                kody[postac_porownawcza(nazwa)] = kod
         else:
-            plik.seek(0)
-            czytnik = csv.reader(plik, delimiter=rozdzielnik)
-        for wiersz in czytnik:
-            if len(wiersz) >= 2 and wiersz[0].strip() and wiersz[1].strip():
-                kody[postac_porownawcza(wiersz[0])] = wiersz[1].strip().upper()
+            for wiersz in csv.reader(plik, delimiter=rozdzielnik):
+                if len(wiersz) >= 2 and wiersz[0].strip() and wiersz[1].strip():
+                    kody[postac_porownawcza(wiersz[0])] = wiersz[1].strip().upper()
+
+    for stan, ile in sorted(pominiete.items()):
+        print(
+            f"  pominięto {ile} wierszy ze stanem {stan!r}: "
+            "do słownika wchodzą tylko potwierdzone"
+        )
     return kody
 
 
