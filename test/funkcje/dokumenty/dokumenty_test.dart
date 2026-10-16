@@ -5,6 +5,7 @@ import 'dart:typed_data';
 import 'package:agro_asystent/funkcje/dokumenty/dokument_ewidencji.dart';
 import 'package:agro_asystent/funkcje/dokumenty/eksport_csv.dart';
 import 'package:agro_asystent/funkcje/dokumenty/eksport_xlsx.dart';
+import 'package:agro_asystent/funkcje/dokumenty/rodzaj_rejestru.dart';
 import 'package:agro_asystent/funkcje/dokumenty/usluga_dokumentow.dart';
 import 'package:agro_asystent/funkcje/dokumenty/wydruk_pdf.dart';
 import 'package:agro_asystent/funkcje/dokumenty/wyjscie_dokumentu.dart';
@@ -140,7 +141,7 @@ void main() {
       gospodarstwoId: 'g1',
       gospodarstwo: 'Gospodarstwo Łąki Górne',
       numerProducenta: numerProducenta,
-      rodzaj: RodzajZabiegu.oprysk,
+      rejestrDokumentu: RodzajRejestru.ewidencjaSor,
       rok: rok,
       sporzadzono: DateTime(2026, 10, 15),
     );
@@ -484,17 +485,49 @@ void main() {
       expect(wyjscie.wydrukowane.single.dane, isNotEmpty);
     });
 
-    test('nieznany rodzaj dokumentu to null, a nie pusty plik', () async {
-      final dokument = await dokumenty.zbuduj(
-        gospodarstwoId: 'g1',
-        gospodarstwo: 'Gospodarstwo Łąki Górne',
-        rodzaj: RodzajZabiegu.siew,
-      );
-      expect(dokument, isNull);
+    test('plan obiecuje trzy rejestry i tyle ich jest', () {
       expect(
-        dokumenty.dostepneRodzaje,
-        containsAll([RodzajZabiegu.oprysk, RodzajZabiegu.nawozenie]),
+        dokumenty.dostepneRejestry,
+        containsAll([
+          RodzajRejestru.ewidencjaSor,
+          RodzajRejestru.nawozenieAzotem,
+          RodzajRejestru.ekoschematy,
+        ]),
+        reason: 'plan, pkt 8: trzy rejestry do podglądu, wydruku i eksportu',
       );
+      for (final rejestr in dokumenty.dostepneRejestry) {
+        expect(
+          dokumenty.obowiazek(rejestr)!.wymaganePola,
+          isNotEmpty,
+          reason: 'kolumny biorą się ze słownika, nie z kodu (${rejestr.name})',
+        );
+      }
+    });
+
+    test('rejestr nieopisany w słowniku to null, a nie pusty plik', () async {
+      // Słownik bez obowiązku ekoschematów — aplikacja nie udaje dokumentu.
+      final bezEkoschematow = SlownikRegul.zTekstuJson(
+        jsonEncode({
+          'wersja': '2026.10.16',
+          'obowiazuje_od': '2026-10-16',
+          'obowiazki': const [],
+        }),
+      );
+      final usluga = UslugaDokumentow(
+        rejestr: RejestrZabiegow(baza),
+        reguly: bezEkoschematow,
+        czcionki: czcionki,
+        wyjscie: wyjscie,
+      );
+      expect(
+        await usluga.zbuduj(
+          gospodarstwoId: 'g1',
+          gospodarstwo: 'Gospodarstwo Łąki Górne',
+          rejestrDokumentu: RodzajRejestru.ekoschematy,
+        ),
+        isNull,
+      );
+      expect(usluga.dostepneRejestry, isEmpty);
     });
   });
 }

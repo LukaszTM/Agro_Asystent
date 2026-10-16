@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
@@ -94,6 +95,41 @@ void main() {
         rodzajZastosowania: 'opryskiwanie',
       ),
       teraz: kiedy,
+    );
+  }
+
+  Future<void> dodajNawozenie({required DateTime kiedy}) async {
+    await baza.insert('dzialka_rolna', {
+      'id': 'pole-n',
+      'gospodarstwo_id': 'g1',
+      'nazwa_wlasna': 'Pod lasem',
+      'sezon': kiedy.year,
+      'uprawa': 'kukurydza na ziarno',
+      'powierzchnia_ar': 400,
+      'utworzono': '2026-05-01T08:00:00',
+      'zmieniono': '2026-05-01T08:00:00',
+      'urzadzenie': 'telefon',
+    });
+    const nawoz = Nawoz(
+      id: 'n-saletra',
+      gospodarstwoId: 'g1',
+      nazwa: 'Saletra amonowa',
+      naturalny: false,
+      azotProcent: 34,
+    );
+    await RepozytoriumNawozow(baza).zapisz(nawoz: nawoz, urzadzenie: 'telefon');
+    await EwidencjaNawozenia(
+      baza: baza,
+      zabiegi: RepozytoriumZabiegow(baza),
+      reguly: reguly,
+    ).zapisz(
+      gospodarstwoId: 'g1',
+      nawoz: nawoz,
+      pola: const [PoleZabiegu(dzialkaRolnaId: 'pole-n', powierzchniaAr: 400)],
+      dawka: 200,
+      jednostka: JednostkaDawki.kilogramyNaHektar,
+      urzadzenie: 'telefon',
+      kiedy: kiedy,
     );
   }
 
@@ -272,6 +308,59 @@ void main() {
   testWidgets('pusty okres mówi wprost, że nie ma wpisów', (tester) async {
     await pokaz(tester);
     expect(find.text('W tym okresie nie ma żadnego wpisu.'), findsOneWidget);
+  });
+
+  testWidgets('do wyboru są trzy rejestry z planu', (tester) async {
+    await dodajWpis(id: 'z1', kiedy: DateTime(2026, 5, 10));
+    await pokaz(tester);
+
+    expect(
+      find.text('Ewidencja zabiegów środkami ochrony roślin'),
+      findsWidgets,
+    );
+    expect(
+      find.text('Program azotanowy: ewidencja nawożenia azotem'),
+      findsOneWidget,
+    );
+    expect(
+      find.text('Ekoschematy: rejestr zabiegów agrotechnicznych'),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('ewidencja nawożenia drukuje nawóz i azot', (tester) async {
+    await dodajNawozenie(kiedy: DateTime(2026, 4, 1));
+    await pokaz(tester);
+
+    await tester.tap(
+      find.text('Program azotanowy: ewidencja nawożenia azotem'),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.textContaining('Wpisów: 1'), findsOneWidget);
+    // Wzór z tabeli 15: dziewięć kolumn.
+    expect(
+      find.textContaining('kolumn wymaganych przepisem: 9'),
+      findsOneWidget,
+    );
+
+    // Podgląd pokazuje samo zestawienie, więc treść sprawdzamy w eksporcie.
+    await przewinDo(tester, find.text('Plik CSV'));
+    await tester.tap(find.text('Plik CSV'));
+    await tester.pumpAndSettle();
+
+    final csv = utf8.decode(wyjscie.udostepnione.single.dane);
+    expect(csv, contains('Program azotanowy'));
+    expect(csv, contains('Saletra amonowa'));
+    // 200 kg/ha × 34% = 68 kg N/ha, na 4 ha razem 272 kg N.
+    expect(csv, contains('68 kg N/ha'));
+    expect(csv, contains('272 kg N'));
+    expect(csv, contains('Pod lasem'));
+    expect(
+      csv,
+      contains('brak'),
+      reason: 'daty przyorania aplikacja nie zgaduje — wypełnia ją rolnik',
+    );
   });
 }
 

@@ -64,9 +64,12 @@ class OcenaEwidencji {
 /// Lista pól pochodzi ze słownika reguł (`assets/dane/reguly_prawne.json`),
 /// więc zmiana przepisu nie wymaga zmiany kodu (CLAUDE.md, reguła 1).
 abstract final class KompletnoscEwidencji {
-  /// Obowiązek, którym mierzymy dany rodzaj zabiegu.
+  /// Obowiązek, którym mierzymy dany rodzaj zabiegu w podglądzie wpisu.
+  /// Wydruki wybiera się po rejestrze, nie po rodzaju zabiegu.
   static String idObowiazku(RodzajZabiegu rodzaj) =>
-      rodzaj == RodzajZabiegu.oprysk ? 'ewidencja_sor' : 'ekoschematy_rejestr';
+      rodzaj == RodzajZabiegu.oprysk
+      ? 'ewidencja_sor'
+      : 'program_azotanowy_ewidencja';
 
   static OcenaEwidencji sprawdz(WpisRejestru wpis, Obowiazek obowiazek) =>
       OcenaEwidencji(
@@ -104,6 +107,17 @@ abstract final class KompletnoscEwidencji {
     'rodzaj_zastosowania',
     'dzialka_referencyjna',
     'rodzaj_zabiegu',
+    // Ewidencja nawożenia azotem — wzór z tabeli 15 programu azotanowego.
+    'pole',
+    'powierzchnia_uprawy',
+    'powierzchnia_nawozona',
+    'rodzaj_nawozu',
+    'dawka_azotu_na_ha',
+    'dawka_azotu_razem',
+    'data_przyorania',
+    // Rejestr ekoschematów (plan, pkt 3).
+    'nawoz',
+    'ilosc_nawozu',
   };
 
   static String? _wartosc(WpisRejestru wpis, String id) {
@@ -159,6 +173,52 @@ abstract final class KompletnoscEwidencji {
         return dzialki.isEmpty ? null : dzialki.join(', ');
       case 'rodzaj_zabiegu':
         return wpis.zabieg.rodzaj.naWydruku;
+
+      // ── ewidencja nawożenia azotem (tabela 15) ──────────────────────
+      case 'pole':
+        return _niePuste(wpis.opisPol == 'bez pola' ? null : wpis.opisPol);
+      case 'powierzchnia_uprawy':
+        final uprawa = wpis.pola.fold<int>(
+          0,
+          (suma, p) => suma + p.powierzchniaAr,
+        );
+        return uprawa > 0 ? _hektary(uprawa) : null;
+      case 'powierzchnia_nawozona':
+        return wpis.zabieg.powierzchniaAr > 0
+            ? _hektary(wpis.zabieg.powierzchniaAr)
+            : null;
+      case 'rodzaj_nawozu':
+        final nawozenie = wpis.nawozenie;
+        if (nawozenie == null || nawozenie.nawozNazwa.isEmpty) {
+          return null;
+        }
+        final azot = nawozenie.azotKgHa;
+        // Bez znanej zawartości azotu podajemy samą nazwę — nie zgadujemy.
+        return azot == null
+            ? nawozenie.nawozNazwa
+            : '${nawozenie.nawozNazwa} (N ${liczba(azot)} kg/ha)';
+      case 'dawka_azotu_na_ha':
+        final azot = wpis.nawozenie?.azotKgHa;
+        return azot == null ? null : '${liczba(azot)} kg N/ha';
+      case 'dawka_azotu_razem':
+        final razem = wpis.azotKgRazem;
+        return razem == null ? null : '${liczba(razem)} kg N';
+      case 'data_przyorania':
+        // Wymagane tylko na terenie o dużym nachyleniu; aplikacja nie zna
+        // nachylenia pola, więc zostawia pole rolnikowi.
+        return null;
+
+      // ── rejestr ekoschematów ────────────────────────────────────────
+      case 'nawoz':
+        return _niePuste(wpis.nawozenie?.nawozNazwa);
+      case 'ilosc_nawozu':
+        final dawka = wpis.nawozenie?.dawka;
+        if (dawka == null) {
+          return null;
+        }
+        final jednostka = wpis.nawozenie?.dawkaJednostka;
+        return '${liczba(dawka)}${jednostka == null ? '' : ' $jednostka'}';
+
       default:
         return null;
     }
@@ -170,6 +230,9 @@ abstract final class KompletnoscEwidencji {
   static String dzien(DateTime data) =>
       '${data.day.toString().padLeft(2, '0')}.'
       '${data.month.toString().padLeft(2, '0')}.${data.year}';
+
+  static String _hektary(int ar) =>
+      '${(ar / 100).toStringAsFixed(2).replaceAll('.', ',')} ha';
 
   static String liczba(double wartosc) =>
       wartosc.toStringAsFixed(wartosc % 1 == 0 ? 0 : 2).replaceAll('.', ',');

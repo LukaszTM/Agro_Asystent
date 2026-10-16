@@ -1,7 +1,7 @@
-import '../../rdzen/modele/zabieg.dart';
 import '../../rdzen/reguly/regula_prawna.dart';
 import '../zabiegi/rejestr_zabiegow.dart';
 import 'dokument_ewidencji.dart';
+import 'rodzaj_rejestru.dart';
 import 'eksport_csv.dart';
 import 'eksport_xlsx.dart';
 import 'wydruk_pdf.dart';
@@ -33,32 +33,32 @@ class UslugaDokumentow {
       'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
   static const String mimePdf = 'application/pdf';
 
-  /// Rodzaje zabiegów, dla których mamy dokument w słowniku reguł.
-  List<RodzajZabiegu> get dostepneRodzaje => [
-    for (final wpis in BudowniczyDokumentu.rodzajeDokumentow.entries)
-      if (reguly.obowiazek(wpis.value) != null) wpis.key,
+  /// Rejestry, które słownik reguł opisuje — tylko te umiemy wydrukować.
+  List<RodzajRejestru> get dostepneRejestry => [
+    for (final rejestr in RodzajRejestru.values)
+      if (reguly.obowiazek(rejestr.idObowiazku) != null) rejestr,
   ];
 
-  Obowiazek? obowiazek(RodzajZabiegu rodzaj) =>
-      reguly.obowiazek(BudowniczyDokumentu.rodzajeDokumentow[rodzaj] ?? '');
+  Obowiazek? obowiazek(RodzajRejestru rejestr) =>
+      reguly.obowiazek(rejestr.idObowiazku);
 
   /// Składa dokument z wpisów rejestru. Zwraca `null`, gdy słownik reguł nie
   /// zna takiego dokumentu — wtedy nic nie udajemy.
   Future<DokumentEwidencji?> zbuduj({
     required String gospodarstwoId,
     required String gospodarstwo,
-    required RodzajZabiegu rodzaj,
+    required RodzajRejestru rejestrDokumentu,
     String? numerProducenta,
     int? rok,
     DateTime? sporzadzono,
   }) async {
-    final obowiazekDokumentu = obowiazek(rodzaj);
+    final obowiazekDokumentu = obowiazek(rejestrDokumentu);
     if (obowiazekDokumentu == null) {
       return null;
     }
     final wpisy = await rejestr.wpisy(
       gospodarstwoId,
-      filtr: FiltrRejestru(rodzaj: rodzaj, rok: rok),
+      filtr: FiltrRejestru(rodzaj: rejestrDokumentu.zabiegi, rok: rok),
     );
     return BudowniczyDokumentu.zbuduj(
       obowiazek: obowiazekDokumentu,

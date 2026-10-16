@@ -151,14 +151,15 @@ void main() {
     expect(ocena.kompletna, isFalse);
   });
 
-  test('zabieg inny niż oprysk mierzymy rejestrem ekoschematów', () {
+  test('nawożenie mierzymy ewidencją nawożenia azotem', () {
     expect(
       KompletnoscEwidencji.idObowiazku(RodzajZabiegu.oprysk),
       'ewidencja_sor',
     );
     expect(
       KompletnoscEwidencji.idObowiazku(RodzajZabiegu.nawozenie),
-      'ekoschematy_rejestr',
+      'program_azotanowy_ewidencja',
+      reason: 'to ten rejestr wymaga przepis o azotanach',
     );
 
     final nawozenie = WpisRejestru(
@@ -180,11 +181,120 @@ void main() {
           dzialkiReferencyjne: ['061506_2.0007.138'],
         ),
       ],
+      nawozenie: const SzczegolyNawozeniaWpisu(
+        nawozNazwa: 'Saletra amonowa',
+        naturalny: false,
+        dawka: 200,
+        dawkaJednostka: 'kg/ha',
+        azotKgHa: 68,
+      ),
+    );
+
+    for (final idRejestru in [
+      'ekoschematy_rejestr',
+      'program_azotanowy_ewidencja',
+    ]) {
+      final ocena = KompletnoscEwidencji.sprawdz(
+        nawozenie,
+        slownik.obowiazek(idRejestru)!,
+      );
+      expect(
+        ocena.braki.map((o) => o.pole.id),
+        // Datę przyorania wypełnia rolnik: aplikacja nie zna nachylenia pola.
+        idRejestru == 'program_azotanowy_ewidencja'
+            ? ['data_przyorania']
+            : isEmpty,
+        reason: idRejestru,
+      );
+      expect(ocena.nieznane, isEmpty, reason: idRejestru);
+    }
+  });
+
+  test('ewidencja nawożenia azotem pokazuje azot na ha i łącznie', () {
+    final wpis = WpisRejestru(
+      zabieg: Zabieg(
+        id: 'z3',
+        gospodarstwoId: 'g1',
+        rodzaj: RodzajZabiegu.nawozenie,
+        data: DateTime(2026, 4, 1),
+        powierzchniaAr: 250,
+        urzadzenie: 'telefon',
+      ),
+      pola: const [
+        PoleWpisu(
+          id: 'p1',
+          nazwa: 'Za stodołą',
+          uprawa: 'pszenica zwyczajna ozima',
+          powierzchniaAr: 300,
+          dzialkiReferencyjne: ['061506_2.0007.138'],
+        ),
+      ],
+      nawozenie: const SzczegolyNawozeniaWpisu(
+        nawozNazwa: 'Saletra amonowa',
+        naturalny: false,
+        dawka: 200,
+        dawkaJednostka: 'kg/ha',
+        azotKgHa: 68,
+      ),
     );
     final ocena = KompletnoscEwidencji.sprawdz(
-      nawozenie,
-      slownik.obowiazek('ekoschematy_rejestr')!,
+      wpis,
+      slownik.obowiazek('program_azotanowy_ewidencja')!,
     );
-    expect(ocena.kompletna, isTrue);
+    final wartosci = {
+      for (final pole in ocena.pola) pole.pole.id: pole.wartosc,
+    };
+
+    expect(wartosci['pole'], 'Za stodołą');
+    // Powierzchnia uprawy to pole, powierzchnia nawożona to zabieg.
+    expect(wartosci['powierzchnia_uprawy'], '3,00 ha');
+    expect(wartosci['powierzchnia_nawozona'], '2,50 ha');
+    expect(wartosci['rodzaj_nawozu'], 'Saletra amonowa (N 68 kg/ha)');
+    expect(wartosci['dawka_azotu_na_ha'], '68 kg N/ha');
+    expect(wartosci['dawka_azotu_razem'], '170 kg N');
+  });
+
+  test('nawóz bez znanej zawartości azotu nie udaje dawki', () {
+    final wpis = WpisRejestru(
+      zabieg: Zabieg(
+        id: 'z4',
+        gospodarstwoId: 'g1',
+        rodzaj: RodzajZabiegu.nawozenie,
+        data: DateTime(2026, 4, 1),
+        powierzchniaAr: 250,
+        urzadzenie: 'telefon',
+      ),
+      pola: const [
+        PoleWpisu(
+          id: 'p1',
+          nazwa: 'Za stodołą',
+          uprawa: 'pszenica zwyczajna ozima',
+          powierzchniaAr: 250,
+          dzialkiReferencyjne: ['061506_2.0007.138'],
+        ),
+      ],
+      nawozenie: const SzczegolyNawozeniaWpisu(
+        nawozNazwa: 'Gnojowica bez analizy',
+        naturalny: true,
+        dawka: 25,
+        dawkaJednostka: 'm3/ha',
+      ),
+    );
+    final ocena = KompletnoscEwidencji.sprawdz(
+      wpis,
+      slownik.obowiazek('program_azotanowy_ewidencja')!,
+    );
+    final wartosci = {
+      for (final pole in ocena.pola) pole.pole.id: pole.wartosc,
+    };
+
+    expect(wartosci['rodzaj_nawozu'], 'Gnojowica bez analizy');
+    expect(wartosci['dawka_azotu_na_ha'], isNull);
+    expect(wartosci['dawka_azotu_razem'], isNull);
+    expect(
+      ocena.braki.map((o) => o.pole.id),
+      containsAll(['dawka_azotu_na_ha', 'dawka_azotu_razem']),
+      reason: 'brak w ewidencji to brak, nie liczba na oko',
+    );
   });
 }

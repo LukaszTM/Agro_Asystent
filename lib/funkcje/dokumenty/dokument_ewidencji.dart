@@ -1,4 +1,3 @@
-import '../../rdzen/modele/zabieg.dart';
 import '../../rdzen/reguly/regula_prawna.dart';
 import '../zabiegi/kompletnosc_ewidencji.dart';
 import '../zabiegi/rejestr_zabiegow.dart';
@@ -71,13 +70,6 @@ class WierszDokumentu {
 
 /// Składa dokument z wpisów rejestru.
 abstract final class BudowniczyDokumentu {
-  /// Dokumenty, które aplikacja umie wystawić. Nazwy i podstawy prawne
-  /// biorą się ze słownika reguł, nie z tego kodu.
-  static const Map<RodzajZabiegu, String> rodzajeDokumentow = {
-    RodzajZabiegu.oprysk: 'ewidencja_sor',
-    RodzajZabiegu.nawozenie: 'ekoschematy_rejestr',
-  };
-
   static DokumentEwidencji zbuduj({
     required Obowiazek obowiazek,
     required List<WpisRejestru> wpisy,

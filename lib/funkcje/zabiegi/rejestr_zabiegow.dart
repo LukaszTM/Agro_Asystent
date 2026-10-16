@@ -30,12 +30,50 @@ class PoleWpisu {
 /// Jeden wpis rejestru: zabieg razem ze wszystkim, co trzeba pokazać przy
 /// kontroli — bez dociągania danych ze słownika, bo ewidencja ma pokazywać
 /// stan z dnia zabiegu (ADR-0004).
+/// Szczegóły nawożenia widziane z rejestru: nawóz, dawka i azot.
+///
+/// Osobno od `WpisNawozenia` z modułu nawożenia: tam liczy się limit azotu,
+/// tu chodzi o wydruk ewidencji wymaganej przepisem.
+class SzczegolyNawozeniaWpisu {
+  const SzczegolyNawozeniaWpisu({
+    required this.nawozNazwa,
+    required this.naturalny,
+    this.dawka,
+    this.dawkaJednostka,
+    this.azotKgHa,
+  });
+
+  final String nawozNazwa;
+  final bool naturalny;
+  final double? dawka;
+  final String? dawkaJednostka;
+
+  /// Azot na hektar. `null`, gdy nawóz nie ma znanej zawartości azotu —
+  /// wtedy w ewidencji zostaje brak, a nie liczba „na oko".
+  final double? azotKgHa;
+
+  static SzczegolyNawozeniaWpisu zBazy(Map<String, Object?> w) =>
+      SzczegolyNawozeniaWpisu(
+        nawozNazwa: (w['nawoz_nazwa'] as String?) ?? '',
+        naturalny: (w['naturalny'] as int? ?? 0) == 1,
+        dawka: (w['dawka'] as num?)?.toDouble(),
+        dawkaJednostka: w['dawka_jednostka'] as String?,
+        azotKgHa: (w['azot_kg_ha'] as num?)?.toDouble(),
+      );
+}
+
 class WpisRejestru {
-  const WpisRejestru({required this.zabieg, required this.pola, this.oprysk});
+  const WpisRejestru({
+    required this.zabieg,
+    required this.pola,
+    this.oprysk,
+    this.nawozenie,
+  });
 
   final Zabieg zabieg;
   final List<PoleWpisu> pola;
   final SzczegolyOprysku? oprysk;
+  final SzczegolyNawozeniaWpisu? nawozenie;
 
   String get opisPol =>
       pola.isEmpty ? 'bez pola' : pola.map((p) => p.nazwa).join(', ');
@@ -55,6 +93,12 @@ class WpisRejestru {
 
   String get powierzchniaOpis =>
       '${(zabieg.powierzchniaAr / 100).toStringAsFixed(2).replaceAll('.', ',')} ha';
+
+  /// Azot wniesiony łącznie na powierzchnię zabiegu.
+  double? get azotKgRazem {
+    final naHektar = nawozenie?.azotKgHa;
+    return naHektar == null ? null : naHektar * zabieg.powierzchniaAr / 100;
+  }
 
   /// Dzień, od którego wolno zbierać plon — tylko gdy karencja jest znana.
   DateTime? get dzienZbioru => oprysk?.dzienZbioru(zabieg.data);
@@ -136,6 +180,7 @@ class RejestrZabiegow {
     final identyfikatory = [for (final zabieg in zabiegi) zabieg.id];
     final pola = await _polaWpisow(identyfikatory);
     final opryski = await _opryskiWpisow(identyfikatory);
+    final nawozenia = await _nawozeniaWpisow(identyfikatory);
 
     return [
       for (final zabieg in zabiegi)
@@ -143,6 +188,7 @@ class RejestrZabiegow {
           zabieg: zabieg,
           pola: pola[zabieg.id] ?? const [],
           oprysk: opryski[zabieg.id],
+          nawozenie: nawozenia[zabieg.id],
         ),
     ];
   }
@@ -160,10 +206,12 @@ class RejestrZabiegow {
     }
     final pola = await _polaWpisow([zabiegId]);
     final opryski = await _opryskiWpisow([zabiegId]);
+    final nawozenia = await _nawozeniaWpisow([zabiegId]);
     return WpisRejestru(
       zabieg: Zabieg.zBazy(wiersze.first),
       pola: pola[zabiegId] ?? const [],
       oprysk: opryski[zabiegId],
+      nawozenie: nawozenia[zabiegId],
     );
   }
 
@@ -222,6 +270,23 @@ class RejestrZabiegow {
           );
     }
     return wynik;
+  }
+
+  Future<Map<String, SzczegolyNawozeniaWpisu>> _nawozeniaWpisow(
+    List<String> zabiegi,
+  ) async {
+    if (zabiegi.isEmpty) {
+      return const {};
+    }
+    final znaki = List.filled(zabiegi.length, '?').join(', ');
+    final wiersze = await _baza.rawQuery(
+      'SELECT * FROM zabieg_nawozenie WHERE zabieg_id IN ($znaki)',
+      zabiegi,
+    );
+    return {
+      for (final wiersz in wiersze)
+        wiersz['zabieg_id']! as String: SzczegolyNawozeniaWpisu.zBazy(wiersz),
+    };
   }
 
   Future<Map<String, SzczegolyOprysku>> _opryskiWpisow(

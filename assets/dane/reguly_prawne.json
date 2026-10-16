@@ -1,5 +1,5 @@
 {
-  "wersja": "2026.10.16.2",
+  "wersja": "2026.10.16.3",
   "obowiazuje_od": "2026-10-16",
   "opis": "Progi, limity i terminy obowiązków dokumentacyjnych. Dane, nie kod — aktualizowane bez przebudowy aplikacji. Zestawienie służy do planowania i nie jest poradą prawną.",
   "obowiazki": [
@@ -237,6 +237,14 @@
         {
           "id": "rodzaj_zabiegu",
           "nazwa": "rodzaj zabiegu"
+        },
+        {
+          "id": "nawoz",
+          "nazwa": "nawóz"
+        },
+        {
+          "id": "ilosc_nawozu",
+          "nazwa": "ilość nawozu"
         }
       ]
     },

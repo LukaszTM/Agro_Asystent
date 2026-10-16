@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../app/uslugi.dart';
 import '../../../funkcje/dokumenty/dokument_ewidencji.dart';
-import '../../../rdzen/modele/zabieg.dart';
+import '../../../funkcje/dokumenty/rodzaj_rejestru.dart';
 import '../motyw.dart';
 import '../widgety/duzy_przycisk.dart';
 
@@ -20,7 +20,7 @@ class EkranDokumenty extends StatefulWidget {
 }
 
 class _EkranDokumentyState extends State<EkranDokumenty> {
-  late RodzajZabiegu _rodzaj;
+  late RodzajRejestru _rejestr;
   int? _rok;
   Future<DokumentEwidencji?>? _dokument;
   Future<List<int>>? _lata;
@@ -29,9 +29,9 @@ class _EkranDokumentyState extends State<EkranDokumenty> {
   @override
   void initState() {
     super.initState();
-    _rodzaj =
-        widget.uslugi.dokumenty.dostepneRodzaje.firstOrNull ??
-        RodzajZabiegu.oprysk;
+    _rejestr =
+        widget.uslugi.dokumenty.dostepneRejestry.firstOrNull ??
+        RodzajRejestru.ewidencjaSor;
     _lata = widget.uslugi.rejestr.lata(widget.uslugi.gospodarstwoId);
     _odswiez();
   }
@@ -50,7 +50,7 @@ class _EkranDokumentyState extends State<EkranDokumenty> {
       gospodarstwoId: widget.uslugi.gospodarstwoId,
       gospodarstwo: widget.uslugi.nazwaGospodarstwa,
       numerProducenta: gospodarstwo?.numerProducenta,
-      rodzaj: _rodzaj,
+      rejestrDokumentu: _rejestr,
       rok: _rok,
     );
   }
@@ -89,7 +89,7 @@ class _EkranDokumentyState extends State<EkranDokumenty> {
 
   @override
   Widget build(BuildContext context) {
-    final rodzaje = widget.uslugi.dokumenty.dostepneRodzaje;
+    final rejestry = widget.uslugi.dokumenty.dostepneRejestry;
 
     return Scaffold(
       appBar: AppBar(title: const Text('Wydruk i eksport')),
@@ -102,16 +102,16 @@ class _EkranDokumentyState extends State<EkranDokumenty> {
             children: [
               Text('Dokument', style: Theme.of(context).textTheme.titleLarge),
               const SizedBox(height: 8),
-              for (final rodzaj in rodzaje)
+              for (final rejestr in rejestry)
                 Padding(
                   padding: const EdgeInsets.only(bottom: 8),
                   child: _Wybor(
                     etykieta:
-                        widget.uslugi.dokumenty.obowiazek(rodzaj)?.nazwa ??
-                        rodzaj.dlaRolnika,
-                    wybrany: rodzaj == _rodzaj,
+                        widget.uslugi.dokumenty.obowiazek(rejestr)?.nazwa ??
+                        rejestr.dlaRolnika,
+                    wybrany: rejestr == _rejestr,
                     onTap: () => setState(() {
-                      _rodzaj = rodzaj;
+                      _rejestr = rejestr;
                       _odswiez();
                     }),
                   ),

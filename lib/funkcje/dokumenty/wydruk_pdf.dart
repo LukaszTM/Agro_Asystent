@@ -138,6 +138,14 @@ abstract final class WydrukPdf {
     'powierzchnia': 44,
     'kod_eppo': 36,
     'faza_bbch': 46,
+    // Ewidencja nawożenia azotem (tabela 15 programu azotanowego).
+    'powierzchnia_uprawy': 46,
+    'powierzchnia_nawozona': 52,
+    'dawka_azotu_na_ha': 50,
+    'dawka_azotu_razem': 48,
+    'data_przyorania': 46,
+    // Rejestr ekoschematów.
+    'ilosc_nawozu': 48,
   };
 
   static Map<int, pw.TableColumnWidth> _szerokosciKolumn(
