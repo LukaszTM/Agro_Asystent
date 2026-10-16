@@ -1,0 +1,79 @@
+# Budowanie pliku APK do wgrania na telefon.
+#
+# Uruchamia się ręcznie (Actions → „Zbuduj APK" → Run workflow), bo pełny
+# build trwa kilka minut i nie ma sensu po każdym commicie z dokumentacją.
+# Wynik można pobrać dwojako: jako artefakt (plik .zip) albo — wygodniej na
+# telefonie — jako plik .apk dołączony do wydania „apk-test".
+name: Zbuduj APK
+
+on:
+  workflow_dispatch:
+    inputs:
+      wydanie:
+        description: Dołączyć APK do wydania „apk-test" (łatwy link na telefon)
+        type: boolean
+        default: true
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  apk:
+    name: APK (release, podpis testowy)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # AGP 9 i Kotlin w tym projekcie celują w Javę 17.
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 3.47.7
+          channel: stable
+          cache: true
+
+      - uses: android-actions/setup-android@v3
+
+      - name: Składniki Android SDK
+        run: sdkmanager --install "platforms;android-36" "build-tools;36.0.0"
+
+      - name: Zależności
+        run: flutter pub get
+
+      - name: Budowanie APK
+        run: flutter build apk --release
+
+      - name: Nazwa pliku z numerem wersji
+        run: |
+          wersja=$(grep '^version:' pubspec.yaml | cut -d' ' -f2)
+          plik="agro-asystent-$wersja.apk"
+          cp build/app/outputs/flutter-apk/app-release.apk "$plik"
+          ls -lh "$plik"
+          echo "plik=$plik" >> "$GITHUB_ENV"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: agro-asystent-apk
+          path: ${{ env.plik }}
+          retention-days: 14
+
+      - name: Wydanie do pobrania na telefon
+        if: inputs.wydanie
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create apk-test \
+            --prerelease \
+            --title "Agro Asystent — APK do testów" \
+            --notes "Wersja testowa do wgrania na telefon. Podpisana kluczem
+          debugowym, więc: w telefonie trzeba zezwolić na instalację z
+          nieznanych źródeł, a przed wgraniem nowszego pliku odinstalować
+          poprzedni (każdy build ma inny podpis). Nie nadaje się do Google
+          Play." || true
+          gh release upload apk-test "$plik" --clobber
