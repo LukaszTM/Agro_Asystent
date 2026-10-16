@@ -252,6 +252,10 @@ Wykonywać po kolei; po każdym zadaniu krótki raport z wynikami i liczbami.
 - Inspekcja ochrony roślin (WIORiN): czy eksport z własnego programu wystarczy przy kontroli, czy
   państwowa aplikacja przyjmie dane z innych programów, termin przenoszenia notatek dla zabiegów z 2027 r.
 - Regulamin gov.pl a automatyczne pobieranie etykiet; pytanie do ministerstwa o dane zbiorcze.
+- **Format „do odczytu maszynowego"** z rozp. UE 2023/564 nie został ogłoszony.
+  Decyzja z 16.10.2026: dodajemy go po 1.01.2027, gdy będzie znany. Do tego czasu
+  aplikacja zbiera wszystkie wymagane pola (razem z kodem EPPO uprawy) i eksportuje
+  CSV/XLSX, więc dojdzie sam zapis, a nie zbieranie danych od nowa.
 - Regulamin aplikacji, polityka prywatności, zastrzeżenie o braku gwarancji zgodności — do pokazania prawnikowi.
 - Prowizja sklepu Google, VAT, rozliczenie przychodu.
 - Próba makiety z 3–5 rolnikami 60+; pytanie o gotowość do zapłaty.

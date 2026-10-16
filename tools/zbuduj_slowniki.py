@@ -83,7 +83,13 @@ CREATE INDEX idx_karencja_srodek ON karencja(srodek_nazwa, uprawa);
 """
 
 
+#: Stany kodu, które wolno wpisać do pliku aplikacji. Kod niepotwierdzony
+#: wyszedłby na wydruku ewidencji jako fakt (P3) — nie wchodzi.
+STANY_PEWNE = {"kod", "potwierdzone", ""}
+
+
 def wczytaj_kody_eppo(sciezka: Path) -> dict[str, str]:
+    """Kody upraw z wyniku P3 — tylko te o pewnym stanie."""
     if not sciezka.exists():
         return {}
     with sciezka.open(encoding="utf-8-sig", newline="") as plik:
@@ -91,7 +97,9 @@ def wczytaj_kody_eppo(sciezka: Path) -> dict[str, str]:
         return {
             postac_porownawcza(w["nazwa_urzedowa"]): w["kod_eppo"]
             for w in czytnik
-            if w.get("nazwa_urzedowa") and w.get("kod_eppo")
+            if w.get("nazwa_urzedowa")
+            and w.get("kod_eppo")
+            and (w.get("stan") or "").strip() in STANY_PEWNE
         }
 
 

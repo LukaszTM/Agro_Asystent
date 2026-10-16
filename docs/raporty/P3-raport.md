@@ -266,3 +266,11 @@ stosowania i przedmioty, zgodnie z wnioskiem z P3.
 Pokrycie zastosowań gotowym kodem: **44,7%**. Potwierdzenie czterech
 propozycji daje 45,5%; dalszy wzrost wymaga rozstrzygnięć z listy
 `do_decyzji` — ułożonej od upraw najczęstszych w rejestrze.
+
+### Domknięcie (16.10.2026)
+
+Pokrycie 44,7% podniesione do **83,3%** zastosowań: nazwom z rejestru
+przypisaliśmy nazwy naukowe, a kody wzięliśmy z bazy EPPO po tych nazwach.
+Przy okazji wyszło pięć kodów gatunków dzikich w pliku aplikacji (m.in.
+porzeczka czerwona jako *Ribes spicatum*). Szczegóły i liczby:
+`docs/raporty/kody-eppo-uprawy-polskie.md`.

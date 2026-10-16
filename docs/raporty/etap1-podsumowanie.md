@@ -31,6 +31,7 @@ telefonie, bez serwera i bez żadnej opłaty za to, czego wymagają przepisy.
 | **Dane prawne z dwóch ustaw i dwóch załączników** (luka 1) | zakazy z ustawy o nawozach, próg planu z Prawa wodnego, uprawy intensywne, odległości od wód | `dane-prawne-uzupelnienie.md` |
 | **Kody EPPO: tylko potwierdzone wchodzą do słownika** (luka 2) | propozycja nie może trafić na urzędowy wydruk jako pewny kod | dopisek w `P3-raport.md` |
 | **Drugi wygląd telefonu „Nowoczesny"** + przełącznik (luka 6) | plan (pkt 5) obiecuje dwa wyglądy przełączane w ustawieniach | `etap1-wyglad-nowoczesny.md` |
+| **Kody EPPO upraw konwencjonalnych** (luka 2) | ewidencja SOR wymaga kodu EPPO uprawy; automat z P3 dał 44,7% i miał pięć kodów gatunków dzikich | `kody-eppo-uprawy-polskie.md` |
 
 ## Liczby
 
@@ -67,13 +68,17 @@ telefonie, bez serwera i bez żadnej opłaty za to, czego wymagają przepisy.
 1. ~~**Dane prawne**~~ — zrobione 16.10.2026 poza **tabelą 14** (maksymalne
    ilości azotu działającego, załącznik nr 9): wymaga własnego ekranu
    i ostrzeżenia, nie tylko wpisu w słowniku.
-2. ~~**Kody EPPO bez decyzji**~~ — lista ruszona i zabezpieczona: do słownika
-   wchodzą tylko kody `potwierdzone` (18). Zostaje 4 propozycje do
-   potwierdzenia przez rolnika i 138 upraw bez decyzji (pokrycie 44,7%).
+2. ~~**Kody EPPO bez decyzji**~~ — uzupełnione 16.10.2026 dla upraw
+   konwencjonalnych w Polsce: 347 upraw z kodem, **83,3%** zastosowań
+   z rejestru (było 44,7%). Zostają 23 nazwy rodzajowe („łubin",
+   „gorczyca", „dynia"…), przy których rejestr nie podaje gatunku —
+   raport `kody-eppo-uprawy-polskie.md`.
 3. **Rejestr stada do wydruku** — wymaga urzędowego układu kolumn IRZplus;
    dotyczy ścieżki rozwoju (produkcja zwierzęca poza zakresem, ADR-0007).
 4. **Pytanie do ministerstwa** o hurtowy dostęp do etykiet (P2) bez odpowiedzi.
 5. **Format „maszynowo odczytywalny"** wymagany od 1.01.2027 — nieogłoszony.
+   Decyzja z 16.10.2026: dodamy go po 1.01.2027, gdy będzie znany; do tego
+   czasu eksport CSV/XLSX i kody EPPO w ewidencji przygotowują na niego grunt.
 6. ~~**Wygląd „Nowoczesny"**~~ — zrobiony 16.10.2026 razem z przełącznikiem
    w obu wyglądach. Zostają w nim cztery ekrany formularzowe, które ma tylko
    wygląd prosty (działki z ULDK, import wniosku z PDF, nawozy i zestawienie

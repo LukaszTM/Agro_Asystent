@@ -1,0 +1,130 @@
+# Kody EPPO upraw: domknięcie luki 2
+
+Data: 16.10.2026. Gałąź: `claude/eloquent-hopper-etevk6`.
+Narzędzie: `tools/p3_slownik_upraw/uprawy_polskie.py`.
+
+Zakres przyjęty na polecenie właściciela projektu: **uprawy konwencjonalne
+w Polsce**. Rośliny ozdobne, leśne i tropikalne nie dostają kodu i nie
+czekają na decyzję — aplikacja prowadzi dokumentację produkcji roślinnej.
+
+## Czego brakowało
+
+Ewidencja zabiegów środkami ochrony roślin ma kolumnę **„kod EPPO
+uprawy"** (rozporządzenie wykonawcze UE 2023/564) — od 2027 r. dokument
+ma być czytany maszynowo, więc puste pole przestanie wystarczać.
+
+Zadanie P3 dopasowało kody automatem: nazwa uprawy z rejestru MRiRW
+musiała zgadzać się **co do znaku** z polską nazwą rośliny w bazie EPPO.
+Dało to 153 uprawy i **44,7%** zastosowań z rejestru. Baza EPPO ma jednak
+polskie nazwy wyrywkowo — nie ma ich nawet dla „grusza", „sałata",
+„burak ćwikłowy", „kapusta głowiasta" czy „pasternak". Największe dziury
+po tym etapie:
+
+| Uprawa | Zastosowań w rejestrze |
+| --- | --- |
+| grusza | 620 |
+| sałata | 357 |
+| ogórek | 347 |
+| marchew | 344 |
+| winorośl | 285 |
+| śliwa | 282 |
+| kapusta głowiasta | 278 |
+
+## Jak uzupełniliśmy, nie zgadując
+
+Dla każdej nazwy z rejestru podajemy **nazwę naukową** gatunku, który ta
+nazwa oznacza w polskim rolnictwie — i to jest cała decyzja merytoryczna.
+**Kod bierze baza EPPO po tej nazwie naukowej**; gdy nazwa naukowa nie ma
+w bazie dokładnie jednego kodu, wiersz zostaje bez kodu i trafia do
+raportu błędów. Nazwa naukowa stoi w pliku decyzji, więc każdą decyzję
+da się sprawdzić bez czytania kodu skryptu.
+
+Wynik zapisuje się w `assets/dane/kody_eppo_decyzje.csv`; decyzji już
+`potwierdzonych` skrypt **nie nadpisuje** — przy rozbieżności wypisuje
+spór i zostawia to, co w pliku.
+
+## Polskie nazwy w EPPO są miejscami mylące
+
+Na tym właśnie potknął się automat z P3. Nazwa naukowa jest wiążąca:
+
+| Uprawa z rejestru | Automat (polska nazwa w EPPO) | Po sprawdzeniu nazwy naukowej |
+| --- | --- | --- |
+| porzeczka czerwona | `RIBSP` — *Ribes spicatum*, **gatunek dziki** | `RIBRU` — *Ribes rubrum* |
+| pszenica płaskurka | `TRZMO` — EPPO nazywa tak *Triticum monococcum* (samopsza) | `TRZDI` — *Triticum dicoccon* |
+| brokuł | `BRSOB` — EPPO daje tę nazwę kalafiorowi i brokułowi | `BRSOK` — *B. oleracea* var. *italica* |
+| mięta pieprzowa | `MENPC` — *Mentha* × *piperita* var. *citrata* | `MENPI` — *Mentha* × *piperita* |
+| peluszka | `PIBSX` — *Pisum sativum* | `PIBSA` — *P. sativum* subsp. *arvense* |
+| koper włoski | `FOEVS` — *Foeniculum vulgare* subsp. *sativum* | zostaje `FOEVS` (automat był dokładniejszy) |
+
+Pięć z tych kodów było **w pliku dołączanym do aplikacji** — plantacja
+porzeczki czerwonej dostałaby na wydruku kod gatunku dzikiego.
+
+Kontrola krzyżowa objęła wszystkie 73 uprawy, które miały już kod
+z automatu: 67 zgodnych, 6 rozbieżnych (tabela powyżej).
+
+## Liczby
+
+| Miara | Przed | Po |
+| --- | --- | --- |
+| Uprawy z kodem w pliku aplikacji | 153 | **347** |
+| Zastosowania z rejestru mające kod | 44,7% | **83,3%** |
+| `potwierdzone` w pliku decyzji | 18 | 298 |
+| `poza_zakresem` (ozdobne, leśne, tropikalne) | — | 135 |
+| `nie_uprawa` (miejsca, przedmioty, produkty) | 11 | 71 |
+| `grupa_upraw` (nazwy zbiorcze) | — | 31 |
+| `do_decyzji` | 138 | **23** |
+
+Rozkład wszystkich 38 359 zastosowań z rejestru po zmianie:
+82,6% uprawa z kodem, 6,2% poza zakresem, 5,9% nie-uprawa,
+1,8% nazwa rodzajowa do decyzji, 1,6% nazwa zbiorcza, 1,9% bez decyzji
+(ogon 400 nazw, każda poniżej 15 zastosowań).
+
+## Co zostało do rozstrzygnięcia: 23 nazwy rodzajowe
+
+Rejestr mówi np. „łubin", a gatunki mają różne kody (biały `LUPAL`, żółty
+`LUPLU`, wąskolistny `LUPAN`). Skrypt **nie wybiera** za rolnika: wpisuje
+stan `do_decyzji` i pokazuje kod rodzaju z bazy EPPO (`1LUPG`).
+
+Do decyzji: dynia, wyka, gorczyca, lucerna, rzepa czarna, wierzba
+energetyczna, malinojeżyna, kapusta, łubin, koniczyna, botwinka,
+tymianek, nostrzyk, mięta, sorgo zwisłe, szałwia, topola energetyczna,
+porzeczka, komonica, burak, orzech, kapusta choy-sum, róża uprawiana na
+jadalne owoce. Razem 1,8% zastosowań.
+
+Pytanie do właściciela projektu: czy na wydruku ma stawać **kod rodzaju**
+(np. `1LUPG` dla „łubin"), czy **puste pole**? Konkretna uprawa rolnika
+ma własną nazwę w słowniku („łubin żółty"), więc pole zostaje puste tylko
+wtedy, gdy rolnik wpisze samo „łubin".
+
+## Dziura w zabezpieczeniu, znaleziona przy okazji
+
+`tools/zbuduj_slowniki.py` brał z wyniku P3 **każdy wiersz z kodem**, nie
+patrząc na kolumnę `stan`. Gdyby `eppo.py` zapisał tam kod ze stanem
+`propozycja`, trafiłby do pliku aplikacji jako kod pewny — ten sam rodzaj
+błędu, który wcześniej naprawiliśmy w `slownik.py`. Teraz wchodzą tylko
+stany `kod` i `potwierdzone`.
+
+## Testy
+
+`tools/p3_slownik_upraw/test_uprawy_polskie.py` — 18 testów:
+
+- każda nazwa naukowa z tabeli daje w bazie EPPO dokładnie jeden kod,
+- wymyślona nazwa naukowa nie daje żadnego kodu,
+- kody ważnych upraw (ziemniak, grusza, marchew, burak ćwikłowy,
+  porzeczka czerwona, płaskurka, samopsza, brokuł, kalafior) są sprawdzane
+  wprost — to one chronią przed powrotem błędów z tabeli wyżej,
+- wiersze `poza_zakresem`, `grupa_upraw`, `nie_uprawa` i `do_decyzji`
+  nigdy nie mają kodu,
+- nazwa trafia do dokładnie jednej tabeli, a alias wskazuje uprawę z kodem,
+- scalanie nie nadpisuje decyzji `potwierdzonej` (i mówi o sporze),
+  a wiersz `do_decyzji` wolno poprawić.
+
+Razem: `python3 -m pytest tools` → 111 testów, `flutter test` → 332 testy.
+
+## Jak powtórzyć
+
+```bash
+python3 tools/p3_slownik_upraw/uprawy_polskie.py      # decyzje + pokrycie
+python3 tools/p3_slownik_upraw/eppo.py                # dane/wynik/uprawy_eppo.csv
+python3 tools/zbuduj_slowniki.py                      # asset dla aplikacji
+```
