@@ -39,7 +39,7 @@ telefonie, bez serwera i bez żadnej opłaty za to, czego wymagają przepisy.
 | --- | --- |
 | Pliki kodu w `lib/` | 107 |
 | Pliki testów | 37 |
-| Testy | **360** |
+| Testy | **361** |
 | `flutter analyze` | bez ostrzeżeń |
 | `dart format` | bez zmian |
 | Migracje bazy | 4 |

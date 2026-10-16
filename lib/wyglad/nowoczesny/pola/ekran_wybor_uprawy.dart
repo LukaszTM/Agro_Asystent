@@ -104,6 +104,9 @@ class _EkranWyborUprawyNowoczesnyState
         children: [
           if (!gatunki)
             TextField(
+              // Klawiatura wychodzi od razu — przy 600 uprawach szukanie
+              // jest szybsze niż przewijanie.
+              autofocus: true,
               style: teksty.bodyLarge,
               decoration: const InputDecoration(
                 labelText: 'Szukaj uprawy',

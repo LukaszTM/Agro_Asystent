@@ -89,8 +89,8 @@ class _EkranWyborUprawyState extends State<EkranWyborUprawy> {
 
   String _naglowekListy(WynikSzukaniaUpraw wynik) {
     if (_szukane.isEmpty) {
-      return 'Najczęstsze uprawy. Szukasz innej? Wpisz nazwę u góry — '
-          'ogonki i wielkie litery nie mają znaczenia.';
+      return 'Pisz nazwę uprawy — ogonki i wielkie litery nie mają '
+          'znaczenia. Niżej są najczęstsze uprawy, jeśli wolisz przewijać.';
     }
     return wynik.razem == 1
         ? 'Znaleziono 1 uprawę.'
@@ -119,6 +119,9 @@ class _EkranWyborUprawyState extends State<EkranWyborUprawy> {
             Padding(
               padding: const EdgeInsets.all(MotywProsty.odstep),
               child: TextField(
+                // Klawiatura wychodzi od razu: przy 600 uprawach szukanie
+                // jest szybsze niż przewijanie, a listę i tak widać niżej.
+                autofocus: true,
                 style: Theme.of(context).textTheme.bodyLarge,
                 decoration: const InputDecoration(
                   labelText: 'Szukaj uprawy',

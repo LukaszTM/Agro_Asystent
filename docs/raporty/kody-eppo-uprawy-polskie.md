@@ -139,8 +139,9 @@ więc wyszukiwarka jest w ekranie wyboru uprawy obowiązkowa, a nie dodatkowa:
 - **Widać, ile pasuje.** Nad listą stoi „Znaleziono 7 upraw"; gdy pasuje
   więcej, niż się pokazuje, ekran mówi wprost: „Pasuje 231 upraw,
   pokazujemy 60 — wpisz więcej liter".
-- Bez szukania lista idzie od upraw najczęstszych w rejestrze, więc
-  pszenica ozima, rzepak ozimy i jęczmień są pod ręką bez pisania.
+- **Klawiatura wychodzi od razu** (decyzja z 16.10.2026): przy 621 uprawach
+  szukanie jest szybsze niż przewijanie. Lista najczęstszych upraw zostaje
+  pod klawiaturą, więc kto woli przewijać — nadal może.
 
 ## Zmiana uprawy pola
 
@@ -195,7 +196,7 @@ podająca liczbę pasujących, zmiana uprawy pola w obu wyglądach i wpis
 w dzienniku zmian (plus kontrola, że zapis tej samej uprawy nic nie
 dopisuje).
 
-Razem: `python3 -m pytest tools` → 112 testów, `flutter test` → 360 testów.
+Razem: `python3 -m pytest tools` → 112 testów, `flutter test` → 361 testów.
 
 ## Jak powtórzyć
 
