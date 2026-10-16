@@ -72,29 +72,57 @@ z automatu: 67 zgodnych, 6 rozbieżnych (tabela powyżej).
 | `poza_zakresem` (ozdobne, leśne, tropikalne) | — | 135 |
 | `nie_uprawa` (miejsca, przedmioty, produkty) | 11 | 71 |
 | `grupa_upraw` (nazwy zbiorcze) | — | 31 |
-| `do_decyzji` | 138 | **23** |
+| `rodzajowa` (pytanie o gatunek do rolnika) | 138 `do_decyzji` | **23** |
 
 Rozkład wszystkich 38 359 zastosowań z rejestru po zmianie:
 82,6% uprawa z kodem, 6,2% poza zakresem, 5,9% nie-uprawa,
-1,8% nazwa rodzajowa do decyzji, 1,6% nazwa zbiorcza, 1,9% bez decyzji
+1,8% nazwa rodzajowa (gatunek wybiera rolnik), 1,6% nazwa zbiorcza,
+1,9% bez decyzji
 (ogon 400 nazw, każda poniżej 15 zastosowań).
 
-## Co zostało do rozstrzygnięcia: 23 nazwy rodzajowe
+## 23 nazwy rodzajowe: pyta o nie rolnik, nie my
 
 Rejestr mówi np. „łubin", a gatunki mają różne kody (biały `LUPAL`, żółty
-`LUPLU`, wąskolistny `LUPAN`). Skrypt **nie wybiera** za rolnika: wpisuje
-stan `do_decyzji` i pokazuje kod rodzaju z bazy EPPO (`1LUPG`).
+`LUPLU`, wąskolistny `LUPAN`). Rozstrzygnięcie właściciela projektu
+z 16.10.2026: **kodu rodzaju nie wpisujemy na wydruk** — aplikacja
+pokazuje rolnikowi gatunki do wyboru, a gdy jego uprawy nie ma na liście,
+rolnik wpisuje własną nazwę i kolumna kodu zostaje pusta.
 
-Do decyzji: dynia, wyka, gorczyca, lucerna, rzepa czarna, wierzba
-energetyczna, malinojeżyna, kapusta, łubin, koniczyna, botwinka,
-tymianek, nostrzyk, mięta, sorgo zwisłe, szałwia, topola energetyczna,
-porzeczka, komonica, burak, orzech, kapusta choy-sum, róża uprawiana na
-jadalne owoce. Razem 1,8% zastosowań.
+Dlatego nazwy rodzajowe mają w danych stan `rodzajowa`, pytanie do
+rolnika („Jaki łubin?") i listę gatunków — każdy z gotowym kodem
+(pilnuje tego test). Przykłady:
 
-Pytanie do właściciela projektu: czy na wydruku ma stawać **kod rodzaju**
-(np. `1LUPG` dla „łubin"), czy **puste pole**? Konkretna uprawa rolnika
-ma własną nazwę w słowniku („łubin żółty"), więc pole zostaje puste tylko
-wtedy, gdy rolnik wpisze samo „łubin".
+| Nazwa z rejestru | Pytanie | Gatunki do wyboru |
+| --- | --- | --- |
+| łubin | Jaki łubin? | biały, żółty, wąskolistny |
+| gorczyca | Jaka gorczyca? | biała, sarepska, czarna |
+| dynia | Jaka dynia? | zwyczajna, olbrzymia, piżmowa |
+| kapusta | Jaka kapusta? | głowiasta biała i czerwona, włoska, pekińska, chińska, brukselka, jarmuż, kalarepa, kalafior, brokuł |
+| porzeczka | Jaka porzeczka? | czarna, czerwona, biała |
+| wierzba energetyczna | Jaka wierzba? | wiciowa, purpurowa |
+
+Dwie nazwy — „topola energetyczna" i „róża uprawiana na jadalne owoce" —
+nie mają gatunku w słowniku; tam rolnik wpisze własną nazwę.
+
+## Ekran wyboru uprawy (oba wyglądy)
+
+Uprawę pola wybiera się z listy, nie z klawiatury (reguły interfejsu).
+Lista idzie **od upraw najczęstszych w rejestrze**, więc pszenica ozima,
+rzepak ozimy i pszenżyto są na górze; wyszukiwarka jest dodatkiem, nie
+wymogiem.
+
+- Uprawa z kodem → od razu wybrana, pod nazwą stoi `kod EPPO: TRZAW`.
+- Nazwa rodzajowa → drugi ekran z pytaniem i gatunkami; po wyborze
+  gatunku oba ekrany zamykają się jednym dotknięciem.
+- „Nie ma mojej uprawy" → rolnik wpisuje nazwę i widzi, co traci:
+  „nie podpowiemy środków z rejestru ani kodu EPPO", a w ewidencji
+  zostanie „brak".
+- Nazwy zbiorcze („zboża"), miejsca stosowania („uprawa w szklarni")
+  i rośliny spoza zakresu („róża") na listę nie wchodzą.
+
+Słownik aplikacji nosi teraz przy każdej uprawie stan, gatunki do wyboru,
+pytanie i liczbę zastosowań w rejestrze (`tools/zbuduj_slowniki.py`),
+więc kolejność listy i pytania są **danymi**, nie kodem ekranu.
 
 ## Dziura w zabezpieczeniu, znaleziona przy okazji
 
@@ -119,7 +147,13 @@ stany `kod` i `potwierdzone`.
 - scalanie nie nadpisuje decyzji `potwierdzonej` (i mówi o sporze),
   a wiersz `do_decyzji` wolno poprawić.
 
-Razem: `python3 -m pytest tools` → 111 testów, `flutter test` → 332 testy.
+Po stronie aplikacji doszły testy wyboru uprawy:
+`test/funkcje/dzialki/slownik_upraw_test.dart` (9 testów: kolejność listy,
+odrzucone nazwy zbiorcze i miejsca, gatunki w kolejności z danych, własna
+nazwa bez kodu) oraz `test/wyglad/wybor_uprawy_test.dart` i trzy testy
+w `test/wyglad/nowoczesny_test.dart` — ta sama ścieżka w obu wyglądach.
+
+Razem: `python3 -m pytest tools` → 112 testów, `flutter test` → 349 testów.
 
 ## Jak powtórzyć
 

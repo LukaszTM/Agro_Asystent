@@ -3,6 +3,7 @@ import '../funkcje/dzialki/import_wniosku.dart';
 import '../funkcje/dzialki/klient_uldk.dart';
 import '../funkcje/dzialki/repozytorium_dzialek.dart';
 import '../funkcje/dzialki/repozytorium_pol.dart';
+import '../funkcje/dzialki/slownik_upraw.dart';
 import '../funkcje/dzialki/zrodlo_pliku.dart';
 import '../funkcje/nawozenie/ewidencja_nawozenia.dart';
 import '../funkcje/nawozenie/nawoz.dart';
@@ -37,6 +38,7 @@ class Uslugi {
     required this.zabiegi,
     required this.rejestr,
     required this.srodki,
+    required this.uprawy,
     required this.reguly,
     required this.importWniosku,
     required this.zrodloPliku,
@@ -74,6 +76,10 @@ class Uslugi {
   final RejestrZabiegow rejestr;
 
   final SlownikSrodkow srodki;
+
+  /// Uprawy do wyboru przy zakładaniu pola — z kodem EPPO i z gatunkami
+  /// do wyboru przy nazwie rodzajowej.
+  final SlownikUpraw uprawy;
 
   /// Słownik reguł prawnych — stąd bierzemy listę pól wymaganych w ewidencji.
   final SlownikRegul reguly;
@@ -155,6 +161,7 @@ class Uslugi {
     zabiegi: zabiegi,
     rejestr: rejestr,
     srodki: srodki,
+    uprawy: uprawy,
     reguly: reguly,
     importWniosku: importWniosku,
     zrodloPliku: zrodloPliku,

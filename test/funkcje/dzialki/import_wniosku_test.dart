@@ -42,7 +42,9 @@ void main() {
 
     slowniki = await fabryka.openDatabase(inMemoryDatabasePath);
     await slowniki.execute(
-      'CREATE TABLE uprawa (nazwa TEXT PRIMARY KEY, kod_eppo TEXT)',
+      '''CREATE TABLE uprawa (nazwa TEXT PRIMARY KEY, kod_eppo TEXT,
+          stan TEXT NOT NULL DEFAULT 'brak', gatunki TEXT, pytanie TEXT,
+          zastosowan INTEGER NOT NULL DEFAULT 0)''',
     );
     // Dwie uprawy ze słownika i jedna bez kodu — tak jak w prawdziwym
     // słowniku, gdzie część nazw z wniosku nie ma odpowiednika.

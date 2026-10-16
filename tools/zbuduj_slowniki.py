@@ -54,8 +54,19 @@ CREATE TABLE zastosowanie_uprawa (
 );
 
 CREATE TABLE uprawa (
-    nazwa    TEXT PRIMARY KEY,
-    kod_eppo TEXT
+    nazwa      TEXT PRIMARY KEY,
+    kod_eppo   TEXT,
+    -- 'kod' — jest kod EPPO; 'rodzajowa' — rejestr nie podaje gatunku,
+    -- aplikacja pyta rolnika; 'poza_zakresem', 'grupa', 'nie_uprawa';
+    -- 'brak' — nazwa bez decyzji.
+    stan       TEXT NOT NULL DEFAULT 'brak',
+    -- Dla nazw rodzajowych: gatunki do wyboru, rozdzielone znakiem '|'.
+    gatunki    TEXT,
+    -- O co pyta ekran wyboru uprawy przy nazwie rodzajowej.
+    pytanie    TEXT,
+    -- Ile zastosowań w rejestrze dotyczy tej uprawy — po tym układamy
+    -- listę wyboru, żeby najczęstsze uprawy były na górze.
+    zastosowan INTEGER NOT NULL DEFAULT 0
 );
 
 CREATE TABLE karencja (
@@ -103,7 +114,38 @@ def wczytaj_kody_eppo(sciezka: Path) -> dict[str, str]:
         }
 
 
-def zbuduj(zrodlo: Path, cel: Path, kody_eppo: dict[str, str]) -> dict[str, int]:
+#: Stany z pliku decyzji → stany w słowniku aplikacji.
+STANY_DECYZJI = {
+    "potwierdzone": "kod",
+    "rodzajowa": "rodzajowa",
+    "poza_zakresem": "poza_zakresem",
+    "grupa_upraw": "grupa",
+    "nie_uprawa": "nie_uprawa",
+}
+
+
+def wczytaj_decyzje_upraw(sciezka: Path) -> dict[str, dict[str, str]]:
+    """Plik decyzji o uprawach: postać porównawcza nazwy → wiersz.
+
+    Stąd bierze się stan uprawy i lista gatunków do wyboru przy nazwie
+    rodzajowej („łubin" → biały, żółty, wąskolistny).
+    """
+    if not sciezka.exists():
+        return {}
+    with sciezka.open(encoding="utf-8-sig", newline="") as plik:
+        return {
+            postac_porownawcza(w["nazwa_uprawy"]): w
+            for w in csv.DictReader(plik, delimiter=";")
+            if w.get("nazwa_uprawy")
+        }
+
+
+def zbuduj(
+    zrodlo: Path,
+    cel: Path,
+    kody_eppo: dict[str, str],
+    decyzje: dict[str, dict[str, str]] | None = None,
+) -> dict[str, int]:
     if cel.exists():
         cel.unlink()
     cel.parent.mkdir(parents=True, exist_ok=True)
@@ -150,10 +192,37 @@ def zbuduj(zrodlo: Path, cel: Path, kody_eppo: dict[str, str]) -> dict[str, int]
            FROM zr.zrodlo_danych"""
     )
 
-    uprawy = [u for (u,) in wy.execute("SELECT DISTINCT uprawa FROM zastosowanie_uprawa")]
+    decyzje = decyzje or {}
+    uzycia = dict(
+        wy.execute(
+            "SELECT uprawa, COUNT(*) FROM zastosowanie_uprawa GROUP BY uprawa"
+        )
+    )
+    wiersze_upraw = []
+    for nazwa in sorted(uzycia):
+        klucz = postac_porownawcza(nazwa)
+        kod = kody_eppo.get(klucz)
+        decyzja = decyzje.get(klucz, {})
+        stan = (
+            "kod"
+            if kod
+            else STANY_DECYZJI.get((decyzja.get("stan") or "").strip(), "brak")
+        )
+        wiersze_upraw.append(
+            (
+                nazwa,
+                kod,
+                stan,
+                (decyzja.get("zamiast") or "") or None,
+                (decyzja.get("nazwa_eppo") or "") if stan == "rodzajowa" else None,
+                uzycia[nazwa],
+            )
+        )
     wy.executemany(
-        "INSERT INTO uprawa (nazwa, kod_eppo) VALUES (?,?)",
-        [(u, kody_eppo.get(postac_porownawcza(u))) for u in sorted(uprawy)],
+        """INSERT INTO uprawa (nazwa, kod_eppo, stan, gatunki, pytanie,
+                               zastosowan)
+           VALUES (?,?,?,?,?,?)""",
+        wiersze_upraw,
     )
 
     wy.commit()
@@ -163,6 +232,9 @@ def zbuduj(zrodlo: Path, cel: Path, kody_eppo: dict[str, str]) -> dict[str, int]
     }
     liczby["uprawy_z_kodem"] = wy.execute(
         "SELECT COUNT(*) FROM uprawa WHERE kod_eppo IS NOT NULL"
+    ).fetchone()[0]
+    liczby["uprawy_rodzajowe"] = wy.execute(
+        "SELECT COUNT(*) FROM uprawa WHERE stan = 'rodzajowa'"
     ).fetchone()[0]
     wy.execute("DETACH DATABASE zr")
     wy.execute("VACUUM")
@@ -176,6 +248,9 @@ def main(argv: list[str] | None = None) -> int:
                         default=Path("dane/wynik/srodki_ochrony.sqlite"))
     parser.add_argument("--kody-eppo", type=Path,
                         default=Path("dane/wynik/uprawy_eppo.csv"))
+    parser.add_argument("--decyzje", type=Path,
+                        default=Path("assets/dane/kody_eppo_decyzje.csv"),
+                        help="plik decyzji o uprawach: stan i gatunki do wyboru")
     parser.add_argument("--cel", type=Path, default=Path("dane/wynik/slowniki.sqlite"))
     parser.add_argument("--asset", type=Path,
                         default=Path("assets/dane/slowniki.sqlite.gz"),
@@ -186,7 +261,12 @@ def main(argv: list[str] | None = None) -> int:
         print(f"Brak bazy {args.zrodlo}. Uruchom najpierw P1.", file=sys.stderr)
         return 1
 
-    liczby = zbuduj(args.zrodlo, args.cel, wczytaj_kody_eppo(args.kody_eppo))
+    liczby = zbuduj(
+        args.zrodlo,
+        args.cel,
+        wczytaj_kody_eppo(args.kody_eppo),
+        wczytaj_decyzje_upraw(args.decyzje),
+    )
     for nazwa, ile in liczby.items():
         print(f"  {nazwa:22} {ile}")
     print(f"\nPlik: {args.cel}  ({args.cel.stat().st_size / 1_048_576:.1f} MB)")

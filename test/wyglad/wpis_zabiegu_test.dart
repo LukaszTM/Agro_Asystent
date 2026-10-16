@@ -9,6 +9,7 @@ import 'package:agro_asystent/funkcje/dokumenty/wyjscie_dokumentu.dart';
 import 'package:agro_asystent/funkcje/dzialki/import_wniosku.dart';
 import 'package:agro_asystent/funkcje/dzialki/repozytorium_dzialek.dart';
 import 'package:agro_asystent/funkcje/dzialki/repozytorium_pol.dart';
+import 'package:agro_asystent/funkcje/dzialki/slownik_upraw.dart';
 import 'package:agro_asystent/funkcje/dzialki/zrodlo_pliku.dart';
 import 'package:agro_asystent/funkcje/nawozenie/ewidencja_nawozenia.dart';
 import 'package:agro_asystent/funkcje/nawozenie/nawoz.dart';
@@ -66,7 +67,9 @@ void main() {
       'CREATE TABLE zastosowanie_uprawa (zastosowanie_id INTEGER, uprawa TEXT)',
     );
     await baza.execute(
-      'CREATE TABLE uprawa (nazwa TEXT PRIMARY KEY, kod_eppo TEXT)',
+      '''CREATE TABLE uprawa (nazwa TEXT PRIMARY KEY, kod_eppo TEXT,
+          stan TEXT NOT NULL DEFAULT 'brak', gatunki TEXT, pytanie TEXT,
+          zastosowan INTEGER NOT NULL DEFAULT 0)''',
     );
     await baza.execute('''
       CREATE TABLE karencja (srodek_nazwa TEXT, uprawa TEXT, dni INTEGER,
@@ -155,6 +158,7 @@ void main() {
       zabiegi: RepozytoriumZabiegow(gospodarstwo),
       rejestr: RejestrZabiegow(gospodarstwo),
       srodki: SlownikSrodkow(slowniki),
+      uprawy: SlownikUpraw(slowniki),
       reguly: reguly,
       importWniosku: ImportWniosku(
         baza: gospodarstwo,

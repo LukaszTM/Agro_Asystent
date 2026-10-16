@@ -623,33 +623,85 @@ MIEJSCA: list[str] = [
 ]
 
 #: Nazwy rodzajowe: rejestr nie mówi, o który gatunek chodzi, a gatunki
-#: mają różne kody. Zostawiamy je właścicielowi projektu razem z kodem
-#: rodzaju z bazy EPPO — to jego decyzja, czy na wydruku ma stać kod
-#: rodzaju, czy puste pole.
-RODZAJOWE: dict[str, tuple[str, str]] = {
-    "gorczyca": ("Sinapis", "biała, sarepska czy czarna"),
-    "łubin": ("Lupinus", "biały, żółty czy wąskolistny"),
-    "wyka": ("Vicia", "siewna czy kosmata"),
-    "lucerna": ("Medicago", "siewna, sierpowata czy nerkowata"),
-    "koniczyna": ("Trifolium", "czerwona, biała czy inkarnatka"),
-    "nostrzyk": ("Melilotus", "biały czy żółty"),
-    "dynia": ("Cucurbita", "zwyczajna, olbrzymia czy piżmowa"),
-    "kapusta": ("Brassica", "głowiasta, pekińska, brukselka…"),
-    "mięta": ("Mentha", "pieprzowa czy inna"),
-    "szałwia": ("Salvia", "lekarska czy ozdobna"),
-    "tymianek": ("Thymus", "właściwy czy inny"),
-    "sorgo zwisłe": ("Sorghum", "gatunek do ustalenia"),
-    "malinojeżyna": ("Rubus", "mieszaniec — gatunek do ustalenia"),
-    "botwinka": ("Beta", "młody burak ćwikłowy czy boćwina"),
-    "rzepa czarna": ("Raphanus", "czy to rzodkiew czarna"),
-    "wierzba energetyczna": ("Salix", "wiciowa czy purpurowa"),
-    "topola energetyczna": ("Populus", "gatunek do ustalenia"),
-    "porzeczka": ("Ribes", "czarna, czerwona czy biała"),
-    "komonica": ("Lotus", "zwyczajna czy inna"),
-    "burak": ("Beta", "cukrowy, ćwikłowy, pastewny czy liściowy"),
-    "orzech": ("Juglans", "włoski czy laskowy — to różne rodzaje"),
-    "kapusta choy-sum": ("Brassica", "odmiana do ustalenia"),
-    "róża uprawiana na jadalne owoce": ("Rosa", "gatunek do ustalenia"),
+#: mają różne kody. Kodu rodzaju **nie wpisujemy na wydruk** — aplikacja
+#: pokazuje rolnikowi gatunki do wyboru, a gdy jego uprawy nie ma na
+#: liście, rolnik wpisuje własną nazwę (decyzja z 16.10.2026).
+#:
+#: Nazwa z rejestru → (o co pytamy rolnika, gatunki do wyboru).
+#: Gatunki muszą mieć kod — pilnuje tego test.
+RODZAJOWE: dict[str, tuple[str, list[str]]] = {
+    "gorczyca": (
+        "Jaka gorczyca?",
+        ["gorczyca biała", "gorczyca sarepska", "gorczyca czarna"],
+    ),
+    "łubin": (
+        "Jaki łubin?",
+        ["łubin biały", "łubin żółty", "łubin wąskolistny"],
+    ),
+    "wyka": ("Jaka wyka?", ["wyka siewna", "wyka kosmata"]),
+    "lucerna": (
+        "Jaka lucerna?",
+        ["lucerna siewna", "lucerna sierpowata", "lucerna nerkowata"],
+    ),
+    "koniczyna": (
+        "Jaka koniczyna?",
+        [
+            "koniczyna czerwona",
+            "koniczyna biała",
+            "koniczyna krwistoczerwona (inkarnatka)",
+        ],
+    ),
+    "nostrzyk": ("Jaki nostrzyk?", ["nostrzyk biały", "nostrzyk żółty"]),
+    "dynia": (
+        "Jaka dynia?",
+        ["dynia zwyczajna", "dynia olbrzymia", "dynia piżmowa"],
+    ),
+    "kapusta": (
+        "Jaka kapusta?",
+        [
+            "kapusta głowiasta biała",
+            "kapusta głowiasta czerwona",
+            "kapusta włoska",
+            "kapusta pekińska",
+            "kapusta chińska",
+            "kapusta brukselska",
+            "jarmuż",
+            "kalarepa",
+            "kalafior",
+            "brokuł",
+        ],
+    ),
+    "kapusta choy-sum": ("Jaka kapusta?", ["kapusta chińska"]),
+    "burak": (
+        "Jaki burak?",
+        [
+            "burak cukrowy",
+            "burak ćwikłowy",
+            "burak pastewny",
+            "burak liściowy",
+        ],
+    ),
+    "botwinka": ("Z czego botwinka?", ["burak ćwikłowy", "boćwina"]),
+    "porzeczka": (
+        "Jaka porzeczka?",
+        ["porzeczka czarna", "porzeczka czerwona", "porzeczka biała"],
+    ),
+    "malinojeżyna": ("Malina czy jeżyna?", ["malina", "jeżyna"]),
+    "orzech": ("Jaki orzech?", ["orzech włoski", "orzech laskowy"]),
+    "komonica": ("Jaka komonica?", ["komonica zwyczajna"]),
+    "mięta": ("Jaka mięta?", ["mięta pieprzowa"]),
+    "szałwia": ("Jaka szałwia?", ["szałwia lekarska"]),
+    "tymianek": ("Jaki tymianek?", ["tymianek właściwy"]),
+    "sorgo zwisłe": ("Jakie sorgo?", ["sorgo"]),
+    "rzepa czarna": ("Co to za roślina?", ["rzodkiew czarna", "rzepa"]),
+    "wierzba energetyczna": (
+        "Jaka wierzba?",
+        ["wierzba wiciowa", "wierzba purpurowa"],
+    ),
+    # Gatunku topoli energetycznej i róży na owoce słownik nie zna —
+    # rolnik wpisze własną nazwę, a pole kodu EPPO zostanie puste.
+    "topola energetyczna": ("Jaka topola?", []),
+    "róża uprawiana na jadalne owoce": ("Jaka róża?", []),
 }
 
 
@@ -711,13 +763,14 @@ def zbuduj_wiersze(
     wynik: list[dict[str, str]] = []
     klopoty: list[str] = []
 
-    def wiersz(nazwa, kod, nazwa_eppo, stan, zrodlo):
+    def wiersz(nazwa, kod, nazwa_eppo, stan, zrodlo, zamiast=""):
         return {
             "nazwa_uprawy": nazwa,
             "kod_eppo": kod,
             "nazwa_eppo": nazwa_eppo,
             "stan": stan,
             "zrodlo": zrodlo,
+            "zamiast": zamiast,
             "data": dzisiaj,
         }
 
@@ -779,15 +832,20 @@ def zbuduj_wiersze(
                 "nie roślina",
             )
         )
-    for nazwa, (rodzaj, pytanie) in RODZAJOWE.items():
-        kod = kod_po_nazwie_naukowej(baza, rodzaj)
+    for nazwa, (pytanie, gatunki) in RODZAJOWE.items():
+        nieznane = [g for g in gatunki if g not in kody_upraw]
+        if nieznane:
+            klopoty.append(f"{nazwa}: gatunki bez kodu — {nieznane}")
         wynik.append(
             wiersz(
                 nazwa,
                 "",
-                f"kod rodzaju {rodzaj} = {kod or 'brak'}",
-                "do_decyzji",
-                f"rejestr nie podaje gatunku ({pytanie}) — do rozstrzygnięcia",
+                pytanie,
+                "rodzajowa",
+                "rejestr nie podaje gatunku; aplikacja pokazuje gatunki "
+                "do wyboru, a gdy rolnik ma inną uprawę — wpisuje własną "
+                "nazwę i kod EPPO zostaje pusty",
+                zamiast="|".join(gatunki),
             )
         )
     return wynik, klopoty
@@ -835,6 +893,7 @@ def scal(
                 "nazwa_eppo",
                 "stan",
                 "zrodlo",
+                "zamiast",
                 "data",
             ],
             delimiter=";",
@@ -876,7 +935,13 @@ def pokrycie(rejestr: Path, plik: Path) -> None:
             (ile, nazwa)
             for nazwa, ile in uzycia.items()
             if (decyzje.get(postac_porownawcza(nazwa)) or {}).get("stan")
-            not in {"potwierdzone", "poza_zakresem", "grupa_upraw", "nie_uprawa"}
+            not in {
+                "potwierdzone",
+                "poza_zakresem",
+                "grupa_upraw",
+                "nie_uprawa",
+                "rodzajowa",
+            }
             or not (decyzje.get(postac_porownawcza(nazwa)) or {}).get("kod_eppo")
             and (decyzje.get(postac_porownawcza(nazwa)) or {}).get("stan")
             == "potwierdzone"
@@ -931,7 +996,7 @@ def main(argv: list[str] | None = None) -> int:
     print(f"Poza zakresem (ozdobne, leśne, tropikalne): {len(POZA_ZAKRESEM)}")
     print(f"Nazwy zbiorcze:               {len(GRUPY)}")
     print(f"Miejsca i przedmioty:         {len(MIEJSCA)}")
-    print(f"Nazwy rodzajowe do decyzji:   {len(RODZAJOWE)}")
+    print(f"Nazwy rodzajowe (gatunek z listy): {len(RODZAJOWE)}")
 
     if klopoty:
         print("\nDo poprawienia:")

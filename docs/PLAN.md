@@ -70,9 +70,11 @@ Kolejność wewnątrz etapu; każdy krok ma dawać działającą aplikację:
 10. Konta i kilka gospodarstw.
 
 Dodatkowo, poza dziesięcioma krokami: trzy rejestry do wydruku i eksportu (pkt 8),
-kopia danych do pliku oraz **drugi wygląd telefonu („Nowoczesny") z przełącznikiem
-w ustawieniach** — zrobione 16.10.2026, raport
-`docs/raporty/etap1-wyglad-nowoczesny.md`.
+kopia danych do pliku, **drugi wygląd telefonu („Nowoczesny") z przełącznikiem
+w ustawieniach** (raport `docs/raporty/etap1-wyglad-nowoczesny.md`) oraz **wybór
+uprawy z listy** z kodem EPPO, pytaniem o gatunek przy nazwie rodzajowej i własną
+nazwą, gdy uprawy nie ma w słowniku (raport
+`docs/raporty/kody-eppo-uprawy-polskie.md`) — wszystko zrobione 16.10.2026.
 
 Później: program na Windows i synchronizacja; etap 2 — kontrola warunkowości, magazyn;
 etap 3 — koszty i przychody, wersja na iPhone'a.

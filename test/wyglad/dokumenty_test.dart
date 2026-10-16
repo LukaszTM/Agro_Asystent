@@ -9,6 +9,7 @@ import 'package:agro_asystent/funkcje/dokumenty/wyjscie_dokumentu.dart';
 import 'package:agro_asystent/funkcje/dzialki/import_wniosku.dart';
 import 'package:agro_asystent/funkcje/dzialki/repozytorium_dzialek.dart';
 import 'package:agro_asystent/funkcje/dzialki/repozytorium_pol.dart';
+import 'package:agro_asystent/funkcje/dzialki/slownik_upraw.dart';
 import 'package:agro_asystent/funkcje/dzialki/zrodlo_pliku.dart';
 import 'package:agro_asystent/funkcje/nawozenie/ewidencja_nawozenia.dart';
 import 'package:agro_asystent/funkcje/nawozenie/nawoz.dart';
@@ -151,7 +152,9 @@ void main() {
     });
     slowniki = await fabryka.openDatabase(inMemoryDatabasePath);
     await slowniki.execute(
-      'CREATE TABLE uprawa (nazwa TEXT PRIMARY KEY, kod_eppo TEXT)',
+      '''CREATE TABLE uprawa (nazwa TEXT PRIMARY KEY, kod_eppo TEXT,
+          stan TEXT NOT NULL DEFAULT 'brak', gatunki TEXT, pytanie TEXT,
+          zastosowan INTEGER NOT NULL DEFAULT 0)''',
     );
     zabiegi = RepozytoriumZabiegow(baza);
     wyjscie = _WyjscieDoPamieci();
@@ -171,6 +174,7 @@ void main() {
     zabiegi: zabiegi,
     rejestr: RejestrZabiegow(baza),
     srodki: SlownikSrodkow(slowniki),
+    uprawy: SlownikUpraw(slowniki),
     reguly: reguly,
     importWniosku: ImportWniosku(baza: baza, srodki: SlownikSrodkow(slowniki)),
     zrodloPliku: const _BrakZrodlaPliku(),

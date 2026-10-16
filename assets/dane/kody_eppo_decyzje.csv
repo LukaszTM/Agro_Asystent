@@ -1,559 +1,559 @@
-nazwa_uprawy;kod_eppo;nazwa_eppo;stan;zrodlo;data
-agrest;RIBUC;"porzeczka agrest; agrest";potwierdzone;"Ribes uva-crispa → kod z bazy EPPO; uprawa konwencjonalna w Polsce (jagodnik)";2026-10-16
-aksamitka;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;2026-10-16
-aktinidia;ATIAR;aktinidia ostrolistna;potwierdzone;"Actinidia arguta → kod z bazy EPPO; uprawa konwencjonalna w Polsce (sad)";2026-10-16
-arbuz;CITLA;"arbuz zwyczajny; kawon";potwierdzone;"Citrullus lanatus → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";2026-10-16
-arcydzięgiel litwor;ANKAR;"dzięgiel litwor; arcydzięgiel litwor";potwierdzone;"Angelica archangelica → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zielarskie)";2026-10-16
-aronia;ABOME;"aronia czarna; aronia czarnoowocowa";potwierdzone;"Aronia melanocarpa → kod z bazy EPPO; uprawa konwencjonalna w Polsce (jagodnik)";2026-10-16
-aster;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;2026-10-16
-aster chiński;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;2026-10-16
-aster letni;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;2026-10-16
-azalia;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;2026-10-16
-babka zwyczajna;PLAMA;babka zwyczajna;potwierdzone;"Plantago major → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zielarskie)";2026-10-16
-bakłażan;SOLME;psianka podłużna;potwierdzone;"Solanum melongena → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";2026-10-16
-banan;;;poza_zakresem;roślina nieuprawiana w Polsce — poza zakresem aplikacji;2026-10-16
-bazylia pospolita;OCIBA;bazylia pospolita;potwierdzone;"Ocimum basilicum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zielarskie)";2026-10-16
-begonia;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;2026-10-16
-berberys;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;2026-10-16
-bez czarny;SAMNI;"bez czarny; dziki bez czarny";potwierdzone;"Sambucus nigra → kod z bazy EPPO; uprawa konwencjonalna w Polsce (jagodnik)";2026-10-16
-bluszcz;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;2026-10-16
-bób;VICFX;"wyka bób; bób";potwierdzone;"Vicia faba → kod z bazy EPPO; uprawa konwencjonalna w Polsce (strączkowe)";2026-10-16
-bobik;VICFX;"wyka bób; bób";potwierdzone;"Vicia faba → kod z bazy EPPO; uprawa konwencjonalna w Polsce (strączkowe)";2026-10-16
-boćwina;BEAVV;Beta vulgaris var. cicla;potwierdzone;"Beta vulgaris var. cicla → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";2026-10-16
-boiska;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;2026-10-16
-borówka amerykańska;VACCO;"borówka amerykańska; borówka wysoka";potwierdzone;"Vaccinium corymbosum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (jagodnik)";2026-10-16
-borówka brusznica;VACVI;"borówka czerwona; borówka brucznica";potwierdzone;"Vaccinium vitis-idaea → kod z bazy EPPO; uprawa konwencjonalna w Polsce (jagodnik)";2026-10-16
-borówka czarna;VACMY;borówka czarna;potwierdzone;"Vaccinium myrtillus → kod z bazy EPPO; uprawa konwencjonalna w Polsce (jagodnik)";2026-10-16
-borówka wysoka;VACCO;"borówka amerykańska; borówka wysoka";potwierdzone;"Vaccinium corymbosum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (jagodnik)";2026-10-16
-botwinka;;kod rodzaju Beta = 1BEAG;do_decyzji;rejestr nie podaje gatunku (młody burak ćwikłowy czy boćwina) — do rozstrzygnięcia;2026-10-16
-bratek;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;2026-10-16
-brokuł;BRSOK;Brassica oleracea var. italica;potwierdzone;"Brassica oleracea var. italica → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";2026-10-16
-brukiew;BRSNA;"brukiew; karpiel";potwierdzone;"Brassica napus var. napobrassica → kod z bazy EPPO; uprawa konwencjonalna w Polsce (okopowe)";2026-10-16
-brukiew jadalna;BRSNA;"brukiew; karpiel";potwierdzone;ta sama roślina co „brukiew” — inny zapis w rejestrze;2026-10-16
-brzoskwinia;PRNPS;brzoskwinia zwyczajna;potwierdzone;"Prunus persica → kod z bazy EPPO; uprawa konwencjonalna w Polsce (sad)";2026-10-16
-buk;;;poza_zakresem;gatunek leśny albo zadrzewieniowy — poza zakresem aplikacji;2026-10-16
-bukszpan;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;2026-10-16
-bulwiaste rośliny ozdobne;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;2026-10-16
-burak;;kod rodzaju Beta = 1BEAG;do_decyzji;rejestr nie podaje gatunku (cukrowy, ćwikłowy, pastewny czy liściowy) — do rozstrzygnięcia;2026-10-16
-burak cukrowy;BEAVA;burak cukrowy;potwierdzone;"Beta vulgaris subsp. vulgaris var. altissima → kod z bazy EPPO; uprawa konwencjonalna w Polsce (okopowe)";2026-10-16
-burak ćwikłowy;BEAVD;Beta vulgaris var. conditiva;potwierdzone;"Beta vulgaris var. conditiva → kod z bazy EPPO; uprawa konwencjonalna w Polsce (okopowe)";2026-10-16
-burak ćwikłowy biały;BEAVD;Beta vulgaris var. conditiva;potwierdzone;ta sama roślina co „burak ćwikłowy” — inny zapis w rejestrze;2026-10-16
-burak ćwikłowy żółty;BEAVD;Beta vulgaris var. conditiva;potwierdzone;ta sama roślina co „burak ćwikłowy” — inny zapis w rejestrze;2026-10-16
-burak liściowy;BEAVV;Beta vulgaris var. cicla;potwierdzone;"Beta vulgaris var. cicla → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";2026-10-16
-burak pastewny;BEAVC;Beta vulgaris var. rapacea;potwierdzone;"Beta vulgaris var. rapacea → kod z bazy EPPO; uprawa konwencjonalna w Polsce (okopowe)";2026-10-16
-byliny;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;2026-10-16
-cebula;ALLCE;"czosnek cebula; cebula";potwierdzone;"Allium cepa → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";2026-10-16
-cebula dymka;ALLCE;"czosnek cebula; cebula";potwierdzone;ta sama roślina co „cebula” — inny zapis w rejestrze;2026-10-16
-cebula siedmiolatka;ALLFI;"czosnek dęty; pizosnek dęty";potwierdzone;"Allium fistulosum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";2026-10-16
-cebula szalotka;ALLAS;czosnek szalotka;potwierdzone;"Allium ascalonicum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";2026-10-16
-cebula z dymki;ALLCE;"czosnek cebula; cebula";potwierdzone;"Allium cepa → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";2026-10-16
-cebula z rozsady;ALLCE;"czosnek cebula; cebula";potwierdzone;"Allium cepa → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";2026-10-16
-cebulowe rośliny ozdobne;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;2026-10-16
-chmiel;HUMLU;chmiel zwyczajny;potwierdzone;"Humulus lupulus → kod z bazy EPPO; uprawa konwencjonalna w Polsce (przemysłowe)";2026-10-16
-chodniki;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;2026-10-16
-chryzantema;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;2026-10-16
-chrzan;ARWLA;chrzan pospolity;potwierdzone;"Armoracia rusticana → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";2026-10-16
-ciecierzyca;CIEAR;ciecierzyca pospolita;potwierdzone;"Cicer arietinum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (strączkowe)";2026-10-16
-cis;;;poza_zakresem;gatunek leśny albo zadrzewieniowy — poza zakresem aplikacji;2026-10-16
-cukinia;CUUPE;dynia zwyczajna;potwierdzone;"Cucurbita pepo → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";2026-10-16
-cyklamen;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;2026-10-16
-cykoria;CICIN;cykoria podróżnik;potwierdzone;"Cichorium intybus → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";2026-10-16
-cykoria korzeniowa;CICIN;cykoria podróżnik;potwierdzone;"Cichorium intybus → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";2026-10-16
-cykoria liściasta;CICIN;cykoria podróżnik;potwierdzone;ta sama roślina co „cykoria” — inny zapis w rejestrze;2026-10-16
-cykoria sałatowa;CICIN;cykoria podróżnik;potwierdzone;"Cichorium intybus → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";2026-10-16
-cynia;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;2026-10-16
-cyprysik;;;poza_zakresem;gatunek leśny albo zadrzewieniowy — poza zakresem aplikacji;2026-10-16
-cytryna;;;poza_zakresem;roślina nieuprawiana w Polsce — poza zakresem aplikacji;2026-10-16
-cząber ogrodowy;STIHO;Satureja hortensis;potwierdzone;"Satureja hortensis → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zielarskie)";2026-10-16
-czarna porzeczka;RIBNI;porzeczka czarna;potwierdzone;"Ribes nigrum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (jagodnik)";2026-10-16
-czeremcha;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;2026-10-16
-czereśnia;PRNAV;"czereśnia ptasia; wiśnia ptasia; wiśnia dzika; trześnia; czereśnia";potwierdzone;"Prunus avium → kod z bazy EPPO; uprawa konwencjonalna w Polsce (sad)";2026-10-16
-czosnek;ALLSA;czosnek pospolity;potwierdzone;"Allium sativum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";2026-10-16
-czosnek askaloński;ALLAS;czosnek szalotka;potwierdzone;"Allium ascalonicum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";2026-10-16
-dąb;;;poza_zakresem;gatunek leśny albo zadrzewieniowy — poza zakresem aplikacji;2026-10-16
-dalia;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;2026-10-16
-doniczki;;;nie_uprawa;miejsce stosowania albo przedmiot, nie roślina (raport P3);2026-10-16
-drogi;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;2026-10-16
-drogi dojazdowe;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;2026-10-16
-drzewa i krzewy ozdobne;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;2026-10-16
-drzewa iglaste;;;poza_zakresem;gatunek leśny albo zadrzewieniowy — poza zakresem aplikacji;2026-10-16
-drzewa leśne;;;poza_zakresem;gatunek leśny albo zadrzewieniowy — poza zakresem aplikacji;2026-10-16
-drzewa liściaste;;;poza_zakresem;gatunek leśny albo zadrzewieniowy — poza zakresem aplikacji;2026-10-16
-drzewa ozdobne;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;2026-10-16
-drzewka bożonarodzeniowe;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;2026-10-16
-drzewostany liściaste;;;poza_zakresem;gatunek leśny albo zadrzewieniowy — poza zakresem aplikacji;2026-10-16
-drzewostany sosnowe;;;poza_zakresem;gatunek leśny albo zadrzewieniowy — poza zakresem aplikacji;2026-10-16
-dymka;ALLCE;"czosnek cebula; cebula";potwierdzone;"Allium cepa → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";2026-10-16
-dynia;;kod rodzaju Cucurbita = 1CUUG;do_decyzji;rejestr nie podaje gatunku (zwyczajna, olbrzymia czy piżmowa) — do rozstrzygnięcia;2026-10-16
-dynia makaronowa;CUUPE;dynia zwyczajna;potwierdzone;ta sama roślina co „dynia zwyczajna” — inny zapis w rejestrze;2026-10-16
-dynia olbrzymia;CUUMA;dynia olbrzymia;potwierdzone;"Cucurbita maxima → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";2026-10-16
-dynia piżmowa;CUUMO;dynia piżmowa;potwierdzone;"Cucurbita moschata → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";2026-10-16
-dynia zwyczajna;CUUPE;dynia zwyczajna;potwierdzone;"Cucurbita pepo → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";2026-10-16
-dyniowate;;;grupa_upraw;nazwa zbiorcza — gatunek wskazuje konkretna uprawa;2026-10-16
-dzięgiel;ANKAR;"dzięgiel litwor; arcydzięgiel litwor";potwierdzone;"Angelica archangelica → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zielarskie)";2026-10-16
-dziurawiec zwyczajny;HYPPE;dzurawiec zwyczajny;potwierdzone;"Hypericum perforatum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zielarskie)";2026-10-16
-endywia;CICEN;"chicória-brava; cykoria endywia; endywia; szczerbak wielki";potwierdzone;"Cichorium endivia → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";2026-10-16
-eskariola;CICEN;"chicória-brava; cykoria endywia; endywia; szczerbak wielki";potwierdzone;"Cichorium endivia → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";2026-10-16
-esparceta siewna;ONBVI;sparceta siewna;potwierdzone;"Onobrychis viciifolia → kod z bazy EPPO; uprawa konwencjonalna w Polsce (pastewne)";2026-10-16
-estragon;ARTDR;"bylica draganek; bylica estragon; draganek; estragon";potwierdzone;"Artemisia dracunculus → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zielarskie)";2026-10-16
-estragon zwyczajny;ARTDR;"bylica draganek; bylica estragon; draganek; estragon";potwierdzone;"Artemisia dracunculus → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zielarskie)";2026-10-16
-facelia;PHCTA;"facelia mniejsza; facelia wrotyczolistna; facelia błękitna";potwierdzone;"Phacelia tanacetifolia → kod z bazy EPPO; uprawa konwencjonalna w Polsce (poplony)";2026-10-16
-fasola;PHSVX;fasola zwykła;potwierdzone;"Phaseolus vulgaris → kod z bazy EPPO; uprawa konwencjonalna w Polsce (strączkowe)";2026-10-16
-fasola uprawiana na suche nasiona;PHSVX;"fasola wielokwiatowa=PHSCO; fasola zwykla=PHSVX";potwierdzone;ta sama roślina co „fasola” — inny zapis w rejestrze;2026-10-16
-Fasola uprawiana na świeże nasiona;PHSVX;"fasola wielokwiatowa=PHSCO; fasola zwykla=PHSVX";potwierdzone;ta sama roślina co „fasola” — inny zapis w rejestrze;2026-10-16
-fasola szparagowa;PHSVX;fasola zwykła;potwierdzone;"Phaseolus vulgaris → kod z bazy EPPO; uprawa konwencjonalna w Polsce (strączkowe)";2026-10-16
-fasola wielokwiatowa;PHSCO;fasola wielokwiatowa;potwierdzone;"Phaseolus coccineus → kod z bazy EPPO; uprawa konwencjonalna w Polsce (strączkowe)";2026-10-16
-fenkuł;FOEVS;"fenykl; koper włoski";potwierdzone;"Foeniculum vulgare subsp. sativum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zielarskie)";2026-10-16
-floks;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;2026-10-16
-forsycja;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;2026-10-16
-fuksja;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;2026-10-16
-funkia;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;2026-10-16
-gerbera;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;2026-10-16
-głóg;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;2026-10-16
-gorczyca;;kod rodzaju Sinapis = 1SING;do_decyzji;rejestr nie podaje gatunku (biała, sarepska czy czarna) — do rozstrzygnięcia;2026-10-16
-gorczyca biała;SINAL;"gorczyca jasna; gorczyca biała";potwierdzone;"Sinapis alba → kod z bazy EPPO; uprawa konwencjonalna w Polsce (oleiste)";2026-10-16
-gorczyca czarna;BRSNI;"gorczyca czarna; kapusta czarna; kapusta gorczyca";potwierdzone;"Brassica nigra → kod z bazy EPPO; uprawa konwencjonalna w Polsce (oleiste)";2026-10-16
-gorczyca sarepska;BRSJU;"kapusta sarepska; kapusta sitowata";potwierdzone;"Brassica juncea → kod z bazy EPPO; uprawa konwencjonalna w Polsce (oleiste)";2026-10-16
-goździk;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;2026-10-16
-groch;PIBSX;"groch zwyczajny; groch polny; peluszka";potwierdzone;"Pisum sativum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (strączkowe)";2026-10-16
-groch cukrowy;PIBSX;"groch zwyczajny; groch polny; peluszka";potwierdzone;"Pisum sativum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (strączkowe)";2026-10-16
-groch jadalny;PIBSX;"groch zwyczajny; groch polny; peluszka";potwierdzone;"Pisum sativum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (strączkowe)";2026-10-16
-groch jadalny zielony;PIBSX;"groch zwyczajny; groch polny; peluszka";potwierdzone;"Pisum sativum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (strączkowe)";2026-10-16
-groch łuskowy;PIBSX;"groch zwyczajny; groch polny; peluszka";potwierdzone;"Pisum sativum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (strączkowe)";2026-10-16
-groch na suche nasiona;PIBSX;"groch zwyczajny=PIBSX; groch zwyczajny polny=PIBSA; groch polny=PIBSX";potwierdzone;ta sama roślina co „groch” — inny zapis w rejestrze;2026-10-16
-groch pastewny;PIBSA;groch zwyczajny polny;potwierdzone;"Pisum sativum subsp. arvense → kod z bazy EPPO; uprawa konwencjonalna w Polsce (strączkowe)";2026-10-16
-groch siewny;PIBSX;"groch zwyczajny; groch polny; peluszka";potwierdzone;"Pisum sativum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (strączkowe)";2026-10-16
-groch siewny cukrowy;PIBSX;"groch zwyczajny; groch polny; peluszka";potwierdzone;"Pisum sativum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (strączkowe)";2026-10-16
-groch siewny pastewny;PIBSA;groch zwyczajny polny;potwierdzone;"Pisum sativum subsp. arvense → kod z bazy EPPO; uprawa konwencjonalna w Polsce (strączkowe)";2026-10-16
-groch siewny uprawiany na świeże nasiona;PIBSX;"groch zwyczajny; groch polny; peluszka";potwierdzone;ta sama roślina co „groch” — inny zapis w rejestrze;2026-10-16
-groch uprawiany na zielone nasiona;PIBSX;"groch zwyczajny; groch polny; peluszka";potwierdzone;ta sama roślina co „groch” — inny zapis w rejestrze;2026-10-16
-groch zielony;PIBSX;"groch zwyczajny; groch polny; peluszka";potwierdzone;"Pisum sativum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (strączkowe)";2026-10-16
-groch zielony cukrowy;PIBSX;"groch zwyczajny; groch polny; peluszka";potwierdzone;"Pisum sativum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (strączkowe)";2026-10-16
-groch zielony łuskowy;PIBSX;"groch zwyczajny; groch polny; peluszka";potwierdzone;"Pisum sativum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (strączkowe)";2026-10-16
-groch zwyczajny pastewny;PIBSA;groch zwyczajny polny;potwierdzone;"Pisum sativum subsp. arvense → kod z bazy EPPO; uprawa konwencjonalna w Polsce (strączkowe)";2026-10-16
-groch zwyczajny siewny;PIBSX;"groch zwyczajny; groch polny; peluszka";potwierdzone;"Pisum sativum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (strączkowe)";2026-10-16
-grusza;PYUCO;grusza pospolita;potwierdzone;"Pyrus communis → kod z bazy EPPO; uprawa konwencjonalna w Polsce (sad)";2026-10-16
-grusza azjatycka;PYUPY;Pyrus pyrifolia;potwierdzone;"Pyrus pyrifolia → kod z bazy EPPO; uprawa konwencjonalna w Polsce (sad)";2026-10-16
-grusza chińska;PYUPY;Pyrus pyrifolia;potwierdzone;"Pyrus pyrifolia → kod z bazy EPPO; uprawa konwencjonalna w Polsce (sad)";2026-10-16
-gruszki;PYUCO;grusza pospolita;potwierdzone;ta sama roślina co „grusza” — inny zapis w rejestrze;2026-10-16
-gryka;FAGES;gryka zwyczajna;potwierdzone;"Fagopyrum esculentum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zboża)";2026-10-16
-hyzop lekarski;HYSOF;Hyssopus officinalis;potwierdzone;"Hyssopus officinalis → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zielarskie)";2026-10-16
-irys;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;2026-10-16
-jabłka;MABSD;Malus domestica;potwierdzone;ta sama roślina co „jabłoń” — inny zapis w rejestrze;2026-10-16
-jabłoń;MABSD;Malus domestica;potwierdzone;propozycja z bazy EPPO, potwierdzona przez użytkownika;2026-10-15
-jabłoń dzika;MABSY;"płonka; jabłoń dzika";potwierdzone;"Malus sylvestris → kod z bazy EPPO; uprawa konwencjonalna w Polsce (sad)";2026-10-16
-jabłoń płonka;MABSY;"płonka; jabłoń dzika";potwierdzone;"Malus sylvestris → kod z bazy EPPO; uprawa konwencjonalna w Polsce (sad)";2026-10-16
-jagoda kamczacka;LONCO;"suchodrzew siny; wiciokrzew siny";potwierdzone;"Lonicera caerulea → kod z bazy EPPO; uprawa konwencjonalna w Polsce (jagodnik)";2026-10-16
-jałowiec;;;poza_zakresem;gatunek leśny albo zadrzewieniowy — poza zakresem aplikacji;2026-10-16
-jarmuż;BRSOC;Brassica oleracea var. sabellica;potwierdzone;"Brassica oleracea var. sabellica → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";2026-10-16
-jarząb pospolity;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;2026-10-16
-jaśmin;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;2026-10-16
-jęczmień;HORVX;jęczmień zwyczajny;potwierdzone;"Hordeum vulgare → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zboża)";2026-10-16
-jęczmień jary;HORVS;barley (spring);potwierdzone;propozycja z bazy EPPO, potwierdzona przez użytkownika;2026-10-15
-jęczmień ozimy;HORVW;barley (winter);potwierdzone;decyzja użytkownika;2026-10-15
-jeżyna;RUBFR;"jeżyna krzewiasta; jeżyna fałdowana";potwierdzone;"Rubus fruticosus → kod z bazy EPPO; uprawa konwencjonalna w Polsce (jagodnik)";2026-10-16
-jodła;;;poza_zakresem;gatunek leśny albo zadrzewieniowy — poza zakresem aplikacji;2026-10-16
-kabaczek;CUUPE;dynia zwyczajna;potwierdzone;"Cucurbita pepo → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";2026-10-16
-kalafior;BRSOB;"brokuł; kalafior";potwierdzone;"Brassica oleracea var. botrytis → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";2026-10-16
-kalarepa;BRSOG;kalarepa;potwierdzone;"Brassica oleracea var. gongylodes → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";2026-10-16
-kalia;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;2026-10-16
-kapusta;;kod rodzaju Brassica = 1BRSG;do_decyzji;rejestr nie podaje gatunku (głowiasta, pekińska, brukselka…) — do rozstrzygnięcia;2026-10-16
-kapusta brukselska;BRSOF;kapusta warzywna brukselka;potwierdzone;"Brassica oleracea var. gemmifera → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";2026-10-16
-kapusta chińska;BRSCH;kapusta chińska;potwierdzone;"Brassica rapa subsp. chinensis → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";2026-10-16
-kapusta chińska pak-czoi;BRSCH;kapusta chińska;potwierdzone;"Brassica rapa subsp. chinensis → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";2026-10-16
-kapusta choy-sum;;kod rodzaju Brassica = 1BRSG;do_decyzji;rejestr nie podaje gatunku (odmiana do ustalenia) — do rozstrzygnięcia;2026-10-16
-kapusta czerwona;BRSOR;Brassica oleracea var. capitata f. rubra;potwierdzone;"Brassica oleracea var. capitata f. rubra → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";2026-10-16
-kapusta galicyjska;BRSOS;Brassica oleracea var. sabauda;potwierdzone;ta sama roślina co „kapusta włoska” — inny zapis w rejestrze;2026-10-16
-kapusta głowiasta;BRSOL;kapusta warzywna głowiasta;potwierdzone;"Brassica oleracea var. capitata → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";2026-10-16
-kapusta głowiasta biała;BRSOH;Brassica oleracea var. capitata f. alba;potwierdzone;"Brassica oleracea var. capitata f. alba → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";2026-10-16
-kapusta głowiasta czerwona;BRSOR;Brassica oleracea var. capitata f. rubra;potwierdzone;"Brassica oleracea var. capitata f. rubra → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";2026-10-16
-kapusta pak choi;BRSCH;kapusta chińska;potwierdzone;ta sama roślina co „kapusta chińska” — inny zapis w rejestrze;2026-10-16
-kapusta pekińska;BRSPK;kapusta pekińska;potwierdzone;"Brassica rapa subsp. pekinensis → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";2026-10-16
-kapusta sitowata;BRSJU;"kapusta sarepska; kapusta sitowata";potwierdzone;ta sama roślina co „gorczyca sarepska” — inny zapis w rejestrze;2026-10-16
-kapusta włoska;BRSOS;Brassica oleracea var. sabauda;potwierdzone;"Brassica oleracea var. sabauda → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";2026-10-16
-karczoch zwyczajny;CYUSC;Cynara scolymus;potwierdzone;"Cynara scolymus → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";2026-10-16
-kasztan jadalny;CSNSA;kasztan jadalny;potwierdzone;"Castanea sativa → kod z bazy EPPO; uprawa konwencjonalna w Polsce (sad)";2026-10-16
-kawa;;;poza_zakresem;roślina nieuprawiana w Polsce — poza zakresem aplikacji;2026-10-16
-kawon;CITLA;"arbuz zwyczajny; kawon";potwierdzone;"Citrullus lanatus → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";2026-10-16
-kminek zwyczajny;CRYCA;kminek zwyczajny;potwierdzone;"Carum carvi → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zielarskie)";2026-10-16
-kocimiętka właściwa;NEPCA;kocimiętka właściwa;potwierdzone;"Nepeta cataria → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zielarskie)";2026-10-16
-kolendra;CORSA;kolendra siewna;potwierdzone;"Coriandrum sativum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zielarskie)";2026-10-16
-komonica;;kod rodzaju Lotus = 1LOTG;do_decyzji;rejestr nie podaje gatunku (zwyczajna czy inna) — do rozstrzygnięcia;2026-10-16
-komonica zwyczajna;LOTCO;"komonica zwyczajna; komonica rożkowa";potwierdzone;"Lotus corniculatus → kod z bazy EPPO; uprawa konwencjonalna w Polsce (pastewne)";2026-10-16
-koniczyna;;kod rodzaju Trifolium = 1TRFG;do_decyzji;rejestr nie podaje gatunku (czerwona, biała czy inkarnatka) — do rozstrzygnięcia;2026-10-16
-koniczyna biała;TRFRE;"koniczyna rozesłana; koniczyna biała";potwierdzone;"Trifolium repens → kod z bazy EPPO; uprawa konwencjonalna w Polsce (pastewne)";2026-10-16
-koniczyna czerwona;TRFPR;koniczyna łąkowa;potwierdzone;"Trifolium pratense → kod z bazy EPPO; uprawa konwencjonalna w Polsce (pastewne)";2026-10-16
-koniczyna krwistoczerwona (inkarnatka);TRFIN;"koniczyna krwistoczerwona; koniczyna inkarnatka";potwierdzone;"Trifolium incarnatum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (pastewne)";2026-10-16
-konopie;CNISA;konopie siewne;potwierdzone;"Cannabis sativa → kod z bazy EPPO; uprawa konwencjonalna w Polsce (włókniste)";2026-10-16
-konopie siewne;CNISA;konopie siewne;potwierdzone;"Cannabis sativa → kod z bazy EPPO; uprawa konwencjonalna w Polsce (włókniste)";2026-10-16
-kontenery;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;2026-10-16
-koper;AFEGR;koper ogrodowy;potwierdzone;"Anethum graveolens → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zielarskie)";2026-10-16
-koper ogrodowy;AFEGR;koper ogrodowy;potwierdzone;"Anethum graveolens → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zielarskie)";2026-10-16
-koper włoski;FOEVS;"fenykl; koper włoski";potwierdzone;"Foeniculum vulgare subsp. sativum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zielarskie)";2026-10-16
-kozłek lekarski;VALOF;kozłek lekarski;potwierdzone;"Valeriana officinalis → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zielarskie)";2026-10-16
-krokus;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;2026-10-16
-krwawnik;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;2026-10-16
-krzewy;;;poza_zakresem;gatunek leśny albo zadrzewieniowy — poza zakresem aplikacji;2026-10-16
-krzewy iglaste;;;poza_zakresem;gatunek leśny albo zadrzewieniowy — poza zakresem aplikacji;2026-10-16
-krzewy liściaste;;;poza_zakresem;gatunek leśny albo zadrzewieniowy — poza zakresem aplikacji;2026-10-16
-krzewy ozdobne;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;2026-10-16
-kukurydza;ZEAMX;"kukurydza zwyczajna; kukurydza";potwierdzone;"Zea mays → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zboża)";2026-10-16
-kukurydza cukrowa;ZEAMS;Zea mays convar. saccharata;potwierdzone;"Zea mays convar. saccharata → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zboża)";2026-10-16
-kukurydza paszowa;ZEAMX;"kukurydza zwyczajna; kukurydza";potwierdzone;ta sama roślina co „kukurydza” — inny zapis w rejestrze;2026-10-16
-kukurydza pękająca;ZEAMX;"kukurydza zwyczajna; kukurydza";potwierdzone;"Zea mays → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zboża)";2026-10-16
-kwiaty;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;2026-10-16
-łąki;;;grupa_upraw;nazwa zbiorcza — gatunek wskazuje konkretna uprawa;2026-10-16
-łąki, pastwiska;;;grupa_upraw;nazwa zbiorcza — gatunek wskazuje konkretna uprawa;2026-10-16
-lantana pospolita;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;2026-10-16
-lasy;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;2026-10-16
-laurowiśnia;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;2026-10-16
-lawenda;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;2026-10-16
-lędźwian siewny;LTHSA;"groszek zwyczajny; lędźwian siewny";potwierdzone;"Lathyrus sativus → kod z bazy EPPO; uprawa konwencjonalna w Polsce (strączkowe)";2026-10-16
-len;LIUUT;len zwyczajny;potwierdzone;"Linum usitatissimum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (włókniste)";2026-10-16
-len oleisty;LIUUT;len zwyczajny;potwierdzone;"Linum usitatissimum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (włókniste)";2026-10-16
-len włóknisty;LIUUT;len zwyczajny;potwierdzone;"Linum usitatissimum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (włókniste)";2026-10-16
-len zwyczajny;LIUUT;len zwyczajny;potwierdzone;"Linum usitatissimum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (włókniste)";2026-10-16
-uprawy leśne;;;poza_zakresem;gatunek leśny albo zadrzewieniowy — poza zakresem aplikacji;2026-10-16
-leszczyna;CYLAV;"orzech laskowy; leszczyna pospolita";potwierdzone;"Corylus avellana → kod z bazy EPPO; uprawa konwencjonalna w Polsce (sad)";2026-10-16
-lewkonia;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;2026-10-16
-ligustr;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;2026-10-16
-lilia;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;2026-10-16
-lilie;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;2026-10-16
-lnianka siewna;CMASA;"lnicznik siewny; lnicznik jary";potwierdzone;"Camelina sativa → kod z bazy EPPO; uprawa konwencjonalna w Polsce (oleiste)";2026-10-16
-lnianka siewna jara;CMASA;"lnicznik siewny; lnicznik jary";potwierdzone;"Camelina sativa → kod z bazy EPPO; uprawa konwencjonalna w Polsce (oleiste)";2026-10-16
-lnianka siewna ozima;CMASA;"lnicznik siewny; lnicznik jary";potwierdzone;"Camelina sativa → kod z bazy EPPO; uprawa konwencjonalna w Polsce (oleiste)";2026-10-16
-lobelia;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;2026-10-16
-lotniska;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;2026-10-16
-lubczyk;LEWOF;lubczyk ogrodowy;potwierdzone;"Levisticum officinale → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zielarskie)";2026-10-16
-lubczyk ogrodowy;LEWOF;lubczyk ogrodowy;potwierdzone;"Levisticum officinale → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zielarskie)";2026-10-16
-łubin;;kod rodzaju Lupinus = 1LUPG;do_decyzji;rejestr nie podaje gatunku (biały, żółty czy wąskolistny) — do rozstrzygnięcia;2026-10-16
-łubin biały;LUPAL;łubin biały;potwierdzone;"Lupinus albus → kod z bazy EPPO; uprawa konwencjonalna w Polsce (strączkowe)";2026-10-16
-łubin wąskolistny;LUPAN;łubin wąskolistny;potwierdzone;"Lupinus angustifolius → kod z bazy EPPO; uprawa konwencjonalna w Polsce (strączkowe)";2026-10-16
-łubin żółty;LUPLU;łubin żółty;potwierdzone;"Lupinus luteus → kod z bazy EPPO; uprawa konwencjonalna w Polsce (strączkowe)";2026-10-16
-lucerna;;kod rodzaju Medicago = 1MEDG;do_decyzji;rejestr nie podaje gatunku (siewna, sierpowata czy nerkowata) — do rozstrzygnięcia;2026-10-16
-lucerna nerkowata;MEDLU;"lucerna nerkowata; lucerna chmiełowa";potwierdzone;"Medicago lupulina → kod z bazy EPPO; uprawa konwencjonalna w Polsce (pastewne)";2026-10-16
-lucerna sierpowata;MEDFA;lucerna sierpowata;potwierdzone;"Medicago falcata → kod z bazy EPPO; uprawa konwencjonalna w Polsce (pastewne)";2026-10-16
-lucerna siewna;MEDSA;lucerna siewna;potwierdzone;"Medicago sativa → kod z bazy EPPO; uprawa konwencjonalna w Polsce (pastewne)";2026-10-16
-lukrecja;;;poza_zakresem;roślina nieuprawiana w Polsce — poza zakresem aplikacji;2026-10-16
-łyszczec;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;2026-10-16
-magazyny;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;2026-10-16
-magnolia;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;2026-10-16
-majeranek ogrodowy;MAJHO;"majeranek; lebiodka majeranek";potwierdzone;"Origanum majorana → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zielarskie)";2026-10-16
-mak;PAPSO;mak lekarski;potwierdzone;"Papaver somniferum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (oleiste)";2026-10-16
-mak lekarski;PAPSO;mak lekarski;potwierdzone;"Papaver somniferum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (oleiste)";2026-10-16
-malina;RUBID;malina właściwa;potwierdzone;"Rubus idaeus → kod z bazy EPPO; uprawa konwencjonalna w Polsce (jagodnik)";2026-10-16
-malinojeżyna;;kod rodzaju Rubus = 1RUBG;do_decyzji;rejestr nie podaje gatunku (mieszaniec — gatunek do ustalenia) — do rozstrzygnięcia;2026-10-16
-marchew;DAUCA;marchew zwyczajna;potwierdzone;"Daucus carota → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";2026-10-16
-melisa lekarska;MLSOF;melisa lekarska;potwierdzone;"Melissa officinalis → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zielarskie)";2026-10-16
-melon;CUMME;"melon; ogórek melon";potwierdzone;"Cucumis melo → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";2026-10-16
-mieczyk;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;2026-10-16
-mieszanki zbożowe;;;grupa_upraw;nazwa zbiorcza — gatunek wskazuje konkretna uprawa;2026-10-16
-mięta;;kod rodzaju Mentha = 1MENG;do_decyzji;rejestr nie podaje gatunku (pieprzowa czy inna) — do rozstrzygnięcia;2026-10-16
-mięta pieprzowa;MENPI;Mentha x piperita;potwierdzone;"Mentha x piperita → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zielarskie)";2026-10-16
-mietlica;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;2026-10-16
-mini kiwi;ATIAR;aktinidia ostrolistna;potwierdzone;ta sama roślina co „aktinidia” — inny zapis w rejestrze;2026-10-16
-miskant;MISGI;Miscanthus x giganteus;potwierdzone;"Miscanthus x giganteus → kod z bazy EPPO; uprawa konwencjonalna w Polsce (energetyczne)";2026-10-16
-modrzew;;;poza_zakresem;gatunek leśny albo zadrzewieniowy — poza zakresem aplikacji;2026-10-16
-morela;PRNAR;morela pospolita;potwierdzone;"Prunus armeniaca → kod z bazy EPPO; uprawa konwencjonalna w Polsce (sad)";2026-10-16
-morwa;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;2026-10-16
-uprawa na kiszonkę;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;2026-10-16
-na nasiona;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;2026-10-16
-na olej;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;2026-10-16
-uprawa na suche nasiona;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;2026-10-16
-uprawa na świeże nasiona;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;2026-10-16
-uprawiane na włókno;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;2026-10-16
-uprawa na ziarno;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;2026-10-16
-nagietek;CLDOF;nagietek lekarski;potwierdzone;"Calendula officinalis → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zielarskie)";2026-10-16
-narcyz;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;2026-10-16
-nasiona;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;2026-10-16
-nasiona roślin oleistych;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;2026-10-16
-nasturcja;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;2026-10-16
-nasypy;;;nie_uprawa;miejsce stosowania albo przedmiot, nie roślina (raport P3);2026-10-16
-nektarynka;PRNPN;brzoskwinia zwyczajna;potwierdzone;"Prunus persica var. nucipersica → kod z bazy EPPO; uprawa konwencjonalna w Polsce (sad)";2026-10-16
-niecierpek;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;2026-10-16
-nieszpułka zwyczajna;MSPGE;nieszpułka zwyczajna;potwierdzone;"Mespilus germanica → kod z bazy EPPO; uprawa konwencjonalna w Polsce (sad)";2026-10-16
-nostrzyk;;kod rodzaju Melilotus = 1MEUG;do_decyzji;rejestr nie podaje gatunku (biały czy żółty) — do rozstrzygnięcia;2026-10-16
-nostrzyk biały;MEUAL;nostrzyk biały;potwierdzone;"Melilotus albus → kod z bazy EPPO; uprawa konwencjonalna w Polsce (pastewne)";2026-10-16
-nostrzyk żółty;MEUOF;nostrzyk żółty;potwierdzone;"Melilotus officinalis → kod z bazy EPPO; uprawa konwencjonalna w Polsce (pastewne)";2026-10-16
-noże;;;nie_uprawa;miejsce stosowania albo przedmiot, nie roślina (raport P3);2026-10-16
-oberżyna;SOLME;psianka podłużna;potwierdzone;"Solanum melongena → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";2026-10-16
-odnowienia leśne;;;poza_zakresem;gatunek leśny albo zadrzewieniowy — poza zakresem aplikacji;2026-10-16
-odnowienia, zalesienia;;;poza_zakresem;gatunek leśny albo zadrzewieniowy — poza zakresem aplikacji;2026-10-16
-ogórecznik lekarski;BOROF;ogórecznik lekarski;potwierdzone;"Borago officinalis → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zielarskie)";2026-10-16
-ogórek;CUMSA;ogórek siewny;potwierdzone;"Cucumis sativus → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";2026-10-16
-ogórek krótki;CUMSA;ogórek siewny;potwierdzone;ta sama roślina co „ogórek” — inny zapis w rejestrze;2026-10-16
-ogórek typu korniszon;CUMSA;ogórek siewny;potwierdzone;"Cucumis sativus → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";2026-10-16
-ogrody;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;2026-10-16
-oleander;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;2026-10-16
-oregano;ORIVU;lebiodka pospolita;potwierdzone;"Origanum vulgare → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zielarskie)";2026-10-16
-orkisz;TRZSP;Triticum spelta;potwierdzone;ta sama roślina co „pszenica orkisz” — inny zapis w rejestrze;2026-10-16
-orzech;;kod rodzaju Juglans = 1IUGG;do_decyzji;rejestr nie podaje gatunku (włoski czy laskowy — to różne rodzaje) — do rozstrzygnięcia;2026-10-16
-orzech laskowy;CYLAV;"orzech laskowy; leszczyna pospolita";potwierdzone;"Corylus avellana → kod z bazy EPPO; uprawa konwencjonalna w Polsce (sad)";2026-10-16
-orzech włoski;IUGRE;orzek włoski;potwierdzone;"Juglans regia → kod z bazy EPPO; uprawa konwencjonalna w Polsce (sad)";2026-10-16
-owies;AVESA;Avena sativa;potwierdzone;propozycja z bazy EPPO, potwierdzona przez użytkownika;2026-10-15
-owies jary;AVESP;oat (spring);potwierdzone;propozycja z bazy EPPO, potwierdzona przez użytkownika;2026-10-15
-owies ozimy;AVESW;oat (winter);potwierdzone;propozycja z bazy EPPO, potwierdzona przez użytkownika;2026-10-15
-owies siewny;AVESA;Avena sativa;potwierdzone;propozycja z bazy EPPO, potwierdzona przez użytkownika;2026-10-15
-owoce;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;2026-10-16
-papryka;CPSAN;"papryka roczna; pieprz chilijski";potwierdzone;"Capsicum annuum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";2026-10-16
-pasternak;PAVSA;pasternak zwyczajny;potwierdzone;"Pastinaca sativa → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";2026-10-16
-pastwiska;;;grupa_upraw;nazwa zbiorcza — gatunek wskazuje konkretna uprawa;2026-10-16
-patison;CUUPE;dynia zwyczajna;potwierdzone;"Cucurbita pepo → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";2026-10-16
-pelargonia;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;2026-10-16
-peluszka;PIBSA;groch zwyczajny polny;potwierdzone;"Pisum sativum subsp. arvense → kod z bazy EPPO; uprawa konwencjonalna w Polsce (strączkowe)";2026-10-16
-petunia;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;2026-10-16
-pieczarka;AGARBI;pieczarka dwuzarodnikowa;potwierdzone;"Agaricus bisporus → kod z bazy EPPO; uprawa konwencjonalna w Polsce (grzyby uprawne)";2026-10-16
-pieprzyca siewna;LEPSA;pieprzyca siewna;potwierdzone;"Lepidium sativum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";2026-10-16
-pierwiosnek;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;2026-10-16
-pietruszka;PARCR;pietruszka zwyczajny;potwierdzone;"Petroselinum crispum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";2026-10-16
-pietruszka korzeniowa;PARCR;pietruszka zwyczajny;potwierdzone;"Petroselinum crispum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";2026-10-16
-pietruszka naciowa;PARCR;pietruszka zwyczajny;potwierdzone;"Petroselinum crispum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";2026-10-16
-pigwa;CYDOB;pigwa pospolita;potwierdzone;"Cydonia oblonga → kod z bazy EPPO; uprawa konwencjonalna w Polsce (sad)";2026-10-16
-pigwowiec;CNMJA;pigwowiec japoński;potwierdzone;"Chaenomeles japonica → kod z bazy EPPO; uprawa konwencjonalna w Polsce (sad)";2026-10-16
-pigwowiec japoński;CNMJA;pigwowiec japoński;potwierdzone;ta sama roślina co „pigwowiec” — inny zapis w rejestrze;2026-10-16
-piwonia;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;2026-10-16
-place;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;2026-10-16
-place magazynowe;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;2026-10-16
-plantacje drzew leśnych;;;poza_zakresem;gatunek leśny albo zadrzewieniowy — poza zakresem aplikacji;2026-10-16
-plantacje drzewek bożonarodzeniowych;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;2026-10-16
-plantacje nasienne;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;2026-10-16
-plantacje nasienne drzew leśnych;;;poza_zakresem;gatunek leśny albo zadrzewieniowy — poza zakresem aplikacji;2026-10-16
-plantacje nasienne traw;;;grupa_upraw;nazwa zbiorcza — gatunek wskazuje konkretna uprawa;2026-10-16
-plantacje produkcyjne;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;2026-10-16
-plantacje traw nasiennych;;;grupa_upraw;nazwa zbiorcza — gatunek wskazuje konkretna uprawa;2026-10-16
-po zbiorze;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;2026-10-16
-pobocza dróg;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;2026-10-16
-uprawa pod osłonami;;;nie_uprawa;miejsce stosowania albo przedmiot, nie roślina (raport P3);2026-10-16
-podjazdy;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;2026-10-16
-poinsecja;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;2026-10-16
-pokrzywa zwyczajna;URTDI;pokrzywa zwyczajna;potwierdzone;"Urtica dioica → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zielarskie)";2026-10-16
-pola golfowe;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;2026-10-16
-pola uprawne;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;2026-10-16
-pomarańcza;;;poza_zakresem;roślina nieuprawiana w Polsce — poza zakresem aplikacji;2026-10-16
-pomidor;LYPES;"psianka pomidor; pomidor zwyczajny; pomidor";potwierdzone;"Solanum lycopersicum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";2026-10-16
-pomidor pod osłonami;LYPES;;potwierdzone;ta sama roślina co „pomidor” — inny zapis w rejestrze;2026-10-16
-pomidor w uprawie polowej;LYPES;;potwierdzone;ta sama roślina co „pomidor” — inny zapis w rejestrze;2026-10-16
-pomieszczenia;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;2026-10-16
-por;ALLPO;"por; czosnek por";potwierdzone;"Allium porrum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";2026-10-16
-por z rozsady;ALLPO;"por; czosnek por";potwierdzone;"Allium porrum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";2026-10-16
-por z siewu;ALLPO;"por; czosnek por";potwierdzone;"Allium porrum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";2026-10-16
-portulaka;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;2026-10-16
-portulaka warzywna;POROL;portulaka pospolita;potwierdzone;"Portulaca oleracea → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";2026-10-16
-porzeczka;;kod rodzaju Ribes = 1RIBG;do_decyzji;rejestr nie podaje gatunku (czarna, czerwona czy biała) — do rozstrzygnięcia;2026-10-16
-porzeczka biała;RIBRU;porzeczka zwyczajna;potwierdzone;"Ribes rubrum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (jagodnik)";2026-10-16
-porzeczka czarna;RIBNI;porzeczka czarna;potwierdzone;"Ribes nigrum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (jagodnik)";2026-10-16
-porzeczka czerwona;RIBRU;porzeczka zwyczajna;potwierdzone;"Ribes rubrum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (jagodnik)";2026-10-16
-porzeczkoagrest;RIBNG;Ribes x nidigrolaria;potwierdzone;"Ribes x nidigrolaria → kod z bazy EPPO; uprawa konwencjonalna w Polsce (jagodnik)";2026-10-16
-poziomka;FRAVE;poziomka pospolita;potwierdzone;"Fragaria vesca → kod z bazy EPPO; uprawa konwencjonalna w Polsce (jagodnik)";2026-10-16
-produkcja nasienna;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;2026-10-16
-produkcja rozsady warzyw;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;2026-10-16
-proso;PANMI;"proso; proso zwyczajne";potwierdzone;"Panicum miliaceum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zboża)";2026-10-16
-przed rozpoczęciem upraw pożniwnych;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;2026-10-16
-przelot;AYLVU;przelot pospolity;potwierdzone;"Anthyllis vulneraria → kod z bazy EPPO; uprawa konwencjonalna w Polsce (pastewne)";2026-10-16
-pszenica;TRZAX;Triticum aestivum;potwierdzone;"Triticum aestivum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zboża)";2026-10-16
-pszenica durum;TRZDU;Triticum durum;potwierdzone;"Triticum durum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zboża)";2026-10-16
-pszenica jara;TRZAS;soft wheat (spring);potwierdzone;decyzja użytkownika;2026-10-15
-pszenica jara durum;TRZDS;durum wheat (spring);potwierdzone;ta sama roślina co „pszenica twarda jara” — inny zapis w rejestrze;2026-10-16
-pszenica orkisz;TRZSP;Triticum spelta;potwierdzone;"Triticum spelta → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zboża)";2026-10-16
-pszenica orkisz jara;TRZSP;;potwierdzone;ta sama roślina co „pszenica orkisz” — inny zapis w rejestrze;2026-10-16
-pszenica orkisz ozima;TRZSP;;potwierdzone;ta sama roślina co „pszenica orkisz” — inny zapis w rejestrze;2026-10-16
-pszenica ozima;TRZAW;soft wheat (winter);potwierdzone;decyzja użytkownika;2026-10-15
-pszenica ozima durum;TRZDW;durum wheat (winter);potwierdzone;ta sama roślina co „pszenica twarda ozima” — inny zapis w rejestrze;2026-10-16
-pszenica płaskurka;TRZDI;Triticum dicoccon;potwierdzone;"Triticum dicoccon → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zboża)";2026-10-16
-pszenica płaskurka jara;TRZDI;;potwierdzone;ta sama roślina co „pszenica płaskurka” — inny zapis w rejestrze;2026-10-16
-pszenica płaskurka ozima;TRZDI;;potwierdzone;ta sama roślina co „pszenica płaskurka” — inny zapis w rejestrze;2026-10-16
-pszenica samopsza;TRZMO;pszenica płaskurka;potwierdzone;"Triticum monococcum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zboża)";2026-10-16
-pszenica samopsza jara;TRZMO;;potwierdzone;ta sama roślina co „pszenica samopsza” — inny zapis w rejestrze;2026-10-16
-pszenica samopsza ozima;TRZMO;;potwierdzone;ta sama roślina co „pszenica samopsza” — inny zapis w rejestrze;2026-10-16
-pszenica twarda;TRZDU;Triticum durum;potwierdzone;"Triticum durum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zboża)";2026-10-16
-pszenica twarda jara;TRZDS;durum wheat (spring);potwierdzone;propozycja z bazy EPPO, potwierdzona przez użytkownika;2026-10-15
-pszenica twarda ozima;TRZDW;durum wheat (winter);potwierdzone;propozycja z bazy EPPO, potwierdzona przez użytkownika;2026-10-15
-pszenica zwyczajna;TRZAX;Triticum aestivum subsp. aestivum;potwierdzone;decyzja użytkownika;2026-10-15
-pszenżyto;TTLSS;Triticosecale sp.;potwierdzone;"Triticosecale sp. → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zboża)";2026-10-16
-pszenżyto jare;TTLSO;triticale (spring);potwierdzone;propozycja z bazy EPPO, potwierdzona przez użytkownika;2026-10-15
-pszenżyto ozime;TTLWI;triticale (winter);potwierdzone;decyzja użytkownika;2026-10-15
-puste pomieszczenia;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;2026-10-16
-rabarbar;RHERH;"rzewień kędzierzawy; rabarbar kędzierzawy; rzewień ogrodowy; rabarbar syberyjski; rabarbar ogrodowy";potwierdzone;"Rheum rhabarbarum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";2026-10-16
-rajgras;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;2026-10-16
-rojnik;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;2026-10-16
-rokietta siewna;ERUVE;rokietta siewna;potwierdzone;"Eruca vesicaria subsp. sativa → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";2026-10-16
-rokitnik;HIORH;rokitnik zwyczajny;potwierdzone;"Hippophae rhamnoides → kod z bazy EPPO; uprawa konwencjonalna w Polsce (jagodnik)";2026-10-16
-uprawy rolnicze;;;grupa_upraw;nazwa zbiorcza — gatunek wskazuje konkretna uprawa;2026-10-16
-rośliny doniczkowe;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;2026-10-16
-rośliny energetyczne;;;grupa_upraw;nazwa zbiorcza — gatunek wskazuje konkretna uprawa;2026-10-16
-rośliny jagodowe;;;grupa_upraw;nazwa zbiorcza — gatunek wskazuje konkretna uprawa;2026-10-16
-rośliny jednoroczne;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;2026-10-16
-rośliny kwiatowe rabatowe;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;2026-10-16
-rośliny kwitnące;;;grupa_upraw;nazwa zbiorcza — gatunek wskazuje konkretna uprawa;2026-10-16
-rośliny ozdobne;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;2026-10-16
-rośliny ozdobne bulwiaste;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;2026-10-16
-rośliny ozdobne cebulowe;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;2026-10-16
-rośliny ozdobne w uprawie na kwiat cięty;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;2026-10-16
-rośliny ozdobne wieloletnie;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;2026-10-16
-rośliny przyprawowe;;;grupa_upraw;nazwa zbiorcza — gatunek wskazuje konkretna uprawa;2026-10-16
-rośliny rolnicze;;;grupa_upraw;nazwa zbiorcza — gatunek wskazuje konkretna uprawa;2026-10-16
-rośliny sadownicze;;;grupa_upraw;nazwa zbiorcza — gatunek wskazuje konkretna uprawa;2026-10-16
-rośliny strączkowe;;;grupa_upraw;nazwa zbiorcza — gatunek wskazuje konkretna uprawa;2026-10-16
-rośliny szkółkarskie leśne;;;poza_zakresem;gatunek leśny albo zadrzewieniowy — poza zakresem aplikacji;2026-10-16
-rośliny szkółkarskie ozdobne;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;2026-10-16
-rośliny szkółkarskie sadownicze;;;grupa_upraw;nazwa zbiorcza — gatunek wskazuje konkretna uprawa;2026-10-16
-rośliny warzywne;;;grupa_upraw;nazwa zbiorcza — gatunek wskazuje konkretna uprawa;2026-10-16
-rośliny warzywne bulwiaste;;;grupa_upraw;nazwa zbiorcza — gatunek wskazuje konkretna uprawa;2026-10-16
-rośliny warzywne uprawiane na młode liście;;;grupa_upraw;nazwa zbiorcza — gatunek wskazuje konkretna uprawa;2026-10-16
-rośliny warzywne okopowe;;;grupa_upraw;nazwa zbiorcza — gatunek wskazuje konkretna uprawa;2026-10-16
-rośliny zielarskie;;;grupa_upraw;nazwa zbiorcza — gatunek wskazuje konkretna uprawa;2026-10-16
-roszponka;VLLLO;roszpunka warzywna;potwierdzone;"Valerianella locusta → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";2026-10-16
-roszponka warzywna;VLLLO;roszpunka warzywna;potwierdzone;"Valerianella locusta → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";2026-10-16
-rowy;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;2026-10-16
-róża;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;2026-10-16
-róża uprawiana na jadalne owoce;;kod rodzaju Rosa = 1ROSG;do_decyzji;rejestr nie podaje gatunku (gatunek do ustalenia) — do rozstrzygnięcia;2026-10-16
-różanecznik;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;2026-10-16
-rozmaryn;RMSOF;Rosmarinus officinalis;potwierdzone;"Rosmarinus officinalis → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zielarskie)";2026-10-16
-rozmaryn lekarski;RMSOF;Rosmarinus officinalis;potwierdzone;"Rosmarinus officinalis → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zielarskie)";2026-10-16
-rozsadniki;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;2026-10-16
-rukiew;NAAOF;"rukiew wodna; năsturel";potwierdzone;"Nasturtium officinale → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";2026-10-16
-rukola;ERUVE;rokietta siewna;potwierdzone;"Eruca vesicaria subsp. sativa → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";2026-10-16
-rumianek pospolity;MATCH;rumianek pospolity;potwierdzone;"Matricaria chamomilla → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zielarskie)";2026-10-16
-rumianek szlachetny;ANTNO;"rumian rzymski; rumian szlachetny";potwierdzone;"Chamaemelum nobile → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zielarskie)";2026-10-16
-rzepa;BRSRR;"kapusta właśiwa; rwepa właśiwa";potwierdzone;"Brassica rapa subsp. rapa → kod z bazy EPPO; uprawa konwencjonalna w Polsce (okopowe)";2026-10-16
-rzepa biała;BRSRR;"kapusta właśiwa; rwepa właśiwa";potwierdzone;"Brassica rapa subsp. rapa → kod z bazy EPPO; uprawa konwencjonalna w Polsce (okopowe)";2026-10-16
-rzepa czarna;;kod rodzaju Raphanus = 1RAPG;do_decyzji;rejestr nie podaje gatunku (czy to rzodkiew czarna) — do rozstrzygnięcia;2026-10-16
-rzepa pastewna;BRSRR;"kapusta właśiwa; rwepa właśiwa";potwierdzone;"Brassica rapa subsp. rapa → kod z bazy EPPO; uprawa konwencjonalna w Polsce (okopowe)";2026-10-16
-rzepak jary;BRSNS;rape (spring);potwierdzone;propozycja z bazy EPPO, potwierdzona przez użytkownika;2026-10-15
-rzepak ozimy;BRSNW;rape (winter);potwierdzone;decyzja użytkownika;2026-10-15
-rzepik;BRSRO;"kapusta właśiwa olejowa; rwepa właśiwa olejowa; rzepik";potwierdzone;"Brassica rapa subsp. oleifera → kod z bazy EPPO; uprawa konwencjonalna w Polsce (oleiste)";2026-10-16
-rzepik jary;BRSRO;"kapusta właśiwa olejowa; rwepa właśiwa olejowa; rzepik";potwierdzone;"Brassica rapa subsp. oleifera → kod z bazy EPPO; uprawa konwencjonalna w Polsce (oleiste)";2026-10-16
-rzepik ozimy;BRSRO;"kapusta właśiwa olejowa; rwepa właśiwa olejowa; rzepik";potwierdzone;"Brassica rapa subsp. oleifera → kod z bazy EPPO; uprawa konwencjonalna w Polsce (oleiste)";2026-10-16
-rzeżucha ogrodowa;LEPSA;pieprzyca siewna;potwierdzone;"Lepidium sativum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";2026-10-16
-rzodkiew;RAPSR;rzodkiew zwyczajna;potwierdzone;"Raphanus sativus → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";2026-10-16
-rzodkiew czarna;RAPSN;Raphanus sativus var. niger;potwierdzone;"Raphanus sativus var. niger → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";2026-10-16
-rzodkiew japońska;RAPSL;Raphanus sativus var. longipinnatus;potwierdzone;"Raphanus sativus var. longipinnatus → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";2026-10-16
-rzodkiew oleista;RAPSO;Raphanus sativus var. oleiformis;potwierdzone;"Raphanus sativus var. oleiformis → kod z bazy EPPO; uprawa konwencjonalna w Polsce (oleiste)";2026-10-16
-rzodkiewka;RAPSR;rzodkiew zwyczajna;potwierdzone;"Raphanus sativus var. radicula → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";2026-10-16
-sady;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;2026-10-16
-sady jabłoniowe;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;2026-10-16
-sadzonki;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;2026-10-16
-sadzonki drzew;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;2026-10-16
-sadzonki drzew iglastych i liściastych;;;poza_zakresem;gatunek leśny albo zadrzewieniowy — poza zakresem aplikacji;2026-10-16
-sadzonki krzewów;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;2026-10-16
-sadzonki leśnych gatunków drzew;;;poza_zakresem;gatunek leśny albo zadrzewieniowy — poza zakresem aplikacji;2026-10-16
-sadzonki leśnych gatunków drzew iglastych;;;poza_zakresem;gatunek leśny albo zadrzewieniowy — poza zakresem aplikacji;2026-10-16
-sadzonki leśnych gatunków drzew liściastych;;;poza_zakresem;gatunek leśny albo zadrzewieniowy — poza zakresem aplikacji;2026-10-16
-sałata;LACSA;sałata siewna;potwierdzone;"Lactuca sativa → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";2026-10-16
-sałata długolistna;LACSA;sałata siewna;potwierdzone;ta sama roślina co „sałata” — inny zapis w rejestrze;2026-10-16
-sałata głowiasta;LACSA;sałata siewna;potwierdzone;"Lactuca sativa → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";2026-10-16
-sałata główkowa;LACSA;sałata siewna;potwierdzone;"Lactuca sativa → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";2026-10-16
-sałata kędzierzawa;LACSA;sałata siewna;potwierdzone;ta sama roślina co „sałata” — inny zapis w rejestrze;2026-10-16
-sałata liściowa;LACSA;sałata siewna;potwierdzone;"Lactuca sativa → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";2026-10-16
-sałata rzymska;LACSA;sałata siewna;potwierdzone;ta sama roślina co „sałata” — inny zapis w rejestrze;2026-10-16
-salsefia;TROPS;kozibród porolistny;potwierdzone;"Tragopogon porrifolius → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";2026-10-16
-ściernisko;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;2026-10-16
-ścieżki;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;2026-10-16
-sekatory;;;nie_uprawa;miejsce stosowania albo przedmiot, nie roślina (raport P3);2026-10-16
-seler;APUGV;"seler; selery zwyczajne";potwierdzone;"Apium graveolens → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";2026-10-16
-seler korzeniowy;APUGR;seler korzeniowy;potwierdzone;"Apium graveolens var. rapaceum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";2026-10-16
-seler liściowy;APUGV;"seler; selery zwyczajne";potwierdzone;"Apium graveolens → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";2026-10-16
-seler naciowy;APUGV;"seler; selery zwyczajne";potwierdzone;"Apium graveolens → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";2026-10-16
-sępolia;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;2026-10-16
-seradela;OROSA;"seradela siewna; seradela pastewna";potwierdzone;"Ornithopus sativus → kod z bazy EPPO; uprawa konwencjonalna w Polsce (pastewne)";2026-10-16
-siew jesienny;;;nie_uprawa;miejsce stosowania albo przedmiot, nie roślina (raport P3);2026-10-16
-siew wiosenny;;;nie_uprawa;miejsce stosowania albo przedmiot, nie roślina (raport P3);2026-10-16
-siewki i sadzonki;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;2026-10-16
-siewki krzewów;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;2026-10-16
-siewki leśnych gatunków drzew;;;poza_zakresem;gatunek leśny albo zadrzewieniowy — poza zakresem aplikacji;2026-10-16
-siewki leśnych gatunków drzew iglastych;;;poza_zakresem;gatunek leśny albo zadrzewieniowy — poza zakresem aplikacji;2026-10-16
-siewki leśnych gatunków drzew liściastych;;;poza_zakresem;gatunek leśny albo zadrzewieniowy — poza zakresem aplikacji;2026-10-16
-silosy;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;2026-10-16
-skorzonera;SCVHI;"wężymord czarny korzeń; wężymord hiszpański";potwierdzone;"Scorzonera hispanica → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";2026-10-16
-skrzynie do przechowywania;;;nie_uprawa;miejsce stosowania albo przedmiot, nie roślina (raport P3);2026-10-16
-śliwa;PRNDO;śliwa domowa;potwierdzone;"Prunus domestica → kod z bazy EPPO; uprawa konwencjonalna w Polsce (sad)";2026-10-16
-słonecznik;HELAN;słonecznik zwyczajny;potwierdzone;"Helianthus annuus → kod z bazy EPPO; uprawa konwencjonalna w Polsce (oleiste)";2026-10-16
-soczewica;LENCU;soczewica jadalna;potwierdzone;"Lens culinaris → kod z bazy EPPO; uprawa konwencjonalna w Polsce (strączkowe)";2026-10-16
-soja;GLXMA;"soja warzywna; soja owłosiona";potwierdzone;"Glycine max → kod z bazy EPPO; uprawa konwencjonalna w Polsce (strączkowe)";2026-10-16
-sorgo;SORVU;Sorghum bicolor;potwierdzone;"Sorghum bicolor → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zboża)";2026-10-16
-sorgo zwisłe;;kod rodzaju Sorghum = 1SORG;do_decyzji;rejestr nie podaje gatunku (gatunek do ustalenia) — do rozstrzygnięcia;2026-10-16
-sosna;;;poza_zakresem;gatunek leśny albo zadrzewieniowy — poza zakresem aplikacji;2026-10-16
-stacje beznynowe;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;2026-10-16
-stoły;;;nie_uprawa;miejsce stosowania albo przedmiot, nie roślina (raport P3);2026-10-16
-suszone owoce;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;2026-10-16
-świdośliwa;AMEAL;Amelanchier alnifolia;potwierdzone;"Amelanchier alnifolia → kod z bazy EPPO; uprawa konwencjonalna w Polsce (jagodnik)";2026-10-16
-świerk;;;poza_zakresem;gatunek leśny albo zadrzewieniowy — poza zakresem aplikacji;2026-10-16
-szalotka;ALLAS;czosnek szalotka;potwierdzone;"Allium ascalonicum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";2026-10-16
-szałwia;;kod rodzaju Salvia = 1SALG;do_decyzji;rejestr nie podaje gatunku (lekarska czy ozdobna) — do rozstrzygnięcia;2026-10-16
-szałwia lekarska;SALOF;szałwia lekarska;potwierdzone;"Salvia officinalis → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zielarskie)";2026-10-16
-szanta zwyczajna;MAQVU;szanta zwyczajna;potwierdzone;"Marrubium vulgare → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zielarskie)";2026-10-16
-szczaw;RUMAC;szczaw zwyczajny;potwierdzone;"Rumex acetosa → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";2026-10-16
-szczodrzeniec;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;2026-10-16
-szczypiorek;ALLSC;czosnek szczypiorek;potwierdzone;"Allium schoenoprasum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";2026-10-16
-szkółki;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;2026-10-16
-szkółki drzew i krzewów;;;poza_zakresem;gatunek leśny albo zadrzewieniowy — poza zakresem aplikacji;2026-10-16
-szkółki drzew iglastych;;;poza_zakresem;gatunek leśny albo zadrzewieniowy — poza zakresem aplikacji;2026-10-16
-szkółki drzew leśnych;;;poza_zakresem;gatunek leśny albo zadrzewieniowy — poza zakresem aplikacji;2026-10-16
-szkółki drzew liściastych;;;poza_zakresem;gatunek leśny albo zadrzewieniowy — poza zakresem aplikacji;2026-10-16
-szkółki drzew owocowych;;;grupa_upraw;nazwa zbiorcza — gatunek wskazuje konkretna uprawa;2026-10-16
-szkółki drzew ozdobnych;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;2026-10-16
-szkółki krzewów iglastych i liściastych;;;poza_zakresem;gatunek leśny albo zadrzewieniowy — poza zakresem aplikacji;2026-10-16
-szkółki krzewów ozdobnych;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;2026-10-16
-szkółki leśne;;;poza_zakresem;gatunek leśny albo zadrzewieniowy — poza zakresem aplikacji;2026-10-16
-szkółki roślin ozdobnych;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;2026-10-16
-szparagi;ASPOF;szparag lekarski;potwierdzone;"Asparagus officinalis → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";2026-10-16
-szpinak;SPQOL;szpinak warzywny;potwierdzone;"Spinacia oleracea → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";2026-10-16
-taras;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;2026-10-16
-tawułka;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;2026-10-16
-tereny leśne;;;poza_zakresem;gatunek leśny albo zadrzewieniowy — poza zakresem aplikacji;2026-10-16
-tereny nieużytkowane rolniczo;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;2026-10-16
-tereny przemysłowe;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;2026-10-16
-topinambur;HELTU;"topinambur; słonecznik póżny; słonecznik bulwiasty";potwierdzone;"Helianthus tuberosus → kod z bazy EPPO; uprawa konwencjonalna w Polsce (okopowe)";2026-10-16
-topola;;;poza_zakresem;gatunek leśny albo zadrzewieniowy — poza zakresem aplikacji;2026-10-16
-topola energetyczna;;kod rodzaju Populus = 1POPG;do_decyzji;rejestr nie podaje gatunku (gatunek do ustalenia) — do rozstrzygnięcia;2026-10-16
-torowiska kolejowe;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;2026-10-16
-torowiska tramwajowe;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;2026-10-16
-tory kolejowe;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;2026-10-16
-trawniki;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;2026-10-16
-trawy;;;grupa_upraw;nazwa zbiorcza — gatunek wskazuje konkretna uprawa;2026-10-16
-trawy nasienne;;;grupa_upraw;nazwa zbiorcza — gatunek wskazuje konkretna uprawa;2026-10-16
-trawy ozdobne;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;2026-10-16
-truskawka;FRAAN;"poziomka truskawka; truskawka";potwierdzone;"Fragaria x ananassa → kod z bazy EPPO; uprawa konwencjonalna w Polsce (jagodnik)";2026-10-16
-trybula ogrodowa;ANRCE;trybula ogrodowa;potwierdzone;"Anthriscus cerefolium → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zielarskie)";2026-10-16
-tulipan;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;2026-10-16
-tymianek;;kod rodzaju Thymus = 1THYG;do_decyzji;rejestr nie podaje gatunku (właściwy czy inny) — do rozstrzygnięcia;2026-10-16
-tymianek właściwy;THYVU;Thymus vulgaris;potwierdzone;"Thymus vulgaris → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zielarskie)";2026-10-16
-tytoń;NIOTA;tytón szlachetny;potwierdzone;"Nicotiana tabacum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (przemysłowe)";2026-10-16
-użytki zielone;;;grupa_upraw;nazwa zbiorcza — gatunek wskazuje konkretna uprawa;2026-10-16
-uprawa w gruncie;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;2026-10-16
-uprawa w polu;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;2026-10-16
-uprawa w pomieszczeniach;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;2026-10-16
-uprawa w systemie bezglebowym;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;2026-10-16
-uprawa w szklarni;;;nie_uprawa;miejsce stosowania albo przedmiot, nie roślina (raport P3);2026-10-16
-warzywa dyniowate;;;grupa_upraw;nazwa zbiorcza — gatunek wskazuje konkretna uprawa;2026-10-16
-warzywa kapustne;;;grupa_upraw;nazwa zbiorcza — gatunek wskazuje konkretna uprawa;2026-10-16
-warzywa liściowe;;;grupa_upraw;nazwa zbiorcza — gatunek wskazuje konkretna uprawa;2026-10-16
-wawrzyn szlachetny;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;2026-10-16
-werbena;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;2026-10-16
-wierzba;;;poza_zakresem;gatunek leśny albo zadrzewieniowy — poza zakresem aplikacji;2026-10-16
-wierzba energetyczna;;kod rodzaju Salix = 1SAXG;do_decyzji;rejestr nie podaje gatunku (wiciowa czy purpurowa) — do rozstrzygnięcia;2026-10-16
-wierzba purpurowa;SAXPU;"wiklina; wierzba purpurowa";potwierdzone;"Salix purpurea → kod z bazy EPPO; uprawa konwencjonalna w Polsce (energetyczne)";2026-10-16
-wierzba wiciowa;SAXVI;"witwa; wierzba wiciowa";potwierdzone;"Salix viminalis → kod z bazy EPPO; uprawa konwencjonalna w Polsce (energetyczne)";2026-10-16
-wiklina;;;poza_zakresem;gatunek leśny albo zadrzewieniowy — poza zakresem aplikacji;2026-10-16
-wilczomlecz;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;2026-10-16
-winorośl;VITVI;"winorośl właściwa; winorośl właściwa typowa";potwierdzone;"Vitis vinifera → kod z bazy EPPO; uprawa konwencjonalna w Polsce (sad)";2026-10-16
-wiśnia;PRNCE;"wiśnia szkliwka; wiśnia pospolita";potwierdzone;"Prunus cerasus → kod z bazy EPPO; uprawa konwencjonalna w Polsce (sad)";2026-10-16
-worki;;;nie_uprawa;miejsce stosowania albo przedmiot, nie roślina (raport P3);2026-10-16
-wyka;;kod rodzaju Vicia = 1VICG;do_decyzji;rejestr nie podaje gatunku (siewna czy kosmata) — do rozstrzygnięcia;2026-10-16
-wyka kosmata;VICVI;wyka kosmata;potwierdzone;"Vicia villosa → kod z bazy EPPO; uprawa konwencjonalna w Polsce (pastewne)";2026-10-16
-wyka siewna;VICSA;wyka siewna;potwierdzone;"Vicia sativa → kod z bazy EPPO; uprawa konwencjonalna w Polsce (pastewne)";2026-10-16
-wyżlin;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;2026-10-16
-zalesienia;;;poza_zakresem;gatunek leśny albo zadrzewieniowy — poza zakresem aplikacji;2026-10-16
-żarnowiec;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;2026-10-16
-zawilec;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;2026-10-16
-zboża;;;grupa_upraw;nazwa zbiorcza — gatunek wskazuje konkretna uprawa;2026-10-16
-ziarno;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;2026-10-16
-ziarno zbóż;;;grupa_upraw;nazwa zbiorcza — gatunek wskazuje konkretna uprawa;2026-10-16
-ziemniak;SOLTU;"ziemniak; psianka ziemniak";potwierdzone;"Solanum tuberosum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (okopowe)";2026-10-16
-zioła;;;grupa_upraw;nazwa zbiorcza — gatunek wskazuje konkretna uprawa;2026-10-16
-złocień;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;2026-10-16
-żurawina;VACMA;Vaccinium macrocarpon;potwierdzone;"Vaccinium macrocarpon → kod z bazy EPPO; uprawa konwencjonalna w Polsce (jagodnik)";2026-10-16
-żyto;SECCE;żyto zwyczajne;potwierdzone;"Secale cereale → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zboża)";2026-10-16
-żyto jare;SECCS;rye (spring);potwierdzone;propozycja z bazy EPPO, potwierdzona przez użytkownika;2026-10-15
-żyto ozime;SECCW;rye (winter);potwierdzone;propozycja z bazy EPPO, potwierdzona przez użytkownika;2026-10-15
-żywotnik;;;poza_zakresem;gatunek leśny albo zadrzewieniowy — poza zakresem aplikacji;2026-10-16
+nazwa_uprawy;kod_eppo;nazwa_eppo;stan;zrodlo;zamiast;data
+agrest;RIBUC;"porzeczka agrest; agrest";potwierdzone;"Ribes uva-crispa → kod z bazy EPPO; uprawa konwencjonalna w Polsce (jagodnik)";;2026-10-16
+aksamitka;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;;2026-10-16
+aktinidia;ATIAR;aktinidia ostrolistna;potwierdzone;"Actinidia arguta → kod z bazy EPPO; uprawa konwencjonalna w Polsce (sad)";;2026-10-16
+arbuz;CITLA;"arbuz zwyczajny; kawon";potwierdzone;"Citrullus lanatus → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";;2026-10-16
+arcydzięgiel litwor;ANKAR;"dzięgiel litwor; arcydzięgiel litwor";potwierdzone;"Angelica archangelica → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zielarskie)";;2026-10-16
+aronia;ABOME;"aronia czarna; aronia czarnoowocowa";potwierdzone;"Aronia melanocarpa → kod z bazy EPPO; uprawa konwencjonalna w Polsce (jagodnik)";;2026-10-16
+aster;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;;2026-10-16
+aster chiński;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;;2026-10-16
+aster letni;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;;2026-10-16
+azalia;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;;2026-10-16
+babka zwyczajna;PLAMA;babka zwyczajna;potwierdzone;"Plantago major → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zielarskie)";;2026-10-16
+bakłażan;SOLME;psianka podłużna;potwierdzone;"Solanum melongena → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";;2026-10-16
+banan;;;poza_zakresem;roślina nieuprawiana w Polsce — poza zakresem aplikacji;;2026-10-16
+bazylia pospolita;OCIBA;bazylia pospolita;potwierdzone;"Ocimum basilicum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zielarskie)";;2026-10-16
+begonia;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;;2026-10-16
+berberys;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;;2026-10-16
+bez czarny;SAMNI;"bez czarny; dziki bez czarny";potwierdzone;"Sambucus nigra → kod z bazy EPPO; uprawa konwencjonalna w Polsce (jagodnik)";;2026-10-16
+bluszcz;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;;2026-10-16
+bób;VICFX;"wyka bób; bób";potwierdzone;"Vicia faba → kod z bazy EPPO; uprawa konwencjonalna w Polsce (strączkowe)";;2026-10-16
+bobik;VICFX;"wyka bób; bób";potwierdzone;"Vicia faba → kod z bazy EPPO; uprawa konwencjonalna w Polsce (strączkowe)";;2026-10-16
+boćwina;BEAVV;Beta vulgaris var. cicla;potwierdzone;"Beta vulgaris var. cicla → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";;2026-10-16
+boiska;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;;2026-10-16
+borówka amerykańska;VACCO;"borówka amerykańska; borówka wysoka";potwierdzone;"Vaccinium corymbosum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (jagodnik)";;2026-10-16
+borówka brusznica;VACVI;"borówka czerwona; borówka brucznica";potwierdzone;"Vaccinium vitis-idaea → kod z bazy EPPO; uprawa konwencjonalna w Polsce (jagodnik)";;2026-10-16
+borówka czarna;VACMY;borówka czarna;potwierdzone;"Vaccinium myrtillus → kod z bazy EPPO; uprawa konwencjonalna w Polsce (jagodnik)";;2026-10-16
+borówka wysoka;VACCO;"borówka amerykańska; borówka wysoka";potwierdzone;"Vaccinium corymbosum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (jagodnik)";;2026-10-16
+botwinka;;Z czego botwinka?;rodzajowa;"rejestr nie podaje gatunku; aplikacja pokazuje gatunki do wyboru, a gdy rolnik ma inną uprawę — wpisuje własną nazwę i kod EPPO zostaje pusty";burak ćwikłowy|boćwina;2026-10-16
+bratek;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;;2026-10-16
+brokuł;BRSOK;Brassica oleracea var. italica;potwierdzone;"Brassica oleracea var. italica → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";;2026-10-16
+brukiew;BRSNA;"brukiew; karpiel";potwierdzone;"Brassica napus var. napobrassica → kod z bazy EPPO; uprawa konwencjonalna w Polsce (okopowe)";;2026-10-16
+brukiew jadalna;BRSNA;"brukiew; karpiel";potwierdzone;ta sama roślina co „brukiew” — inny zapis w rejestrze;;2026-10-16
+brzoskwinia;PRNPS;brzoskwinia zwyczajna;potwierdzone;"Prunus persica → kod z bazy EPPO; uprawa konwencjonalna w Polsce (sad)";;2026-10-16
+buk;;;poza_zakresem;gatunek leśny albo zadrzewieniowy — poza zakresem aplikacji;;2026-10-16
+bukszpan;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;;2026-10-16
+bulwiaste rośliny ozdobne;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;;2026-10-16
+burak;;Jaki burak?;rodzajowa;"rejestr nie podaje gatunku; aplikacja pokazuje gatunki do wyboru, a gdy rolnik ma inną uprawę — wpisuje własną nazwę i kod EPPO zostaje pusty";burak cukrowy|burak ćwikłowy|burak pastewny|burak liściowy;2026-10-16
+burak cukrowy;BEAVA;burak cukrowy;potwierdzone;"Beta vulgaris subsp. vulgaris var. altissima → kod z bazy EPPO; uprawa konwencjonalna w Polsce (okopowe)";;2026-10-16
+burak ćwikłowy;BEAVD;Beta vulgaris var. conditiva;potwierdzone;"Beta vulgaris var. conditiva → kod z bazy EPPO; uprawa konwencjonalna w Polsce (okopowe)";;2026-10-16
+burak ćwikłowy biały;BEAVD;Beta vulgaris var. conditiva;potwierdzone;ta sama roślina co „burak ćwikłowy” — inny zapis w rejestrze;;2026-10-16
+burak ćwikłowy żółty;BEAVD;Beta vulgaris var. conditiva;potwierdzone;ta sama roślina co „burak ćwikłowy” — inny zapis w rejestrze;;2026-10-16
+burak liściowy;BEAVV;Beta vulgaris var. cicla;potwierdzone;"Beta vulgaris var. cicla → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";;2026-10-16
+burak pastewny;BEAVC;Beta vulgaris var. rapacea;potwierdzone;"Beta vulgaris var. rapacea → kod z bazy EPPO; uprawa konwencjonalna w Polsce (okopowe)";;2026-10-16
+byliny;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;;2026-10-16
+cebula;ALLCE;"czosnek cebula; cebula";potwierdzone;"Allium cepa → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";;2026-10-16
+cebula dymka;ALLCE;"czosnek cebula; cebula";potwierdzone;ta sama roślina co „cebula” — inny zapis w rejestrze;;2026-10-16
+cebula siedmiolatka;ALLFI;"czosnek dęty; pizosnek dęty";potwierdzone;"Allium fistulosum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";;2026-10-16
+cebula szalotka;ALLAS;czosnek szalotka;potwierdzone;"Allium ascalonicum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";;2026-10-16
+cebula z dymki;ALLCE;"czosnek cebula; cebula";potwierdzone;"Allium cepa → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";;2026-10-16
+cebula z rozsady;ALLCE;"czosnek cebula; cebula";potwierdzone;"Allium cepa → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";;2026-10-16
+cebulowe rośliny ozdobne;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;;2026-10-16
+chmiel;HUMLU;chmiel zwyczajny;potwierdzone;"Humulus lupulus → kod z bazy EPPO; uprawa konwencjonalna w Polsce (przemysłowe)";;2026-10-16
+chodniki;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;;2026-10-16
+chryzantema;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;;2026-10-16
+chrzan;ARWLA;chrzan pospolity;potwierdzone;"Armoracia rusticana → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";;2026-10-16
+ciecierzyca;CIEAR;ciecierzyca pospolita;potwierdzone;"Cicer arietinum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (strączkowe)";;2026-10-16
+cis;;;poza_zakresem;gatunek leśny albo zadrzewieniowy — poza zakresem aplikacji;;2026-10-16
+cukinia;CUUPE;dynia zwyczajna;potwierdzone;"Cucurbita pepo → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";;2026-10-16
+cyklamen;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;;2026-10-16
+cykoria;CICIN;cykoria podróżnik;potwierdzone;"Cichorium intybus → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";;2026-10-16
+cykoria korzeniowa;CICIN;cykoria podróżnik;potwierdzone;"Cichorium intybus → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";;2026-10-16
+cykoria liściasta;CICIN;cykoria podróżnik;potwierdzone;ta sama roślina co „cykoria” — inny zapis w rejestrze;;2026-10-16
+cykoria sałatowa;CICIN;cykoria podróżnik;potwierdzone;"Cichorium intybus → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";;2026-10-16
+cynia;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;;2026-10-16
+cyprysik;;;poza_zakresem;gatunek leśny albo zadrzewieniowy — poza zakresem aplikacji;;2026-10-16
+cytryna;;;poza_zakresem;roślina nieuprawiana w Polsce — poza zakresem aplikacji;;2026-10-16
+cząber ogrodowy;STIHO;Satureja hortensis;potwierdzone;"Satureja hortensis → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zielarskie)";;2026-10-16
+czarna porzeczka;RIBNI;porzeczka czarna;potwierdzone;"Ribes nigrum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (jagodnik)";;2026-10-16
+czeremcha;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;;2026-10-16
+czereśnia;PRNAV;"czereśnia ptasia; wiśnia ptasia; wiśnia dzika; trześnia; czereśnia";potwierdzone;"Prunus avium → kod z bazy EPPO; uprawa konwencjonalna w Polsce (sad)";;2026-10-16
+czosnek;ALLSA;czosnek pospolity;potwierdzone;"Allium sativum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";;2026-10-16
+czosnek askaloński;ALLAS;czosnek szalotka;potwierdzone;"Allium ascalonicum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";;2026-10-16
+dąb;;;poza_zakresem;gatunek leśny albo zadrzewieniowy — poza zakresem aplikacji;;2026-10-16
+dalia;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;;2026-10-16
+doniczki;;;nie_uprawa;miejsce stosowania albo przedmiot, nie roślina (raport P3);;2026-10-16
+drogi;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;;2026-10-16
+drogi dojazdowe;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;;2026-10-16
+drzewa i krzewy ozdobne;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;;2026-10-16
+drzewa iglaste;;;poza_zakresem;gatunek leśny albo zadrzewieniowy — poza zakresem aplikacji;;2026-10-16
+drzewa leśne;;;poza_zakresem;gatunek leśny albo zadrzewieniowy — poza zakresem aplikacji;;2026-10-16
+drzewa liściaste;;;poza_zakresem;gatunek leśny albo zadrzewieniowy — poza zakresem aplikacji;;2026-10-16
+drzewa ozdobne;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;;2026-10-16
+drzewka bożonarodzeniowe;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;;2026-10-16
+drzewostany liściaste;;;poza_zakresem;gatunek leśny albo zadrzewieniowy — poza zakresem aplikacji;;2026-10-16
+drzewostany sosnowe;;;poza_zakresem;gatunek leśny albo zadrzewieniowy — poza zakresem aplikacji;;2026-10-16
+dymka;ALLCE;"czosnek cebula; cebula";potwierdzone;"Allium cepa → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";;2026-10-16
+dynia;;Jaka dynia?;rodzajowa;"rejestr nie podaje gatunku; aplikacja pokazuje gatunki do wyboru, a gdy rolnik ma inną uprawę — wpisuje własną nazwę i kod EPPO zostaje pusty";dynia zwyczajna|dynia olbrzymia|dynia piżmowa;2026-10-16
+dynia makaronowa;CUUPE;dynia zwyczajna;potwierdzone;ta sama roślina co „dynia zwyczajna” — inny zapis w rejestrze;;2026-10-16
+dynia olbrzymia;CUUMA;dynia olbrzymia;potwierdzone;"Cucurbita maxima → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";;2026-10-16
+dynia piżmowa;CUUMO;dynia piżmowa;potwierdzone;"Cucurbita moschata → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";;2026-10-16
+dynia zwyczajna;CUUPE;dynia zwyczajna;potwierdzone;"Cucurbita pepo → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";;2026-10-16
+dyniowate;;;grupa_upraw;nazwa zbiorcza — gatunek wskazuje konkretna uprawa;;2026-10-16
+dzięgiel;ANKAR;"dzięgiel litwor; arcydzięgiel litwor";potwierdzone;"Angelica archangelica → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zielarskie)";;2026-10-16
+dziurawiec zwyczajny;HYPPE;dzurawiec zwyczajny;potwierdzone;"Hypericum perforatum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zielarskie)";;2026-10-16
+endywia;CICEN;"chicória-brava; cykoria endywia; endywia; szczerbak wielki";potwierdzone;"Cichorium endivia → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";;2026-10-16
+eskariola;CICEN;"chicória-brava; cykoria endywia; endywia; szczerbak wielki";potwierdzone;"Cichorium endivia → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";;2026-10-16
+esparceta siewna;ONBVI;sparceta siewna;potwierdzone;"Onobrychis viciifolia → kod z bazy EPPO; uprawa konwencjonalna w Polsce (pastewne)";;2026-10-16
+estragon;ARTDR;"bylica draganek; bylica estragon; draganek; estragon";potwierdzone;"Artemisia dracunculus → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zielarskie)";;2026-10-16
+estragon zwyczajny;ARTDR;"bylica draganek; bylica estragon; draganek; estragon";potwierdzone;"Artemisia dracunculus → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zielarskie)";;2026-10-16
+facelia;PHCTA;"facelia mniejsza; facelia wrotyczolistna; facelia błękitna";potwierdzone;"Phacelia tanacetifolia → kod z bazy EPPO; uprawa konwencjonalna w Polsce (poplony)";;2026-10-16
+fasola;PHSVX;fasola zwykła;potwierdzone;"Phaseolus vulgaris → kod z bazy EPPO; uprawa konwencjonalna w Polsce (strączkowe)";;2026-10-16
+fasola uprawiana na suche nasiona;PHSVX;"fasola wielokwiatowa=PHSCO; fasola zwykla=PHSVX";potwierdzone;ta sama roślina co „fasola” — inny zapis w rejestrze;;2026-10-16
+Fasola uprawiana na świeże nasiona;PHSVX;"fasola wielokwiatowa=PHSCO; fasola zwykla=PHSVX";potwierdzone;ta sama roślina co „fasola” — inny zapis w rejestrze;;2026-10-16
+fasola szparagowa;PHSVX;fasola zwykła;potwierdzone;"Phaseolus vulgaris → kod z bazy EPPO; uprawa konwencjonalna w Polsce (strączkowe)";;2026-10-16
+fasola wielokwiatowa;PHSCO;fasola wielokwiatowa;potwierdzone;"Phaseolus coccineus → kod z bazy EPPO; uprawa konwencjonalna w Polsce (strączkowe)";;2026-10-16
+fenkuł;FOEVS;"fenykl; koper włoski";potwierdzone;"Foeniculum vulgare subsp. sativum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zielarskie)";;2026-10-16
+floks;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;;2026-10-16
+forsycja;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;;2026-10-16
+fuksja;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;;2026-10-16
+funkia;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;;2026-10-16
+gerbera;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;;2026-10-16
+głóg;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;;2026-10-16
+gorczyca;;Jaka gorczyca?;rodzajowa;"rejestr nie podaje gatunku; aplikacja pokazuje gatunki do wyboru, a gdy rolnik ma inną uprawę — wpisuje własną nazwę i kod EPPO zostaje pusty";gorczyca biała|gorczyca sarepska|gorczyca czarna;2026-10-16
+gorczyca biała;SINAL;"gorczyca jasna; gorczyca biała";potwierdzone;"Sinapis alba → kod z bazy EPPO; uprawa konwencjonalna w Polsce (oleiste)";;2026-10-16
+gorczyca czarna;BRSNI;"gorczyca czarna; kapusta czarna; kapusta gorczyca";potwierdzone;"Brassica nigra → kod z bazy EPPO; uprawa konwencjonalna w Polsce (oleiste)";;2026-10-16
+gorczyca sarepska;BRSJU;"kapusta sarepska; kapusta sitowata";potwierdzone;"Brassica juncea → kod z bazy EPPO; uprawa konwencjonalna w Polsce (oleiste)";;2026-10-16
+goździk;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;;2026-10-16
+groch;PIBSX;"groch zwyczajny; groch polny; peluszka";potwierdzone;"Pisum sativum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (strączkowe)";;2026-10-16
+groch cukrowy;PIBSX;"groch zwyczajny; groch polny; peluszka";potwierdzone;"Pisum sativum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (strączkowe)";;2026-10-16
+groch jadalny;PIBSX;"groch zwyczajny; groch polny; peluszka";potwierdzone;"Pisum sativum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (strączkowe)";;2026-10-16
+groch jadalny zielony;PIBSX;"groch zwyczajny; groch polny; peluszka";potwierdzone;"Pisum sativum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (strączkowe)";;2026-10-16
+groch łuskowy;PIBSX;"groch zwyczajny; groch polny; peluszka";potwierdzone;"Pisum sativum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (strączkowe)";;2026-10-16
+groch na suche nasiona;PIBSX;"groch zwyczajny=PIBSX; groch zwyczajny polny=PIBSA; groch polny=PIBSX";potwierdzone;ta sama roślina co „groch” — inny zapis w rejestrze;;2026-10-16
+groch pastewny;PIBSA;groch zwyczajny polny;potwierdzone;"Pisum sativum subsp. arvense → kod z bazy EPPO; uprawa konwencjonalna w Polsce (strączkowe)";;2026-10-16
+groch siewny;PIBSX;"groch zwyczajny; groch polny; peluszka";potwierdzone;"Pisum sativum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (strączkowe)";;2026-10-16
+groch siewny cukrowy;PIBSX;"groch zwyczajny; groch polny; peluszka";potwierdzone;"Pisum sativum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (strączkowe)";;2026-10-16
+groch siewny pastewny;PIBSA;groch zwyczajny polny;potwierdzone;"Pisum sativum subsp. arvense → kod z bazy EPPO; uprawa konwencjonalna w Polsce (strączkowe)";;2026-10-16
+groch siewny uprawiany na świeże nasiona;PIBSX;"groch zwyczajny; groch polny; peluszka";potwierdzone;ta sama roślina co „groch” — inny zapis w rejestrze;;2026-10-16
+groch uprawiany na zielone nasiona;PIBSX;"groch zwyczajny; groch polny; peluszka";potwierdzone;ta sama roślina co „groch” — inny zapis w rejestrze;;2026-10-16
+groch zielony;PIBSX;"groch zwyczajny; groch polny; peluszka";potwierdzone;"Pisum sativum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (strączkowe)";;2026-10-16
+groch zielony cukrowy;PIBSX;"groch zwyczajny; groch polny; peluszka";potwierdzone;"Pisum sativum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (strączkowe)";;2026-10-16
+groch zielony łuskowy;PIBSX;"groch zwyczajny; groch polny; peluszka";potwierdzone;"Pisum sativum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (strączkowe)";;2026-10-16
+groch zwyczajny pastewny;PIBSA;groch zwyczajny polny;potwierdzone;"Pisum sativum subsp. arvense → kod z bazy EPPO; uprawa konwencjonalna w Polsce (strączkowe)";;2026-10-16
+groch zwyczajny siewny;PIBSX;"groch zwyczajny; groch polny; peluszka";potwierdzone;"Pisum sativum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (strączkowe)";;2026-10-16
+grusza;PYUCO;grusza pospolita;potwierdzone;"Pyrus communis → kod z bazy EPPO; uprawa konwencjonalna w Polsce (sad)";;2026-10-16
+grusza azjatycka;PYUPY;Pyrus pyrifolia;potwierdzone;"Pyrus pyrifolia → kod z bazy EPPO; uprawa konwencjonalna w Polsce (sad)";;2026-10-16
+grusza chińska;PYUPY;Pyrus pyrifolia;potwierdzone;"Pyrus pyrifolia → kod z bazy EPPO; uprawa konwencjonalna w Polsce (sad)";;2026-10-16
+gruszki;PYUCO;grusza pospolita;potwierdzone;ta sama roślina co „grusza” — inny zapis w rejestrze;;2026-10-16
+gryka;FAGES;gryka zwyczajna;potwierdzone;"Fagopyrum esculentum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zboża)";;2026-10-16
+hyzop lekarski;HYSOF;Hyssopus officinalis;potwierdzone;"Hyssopus officinalis → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zielarskie)";;2026-10-16
+irys;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;;2026-10-16
+jabłka;MABSD;Malus domestica;potwierdzone;ta sama roślina co „jabłoń” — inny zapis w rejestrze;;2026-10-16
+jabłoń;MABSD;Malus domestica;potwierdzone;propozycja z bazy EPPO, potwierdzona przez użytkownika;;2026-10-15
+jabłoń dzika;MABSY;"płonka; jabłoń dzika";potwierdzone;"Malus sylvestris → kod z bazy EPPO; uprawa konwencjonalna w Polsce (sad)";;2026-10-16
+jabłoń płonka;MABSY;"płonka; jabłoń dzika";potwierdzone;"Malus sylvestris → kod z bazy EPPO; uprawa konwencjonalna w Polsce (sad)";;2026-10-16
+jagoda kamczacka;LONCO;"suchodrzew siny; wiciokrzew siny";potwierdzone;"Lonicera caerulea → kod z bazy EPPO; uprawa konwencjonalna w Polsce (jagodnik)";;2026-10-16
+jałowiec;;;poza_zakresem;gatunek leśny albo zadrzewieniowy — poza zakresem aplikacji;;2026-10-16
+jarmuż;BRSOC;Brassica oleracea var. sabellica;potwierdzone;"Brassica oleracea var. sabellica → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";;2026-10-16
+jarząb pospolity;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;;2026-10-16
+jaśmin;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;;2026-10-16
+jęczmień;HORVX;jęczmień zwyczajny;potwierdzone;"Hordeum vulgare → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zboża)";;2026-10-16
+jęczmień jary;HORVS;barley (spring);potwierdzone;propozycja z bazy EPPO, potwierdzona przez użytkownika;;2026-10-15
+jęczmień ozimy;HORVW;barley (winter);potwierdzone;decyzja użytkownika;;2026-10-15
+jeżyna;RUBFR;"jeżyna krzewiasta; jeżyna fałdowana";potwierdzone;"Rubus fruticosus → kod z bazy EPPO; uprawa konwencjonalna w Polsce (jagodnik)";;2026-10-16
+jodła;;;poza_zakresem;gatunek leśny albo zadrzewieniowy — poza zakresem aplikacji;;2026-10-16
+kabaczek;CUUPE;dynia zwyczajna;potwierdzone;"Cucurbita pepo → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";;2026-10-16
+kalafior;BRSOB;"brokuł; kalafior";potwierdzone;"Brassica oleracea var. botrytis → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";;2026-10-16
+kalarepa;BRSOG;kalarepa;potwierdzone;"Brassica oleracea var. gongylodes → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";;2026-10-16
+kalia;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;;2026-10-16
+kapusta;;Jaka kapusta?;rodzajowa;"rejestr nie podaje gatunku; aplikacja pokazuje gatunki do wyboru, a gdy rolnik ma inną uprawę — wpisuje własną nazwę i kod EPPO zostaje pusty";kapusta głowiasta biała|kapusta głowiasta czerwona|kapusta włoska|kapusta pekińska|kapusta chińska|kapusta brukselska|jarmuż|kalarepa|kalafior|brokuł;2026-10-16
+kapusta brukselska;BRSOF;kapusta warzywna brukselka;potwierdzone;"Brassica oleracea var. gemmifera → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";;2026-10-16
+kapusta chińska;BRSCH;kapusta chińska;potwierdzone;"Brassica rapa subsp. chinensis → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";;2026-10-16
+kapusta chińska pak-czoi;BRSCH;kapusta chińska;potwierdzone;"Brassica rapa subsp. chinensis → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";;2026-10-16
+kapusta choy-sum;;Jaka kapusta?;rodzajowa;"rejestr nie podaje gatunku; aplikacja pokazuje gatunki do wyboru, a gdy rolnik ma inną uprawę — wpisuje własną nazwę i kod EPPO zostaje pusty";kapusta chińska;2026-10-16
+kapusta czerwona;BRSOR;Brassica oleracea var. capitata f. rubra;potwierdzone;"Brassica oleracea var. capitata f. rubra → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";;2026-10-16
+kapusta galicyjska;BRSOS;Brassica oleracea var. sabauda;potwierdzone;ta sama roślina co „kapusta włoska” — inny zapis w rejestrze;;2026-10-16
+kapusta głowiasta;BRSOL;kapusta warzywna głowiasta;potwierdzone;"Brassica oleracea var. capitata → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";;2026-10-16
+kapusta głowiasta biała;BRSOH;Brassica oleracea var. capitata f. alba;potwierdzone;"Brassica oleracea var. capitata f. alba → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";;2026-10-16
+kapusta głowiasta czerwona;BRSOR;Brassica oleracea var. capitata f. rubra;potwierdzone;"Brassica oleracea var. capitata f. rubra → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";;2026-10-16
+kapusta pak choi;BRSCH;kapusta chińska;potwierdzone;ta sama roślina co „kapusta chińska” — inny zapis w rejestrze;;2026-10-16
+kapusta pekińska;BRSPK;kapusta pekińska;potwierdzone;"Brassica rapa subsp. pekinensis → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";;2026-10-16
+kapusta sitowata;BRSJU;"kapusta sarepska; kapusta sitowata";potwierdzone;ta sama roślina co „gorczyca sarepska” — inny zapis w rejestrze;;2026-10-16
+kapusta włoska;BRSOS;Brassica oleracea var. sabauda;potwierdzone;"Brassica oleracea var. sabauda → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";;2026-10-16
+karczoch zwyczajny;CYUSC;Cynara scolymus;potwierdzone;"Cynara scolymus → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";;2026-10-16
+kasztan jadalny;CSNSA;kasztan jadalny;potwierdzone;"Castanea sativa → kod z bazy EPPO; uprawa konwencjonalna w Polsce (sad)";;2026-10-16
+kawa;;;poza_zakresem;roślina nieuprawiana w Polsce — poza zakresem aplikacji;;2026-10-16
+kawon;CITLA;"arbuz zwyczajny; kawon";potwierdzone;"Citrullus lanatus → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";;2026-10-16
+kminek zwyczajny;CRYCA;kminek zwyczajny;potwierdzone;"Carum carvi → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zielarskie)";;2026-10-16
+kocimiętka właściwa;NEPCA;kocimiętka właściwa;potwierdzone;"Nepeta cataria → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zielarskie)";;2026-10-16
+kolendra;CORSA;kolendra siewna;potwierdzone;"Coriandrum sativum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zielarskie)";;2026-10-16
+komonica;;Jaka komonica?;rodzajowa;"rejestr nie podaje gatunku; aplikacja pokazuje gatunki do wyboru, a gdy rolnik ma inną uprawę — wpisuje własną nazwę i kod EPPO zostaje pusty";komonica zwyczajna;2026-10-16
+komonica zwyczajna;LOTCO;"komonica zwyczajna; komonica rożkowa";potwierdzone;"Lotus corniculatus → kod z bazy EPPO; uprawa konwencjonalna w Polsce (pastewne)";;2026-10-16
+koniczyna;;Jaka koniczyna?;rodzajowa;"rejestr nie podaje gatunku; aplikacja pokazuje gatunki do wyboru, a gdy rolnik ma inną uprawę — wpisuje własną nazwę i kod EPPO zostaje pusty";koniczyna czerwona|koniczyna biała|koniczyna krwistoczerwona (inkarnatka);2026-10-16
+koniczyna biała;TRFRE;"koniczyna rozesłana; koniczyna biała";potwierdzone;"Trifolium repens → kod z bazy EPPO; uprawa konwencjonalna w Polsce (pastewne)";;2026-10-16
+koniczyna czerwona;TRFPR;koniczyna łąkowa;potwierdzone;"Trifolium pratense → kod z bazy EPPO; uprawa konwencjonalna w Polsce (pastewne)";;2026-10-16
+koniczyna krwistoczerwona (inkarnatka);TRFIN;"koniczyna krwistoczerwona; koniczyna inkarnatka";potwierdzone;"Trifolium incarnatum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (pastewne)";;2026-10-16
+konopie;CNISA;konopie siewne;potwierdzone;"Cannabis sativa → kod z bazy EPPO; uprawa konwencjonalna w Polsce (włókniste)";;2026-10-16
+konopie siewne;CNISA;konopie siewne;potwierdzone;"Cannabis sativa → kod z bazy EPPO; uprawa konwencjonalna w Polsce (włókniste)";;2026-10-16
+kontenery;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;;2026-10-16
+koper;AFEGR;koper ogrodowy;potwierdzone;"Anethum graveolens → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zielarskie)";;2026-10-16
+koper ogrodowy;AFEGR;koper ogrodowy;potwierdzone;"Anethum graveolens → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zielarskie)";;2026-10-16
+koper włoski;FOEVS;"fenykl; koper włoski";potwierdzone;"Foeniculum vulgare subsp. sativum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zielarskie)";;2026-10-16
+kozłek lekarski;VALOF;kozłek lekarski;potwierdzone;"Valeriana officinalis → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zielarskie)";;2026-10-16
+krokus;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;;2026-10-16
+krwawnik;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;;2026-10-16
+krzewy;;;poza_zakresem;gatunek leśny albo zadrzewieniowy — poza zakresem aplikacji;;2026-10-16
+krzewy iglaste;;;poza_zakresem;gatunek leśny albo zadrzewieniowy — poza zakresem aplikacji;;2026-10-16
+krzewy liściaste;;;poza_zakresem;gatunek leśny albo zadrzewieniowy — poza zakresem aplikacji;;2026-10-16
+krzewy ozdobne;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;;2026-10-16
+kukurydza;ZEAMX;"kukurydza zwyczajna; kukurydza";potwierdzone;"Zea mays → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zboża)";;2026-10-16
+kukurydza cukrowa;ZEAMS;Zea mays convar. saccharata;potwierdzone;"Zea mays convar. saccharata → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zboża)";;2026-10-16
+kukurydza paszowa;ZEAMX;"kukurydza zwyczajna; kukurydza";potwierdzone;ta sama roślina co „kukurydza” — inny zapis w rejestrze;;2026-10-16
+kukurydza pękająca;ZEAMX;"kukurydza zwyczajna; kukurydza";potwierdzone;"Zea mays → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zboża)";;2026-10-16
+kwiaty;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;;2026-10-16
+łąki;;;grupa_upraw;nazwa zbiorcza — gatunek wskazuje konkretna uprawa;;2026-10-16
+łąki, pastwiska;;;grupa_upraw;nazwa zbiorcza — gatunek wskazuje konkretna uprawa;;2026-10-16
+lantana pospolita;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;;2026-10-16
+lasy;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;;2026-10-16
+laurowiśnia;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;;2026-10-16
+lawenda;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;;2026-10-16
+lędźwian siewny;LTHSA;"groszek zwyczajny; lędźwian siewny";potwierdzone;"Lathyrus sativus → kod z bazy EPPO; uprawa konwencjonalna w Polsce (strączkowe)";;2026-10-16
+len;LIUUT;len zwyczajny;potwierdzone;"Linum usitatissimum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (włókniste)";;2026-10-16
+len oleisty;LIUUT;len zwyczajny;potwierdzone;"Linum usitatissimum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (włókniste)";;2026-10-16
+len włóknisty;LIUUT;len zwyczajny;potwierdzone;"Linum usitatissimum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (włókniste)";;2026-10-16
+len zwyczajny;LIUUT;len zwyczajny;potwierdzone;"Linum usitatissimum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (włókniste)";;2026-10-16
+uprawy leśne;;;poza_zakresem;gatunek leśny albo zadrzewieniowy — poza zakresem aplikacji;;2026-10-16
+leszczyna;CYLAV;"orzech laskowy; leszczyna pospolita";potwierdzone;"Corylus avellana → kod z bazy EPPO; uprawa konwencjonalna w Polsce (sad)";;2026-10-16
+lewkonia;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;;2026-10-16
+ligustr;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;;2026-10-16
+lilia;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;;2026-10-16
+lilie;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;;2026-10-16
+lnianka siewna;CMASA;"lnicznik siewny; lnicznik jary";potwierdzone;"Camelina sativa → kod z bazy EPPO; uprawa konwencjonalna w Polsce (oleiste)";;2026-10-16
+lnianka siewna jara;CMASA;"lnicznik siewny; lnicznik jary";potwierdzone;"Camelina sativa → kod z bazy EPPO; uprawa konwencjonalna w Polsce (oleiste)";;2026-10-16
+lnianka siewna ozima;CMASA;"lnicznik siewny; lnicznik jary";potwierdzone;"Camelina sativa → kod z bazy EPPO; uprawa konwencjonalna w Polsce (oleiste)";;2026-10-16
+lobelia;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;;2026-10-16
+lotniska;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;;2026-10-16
+lubczyk;LEWOF;lubczyk ogrodowy;potwierdzone;"Levisticum officinale → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zielarskie)";;2026-10-16
+lubczyk ogrodowy;LEWOF;lubczyk ogrodowy;potwierdzone;"Levisticum officinale → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zielarskie)";;2026-10-16
+łubin;;Jaki łubin?;rodzajowa;"rejestr nie podaje gatunku; aplikacja pokazuje gatunki do wyboru, a gdy rolnik ma inną uprawę — wpisuje własną nazwę i kod EPPO zostaje pusty";łubin biały|łubin żółty|łubin wąskolistny;2026-10-16
+łubin biały;LUPAL;łubin biały;potwierdzone;"Lupinus albus → kod z bazy EPPO; uprawa konwencjonalna w Polsce (strączkowe)";;2026-10-16
+łubin wąskolistny;LUPAN;łubin wąskolistny;potwierdzone;"Lupinus angustifolius → kod z bazy EPPO; uprawa konwencjonalna w Polsce (strączkowe)";;2026-10-16
+łubin żółty;LUPLU;łubin żółty;potwierdzone;"Lupinus luteus → kod z bazy EPPO; uprawa konwencjonalna w Polsce (strączkowe)";;2026-10-16
+lucerna;;Jaka lucerna?;rodzajowa;"rejestr nie podaje gatunku; aplikacja pokazuje gatunki do wyboru, a gdy rolnik ma inną uprawę — wpisuje własną nazwę i kod EPPO zostaje pusty";lucerna siewna|lucerna sierpowata|lucerna nerkowata;2026-10-16
+lucerna nerkowata;MEDLU;"lucerna nerkowata; lucerna chmiełowa";potwierdzone;"Medicago lupulina → kod z bazy EPPO; uprawa konwencjonalna w Polsce (pastewne)";;2026-10-16
+lucerna sierpowata;MEDFA;lucerna sierpowata;potwierdzone;"Medicago falcata → kod z bazy EPPO; uprawa konwencjonalna w Polsce (pastewne)";;2026-10-16
+lucerna siewna;MEDSA;lucerna siewna;potwierdzone;"Medicago sativa → kod z bazy EPPO; uprawa konwencjonalna w Polsce (pastewne)";;2026-10-16
+lukrecja;;;poza_zakresem;roślina nieuprawiana w Polsce — poza zakresem aplikacji;;2026-10-16
+łyszczec;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;;2026-10-16
+magazyny;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;;2026-10-16
+magnolia;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;;2026-10-16
+majeranek ogrodowy;MAJHO;"majeranek; lebiodka majeranek";potwierdzone;"Origanum majorana → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zielarskie)";;2026-10-16
+mak;PAPSO;mak lekarski;potwierdzone;"Papaver somniferum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (oleiste)";;2026-10-16
+mak lekarski;PAPSO;mak lekarski;potwierdzone;"Papaver somniferum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (oleiste)";;2026-10-16
+malina;RUBID;malina właściwa;potwierdzone;"Rubus idaeus → kod z bazy EPPO; uprawa konwencjonalna w Polsce (jagodnik)";;2026-10-16
+malinojeżyna;;Malina czy jeżyna?;rodzajowa;"rejestr nie podaje gatunku; aplikacja pokazuje gatunki do wyboru, a gdy rolnik ma inną uprawę — wpisuje własną nazwę i kod EPPO zostaje pusty";malina|jeżyna;2026-10-16
+marchew;DAUCA;marchew zwyczajna;potwierdzone;"Daucus carota → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";;2026-10-16
+melisa lekarska;MLSOF;melisa lekarska;potwierdzone;"Melissa officinalis → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zielarskie)";;2026-10-16
+melon;CUMME;"melon; ogórek melon";potwierdzone;"Cucumis melo → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";;2026-10-16
+mieczyk;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;;2026-10-16
+mieszanki zbożowe;;;grupa_upraw;nazwa zbiorcza — gatunek wskazuje konkretna uprawa;;2026-10-16
+mięta;;Jaka mięta?;rodzajowa;"rejestr nie podaje gatunku; aplikacja pokazuje gatunki do wyboru, a gdy rolnik ma inną uprawę — wpisuje własną nazwę i kod EPPO zostaje pusty";mięta pieprzowa;2026-10-16
+mięta pieprzowa;MENPI;Mentha x piperita;potwierdzone;"Mentha x piperita → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zielarskie)";;2026-10-16
+mietlica;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;;2026-10-16
+mini kiwi;ATIAR;aktinidia ostrolistna;potwierdzone;ta sama roślina co „aktinidia” — inny zapis w rejestrze;;2026-10-16
+miskant;MISGI;Miscanthus x giganteus;potwierdzone;"Miscanthus x giganteus → kod z bazy EPPO; uprawa konwencjonalna w Polsce (energetyczne)";;2026-10-16
+modrzew;;;poza_zakresem;gatunek leśny albo zadrzewieniowy — poza zakresem aplikacji;;2026-10-16
+morela;PRNAR;morela pospolita;potwierdzone;"Prunus armeniaca → kod z bazy EPPO; uprawa konwencjonalna w Polsce (sad)";;2026-10-16
+morwa;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;;2026-10-16
+uprawa na kiszonkę;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;;2026-10-16
+na nasiona;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;;2026-10-16
+na olej;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;;2026-10-16
+uprawa na suche nasiona;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;;2026-10-16
+uprawa na świeże nasiona;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;;2026-10-16
+uprawiane na włókno;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;;2026-10-16
+uprawa na ziarno;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;;2026-10-16
+nagietek;CLDOF;nagietek lekarski;potwierdzone;"Calendula officinalis → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zielarskie)";;2026-10-16
+narcyz;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;;2026-10-16
+nasiona;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;;2026-10-16
+nasiona roślin oleistych;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;;2026-10-16
+nasturcja;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;;2026-10-16
+nasypy;;;nie_uprawa;miejsce stosowania albo przedmiot, nie roślina (raport P3);;2026-10-16
+nektarynka;PRNPN;brzoskwinia zwyczajna;potwierdzone;"Prunus persica var. nucipersica → kod z bazy EPPO; uprawa konwencjonalna w Polsce (sad)";;2026-10-16
+niecierpek;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;;2026-10-16
+nieszpułka zwyczajna;MSPGE;nieszpułka zwyczajna;potwierdzone;"Mespilus germanica → kod z bazy EPPO; uprawa konwencjonalna w Polsce (sad)";;2026-10-16
+nostrzyk;;Jaki nostrzyk?;rodzajowa;"rejestr nie podaje gatunku; aplikacja pokazuje gatunki do wyboru, a gdy rolnik ma inną uprawę — wpisuje własną nazwę i kod EPPO zostaje pusty";nostrzyk biały|nostrzyk żółty;2026-10-16
+nostrzyk biały;MEUAL;nostrzyk biały;potwierdzone;"Melilotus albus → kod z bazy EPPO; uprawa konwencjonalna w Polsce (pastewne)";;2026-10-16
+nostrzyk żółty;MEUOF;nostrzyk żółty;potwierdzone;"Melilotus officinalis → kod z bazy EPPO; uprawa konwencjonalna w Polsce (pastewne)";;2026-10-16
+noże;;;nie_uprawa;miejsce stosowania albo przedmiot, nie roślina (raport P3);;2026-10-16
+oberżyna;SOLME;psianka podłużna;potwierdzone;"Solanum melongena → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";;2026-10-16
+odnowienia leśne;;;poza_zakresem;gatunek leśny albo zadrzewieniowy — poza zakresem aplikacji;;2026-10-16
+odnowienia, zalesienia;;;poza_zakresem;gatunek leśny albo zadrzewieniowy — poza zakresem aplikacji;;2026-10-16
+ogórecznik lekarski;BOROF;ogórecznik lekarski;potwierdzone;"Borago officinalis → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zielarskie)";;2026-10-16
+ogórek;CUMSA;ogórek siewny;potwierdzone;"Cucumis sativus → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";;2026-10-16
+ogórek krótki;CUMSA;ogórek siewny;potwierdzone;ta sama roślina co „ogórek” — inny zapis w rejestrze;;2026-10-16
+ogórek typu korniszon;CUMSA;ogórek siewny;potwierdzone;"Cucumis sativus → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";;2026-10-16
+ogrody;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;;2026-10-16
+oleander;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;;2026-10-16
+oregano;ORIVU;lebiodka pospolita;potwierdzone;"Origanum vulgare → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zielarskie)";;2026-10-16
+orkisz;TRZSP;Triticum spelta;potwierdzone;ta sama roślina co „pszenica orkisz” — inny zapis w rejestrze;;2026-10-16
+orzech;;Jaki orzech?;rodzajowa;"rejestr nie podaje gatunku; aplikacja pokazuje gatunki do wyboru, a gdy rolnik ma inną uprawę — wpisuje własną nazwę i kod EPPO zostaje pusty";orzech włoski|orzech laskowy;2026-10-16
+orzech laskowy;CYLAV;"orzech laskowy; leszczyna pospolita";potwierdzone;"Corylus avellana → kod z bazy EPPO; uprawa konwencjonalna w Polsce (sad)";;2026-10-16
+orzech włoski;IUGRE;orzek włoski;potwierdzone;"Juglans regia → kod z bazy EPPO; uprawa konwencjonalna w Polsce (sad)";;2026-10-16
+owies;AVESA;Avena sativa;potwierdzone;propozycja z bazy EPPO, potwierdzona przez użytkownika;;2026-10-15
+owies jary;AVESP;oat (spring);potwierdzone;propozycja z bazy EPPO, potwierdzona przez użytkownika;;2026-10-15
+owies ozimy;AVESW;oat (winter);potwierdzone;propozycja z bazy EPPO, potwierdzona przez użytkownika;;2026-10-15
+owies siewny;AVESA;Avena sativa;potwierdzone;propozycja z bazy EPPO, potwierdzona przez użytkownika;;2026-10-15
+owoce;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;;2026-10-16
+papryka;CPSAN;"papryka roczna; pieprz chilijski";potwierdzone;"Capsicum annuum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";;2026-10-16
+pasternak;PAVSA;pasternak zwyczajny;potwierdzone;"Pastinaca sativa → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";;2026-10-16
+pastwiska;;;grupa_upraw;nazwa zbiorcza — gatunek wskazuje konkretna uprawa;;2026-10-16
+patison;CUUPE;dynia zwyczajna;potwierdzone;"Cucurbita pepo → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";;2026-10-16
+pelargonia;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;;2026-10-16
+peluszka;PIBSA;groch zwyczajny polny;potwierdzone;"Pisum sativum subsp. arvense → kod z bazy EPPO; uprawa konwencjonalna w Polsce (strączkowe)";;2026-10-16
+petunia;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;;2026-10-16
+pieczarka;AGARBI;pieczarka dwuzarodnikowa;potwierdzone;"Agaricus bisporus → kod z bazy EPPO; uprawa konwencjonalna w Polsce (grzyby uprawne)";;2026-10-16
+pieprzyca siewna;LEPSA;pieprzyca siewna;potwierdzone;"Lepidium sativum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";;2026-10-16
+pierwiosnek;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;;2026-10-16
+pietruszka;PARCR;pietruszka zwyczajny;potwierdzone;"Petroselinum crispum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";;2026-10-16
+pietruszka korzeniowa;PARCR;pietruszka zwyczajny;potwierdzone;"Petroselinum crispum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";;2026-10-16
+pietruszka naciowa;PARCR;pietruszka zwyczajny;potwierdzone;"Petroselinum crispum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";;2026-10-16
+pigwa;CYDOB;pigwa pospolita;potwierdzone;"Cydonia oblonga → kod z bazy EPPO; uprawa konwencjonalna w Polsce (sad)";;2026-10-16
+pigwowiec;CNMJA;pigwowiec japoński;potwierdzone;"Chaenomeles japonica → kod z bazy EPPO; uprawa konwencjonalna w Polsce (sad)";;2026-10-16
+pigwowiec japoński;CNMJA;pigwowiec japoński;potwierdzone;ta sama roślina co „pigwowiec” — inny zapis w rejestrze;;2026-10-16
+piwonia;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;;2026-10-16
+place;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;;2026-10-16
+place magazynowe;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;;2026-10-16
+plantacje drzew leśnych;;;poza_zakresem;gatunek leśny albo zadrzewieniowy — poza zakresem aplikacji;;2026-10-16
+plantacje drzewek bożonarodzeniowych;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;;2026-10-16
+plantacje nasienne;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;;2026-10-16
+plantacje nasienne drzew leśnych;;;poza_zakresem;gatunek leśny albo zadrzewieniowy — poza zakresem aplikacji;;2026-10-16
+plantacje nasienne traw;;;grupa_upraw;nazwa zbiorcza — gatunek wskazuje konkretna uprawa;;2026-10-16
+plantacje produkcyjne;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;;2026-10-16
+plantacje traw nasiennych;;;grupa_upraw;nazwa zbiorcza — gatunek wskazuje konkretna uprawa;;2026-10-16
+po zbiorze;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;;2026-10-16
+pobocza dróg;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;;2026-10-16
+uprawa pod osłonami;;;nie_uprawa;miejsce stosowania albo przedmiot, nie roślina (raport P3);;2026-10-16
+podjazdy;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;;2026-10-16
+poinsecja;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;;2026-10-16
+pokrzywa zwyczajna;URTDI;pokrzywa zwyczajna;potwierdzone;"Urtica dioica → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zielarskie)";;2026-10-16
+pola golfowe;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;;2026-10-16
+pola uprawne;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;;2026-10-16
+pomarańcza;;;poza_zakresem;roślina nieuprawiana w Polsce — poza zakresem aplikacji;;2026-10-16
+pomidor;LYPES;"psianka pomidor; pomidor zwyczajny; pomidor";potwierdzone;"Solanum lycopersicum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";;2026-10-16
+pomidor pod osłonami;LYPES;;potwierdzone;ta sama roślina co „pomidor” — inny zapis w rejestrze;;2026-10-16
+pomidor w uprawie polowej;LYPES;;potwierdzone;ta sama roślina co „pomidor” — inny zapis w rejestrze;;2026-10-16
+pomieszczenia;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;;2026-10-16
+por;ALLPO;"por; czosnek por";potwierdzone;"Allium porrum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";;2026-10-16
+por z rozsady;ALLPO;"por; czosnek por";potwierdzone;"Allium porrum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";;2026-10-16
+por z siewu;ALLPO;"por; czosnek por";potwierdzone;"Allium porrum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";;2026-10-16
+portulaka;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;;2026-10-16
+portulaka warzywna;POROL;portulaka pospolita;potwierdzone;"Portulaca oleracea → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";;2026-10-16
+porzeczka;;Jaka porzeczka?;rodzajowa;"rejestr nie podaje gatunku; aplikacja pokazuje gatunki do wyboru, a gdy rolnik ma inną uprawę — wpisuje własną nazwę i kod EPPO zostaje pusty";porzeczka czarna|porzeczka czerwona|porzeczka biała;2026-10-16
+porzeczka biała;RIBRU;porzeczka zwyczajna;potwierdzone;"Ribes rubrum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (jagodnik)";;2026-10-16
+porzeczka czarna;RIBNI;porzeczka czarna;potwierdzone;"Ribes nigrum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (jagodnik)";;2026-10-16
+porzeczka czerwona;RIBRU;porzeczka zwyczajna;potwierdzone;"Ribes rubrum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (jagodnik)";;2026-10-16
+porzeczkoagrest;RIBNG;Ribes x nidigrolaria;potwierdzone;"Ribes x nidigrolaria → kod z bazy EPPO; uprawa konwencjonalna w Polsce (jagodnik)";;2026-10-16
+poziomka;FRAVE;poziomka pospolita;potwierdzone;"Fragaria vesca → kod z bazy EPPO; uprawa konwencjonalna w Polsce (jagodnik)";;2026-10-16
+produkcja nasienna;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;;2026-10-16
+produkcja rozsady warzyw;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;;2026-10-16
+proso;PANMI;"proso; proso zwyczajne";potwierdzone;"Panicum miliaceum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zboża)";;2026-10-16
+przed rozpoczęciem upraw pożniwnych;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;;2026-10-16
+przelot;AYLVU;przelot pospolity;potwierdzone;"Anthyllis vulneraria → kod z bazy EPPO; uprawa konwencjonalna w Polsce (pastewne)";;2026-10-16
+pszenica;TRZAX;Triticum aestivum;potwierdzone;"Triticum aestivum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zboża)";;2026-10-16
+pszenica durum;TRZDU;Triticum durum;potwierdzone;"Triticum durum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zboża)";;2026-10-16
+pszenica jara;TRZAS;soft wheat (spring);potwierdzone;decyzja użytkownika;;2026-10-15
+pszenica jara durum;TRZDS;durum wheat (spring);potwierdzone;ta sama roślina co „pszenica twarda jara” — inny zapis w rejestrze;;2026-10-16
+pszenica orkisz;TRZSP;Triticum spelta;potwierdzone;"Triticum spelta → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zboża)";;2026-10-16
+pszenica orkisz jara;TRZSP;;potwierdzone;ta sama roślina co „pszenica orkisz” — inny zapis w rejestrze;;2026-10-16
+pszenica orkisz ozima;TRZSP;;potwierdzone;ta sama roślina co „pszenica orkisz” — inny zapis w rejestrze;;2026-10-16
+pszenica ozima;TRZAW;soft wheat (winter);potwierdzone;decyzja użytkownika;;2026-10-15
+pszenica ozima durum;TRZDW;durum wheat (winter);potwierdzone;ta sama roślina co „pszenica twarda ozima” — inny zapis w rejestrze;;2026-10-16
+pszenica płaskurka;TRZDI;Triticum dicoccon;potwierdzone;"Triticum dicoccon → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zboża)";;2026-10-16
+pszenica płaskurka jara;TRZDI;;potwierdzone;ta sama roślina co „pszenica płaskurka” — inny zapis w rejestrze;;2026-10-16
+pszenica płaskurka ozima;TRZDI;;potwierdzone;ta sama roślina co „pszenica płaskurka” — inny zapis w rejestrze;;2026-10-16
+pszenica samopsza;TRZMO;pszenica płaskurka;potwierdzone;"Triticum monococcum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zboża)";;2026-10-16
+pszenica samopsza jara;TRZMO;;potwierdzone;ta sama roślina co „pszenica samopsza” — inny zapis w rejestrze;;2026-10-16
+pszenica samopsza ozima;TRZMO;;potwierdzone;ta sama roślina co „pszenica samopsza” — inny zapis w rejestrze;;2026-10-16
+pszenica twarda;TRZDU;Triticum durum;potwierdzone;"Triticum durum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zboża)";;2026-10-16
+pszenica twarda jara;TRZDS;durum wheat (spring);potwierdzone;propozycja z bazy EPPO, potwierdzona przez użytkownika;;2026-10-15
+pszenica twarda ozima;TRZDW;durum wheat (winter);potwierdzone;propozycja z bazy EPPO, potwierdzona przez użytkownika;;2026-10-15
+pszenica zwyczajna;TRZAX;Triticum aestivum subsp. aestivum;potwierdzone;decyzja użytkownika;;2026-10-15
+pszenżyto;TTLSS;Triticosecale sp.;potwierdzone;"Triticosecale sp. → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zboża)";;2026-10-16
+pszenżyto jare;TTLSO;triticale (spring);potwierdzone;propozycja z bazy EPPO, potwierdzona przez użytkownika;;2026-10-15
+pszenżyto ozime;TTLWI;triticale (winter);potwierdzone;decyzja użytkownika;;2026-10-15
+puste pomieszczenia;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;;2026-10-16
+rabarbar;RHERH;"rzewień kędzierzawy; rabarbar kędzierzawy; rzewień ogrodowy; rabarbar syberyjski; rabarbar ogrodowy";potwierdzone;"Rheum rhabarbarum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";;2026-10-16
+rajgras;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;;2026-10-16
+rojnik;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;;2026-10-16
+rokietta siewna;ERUVE;rokietta siewna;potwierdzone;"Eruca vesicaria subsp. sativa → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";;2026-10-16
+rokitnik;HIORH;rokitnik zwyczajny;potwierdzone;"Hippophae rhamnoides → kod z bazy EPPO; uprawa konwencjonalna w Polsce (jagodnik)";;2026-10-16
+uprawy rolnicze;;;grupa_upraw;nazwa zbiorcza — gatunek wskazuje konkretna uprawa;;2026-10-16
+rośliny doniczkowe;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;;2026-10-16
+rośliny energetyczne;;;grupa_upraw;nazwa zbiorcza — gatunek wskazuje konkretna uprawa;;2026-10-16
+rośliny jagodowe;;;grupa_upraw;nazwa zbiorcza — gatunek wskazuje konkretna uprawa;;2026-10-16
+rośliny jednoroczne;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;;2026-10-16
+rośliny kwiatowe rabatowe;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;;2026-10-16
+rośliny kwitnące;;;grupa_upraw;nazwa zbiorcza — gatunek wskazuje konkretna uprawa;;2026-10-16
+rośliny ozdobne;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;;2026-10-16
+rośliny ozdobne bulwiaste;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;;2026-10-16
+rośliny ozdobne cebulowe;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;;2026-10-16
+rośliny ozdobne w uprawie na kwiat cięty;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;;2026-10-16
+rośliny ozdobne wieloletnie;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;;2026-10-16
+rośliny przyprawowe;;;grupa_upraw;nazwa zbiorcza — gatunek wskazuje konkretna uprawa;;2026-10-16
+rośliny rolnicze;;;grupa_upraw;nazwa zbiorcza — gatunek wskazuje konkretna uprawa;;2026-10-16
+rośliny sadownicze;;;grupa_upraw;nazwa zbiorcza — gatunek wskazuje konkretna uprawa;;2026-10-16
+rośliny strączkowe;;;grupa_upraw;nazwa zbiorcza — gatunek wskazuje konkretna uprawa;;2026-10-16
+rośliny szkółkarskie leśne;;;poza_zakresem;gatunek leśny albo zadrzewieniowy — poza zakresem aplikacji;;2026-10-16
+rośliny szkółkarskie ozdobne;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;;2026-10-16
+rośliny szkółkarskie sadownicze;;;grupa_upraw;nazwa zbiorcza — gatunek wskazuje konkretna uprawa;;2026-10-16
+rośliny warzywne;;;grupa_upraw;nazwa zbiorcza — gatunek wskazuje konkretna uprawa;;2026-10-16
+rośliny warzywne bulwiaste;;;grupa_upraw;nazwa zbiorcza — gatunek wskazuje konkretna uprawa;;2026-10-16
+rośliny warzywne uprawiane na młode liście;;;grupa_upraw;nazwa zbiorcza — gatunek wskazuje konkretna uprawa;;2026-10-16
+rośliny warzywne okopowe;;;grupa_upraw;nazwa zbiorcza — gatunek wskazuje konkretna uprawa;;2026-10-16
+rośliny zielarskie;;;grupa_upraw;nazwa zbiorcza — gatunek wskazuje konkretna uprawa;;2026-10-16
+roszponka;VLLLO;roszpunka warzywna;potwierdzone;"Valerianella locusta → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";;2026-10-16
+roszponka warzywna;VLLLO;roszpunka warzywna;potwierdzone;"Valerianella locusta → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";;2026-10-16
+rowy;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;;2026-10-16
+róża;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;;2026-10-16
+róża uprawiana na jadalne owoce;;Jaka róża?;rodzajowa;"rejestr nie podaje gatunku; aplikacja pokazuje gatunki do wyboru, a gdy rolnik ma inną uprawę — wpisuje własną nazwę i kod EPPO zostaje pusty";;2026-10-16
+różanecznik;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;;2026-10-16
+rozmaryn;RMSOF;Rosmarinus officinalis;potwierdzone;"Rosmarinus officinalis → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zielarskie)";;2026-10-16
+rozmaryn lekarski;RMSOF;Rosmarinus officinalis;potwierdzone;"Rosmarinus officinalis → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zielarskie)";;2026-10-16
+rozsadniki;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;;2026-10-16
+rukiew;NAAOF;"rukiew wodna; năsturel";potwierdzone;"Nasturtium officinale → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";;2026-10-16
+rukola;ERUVE;rokietta siewna;potwierdzone;"Eruca vesicaria subsp. sativa → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";;2026-10-16
+rumianek pospolity;MATCH;rumianek pospolity;potwierdzone;"Matricaria chamomilla → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zielarskie)";;2026-10-16
+rumianek szlachetny;ANTNO;"rumian rzymski; rumian szlachetny";potwierdzone;"Chamaemelum nobile → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zielarskie)";;2026-10-16
+rzepa;BRSRR;"kapusta właśiwa; rwepa właśiwa";potwierdzone;"Brassica rapa subsp. rapa → kod z bazy EPPO; uprawa konwencjonalna w Polsce (okopowe)";;2026-10-16
+rzepa biała;BRSRR;"kapusta właśiwa; rwepa właśiwa";potwierdzone;"Brassica rapa subsp. rapa → kod z bazy EPPO; uprawa konwencjonalna w Polsce (okopowe)";;2026-10-16
+rzepa czarna;;Co to za roślina?;rodzajowa;"rejestr nie podaje gatunku; aplikacja pokazuje gatunki do wyboru, a gdy rolnik ma inną uprawę — wpisuje własną nazwę i kod EPPO zostaje pusty";rzodkiew czarna|rzepa;2026-10-16
+rzepa pastewna;BRSRR;"kapusta właśiwa; rwepa właśiwa";potwierdzone;"Brassica rapa subsp. rapa → kod z bazy EPPO; uprawa konwencjonalna w Polsce (okopowe)";;2026-10-16
+rzepak jary;BRSNS;rape (spring);potwierdzone;propozycja z bazy EPPO, potwierdzona przez użytkownika;;2026-10-15
+rzepak ozimy;BRSNW;rape (winter);potwierdzone;decyzja użytkownika;;2026-10-15
+rzepik;BRSRO;"kapusta właśiwa olejowa; rwepa właśiwa olejowa; rzepik";potwierdzone;"Brassica rapa subsp. oleifera → kod z bazy EPPO; uprawa konwencjonalna w Polsce (oleiste)";;2026-10-16
+rzepik jary;BRSRO;"kapusta właśiwa olejowa; rwepa właśiwa olejowa; rzepik";potwierdzone;"Brassica rapa subsp. oleifera → kod z bazy EPPO; uprawa konwencjonalna w Polsce (oleiste)";;2026-10-16
+rzepik ozimy;BRSRO;"kapusta właśiwa olejowa; rwepa właśiwa olejowa; rzepik";potwierdzone;"Brassica rapa subsp. oleifera → kod z bazy EPPO; uprawa konwencjonalna w Polsce (oleiste)";;2026-10-16
+rzeżucha ogrodowa;LEPSA;pieprzyca siewna;potwierdzone;"Lepidium sativum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";;2026-10-16
+rzodkiew;RAPSR;rzodkiew zwyczajna;potwierdzone;"Raphanus sativus → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";;2026-10-16
+rzodkiew czarna;RAPSN;Raphanus sativus var. niger;potwierdzone;"Raphanus sativus var. niger → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";;2026-10-16
+rzodkiew japońska;RAPSL;Raphanus sativus var. longipinnatus;potwierdzone;"Raphanus sativus var. longipinnatus → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";;2026-10-16
+rzodkiew oleista;RAPSO;Raphanus sativus var. oleiformis;potwierdzone;"Raphanus sativus var. oleiformis → kod z bazy EPPO; uprawa konwencjonalna w Polsce (oleiste)";;2026-10-16
+rzodkiewka;RAPSR;rzodkiew zwyczajna;potwierdzone;"Raphanus sativus var. radicula → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";;2026-10-16
+sady;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;;2026-10-16
+sady jabłoniowe;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;;2026-10-16
+sadzonki;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;;2026-10-16
+sadzonki drzew;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;;2026-10-16
+sadzonki drzew iglastych i liściastych;;;poza_zakresem;gatunek leśny albo zadrzewieniowy — poza zakresem aplikacji;;2026-10-16
+sadzonki krzewów;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;;2026-10-16
+sadzonki leśnych gatunków drzew;;;poza_zakresem;gatunek leśny albo zadrzewieniowy — poza zakresem aplikacji;;2026-10-16
+sadzonki leśnych gatunków drzew iglastych;;;poza_zakresem;gatunek leśny albo zadrzewieniowy — poza zakresem aplikacji;;2026-10-16
+sadzonki leśnych gatunków drzew liściastych;;;poza_zakresem;gatunek leśny albo zadrzewieniowy — poza zakresem aplikacji;;2026-10-16
+sałata;LACSA;sałata siewna;potwierdzone;"Lactuca sativa → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";;2026-10-16
+sałata długolistna;LACSA;sałata siewna;potwierdzone;ta sama roślina co „sałata” — inny zapis w rejestrze;;2026-10-16
+sałata głowiasta;LACSA;sałata siewna;potwierdzone;"Lactuca sativa → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";;2026-10-16
+sałata główkowa;LACSA;sałata siewna;potwierdzone;"Lactuca sativa → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";;2026-10-16
+sałata kędzierzawa;LACSA;sałata siewna;potwierdzone;ta sama roślina co „sałata” — inny zapis w rejestrze;;2026-10-16
+sałata liściowa;LACSA;sałata siewna;potwierdzone;"Lactuca sativa → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";;2026-10-16
+sałata rzymska;LACSA;sałata siewna;potwierdzone;ta sama roślina co „sałata” — inny zapis w rejestrze;;2026-10-16
+salsefia;TROPS;kozibród porolistny;potwierdzone;"Tragopogon porrifolius → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";;2026-10-16
+ściernisko;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;;2026-10-16
+ścieżki;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;;2026-10-16
+sekatory;;;nie_uprawa;miejsce stosowania albo przedmiot, nie roślina (raport P3);;2026-10-16
+seler;APUGV;"seler; selery zwyczajne";potwierdzone;"Apium graveolens → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";;2026-10-16
+seler korzeniowy;APUGR;seler korzeniowy;potwierdzone;"Apium graveolens var. rapaceum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";;2026-10-16
+seler liściowy;APUGV;"seler; selery zwyczajne";potwierdzone;"Apium graveolens → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";;2026-10-16
+seler naciowy;APUGV;"seler; selery zwyczajne";potwierdzone;"Apium graveolens → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";;2026-10-16
+sępolia;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;;2026-10-16
+seradela;OROSA;"seradela siewna; seradela pastewna";potwierdzone;"Ornithopus sativus → kod z bazy EPPO; uprawa konwencjonalna w Polsce (pastewne)";;2026-10-16
+siew jesienny;;;nie_uprawa;miejsce stosowania albo przedmiot, nie roślina (raport P3);;2026-10-16
+siew wiosenny;;;nie_uprawa;miejsce stosowania albo przedmiot, nie roślina (raport P3);;2026-10-16
+siewki i sadzonki;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;;2026-10-16
+siewki krzewów;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;;2026-10-16
+siewki leśnych gatunków drzew;;;poza_zakresem;gatunek leśny albo zadrzewieniowy — poza zakresem aplikacji;;2026-10-16
+siewki leśnych gatunków drzew iglastych;;;poza_zakresem;gatunek leśny albo zadrzewieniowy — poza zakresem aplikacji;;2026-10-16
+siewki leśnych gatunków drzew liściastych;;;poza_zakresem;gatunek leśny albo zadrzewieniowy — poza zakresem aplikacji;;2026-10-16
+silosy;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;;2026-10-16
+skorzonera;SCVHI;"wężymord czarny korzeń; wężymord hiszpański";potwierdzone;"Scorzonera hispanica → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";;2026-10-16
+skrzynie do przechowywania;;;nie_uprawa;miejsce stosowania albo przedmiot, nie roślina (raport P3);;2026-10-16
+śliwa;PRNDO;śliwa domowa;potwierdzone;"Prunus domestica → kod z bazy EPPO; uprawa konwencjonalna w Polsce (sad)";;2026-10-16
+słonecznik;HELAN;słonecznik zwyczajny;potwierdzone;"Helianthus annuus → kod z bazy EPPO; uprawa konwencjonalna w Polsce (oleiste)";;2026-10-16
+soczewica;LENCU;soczewica jadalna;potwierdzone;"Lens culinaris → kod z bazy EPPO; uprawa konwencjonalna w Polsce (strączkowe)";;2026-10-16
+soja;GLXMA;"soja warzywna; soja owłosiona";potwierdzone;"Glycine max → kod z bazy EPPO; uprawa konwencjonalna w Polsce (strączkowe)";;2026-10-16
+sorgo;SORVU;Sorghum bicolor;potwierdzone;"Sorghum bicolor → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zboża)";;2026-10-16
+sorgo zwisłe;;Jakie sorgo?;rodzajowa;"rejestr nie podaje gatunku; aplikacja pokazuje gatunki do wyboru, a gdy rolnik ma inną uprawę — wpisuje własną nazwę i kod EPPO zostaje pusty";sorgo;2026-10-16
+sosna;;;poza_zakresem;gatunek leśny albo zadrzewieniowy — poza zakresem aplikacji;;2026-10-16
+stacje beznynowe;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;;2026-10-16
+stoły;;;nie_uprawa;miejsce stosowania albo przedmiot, nie roślina (raport P3);;2026-10-16
+suszone owoce;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;;2026-10-16
+świdośliwa;AMEAL;Amelanchier alnifolia;potwierdzone;"Amelanchier alnifolia → kod z bazy EPPO; uprawa konwencjonalna w Polsce (jagodnik)";;2026-10-16
+świerk;;;poza_zakresem;gatunek leśny albo zadrzewieniowy — poza zakresem aplikacji;;2026-10-16
+szalotka;ALLAS;czosnek szalotka;potwierdzone;"Allium ascalonicum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";;2026-10-16
+szałwia;;Jaka szałwia?;rodzajowa;"rejestr nie podaje gatunku; aplikacja pokazuje gatunki do wyboru, a gdy rolnik ma inną uprawę — wpisuje własną nazwę i kod EPPO zostaje pusty";szałwia lekarska;2026-10-16
+szałwia lekarska;SALOF;szałwia lekarska;potwierdzone;"Salvia officinalis → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zielarskie)";;2026-10-16
+szanta zwyczajna;MAQVU;szanta zwyczajna;potwierdzone;"Marrubium vulgare → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zielarskie)";;2026-10-16
+szczaw;RUMAC;szczaw zwyczajny;potwierdzone;"Rumex acetosa → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";;2026-10-16
+szczodrzeniec;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;;2026-10-16
+szczypiorek;ALLSC;czosnek szczypiorek;potwierdzone;"Allium schoenoprasum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";;2026-10-16
+szkółki;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;;2026-10-16
+szkółki drzew i krzewów;;;poza_zakresem;gatunek leśny albo zadrzewieniowy — poza zakresem aplikacji;;2026-10-16
+szkółki drzew iglastych;;;poza_zakresem;gatunek leśny albo zadrzewieniowy — poza zakresem aplikacji;;2026-10-16
+szkółki drzew leśnych;;;poza_zakresem;gatunek leśny albo zadrzewieniowy — poza zakresem aplikacji;;2026-10-16
+szkółki drzew liściastych;;;poza_zakresem;gatunek leśny albo zadrzewieniowy — poza zakresem aplikacji;;2026-10-16
+szkółki drzew owocowych;;;grupa_upraw;nazwa zbiorcza — gatunek wskazuje konkretna uprawa;;2026-10-16
+szkółki drzew ozdobnych;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;;2026-10-16
+szkółki krzewów iglastych i liściastych;;;poza_zakresem;gatunek leśny albo zadrzewieniowy — poza zakresem aplikacji;;2026-10-16
+szkółki krzewów ozdobnych;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;;2026-10-16
+szkółki leśne;;;poza_zakresem;gatunek leśny albo zadrzewieniowy — poza zakresem aplikacji;;2026-10-16
+szkółki roślin ozdobnych;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;;2026-10-16
+szparagi;ASPOF;szparag lekarski;potwierdzone;"Asparagus officinalis → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";;2026-10-16
+szpinak;SPQOL;szpinak warzywny;potwierdzone;"Spinacia oleracea → kod z bazy EPPO; uprawa konwencjonalna w Polsce (warzywa)";;2026-10-16
+taras;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;;2026-10-16
+tawułka;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;;2026-10-16
+tereny leśne;;;poza_zakresem;gatunek leśny albo zadrzewieniowy — poza zakresem aplikacji;;2026-10-16
+tereny nieużytkowane rolniczo;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;;2026-10-16
+tereny przemysłowe;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;;2026-10-16
+topinambur;HELTU;"topinambur; słonecznik póżny; słonecznik bulwiasty";potwierdzone;"Helianthus tuberosus → kod z bazy EPPO; uprawa konwencjonalna w Polsce (okopowe)";;2026-10-16
+topola;;;poza_zakresem;gatunek leśny albo zadrzewieniowy — poza zakresem aplikacji;;2026-10-16
+topola energetyczna;;Jaka topola?;rodzajowa;"rejestr nie podaje gatunku; aplikacja pokazuje gatunki do wyboru, a gdy rolnik ma inną uprawę — wpisuje własną nazwę i kod EPPO zostaje pusty";;2026-10-16
+torowiska kolejowe;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;;2026-10-16
+torowiska tramwajowe;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;;2026-10-16
+tory kolejowe;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;;2026-10-16
+trawniki;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;;2026-10-16
+trawy;;;grupa_upraw;nazwa zbiorcza — gatunek wskazuje konkretna uprawa;;2026-10-16
+trawy nasienne;;;grupa_upraw;nazwa zbiorcza — gatunek wskazuje konkretna uprawa;;2026-10-16
+trawy ozdobne;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;;2026-10-16
+truskawka;FRAAN;"poziomka truskawka; truskawka";potwierdzone;"Fragaria x ananassa → kod z bazy EPPO; uprawa konwencjonalna w Polsce (jagodnik)";;2026-10-16
+trybula ogrodowa;ANRCE;trybula ogrodowa;potwierdzone;"Anthriscus cerefolium → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zielarskie)";;2026-10-16
+tulipan;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;;2026-10-16
+tymianek;;Jaki tymianek?;rodzajowa;"rejestr nie podaje gatunku; aplikacja pokazuje gatunki do wyboru, a gdy rolnik ma inną uprawę — wpisuje własną nazwę i kod EPPO zostaje pusty";tymianek właściwy;2026-10-16
+tymianek właściwy;THYVU;Thymus vulgaris;potwierdzone;"Thymus vulgaris → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zielarskie)";;2026-10-16
+tytoń;NIOTA;tytón szlachetny;potwierdzone;"Nicotiana tabacum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (przemysłowe)";;2026-10-16
+użytki zielone;;;grupa_upraw;nazwa zbiorcza — gatunek wskazuje konkretna uprawa;;2026-10-16
+uprawa w gruncie;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;;2026-10-16
+uprawa w polu;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;;2026-10-16
+uprawa w pomieszczeniach;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;;2026-10-16
+uprawa w systemie bezglebowym;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;;2026-10-16
+uprawa w szklarni;;;nie_uprawa;miejsce stosowania albo przedmiot, nie roślina (raport P3);;2026-10-16
+warzywa dyniowate;;;grupa_upraw;nazwa zbiorcza — gatunek wskazuje konkretna uprawa;;2026-10-16
+warzywa kapustne;;;grupa_upraw;nazwa zbiorcza — gatunek wskazuje konkretna uprawa;;2026-10-16
+warzywa liściowe;;;grupa_upraw;nazwa zbiorcza — gatunek wskazuje konkretna uprawa;;2026-10-16
+wawrzyn szlachetny;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;;2026-10-16
+werbena;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;;2026-10-16
+wierzba;;;poza_zakresem;gatunek leśny albo zadrzewieniowy — poza zakresem aplikacji;;2026-10-16
+wierzba energetyczna;;Jaka wierzba?;rodzajowa;"rejestr nie podaje gatunku; aplikacja pokazuje gatunki do wyboru, a gdy rolnik ma inną uprawę — wpisuje własną nazwę i kod EPPO zostaje pusty";wierzba wiciowa|wierzba purpurowa;2026-10-16
+wierzba purpurowa;SAXPU;"wiklina; wierzba purpurowa";potwierdzone;"Salix purpurea → kod z bazy EPPO; uprawa konwencjonalna w Polsce (energetyczne)";;2026-10-16
+wierzba wiciowa;SAXVI;"witwa; wierzba wiciowa";potwierdzone;"Salix viminalis → kod z bazy EPPO; uprawa konwencjonalna w Polsce (energetyczne)";;2026-10-16
+wiklina;;;poza_zakresem;gatunek leśny albo zadrzewieniowy — poza zakresem aplikacji;;2026-10-16
+wilczomlecz;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;;2026-10-16
+winorośl;VITVI;"winorośl właściwa; winorośl właściwa typowa";potwierdzone;"Vitis vinifera → kod z bazy EPPO; uprawa konwencjonalna w Polsce (sad)";;2026-10-16
+wiśnia;PRNCE;"wiśnia szkliwka; wiśnia pospolita";potwierdzone;"Prunus cerasus → kod z bazy EPPO; uprawa konwencjonalna w Polsce (sad)";;2026-10-16
+worki;;;nie_uprawa;miejsce stosowania albo przedmiot, nie roślina (raport P3);;2026-10-16
+wyka;;Jaka wyka?;rodzajowa;"rejestr nie podaje gatunku; aplikacja pokazuje gatunki do wyboru, a gdy rolnik ma inną uprawę — wpisuje własną nazwę i kod EPPO zostaje pusty";wyka siewna|wyka kosmata;2026-10-16
+wyka kosmata;VICVI;wyka kosmata;potwierdzone;"Vicia villosa → kod z bazy EPPO; uprawa konwencjonalna w Polsce (pastewne)";;2026-10-16
+wyka siewna;VICSA;wyka siewna;potwierdzone;"Vicia sativa → kod z bazy EPPO; uprawa konwencjonalna w Polsce (pastewne)";;2026-10-16
+wyżlin;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;;2026-10-16
+zalesienia;;;poza_zakresem;gatunek leśny albo zadrzewieniowy — poza zakresem aplikacji;;2026-10-16
+żarnowiec;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;;2026-10-16
+zawilec;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;;2026-10-16
+zboża;;;grupa_upraw;nazwa zbiorcza — gatunek wskazuje konkretna uprawa;;2026-10-16
+ziarno;;;nie_uprawa;miejsce stosowania albo określenie agrotechniczne, nie roślina;;2026-10-16
+ziarno zbóż;;;grupa_upraw;nazwa zbiorcza — gatunek wskazuje konkretna uprawa;;2026-10-16
+ziemniak;SOLTU;"ziemniak; psianka ziemniak";potwierdzone;"Solanum tuberosum → kod z bazy EPPO; uprawa konwencjonalna w Polsce (okopowe)";;2026-10-16
+zioła;;;grupa_upraw;nazwa zbiorcza — gatunek wskazuje konkretna uprawa;;2026-10-16
+złocień;;;poza_zakresem;roślina ozdobna — poza zakresem aplikacji;;2026-10-16
+żurawina;VACMA;Vaccinium macrocarpon;potwierdzone;"Vaccinium macrocarpon → kod z bazy EPPO; uprawa konwencjonalna w Polsce (jagodnik)";;2026-10-16
+żyto;SECCE;żyto zwyczajne;potwierdzone;"Secale cereale → kod z bazy EPPO; uprawa konwencjonalna w Polsce (zboża)";;2026-10-16
+żyto jare;SECCS;rye (spring);potwierdzone;propozycja z bazy EPPO, potwierdzona przez użytkownika;;2026-10-15
+żyto ozime;SECCW;rye (winter);potwierdzone;propozycja z bazy EPPO, potwierdzona przez użytkownika;;2026-10-15
+żywotnik;;;poza_zakresem;gatunek leśny albo zadrzewieniowy — poza zakresem aplikacji;;2026-10-16

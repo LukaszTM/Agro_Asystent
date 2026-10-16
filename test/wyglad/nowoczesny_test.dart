@@ -10,6 +10,7 @@ import 'package:agro_asystent/funkcje/dokumenty/wyjscie_dokumentu.dart';
 import 'package:agro_asystent/funkcje/dzialki/import_wniosku.dart';
 import 'package:agro_asystent/funkcje/dzialki/repozytorium_dzialek.dart';
 import 'package:agro_asystent/funkcje/dzialki/repozytorium_pol.dart';
+import 'package:agro_asystent/funkcje/dzialki/slownik_upraw.dart';
 import 'package:agro_asystent/funkcje/dzialki/zrodlo_pliku.dart';
 import 'package:agro_asystent/funkcje/nawozenie/ewidencja_nawozenia.dart';
 import 'package:agro_asystent/funkcje/nawozenie/nawoz.dart';
@@ -78,7 +79,9 @@ void main() {
       'CREATE TABLE zastosowanie_uprawa (zastosowanie_id INTEGER, uprawa TEXT)',
     );
     await baza.execute(
-      'CREATE TABLE uprawa (nazwa TEXT PRIMARY KEY, kod_eppo TEXT)',
+      '''CREATE TABLE uprawa (nazwa TEXT PRIMARY KEY, kod_eppo TEXT,
+          stan TEXT NOT NULL DEFAULT 'brak', gatunki TEXT, pytanie TEXT,
+          zastosowan INTEGER NOT NULL DEFAULT 0)''',
     );
     await baza.execute('''
       CREATE TABLE karencja (srodek_nazwa TEXT, uprawa TEXT, dni INTEGER,
@@ -117,6 +120,28 @@ void main() {
     await baza.insert('uprawa', {
       'nazwa': 'pszenica ozima',
       'kod_eppo': 'TRZAW',
+      'stan': 'kod',
+      'zastosowan': 100,
+    });
+    // Nazwa rodzajowa: rejestr nie podaje gatunku, więc ekran musi dopytać.
+    await baza.insert('uprawa', {
+      'nazwa': 'łubin',
+      'stan': 'rodzajowa',
+      'gatunki': 'łubin żółty|łubin biały',
+      'pytanie': 'Jaki łubin?',
+      'zastosowan': 30,
+    });
+    await baza.insert('uprawa', {
+      'nazwa': 'łubin żółty',
+      'kod_eppo': 'LUPLU',
+      'stan': 'kod',
+      'zastosowan': 20,
+    });
+    await baza.insert('uprawa', {
+      'nazwa': 'łubin biały',
+      'kod_eppo': 'LUPAL',
+      'stan': 'kod',
+      'zastosowan': 10,
     });
     return baza;
   }
@@ -147,6 +172,7 @@ void main() {
       zabiegi: RepozytoriumZabiegow(gospodarstwo),
       rejestr: RejestrZabiegow(gospodarstwo),
       srodki: SlownikSrodkow(slowniki),
+      uprawy: SlownikUpraw(slowniki),
       reguly: reguly,
       importWniosku: ImportWniosku(
         baza: gospodarstwo,
@@ -400,11 +426,12 @@ void main() {
       await tester.tap(find.text('Dodaj pole'));
       await tester.pumpAndSettle();
 
-      await tester.enterText(find.byType(TextField), 'Przy drodze');
-      await tester.tap(find.byType(DropdownButtonFormField<String>));
+      await tester.enterText(find.byType(TextField).first, 'Przy drodze');
+      await tester.tap(find.text('Wybierz uprawę'));
       await tester.pumpAndSettle();
-      await tester.tap(find.text('pszenica ozima').last);
+      await tester.tap(find.text('pszenica ozima'));
       await tester.pumpAndSettle();
+      await przewinDo(tester, find.text('Zapisz pole'));
       await tester.tap(find.text('Zapisz pole'));
       await tester.pumpAndSettle();
 
@@ -414,6 +441,70 @@ void main() {
       expect(dodane.powierzchniaAr, 100);
       // Kod EPPO bierze się ze słownika upraw, nie z domysłu.
       expect(dodane.kodEppo, 'TRZAW');
+    });
+
+    testWidgets('nazwa rodzajowa prowadzi do wyboru gatunku', (tester) async {
+      await otworz(tester);
+      await zakladka(tester, 'Pola');
+      await przewinDo(tester, find.text('Dodaj pole'));
+      await tester.tap(find.text('Dodaj pole'));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Wybierz uprawę'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('łubin'));
+      await tester.pumpAndSettle();
+
+      // Zamiast kodu rodzaju pytamy o gatunek.
+      expect(find.text('Jaki łubin?'), findsOneWidget);
+      await tester.tap(find.text('łubin żółty'));
+      await tester.pumpAndSettle();
+
+      expect(find.textContaining('LUPLU'), findsOneWidget);
+      await przewinDo(tester, find.text('Zapisz pole'));
+      await tester.tap(find.text('Zapisz pole'));
+      await tester.pumpAndSettle();
+
+      final pola = await uslugi.pola.wszystkie('g1');
+      final dodane = pola.firstWhere((p) => p.uprawa == 'łubin żółty');
+      expect(dodane.kodEppo, 'LUPLU');
+    });
+
+    testWidgets('własna nazwa uprawy zapisuje się bez kodu EPPO', (
+      tester,
+    ) async {
+      await otworz(tester);
+      await zakladka(tester, 'Pola');
+      await przewinDo(tester, find.text('Dodaj pole'));
+      await tester.tap(find.text('Dodaj pole'));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Wybierz uprawę'));
+      await tester.pumpAndSettle();
+      await przewinDo(tester, find.text('Nie ma mojej uprawy'));
+      await tester.tap(find.text('Nie ma mojej uprawy'));
+      await tester.pumpAndSettle();
+
+      expect(
+        find.textContaining('nie podpowiemy środków'),
+        findsOneWidget,
+        reason: 'rolnik ma wiedzieć, co traci',
+      );
+      await tester.enterText(
+        find.widgetWithText(TextField, 'np. gryka na nasiona'),
+        'proso na ziarno',
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Zapisz nazwę'));
+      await tester.pumpAndSettle();
+      await przewinDo(tester, find.text('Zapisz pole'));
+      await tester.tap(find.text('Zapisz pole'));
+      await tester.pumpAndSettle();
+
+      final pola = await uslugi.pola.wszystkie('g1');
+      final dodane = pola.firstWhere((p) => p.uprawa == 'proso na ziarno');
+      // Kodu nie wymyślamy — w ewidencji wyjdzie „brak".
+      expect(dodane.kodEppo, isNull);
     });
 
     testWidgets('karta wybranego pola prowadzi do wpisu zabiegu', (

@@ -37,9 +37,9 @@ telefonie, bez serwera i bez żadnej opłaty za to, czego wymagają przepisy.
 
 | Miara | Wartość |
 | --- | --- |
-| Pliki kodu w `lib/` | 102 |
-| Pliki testów | 35 |
-| Testy | **332** |
+| Pliki kodu w `lib/` | 105 |
+| Pliki testów | 37 |
+| Testy | **349** |
 | `flutter analyze` | bez ostrzeżeń |
 | `dart format` | bez zmian |
 | Migracje bazy | 3 |
@@ -70,9 +70,11 @@ telefonie, bez serwera i bez żadnej opłaty za to, czego wymagają przepisy.
    i ostrzeżenia, nie tylko wpisu w słowniku.
 2. ~~**Kody EPPO bez decyzji**~~ — uzupełnione 16.10.2026 dla upraw
    konwencjonalnych w Polsce: 347 upraw z kodem, **83,3%** zastosowań
-   z rejestru (było 44,7%). Zostają 23 nazwy rodzajowe („łubin",
-   „gorczyca", „dynia"…), przy których rejestr nie podaje gatunku —
-   raport `kody-eppo-uprawy-polskie.md`.
+   z rejestru (było 44,7%). Przy 23 nazwach rodzajowych („łubin",
+   „gorczyca", „dynia"…) rejestr nie podaje gatunku, więc **aplikacja pyta
+   rolnika** i pokazuje gatunki do wyboru; gdy uprawy nie ma na liście,
+   rolnik wpisuje własną nazwę i kod zostaje pusty.
+   Raport `kody-eppo-uprawy-polskie.md`.
 3. **Rejestr stada do wydruku** — wymaga urzędowego układu kolumn IRZplus;
    dotyczy ścieżki rozwoju (produkcja zwierzęca poza zakresem, ADR-0007).
 4. **Pytanie do ministerstwa** o hurtowy dostęp do etykiet (P2) bez odpowiedzi.

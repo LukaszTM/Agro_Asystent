@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 
 import '../../../app/uslugi.dart';
 import '../../../funkcje/dzialki/repozytorium_pol.dart';
+import '../../../funkcje/dzialki/slownik_upraw.dart';
 import '../motyw.dart';
+import '../widgety/karta.dart';
 import '../widgety/wybor.dart';
+import 'ekran_wybor_uprawy.dart';
 
 /// Nowe pole w wyglądzie nowoczesnym: nazwa, powierzchnia przyciskami
 /// i uprawa z listy słownika.
@@ -22,21 +25,25 @@ class EkranNowePoleNowoczesny extends StatefulWidget {
 
 class _EkranNowePoleNowoczesnyState extends State<EkranNowePoleNowoczesny> {
   final TextEditingController _nazwa = TextEditingController();
-  late Future<List<String>> _uprawy;
-  String? _uprawa;
+  UprawaDoWyboru? _uprawa;
   double _hektary = 1;
   bool _zapisuje = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _uprawy = widget.uslugi.srodki.uprawy();
-  }
 
   @override
   void dispose() {
     _nazwa.dispose();
     super.dispose();
+  }
+
+  Future<void> _wybierzUprawe() async {
+    final wybrana = await Navigator.of(context).push<UprawaDoWyboru>(
+      MaterialPageRoute<UprawaDoWyboru>(
+        builder: (_) => EkranWyborUprawyNowoczesny(uslugi: widget.uslugi),
+      ),
+    );
+    if (wybrana != null && mounted) {
+      setState(() => _uprawa = wybrana);
+    }
   }
 
   Future<void> _zapisz() async {
@@ -45,17 +52,15 @@ class _EkranNowePoleNowoczesnyState extends State<EkranNowePoleNowoczesny> {
       return;
     }
     setState(() => _zapisuje = true);
-    final kod = await widget.uslugi.srodki.kodEppo(uprawa);
-    if (!mounted) {
-      return;
-    }
     await widget.uslugi.pola.dodaj(
       pole: Pole(
         id: 'pole-${DateTime.now().microsecondsSinceEpoch}',
         gospodarstwoId: widget.uslugi.gospodarstwoId,
         nazwa: _nazwa.text.trim().isEmpty ? 'Nowe pole' : _nazwa.text.trim(),
-        uprawa: uprawa,
-        kodEppo: kod,
+        uprawa: uprawa.nazwa,
+        // Kod EPPO z wyboru rolnika; przy własnej nazwie zostaje pusty
+        // i w ewidencji wyjdzie jako brak (CLAUDE.md, reguła 5).
+        kodEppo: uprawa.kodEppo,
         powierzchniaAr: (_hektary * 100).round(),
       ),
       urzadzenie: widget.uslugi.urzadzenie,
@@ -97,28 +102,37 @@ class _EkranNowePoleNowoczesnyState extends State<EkranNowePoleNowoczesny> {
           const SizedBox(height: MotywNowoczesny.odstep),
           Text('Uprawa', style: teksty.titleLarge),
           const SizedBox(height: 8),
-          FutureBuilder<List<String>>(
-            future: _uprawy,
-            builder: (context, stan) {
-              if (!stan.hasData) {
-                return const Center(child: CircularProgressIndicator());
-              }
-              return DropdownButtonFormField<String>(
-                initialValue: _uprawa,
-                isExpanded: true,
-                style: teksty.bodyLarge,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  isDense: true,
+          Karta(
+            onTap: _wybierzUprawe,
+            child: Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        _uprawa?.nazwa ?? 'Wybierz uprawę',
+                        style: teksty.bodyLarge,
+                      ),
+                      Text(
+                        _uprawa == null
+                            ? 'z listy; jeśli Twojej uprawy nie ma — '
+                                  'wpiszesz sam'
+                            : (_uprawa!.maKod
+                                  ? 'kod EPPO: ${_uprawa!.kodEppo}'
+                                  : 'bez kodu EPPO — na wydruku będzie '
+                                        '„brak"'),
+                        style: teksty.bodyMedium,
+                      ),
+                    ],
+                  ),
                 ),
-                hint: const Text('wybierz z listy'),
-                items: [
-                  for (final uprawa in stan.data!)
-                    DropdownMenuItem(value: uprawa, child: Text(uprawa)),
-                ],
-                onChanged: (wybrana) => setState(() => _uprawa = wybrana),
-              );
-            },
+                const Icon(
+                  Icons.chevron_right,
+                  color: MotywNowoczesny.tekstPomocniczy,
+                ),
+              ],
+            ),
           ),
           const SizedBox(height: MotywNowoczesny.odstep * 2),
           if (_zapisuje)

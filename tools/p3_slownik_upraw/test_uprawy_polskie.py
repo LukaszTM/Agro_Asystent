@@ -135,14 +135,31 @@ class TestKody:
             }:
                 assert not w["kod_eppo"], w
 
-    def test_rodzajowe_czekaja_na_decyzje(self):
+    def test_rodzajowe_pytaja_o_gatunek(self):
         wiersze, _ = zbuduj_wiersze(self.baza, decyzje_z_pliku())
         rodzajowe = {
-            w["nazwa_uprawy"]: w for w in wiersze if w["stan"] == "do_decyzji"
+            w["nazwa_uprawy"]: w for w in wiersze if w["stan"] == "rodzajowa"
         }
         assert set(rodzajowe) == set(RODZAJOWE)
-        # Podpowiedź z kodem rodzaju jest widoczna, ale kodu nie nadaje.
-        assert "kod rodzaju" in rodzajowe["łubin"]["nazwa_eppo"]
+        # Zamiast kodu rodzaju aplikacja dostaje pytanie i gatunki do wyboru.
+        assert rodzajowe["łubin"]["nazwa_eppo"] == "Jaki łubin?"
+        assert rodzajowe["łubin"]["zamiast"].split("|") == [
+            "łubin biały",
+            "łubin żółty",
+            "łubin wąskolistny",
+        ]
+
+    def test_kazdy_gatunek_do_wyboru_ma_kod(self):
+        """Lista wyboru nie może prowadzić do uprawy bez kodu EPPO."""
+        wiersze, klopoty = zbuduj_wiersze(self.baza, decyzje_z_pliku())
+        z_kodem = {w["nazwa_uprawy"] for w in wiersze if w["kod_eppo"]}
+        brak = {
+            nazwa: [g for g in gatunki if g not in z_kodem]
+            for nazwa, (_, gatunki) in RODZAJOWE.items()
+            if any(g not in z_kodem for g in gatunki)
+        }
+        assert not brak, f"gatunki bez kodu: {brak}"
+        assert not klopoty, klopoty
 
 
 @pytest.mark.skipif(not BAZA_EPPO.exists(), reason="brak bazy EPPO")
