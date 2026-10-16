@@ -37,7 +37,7 @@ telefonie, bez serwera i bez żadnej opłaty za to, czego wymagają przepisy.
 
 | Miara | Wartość |
 | --- | --- |
-| Pliki kodu w `lib/` | 108 |
+| Pliki kodu w `lib/` | 107 |
 | Pliki testów | 37 |
 | Testy | **360** |
 | `flutter analyze` | bez ostrzeżeń |
