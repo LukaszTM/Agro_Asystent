@@ -139,9 +139,9 @@ więc wyszukiwarka jest w ekranie wyboru uprawy obowiązkowa, a nie dodatkowa:
 - **Widać, ile pasuje.** Nad listą stoi „Znaleziono 7 upraw"; gdy pasuje
   więcej, niż się pokazuje, ekran mówi wprost: „Pasuje 231 upraw,
   pokazujemy 60 — wpisz więcej liter".
-- **Klawiatura wychodzi od razu** (decyzja z 16.10.2026): przy 621 uprawach
-  szukanie jest szybsze niż przewijanie. Lista najczęstszych upraw zostaje
-  pod klawiaturą, więc kto woli przewijać — nadal może.
+- **Klawiatura wychodzi po dotknięciu okienka**, nie od razu po wejściu na
+  ekran (decyzja z 16.10.2026): najpierw widać listę najczęstszych upraw,
+  a klawiatura nie zasłania ekranu temu, kto chce tylko przewinąć.
 
 ## Zmiana uprawy pola
 

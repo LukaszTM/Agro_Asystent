@@ -282,23 +282,26 @@ void main() {
     expect(pola.single.kodEppo, isNull, reason: 'kodu nie wymyślamy');
   });
 
-  testWidgets('klawiatura wychodzi od razu, bez dotykania okienka', (
+  testWidgets('klawiatura wychodzi po dotknięciu okienka, nie od razu', (
     tester,
   ) async {
     await otworzNowePole(tester);
     await tester.tap(find.text('Wybierz uprawę'));
     await tester.pumpAndSettle();
 
-    final szukanie = tester.widget<TextField>(find.byType(TextField));
-    expect(szukanie.autofocus, isTrue);
+    // Najpierw widać listę upraw — klawiatura nie zasłania ekranu.
+    expect(tester.widget<TextField>(find.byType(TextField)).autofocus, isFalse);
+    expect(tester.testTextInput.isVisible, isFalse);
+    expect(find.text('pszenica ozima'), findsOneWidget);
+
+    await tester.tap(find.byType(TextField));
+    await tester.pumpAndSettle();
+
     expect(
       tester.testTextInput.isVisible,
       isTrue,
-      reason: 'telefon pokazuje klawiaturę sam',
+      reason: 'dotknięcie okienka podnosi klawiaturę',
     );
-    // Lista najczęstszych upraw jest pod klawiaturą, więc kto woli
-    // przewijać, nadal może.
-    expect(find.text('pszenica ozima'), findsOneWidget);
   });
 
   testWidgets('wyszukiwarka znajduje uprawę z końca listy', (tester) async {
