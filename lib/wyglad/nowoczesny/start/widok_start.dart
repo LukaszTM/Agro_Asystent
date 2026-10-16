@@ -46,6 +46,7 @@ class WidokStart extends StatefulWidget {
     required this.onTerminy,
     required this.onDokumenty,
     required this.onRejestr,
+    required this.onNawozenie,
     this.teraz,
   });
 
@@ -57,6 +58,9 @@ class WidokStart extends StatefulWidget {
 
   /// Rejestr wpisów — stąd rolnik poprawia i cofa zabiegi.
   final VoidCallback onRejestr;
+
+  /// Nawożenie: limity azotu, terminy i spis nawozów.
+  final VoidCallback onNawozenie;
 
   /// Dzień, od którego liczymy terminy; w aplikacji „dzisiaj".
   final DateTime? teraz;
@@ -157,7 +161,7 @@ class _WidokStartState extends State<WidokStart> {
               ),
             ),
             const SizedBox(height: MotywNowoczesny.odstep),
-            _KartaAzotu(limit: dane.limit),
+            _KartaAzotu(limit: dane.limit, onTap: widget.onNawozenie),
             const SizedBox(height: MotywNowoczesny.odstep),
             if (dane.najblizszy != null)
               Karta(
@@ -239,9 +243,13 @@ class _Liczba extends StatelessWidget {
 /// Pasek azotu z nawozów naturalnych. Gdy limitu albo zawartości azotu nie
 /// znamy, mówimy to wprost — zamiast pokazywać pasek, który kłamie.
 class _KartaAzotu extends StatelessWidget {
-  const _KartaAzotu({required this.limit});
+  const _KartaAzotu({required this.limit, required this.onTap});
 
   final StanLimituAzotu limit;
+
+  /// Dotknięcie karty prowadzi do ekranu nawożenia — tam są limity dla
+  /// upraw, terminy i spis nawozów.
+  final VoidCallback onTap;
 
   static String _liczba(double wartosc) =>
       wartosc.toStringAsFixed(1).replaceAll('.', ',');
@@ -250,6 +258,7 @@ class _KartaAzotu extends StatelessWidget {
   Widget build(BuildContext context) {
     final teksty = Theme.of(context).textTheme;
     return Karta(
+      onTap: onTap,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

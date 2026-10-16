@@ -7,6 +7,7 @@ import '../../rdzen/marka/marka.dart';
 import 'dokumenty/widok_dokumenty.dart';
 import 'motyw.dart';
 import 'pola/widok_pola.dart';
+import 'nawozenie/ekran_nawozenie.dart';
 import 'rejestr/ekran_rejestr.dart';
 import 'start/widok_start.dart';
 import 'terminy/widok_terminy.dart';
@@ -93,6 +94,17 @@ class _EkranGlownyNowoczesnyState extends State<EkranGlownyNowoczesny> {
     }
   }
 
+  Future<void> _nawozenie() async {
+    await Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => EkranNawozenieNowoczesny(uslugi: widget.uslugi),
+      ),
+    );
+    if (mounted) {
+      setState(() => _odswiezenie++);
+    }
+  }
+
   Future<void> _ustawienia() async {
     await Navigator.of(context).push(
       MaterialPageRoute<void>(
@@ -152,6 +164,7 @@ class _EkranGlownyNowoczesnyState extends State<EkranGlownyNowoczesny> {
               onTerminy: () => setState(() => _zakladka = 2),
               onDokumenty: () => setState(() => _zakladka = 3),
               onRejestr: _rejestr,
+              onNawozenie: _nawozenie,
             ),
             WidokPola(
               key: ValueKey('pola-$_odswiezenie'),

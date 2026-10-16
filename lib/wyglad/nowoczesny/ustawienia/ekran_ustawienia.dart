@@ -8,6 +8,7 @@ import '../../../rdzen/uslugi/kopia/kopia_danych.dart';
 import '../motyw.dart';
 import '../widgety/karta.dart';
 import '../widgety/wybor.dart';
+import 'ekran_dane_gospodarstwa.dart';
 
 /// Ustawienia wyglądu nowoczesnego: wygląd, gospodarstwo, zwierzęta i kopia
 /// danych.
@@ -53,6 +54,7 @@ class _EkranUstawieniaState extends State<EkranUstawienia> {
     gospodarstwa: await _uslugi.gospodarstwa.wszystkie(),
     biezace: await _uslugi.gospodarstwa.jedno(_uslugi.gospodarstwoId),
     zwierzeta: await _uslugi.zwierzetaWGospodarstwie.odczytaj(),
+    konto: await _uslugi.gospodarstwa.konto(),
   );
 
   void _odswiez() {
@@ -89,6 +91,70 @@ class _EkranUstawieniaState extends State<EkranUstawienia> {
         _uslugi = nowe;
         _dane = _wczytaj();
       });
+    }
+  }
+
+  /// Poprawienie albo usunięcie gospodarstwa — po usunięciu repozytorium
+  /// już przełączyło na to, które zostało, więc ekrany muszą dostać nowy
+  /// zestaw usług.
+  Future<void> _popraw(Gospodarstwo gospodarstwo) async {
+    final poprawione = await Navigator.of(context).push<Gospodarstwo>(
+      MaterialPageRoute<Gospodarstwo>(
+        builder: (_) => EkranDaneGospodarstwaNowoczesny(
+          uslugi: _uslugi,
+          gospodarstwo: gospodarstwo,
+        ),
+      ),
+    );
+    if (poprawione == null || !mounted) {
+      return;
+    }
+    if (poprawione.id.isEmpty) {
+      final zostale = await _uslugi.gospodarstwa.aktywne();
+      if (zostale != null) {
+        final nowe = _uslugi.dlaGospodarstwa(
+          id: zostale.id,
+          nazwa: zostale.nazwa,
+        );
+        widget.onZmianaGospodarstwa?.call(nowe);
+        _uslugi = nowe;
+      }
+      if (mounted) {
+        _odswiez();
+      }
+      return;
+    }
+    if (poprawione.id == _uslugi.gospodarstwoId) {
+      final nowe = _uslugi.dlaGospodarstwa(
+        id: poprawione.id,
+        nazwa: poprawione.nazwa,
+      );
+      widget.onZmianaGospodarstwa?.call(nowe);
+      _uslugi = nowe;
+    }
+    if (mounted) {
+      _odswiez();
+    }
+  }
+
+  Future<void> _dodajGospodarstwo() async {
+    final dodane = await Navigator.of(context).push<Gospodarstwo>(
+      MaterialPageRoute<Gospodarstwo>(
+        builder: (_) => EkranDaneGospodarstwaNowoczesny(uslugi: _uslugi),
+      ),
+    );
+    if (dodane != null && mounted) {
+      await _przelacz(dodane);
+    }
+  }
+
+  Future<void> _zapiszKonto(String nazwa) async {
+    await _uslugi.gospodarstwa.zapiszKonto(
+      nazwa: nazwa,
+      urzadzenie: _uslugi.urzadzenie,
+    );
+    if (mounted) {
+      _odswiez();
     }
   }
 
@@ -245,14 +311,30 @@ class _EkranUstawieniaState extends State<EkranUstawienia> {
               Text('Gospodarstwo', style: teksty.titleLarge),
               const SizedBox(height: 8),
               Karta(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                onTap: dane.biezace == null
+                    ? null
+                    : () => _popraw(dane.biezace!),
+                child: Row(
                   children: [
-                    Text(_uslugi.nazwaGospodarstwa, style: teksty.bodyLarge),
-                    Text(
-                      'Numer producenta: '
-                      '${dane.biezace?.numerProducenta ?? 'brak'}',
-                      style: teksty.bodyMedium,
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            _uslugi.nazwaGospodarstwa,
+                            style: teksty.bodyLarge,
+                          ),
+                          Text(
+                            'Numer producenta: '
+                            '${dane.biezace?.numerProducenta ?? 'brak'}',
+                            style: teksty.bodyMedium,
+                          ),
+                        ],
+                      ),
+                    ),
+                    const Icon(
+                      Icons.chevron_right,
+                      color: MotywNowoczesny.tekstPomocniczy,
                     ),
                   ],
                 ),
@@ -272,6 +354,14 @@ class _EkranUstawieniaState extends State<EkranUstawienia> {
                   ],
                 ),
               ],
+              const SizedBox(height: 8),
+              OutlinedButton.icon(
+                onPressed: _dodajGospodarstwo,
+                icon: const Icon(Icons.add, size: 20),
+                label: const Text('Dodaj gospodarstwo'),
+              ),
+              const SizedBox(height: MotywNowoczesny.odstep),
+              _Konto(konto: dane.konto, onZapisz: _zapiszKonto),
               const SizedBox(height: MotywNowoczesny.odstep),
               Text('Zwierzęta w gospodarstwie', style: teksty.titleLarge),
               const SizedBox(height: 4),
@@ -351,10 +441,68 @@ class _Dane {
     required this.gospodarstwa,
     required this.biezace,
     required this.zwierzeta,
+    required this.konto,
   });
 
   final Wyglad wyglad;
   final List<Gospodarstwo> gospodarstwa;
   final Gospodarstwo? biezace;
   final OdpowiedzZwierzeta zwierzeta;
+  final Konto? konto;
+}
+
+/// Konto — imię i nazwisko albo nazwa firmy. Bez logowania i bez hasła;
+/// nazwa zostaje w telefonie i trafia do kopii danych.
+class _Konto extends StatefulWidget {
+  const _Konto({required this.konto, required this.onZapisz});
+
+  final Konto? konto;
+  final Future<void> Function(String nazwa) onZapisz;
+
+  @override
+  State<_Konto> createState() => _KontoState();
+}
+
+class _KontoState extends State<_Konto> {
+  late final TextEditingController _nazwa = TextEditingController(
+    text: widget.konto?.nazwa ?? '',
+  );
+
+  @override
+  void dispose() {
+    _nazwa.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final teksty = Theme.of(context).textTheme;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('Konto', style: teksty.titleLarge),
+        const SizedBox(height: 4),
+        Text(
+          'Twoje imię i nazwisko albo nazwa firmy. Nie ma logowania ani '
+          'hasła — nazwa zostaje w telefonie i trafia do kopii danych.',
+          style: teksty.bodyMedium,
+        ),
+        const SizedBox(height: 8),
+        TextField(
+          controller: _nazwa,
+          style: teksty.bodyLarge,
+          decoration: const InputDecoration(
+            hintText: 'np. Jan Kowalski',
+            border: OutlineInputBorder(),
+            isDense: true,
+          ),
+        ),
+        const SizedBox(height: 8),
+        OutlinedButton(
+          onPressed: () => widget.onZapisz(_nazwa.text),
+          child: const Text('Zapisz konto'),
+        ),
+      ],
+    );
+  }
 }

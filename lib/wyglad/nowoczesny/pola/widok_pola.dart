@@ -8,6 +8,8 @@ import '../../../rdzen/wspolne/mapa_dzialek.dart';
 import '../motyw.dart';
 import '../widgety/karta.dart';
 import '../widgety/wybor.dart';
+import 'ekran_dzialki.dart';
+import 'ekran_import_wniosku.dart';
 import 'ekran_nowe_pole.dart';
 import 'ekran_wybor_uprawy.dart';
 
@@ -59,6 +61,35 @@ class _WidokPolaState extends State<WidokPola> {
     if ((dodano ?? false) && mounted) {
       setState(() {
         _dane = _wczytaj();
+      });
+    }
+  }
+
+  /// Działki ewidencyjne i granice z ULDK — po powrocie mapa musi
+  /// policzyć się od nowa.
+  Future<void> _dzialkiEwidencyjne() async {
+    final zmiana = await Navigator.of(context).push<bool>(
+      MaterialPageRoute<bool>(
+        builder: (_) => EkranDzialkiNowoczesny(uslugi: widget.uslugi),
+      ),
+    );
+    if ((zmiana ?? false) && mounted) {
+      setState(() {
+        _dane = _wczytaj();
+      });
+    }
+  }
+
+  Future<void> _importWniosku() async {
+    final zapisano = await Navigator.of(context).push<bool>(
+      MaterialPageRoute<bool>(
+        builder: (_) => EkranImportWnioskuNowoczesny(uslugi: widget.uslugi),
+      ),
+    );
+    if ((zapisano ?? false) && mounted) {
+      setState(() {
+        _dane = _wczytaj();
+        _wybrane = null;
       });
     }
   }
@@ -152,8 +183,9 @@ class _WidokPolaState extends State<WidokPola> {
               const OstrzezenieNowoczesne(
                 tresc: 'Żadna działka nie ma jeszcze granic.',
                 coZrobic:
-                    'Dodaj działkę po numerze ewidencyjnym — granice '
-                    'pobierają się raz i zostają w telefonie.',
+                    'Naciśnij „Działki" i dodaj działkę po numerze '
+                    'z wniosku — granice pobierają się raz i zostają '
+                    'w telefonie.',
               ),
             const SizedBox(height: MotywNowoczesny.odstep),
             TextField(
@@ -203,6 +235,26 @@ class _WidokPolaState extends State<WidokPola> {
               onPressed: _dodajPole,
               icon: const Icon(Icons.add, size: 20),
               label: const Text('Dodaj pole'),
+            ),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton.icon(
+                    onPressed: _dzialkiEwidencyjne,
+                    icon: const Icon(Icons.map_outlined, size: 20),
+                    label: const Text('Działki'),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: OutlinedButton.icon(
+                    onPressed: _importWniosku,
+                    icon: const Icon(Icons.upload_file, size: 20),
+                    label: const Text('Z wniosku'),
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: MotywNowoczesny.odstep),
             if (wszystkie.isEmpty)
