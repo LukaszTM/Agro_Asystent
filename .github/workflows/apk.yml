@@ -50,7 +50,12 @@ jobs:
           channel: stable
           cache: true
 
+      # `packages: ''` jest konieczne: domyślnie akcja instaluje pakiet
+      # `tools`, którego nie ma już w repozytorium SDK — i przerywa build
+      # („Failed to find package 'tools'").
       - uses: android-actions/setup-android@v3
+        with:
+          packages: ''
 
       - name: Składniki Android SDK
         run: sdkmanager --install "platforms;android-36" "build-tools;36.0.0"
