@@ -2,9 +2,31 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
-import '../../../funkcje/dzialki/repozytorium_dzialek.dart';
-import '../../../rdzen/uslugi/geometria.dart';
-import '../motyw.dart';
+import '../../funkcje/dzialki/repozytorium_dzialek.dart';
+import '../uslugi/geometria.dart';
+
+/// Barwy mapy. Mapa leży w `rdzen/wspolne/`, bo korzystają z niej oba
+/// wyglądy — a `rdzen/` nie może zależeć od warstwy ekranów (CLAUDE.md).
+/// Dlatego kolory podaje wygląd, nie mapa.
+class BarwyMapy {
+  const BarwyMapy({
+    required this.tlo,
+    required this.obramowanie,
+    required this.dzialka,
+    required this.wyrozniona,
+    required this.kreska,
+    required this.tekst,
+    required this.zaokraglenie,
+  });
+
+  final Color tlo;
+  final Color obramowanie;
+  final Color dzialka;
+  final Color wyrozniona;
+  final Color kreska;
+  final Color tekst;
+  final double zaokraglenie;
+}
 
 /// Mapa działek rysowana z granic trzymanych na urządzeniu.
 ///
@@ -15,9 +37,12 @@ class MapaDzialek extends StatelessWidget {
   const MapaDzialek({
     super.key,
     required this.dzialki,
+    required this.barwy,
     this.wyrozniona,
     this.wysokosc = 260,
   });
+
+  final BarwyMapy barwy;
 
   final List<DzialkaEwidencyjna> dzialki;
 
@@ -41,14 +66,15 @@ class MapaDzialek extends StatelessWidget {
       child: Container(
         height: wysokosc,
         decoration: BoxDecoration(
-          color: MotywProsty.powierzchnia,
-          borderRadius: BorderRadius.circular(MotywProsty.zaokraglenieDuze),
-          border: Border.all(color: MotywProsty.powierzchniaDruga, width: 2),
+          color: barwy.tlo,
+          borderRadius: BorderRadius.circular(barwy.zaokraglenie),
+          border: Border.all(color: barwy.obramowanie, width: 2),
         ),
         clipBehavior: Clip.antiAlias,
         child: CustomPaint(
           painter: _RysownikDzialek(
             dzialki: zGranicami,
+            barwy: barwy,
             wyrozniona: wyrozniona,
           ),
           size: Size.infinite,
@@ -59,9 +85,14 @@ class MapaDzialek extends StatelessWidget {
 }
 
 class _RysownikDzialek extends CustomPainter {
-  _RysownikDzialek({required this.dzialki, this.wyrozniona});
+  _RysownikDzialek({
+    required this.dzialki,
+    required this.barwy,
+    this.wyrozniona,
+  });
 
   final List<DzialkaEwidencyjna> dzialki;
+  final BarwyMapy barwy;
   final String? wyrozniona;
 
   @override
@@ -105,13 +136,11 @@ class _RysownikDzialek extends CustomPainter {
       final czyWyrozniona = dzialka.identyfikator == wyrozniona;
       final wypelnienie = Paint()
         ..style = PaintingStyle.fill
-        ..color = czyWyrozniona
-            ? MotywProsty.zielenAkcji.withValues(alpha: 0.25)
-            : MotywProsty.powierzchniaDruga;
+        ..color = czyWyrozniona ? barwy.wyrozniona : barwy.dzialka;
       final obrys = Paint()
         ..style = PaintingStyle.stroke
         ..strokeWidth = czyWyrozniona ? 4 : 2
-        ..color = MotywProsty.zielenAkcji;
+        ..color = barwy.kreska;
 
       for (final pierscien in dzialka.obrysy) {
         final sciezka = Path()
@@ -125,8 +154,8 @@ class _RysownikDzialek extends CustomPainter {
       final napis = TextPainter(
         text: TextSpan(
           text: numer,
-          style: const TextStyle(
-            color: MotywProsty.tekst,
+          style: TextStyle(
+            color: barwy.tekst,
             fontSize: 15,
             fontWeight: FontWeight.w600,
           ),

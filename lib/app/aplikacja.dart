@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
+import '../funkcje/ustawienia/wybor_wygladu.dart';
 import '../rdzen/dostep/dostep_funkcji.dart';
+import '../wyglad/nowoczesny/ekran_glowny.dart';
+import '../wyglad/nowoczesny/motyw.dart';
 import '../wyglad/prosty/ekran_glowny.dart';
 import '../wyglad/prosty/motyw.dart';
 import 'start.dart';
 import 'uslugi.dart';
 
-/// Start aplikacji. Wybór wyglądu („Prosty" / „Nowoczesny") dojdzie w
-/// ustawieniach, gdy powstanie drugi wygląd; na razie zawsze „Prosty".
-class AplikacjaAgroAsystent extends StatelessWidget {
+/// Start aplikacji. Wygląd („Prosty" / „Nowoczesny") bierzemy z ustawień
+/// gospodarstwa; domyślnie „Prosty", bo aplikacja jest przede wszystkim dla
+/// rolników 60+ (plan, pkt 5).
+class AplikacjaAgroAsystent extends StatefulWidget {
   const AplikacjaAgroAsystent({
     super.key,
     this.dostep = const DostepFunkcji.darmowa(),
@@ -26,11 +30,53 @@ class AplikacjaAgroAsystent extends StatelessWidget {
   final Future<Uslugi> Function()? wlasneUruchomienie;
 
   @override
+  State<AplikacjaAgroAsystent> createState() => _AplikacjaState();
+}
+
+class _AplikacjaState extends State<AplikacjaAgroAsystent> {
+  Future<Uslugi>? _uslugi;
+
+  /// Usługi po przełączeniu gospodarstwa — baza i słowniki zostają otwarte,
+  /// zmienia się tylko gospodarstwo, nad którym pracujemy.
+  Uslugi? _wybrane;
+
+  Wyglad _wyglad = Wyglad.prosty;
+
+  /// Dopóki nie odczytamy wyboru z bazy, nie pokazujemy żadnego z wyglądów —
+  /// inaczej na chwilę mignąłby ten niewybrany.
+  bool _wygladOdczytany = false;
+
+  @override
+  void initState() {
+    super.initState();
+    final gotowe = widget.uslugi;
+    final uslugi = gotowe != null
+        ? Future<Uslugi>.value(gotowe)
+        : (widget.wlasneUruchomienie ?? () => uruchom(dostep: widget.dostep))();
+    _uslugi = uslugi;
+    uslugi.then(_odczytajWyglad).onError<Object>((_, _) {
+      // Błąd startu obsługuje FutureBuilder niżej — tu nie ma czego czytać.
+    });
+  }
+
+  Future<void> _odczytajWyglad(Uslugi uslugi) async {
+    final wyglad = await uslugi.wyglad.odczytaj();
+    if (mounted) {
+      setState(() {
+        _wyglad = wyglad;
+        _wygladOdczytany = true;
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Agro Asystent',
       debugShowCheckedModeBanner: false,
-      theme: MotywProsty.zbuduj(),
+      theme: _wyglad == Wyglad.nowoczesny
+          ? MotywNowoczesny.zbuduj()
+          : MotywProsty.zbuduj(),
       locale: const Locale('pl'),
       supportedLocales: const [Locale('pl')],
       localizationsDelegates: const [
@@ -38,70 +84,55 @@ class AplikacjaAgroAsystent extends StatelessWidget {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      home: _Start(
-        dostep: dostep,
-        gotowe: uslugi,
-        uruchomienie: wlasneUruchomienie,
+      home: FutureBuilder<Uslugi>(
+        future: _uslugi,
+        builder: (context, stan) {
+          if (stan.hasError) {
+            return Scaffold(
+              body: Padding(
+                padding: const EdgeInsets.all(MotywProsty.odstep * 2),
+                child: Center(
+                  child: Text(
+                    'Nie udało się otworzyć danych aplikacji.\n'
+                    'Uruchom ją ponownie; jeśli to nie pomoże, zgłoś błąd.',
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.bodyLarge,
+                  ),
+                ),
+              ),
+            );
+          }
+
+          final uslugi = _wybrane ?? stan.data;
+          if (uslugi == null) {
+            // Baza jeszcze się otwiera: ekran główny prostego wyglądu działa
+            // i bez usług — pokazuje kafelki z opisem, co będzie.
+            return EkranGlownyProsty(dostep: widget.dostep);
+          }
+          if (!_wygladOdczytany) {
+            return const Scaffold(
+              body: Center(child: CircularProgressIndicator()),
+            );
+          }
+          if (_wyglad == Wyglad.nowoczesny) {
+            return EkranGlownyNowoczesny(
+              uslugi: uslugi,
+              onZmianaGospodarstwa: _zmienGospodarstwo,
+              onZmianaWygladu: _zmienWyglad,
+            );
+          }
+          return EkranGlownyProsty(
+            dostep: widget.dostep,
+            uslugi: uslugi,
+            onZmianaGospodarstwa: _zmienGospodarstwo,
+            onZmianaWygladu: _zmienWyglad,
+          );
+        },
       ),
     );
   }
-}
 
-/// Czeka na otwarcie bazy i przygotowanie słowników, a potem pokazuje ekran
-/// główny. Bez internetu, więc trwa to chwilę tylko przy pierwszym starcie.
-class _Start extends StatefulWidget {
-  const _Start({required this.dostep, this.gotowe, this.uruchomienie});
+  void _zmienGospodarstwo(Uslugi nowe) => setState(() => _wybrane = nowe);
 
-  final DostepFunkcji dostep;
-  final Uslugi? gotowe;
-  final Future<Uslugi> Function()? uruchomienie;
-
-  @override
-  State<_Start> createState() => _StartState();
-}
-
-class _StartState extends State<_Start> {
-  Future<Uslugi>? _uslugi;
-
-  /// Usługi po przełączeniu gospodarstwa — baza i słowniki zostają otwarte,
-  /// zmienia się tylko gospodarstwo, nad którym pracujemy.
-  Uslugi? _wybrane;
-
-  @override
-  void initState() {
-    super.initState();
-    final gotowe = widget.gotowe;
-    _uslugi = gotowe != null
-        ? Future<Uslugi>.value(gotowe)
-        : (widget.uruchomienie ?? () => uruchom(dostep: widget.dostep))();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder<Uslugi>(
-      future: _uslugi,
-      builder: (context, stan) {
-        if (stan.hasError) {
-          return Scaffold(
-            body: Padding(
-              padding: const EdgeInsets.all(MotywProsty.odstep * 2),
-              child: Center(
-                child: Text(
-                  'Nie udało się otworzyć danych aplikacji.\n'
-                  'Uruchom ją ponownie; jeśli to nie pomoże, zgłoś błąd.',
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.bodyLarge,
-                ),
-              ),
-            ),
-          );
-        }
-        return EkranGlownyProsty(
-          dostep: widget.dostep,
-          uslugi: _wybrane ?? stan.data,
-          onZmianaGospodarstwa: (nowe) => setState(() => _wybrane = nowe),
-        );
-      },
-    );
-  }
+  void _zmienWyglad(Wyglad wyglad) => setState(() => _wyglad = wyglad);
 }

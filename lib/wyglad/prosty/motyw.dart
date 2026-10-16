@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../rdzen/wspolne/mapa_dzialek.dart';
+
 /// Kolory, odstępy i rozmiary wyglądu „Prosty" (użytkownicy 60+).
 ///
 /// Wartości pochodzą z makiety opisanej w planie (pkt 5). Ekrany nie wpisują
@@ -27,6 +29,17 @@ abstract final class MotywProsty {
   static const double zaokraglenieMale = 14;
   static const double zaokraglenieDuze = 18;
   static const double odstep = 16;
+
+  /// Barwy mapy działek dla tego wyglądu — sama mapa leży w `rdzen/`.
+  static const BarwyMapy barwyMapy = BarwyMapy(
+    tlo: powierzchnia,
+    obramowanie: powierzchniaDruga,
+    dzialka: powierzchniaDruga,
+    wyrozniona: Color(0x401E5B2E),
+    kreska: zielenAkcji,
+    tekst: tekst,
+    zaokraglenie: zaokraglenieDuze,
+  );
 
   static ThemeData zbuduj() {
     const schemat = ColorScheme.light(

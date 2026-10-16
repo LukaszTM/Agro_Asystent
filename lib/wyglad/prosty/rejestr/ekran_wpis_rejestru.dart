@@ -4,6 +4,7 @@ import '../../../app/uslugi.dart';
 import '../../../funkcje/zabiegi/kompletnosc_ewidencji.dart';
 import '../../../funkcje/zabiegi/rejestr_zabiegow.dart';
 import '../../../rdzen/modele/zabieg.dart';
+import '../../../rdzen/wspolne/opis_karencji.dart';
 import '../motyw.dart';
 import '../widgety/duzy_przycisk.dart';
 import '../wpis/ekran_karencja.dart';

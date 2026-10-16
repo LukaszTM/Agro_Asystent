@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../app/uslugi.dart';
 import '../../../funkcje/ustawienia/gospodarstwa.dart';
+import '../../../funkcje/ustawienia/wybor_wygladu.dart';
 import '../../../funkcje/ustawienia/zwierzeta_w_gospodarstwie.dart';
 import '../motyw.dart';
 import '../widgety/duzy_przycisk.dart';
@@ -14,13 +15,21 @@ import 'ekran_kopia.dart';
 /// tylko *dodanie kolejnego* gospodarstwa — a gospodarstwa już założone
 /// zostają w pełni dostępne, także gdy premium się skończy.
 class EkranGospodarstwa extends StatefulWidget {
-  const EkranGospodarstwa({super.key, required this.uslugi, this.onZmiana});
+  const EkranGospodarstwa({
+    super.key,
+    required this.uslugi,
+    this.onZmiana,
+    this.onZmianaWygladu,
+  });
 
   final Uslugi uslugi;
 
   /// Przełączenie gospodarstwa zmienia wszystkie ekrany, więc o nowym
   /// wyborze musi dowiedzieć się start aplikacji.
   final void Function(Uslugi noweUslugi)? onZmiana;
+
+  /// Zmiana wyglądu przebudowuje całą aplikację — motyw jest nad ekranami.
+  final void Function(Wyglad wyglad)? onZmianaWygladu;
 
   @override
   State<EkranGospodarstwa> createState() => _EkranGospodarstwaState();
@@ -49,6 +58,7 @@ class _EkranGospodarstwaState extends State<EkranGospodarstwa> {
       konto: await repozytorium.konto(),
       moznaDodac: await repozytorium.czyMoznaDodac(),
       zwierzeta: await _uslugi.zwierzetaWGospodarstwie.odczytaj(),
+      wyglad: await _uslugi.wyglad.odczytaj(),
     );
   }
 
@@ -123,6 +133,14 @@ class _EkranGospodarstwaState extends State<EkranGospodarstwa> {
     if (mounted) {
       setState(_odswiez);
     }
+  }
+
+  Future<void> _zapiszWyglad(Wyglad wyglad) async {
+    await _uslugi.wyglad.zapisz(wyglad);
+    if (mounted) {
+      setState(_odswiez);
+    }
+    widget.onZmianaWygladu?.call(wyglad);
   }
 
   Future<void> _zapiszKonto(String nazwa) async {
@@ -214,6 +232,11 @@ class _EkranGospodarstwaState extends State<EkranGospodarstwa> {
                 ),
               const SizedBox(height: MotywProsty.odstep * 2),
               _Zwierzeta(odpowiedz: dane.zwierzeta, onZmiana: _zapiszZwierzeta),
+              const SizedBox(height: MotywProsty.odstep * 2),
+              _WyborWygladuProsty(
+                wybrany: dane.wyglad,
+                onZmiana: _zapiszWyglad,
+              ),
               const SizedBox(height: MotywProsty.odstep),
               DuzyPrzycisk(
                 etykieta: 'Kopia danych',
@@ -250,6 +273,7 @@ class _Dane {
     required this.konto,
     required this.moznaDodac,
     required this.zwierzeta,
+    required this.wyglad,
   });
 
   final List<Gospodarstwo> lista;
@@ -257,6 +281,47 @@ class _Dane {
   final Konto? konto;
   final bool moznaDodac;
   final OdpowiedzZwierzeta zwierzeta;
+  final Wyglad wyglad;
+}
+
+/// Wybór wyglądu telefonu. Oba pokazują te same dane i te same dokumenty —
+/// różni się tylko warstwa ekranów (plan, pkt 5).
+class _WyborWygladuProsty extends StatelessWidget {
+  const _WyborWygladuProsty({required this.wybrany, required this.onZmiana});
+
+  final Wyglad wybrany;
+  final Future<void> Function(Wyglad wyglad) onZmiana;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('Wygląd aplikacji', style: Theme.of(context).textTheme.titleLarge),
+        const SizedBox(height: 8),
+        Text(
+          'Oba wyglądy mają te same wpisy, rejestry i wydruki. '
+          'Zmienisz go kiedy chcesz.',
+          style: Theme.of(context).textTheme.bodyMedium,
+        ),
+        const SizedBox(height: 8),
+        for (final wyglad in Wyglad.values) ...[
+          DuzyPrzycisk(
+            etykieta: wyglad.nazwa,
+            opis: wyglad == wybrany
+                ? '${wyglad.opis} • tak teraz wygląda'
+                : wyglad.opis,
+            ikona: wyglad == wybrany
+                ? Icons.check_circle_outline
+                : Icons.phone_android_outlined,
+            wyrozniony: wyglad == wybrany,
+            onTap: wyglad == wybrany ? null : () => onZmiana(wyglad),
+          ),
+          const SizedBox(height: MotywProsty.odstep),
+        ],
+      ],
+    );
+  }
 }
 
 /// Nazwa konta — po nic więcej nie służy. Aplikacja nie ma serwera i nie

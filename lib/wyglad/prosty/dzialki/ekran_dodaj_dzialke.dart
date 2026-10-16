@@ -6,7 +6,7 @@ import '../../../funkcje/dzialki/repozytorium_dzialek.dart';
 import '../motyw.dart';
 import '../widgety/duzy_przycisk.dart';
 import '../widgety/klawiatura_numeru.dart';
-import 'mapa_dzialek.dart';
+import '../../../rdzen/wspolne/mapa_dzialek.dart';
 
 /// Dodanie działki ewidencyjnej po numerze: numer → granice z ULDK →
 /// potwierdzenie na mapie → zapis (plan, pkt 4 krok 1).
@@ -228,7 +228,11 @@ class _EkranDodajDzialkeState extends State<EkranDodajDzialke> {
     return ListView(
       padding: const EdgeInsets.all(MotywProsty.odstep),
       children: [
-        MapaDzialek(dzialki: [doPokazania], wyrozniona: dzialka.identyfikator),
+        MapaDzialek(
+          dzialki: [doPokazania],
+          barwy: MotywProsty.barwyMapy,
+          wyrozniona: dzialka.identyfikator,
+        ),
         const SizedBox(height: MotywProsty.odstep),
         Text(
           dzialka.identyfikator,

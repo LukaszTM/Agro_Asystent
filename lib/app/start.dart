@@ -17,6 +17,7 @@ import '../funkcje/odczyt/odczyt_etykiety.dart';
 import '../funkcje/terminy/kalendarz_terminow.dart';
 import '../funkcje/terminy/ustawienia_przypomnien.dart';
 import '../funkcje/ustawienia/gospodarstwa.dart';
+import '../funkcje/ustawienia/wybor_wygladu.dart';
 import '../funkcje/ustawienia/zwierzeta_w_gospodarstwie.dart';
 import '../funkcje/zwierzeta/stado.dart';
 import '../funkcje/zabiegi/rejestr_zabiegow.dart';
@@ -108,6 +109,7 @@ Future<Uslugi> uruchom({
     gospodarstwa: gospodarstwa,
     kopia: KopiaDanych(baza: baza, wersjaSchematu: najnowszaWersja),
     zwierzetaWGospodarstwie: ZwierzetaWGospodarstwie(baza),
+    wyglad: WyborWygladu(baza),
     kalendarz: KalendarzTerminow(
       reguly: reguly,
       rejestr: RejestrZabiegow(baza),

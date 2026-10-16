@@ -5,7 +5,7 @@ import '../../../funkcje/dzialki/repozytorium_dzialek.dart';
 import '../motyw.dart';
 import '../widgety/duzy_przycisk.dart';
 import 'ekran_dodaj_dzialke.dart';
-import 'mapa_dzialek.dart';
+import '../../../rdzen/wspolne/mapa_dzialek.dart';
 
 /// Działki ewidencyjne gospodarstwa i mapa ich granic.
 ///
@@ -67,7 +67,11 @@ class _EkranDzialkiState extends State<EkranDzialki> {
                       'numer z wniosku.',
                 )
               else ...[
-                MapaDzialek(dzialki: dzialki, wyrozniona: _ostatniaDodana),
+                MapaDzialek(
+                  dzialki: dzialki,
+                  barwy: MotywProsty.barwyMapy,
+                  wyrozniona: _ostatniaDodana,
+                ),
                 const SizedBox(height: MotywProsty.odstep),
               ],
               for (final dzialka in dzialki) ...[

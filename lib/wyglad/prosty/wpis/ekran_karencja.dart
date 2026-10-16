@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../../../app/uslugi.dart';
-import '../../../rdzen/modele/zabieg.dart';
 import '../motyw.dart';
 import '../widgety/duzy_przycisk.dart';
 import '../widgety/wybor_liczby.dart';
@@ -126,23 +125,5 @@ class _EkranKarencjaState extends State<EkranKarencja> {
         ],
       ),
     );
-  }
-}
-
-/// Jak opisać karencję wpisu w rejestrze i na wydruku.
-abstract final class OpisKarencji {
-  static String dlaWpisu(SzczegolyOprysku oprysk) {
-    final dni = oprysk.karencjaDni;
-    if (dni == null) {
-      return 'karencja nieznana';
-    }
-    if (dni == 0) {
-      return 'karencja nie obowiązuje';
-    }
-    final zrodlo = oprysk.karencjaZrodlo ?? 'źródło nieznane';
-    final potwierdzenie = oprysk.karencjaPotwierdzona
-        ? 'potwierdzona'
-        : 'do potwierdzenia';
-    return '$dni dni • $zrodlo • $potwierdzenie';
   }
 }

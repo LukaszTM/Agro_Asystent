@@ -14,6 +14,7 @@ import '../funkcje/terminy/kalendarz_terminow.dart';
 import '../funkcje/terminy/przypomnienia.dart';
 import '../funkcje/terminy/ustawienia_przypomnien.dart';
 import '../funkcje/ustawienia/gospodarstwa.dart';
+import '../funkcje/ustawienia/wybor_wygladu.dart';
 import '../funkcje/ustawienia/zwierzeta_w_gospodarstwie.dart';
 import '../funkcje/zwierzeta/stado.dart';
 import '../funkcje/zabiegi/rejestr_zabiegow.dart';
@@ -50,6 +51,7 @@ class Uslugi {
     required this.gospodarstwa,
     required this.kopia,
     required this.zwierzetaWGospodarstwie,
+    required this.wyglad,
     required this.kalendarz,
     required this.profil,
     required this.przypomnienia,
@@ -117,6 +119,10 @@ class Uslugi {
   /// zależy, czy obowiązki od DJP są „do sprawdzenia".
   final ZwierzetaWGospodarstwie zwierzetaWGospodarstwie;
 
+  /// Wybrany wygląd telefonu („Prosty" / „Nowoczesny"). Oba pokazują te same
+  /// dane — różni się tylko warstwa ekranów (plan, pkt 5).
+  final WyborWygladu wyglad;
+
   /// Kalendarz obowiązków: terminy z przepisów i karencje z własnych zabiegów.
   final KalendarzTerminow kalendarz;
 
@@ -163,6 +169,7 @@ class Uslugi {
     gospodarstwa: gospodarstwa,
     kopia: kopia,
     zwierzetaWGospodarstwie: zwierzetaWGospodarstwie,
+    wyglad: wyglad,
     kalendarz: kalendarz,
     profil: profil,
     przypomnienia: przypomnienia,

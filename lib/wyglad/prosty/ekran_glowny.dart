@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../app/uslugi.dart';
+import '../../funkcje/ustawienia/wybor_wygladu.dart';
 import '../../rdzen/dostep/dostep_funkcji.dart';
 import '../../rdzen/marka/marka.dart';
 import 'ekran_pola.dart';
@@ -19,6 +20,7 @@ class EkranGlownyProsty extends StatelessWidget {
     required this.dostep,
     this.uslugi,
     this.onZmianaGospodarstwa,
+    this.onZmianaWygladu,
   });
 
   final DostepFunkcji dostep;
@@ -26,6 +28,9 @@ class EkranGlownyProsty extends StatelessWidget {
   /// Przełączenie gospodarstwa zmienia dane na wszystkich ekranach, więc
   /// nowy zestaw usług wraca do startu aplikacji.
   final void Function(Uslugi noweUslugi)? onZmianaGospodarstwa;
+
+  /// Zmiana wyglądu w ustawieniach przebudowuje całą aplikację.
+  final void Function(Wyglad wyglad)? onZmianaWygladu;
 
   /// Usługi są dostępne dopiero po otwarciu bazy; bez nich pokazujemy ekrany
   /// zastępcze zamiast pustej aplikacji.
@@ -78,7 +83,11 @@ class EkranGlownyProsty extends StatelessWidget {
               excludeFromSemantics: true,
             ),
             const SizedBox(width: 12),
-            const Text(Marka.nazwa),
+            // Na wąskim telefonie nazwa musi się zmieścić obok logo
+            // i przycisku gospodarstwa — inaczej pasek się rozjeżdża.
+            const Flexible(
+              child: Text(Marka.nazwa, overflow: TextOverflow.ellipsis),
+            ),
           ],
         ),
         actions: [
@@ -91,6 +100,7 @@ class EkranGlownyProsty extends StatelessWidget {
                   builder: (_) => EkranGospodarstwa(
                     uslugi: uslugi!,
                     onZmiana: onZmianaGospodarstwa,
+                    onZmianaWygladu: onZmianaWygladu,
                   ),
                 ),
               ),

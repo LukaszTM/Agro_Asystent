@@ -19,6 +19,7 @@ import 'package:agro_asystent/funkcje/terminy/kalendarz_terminow.dart';
 import 'package:agro_asystent/funkcje/terminy/przypomnienia.dart';
 import 'package:agro_asystent/funkcje/terminy/ustawienia_przypomnien.dart';
 import 'package:agro_asystent/funkcje/ustawienia/gospodarstwa.dart';
+import 'package:agro_asystent/funkcje/ustawienia/wybor_wygladu.dart';
 import 'package:agro_asystent/funkcje/ustawienia/zwierzeta_w_gospodarstwie.dart';
 import 'package:agro_asystent/funkcje/zabiegi/rejestr_zabiegow.dart';
 import 'package:agro_asystent/funkcje/zabiegi/repozytorium_zabiegow.dart';
@@ -107,6 +108,7 @@ void main() {
     ),
     stado: RepozytoriumStada(baza: baza, reguly: reguly),
     zwierzetaWGospodarstwie: ZwierzetaWGospodarstwie(baza),
+    wyglad: WyborWygladu(baza),
     kopia: KopiaDanych(baza: baza, wersjaSchematu: najnowszaWersja),
     gospodarstwa: RepozytoriumGospodarstw(
       baza: baza,
@@ -349,6 +351,29 @@ void main() {
       )).single['usuniety'],
       1,
     );
+  });
+
+  testWidgets('wygląd przełącza się w ustawieniach i zapisuje w bazie', (
+    tester,
+  ) async {
+    Wyglad? zgloszony;
+    final uslugi = zbudujUslugi();
+    await pokaz(
+      tester,
+      EkranGospodarstwa(
+        uslugi: uslugi,
+        onZmianaWygladu: (wyglad) => zgloszony = wyglad,
+      ),
+    );
+
+    await przewinDo(tester, find.text('Wygląd aplikacji'));
+    expect(find.text('Prosty'), findsOneWidget);
+    await tester.tap(find.text('Nowoczesny'));
+    await tester.pumpAndSettle();
+
+    expect(await uslugi.wyglad.odczytaj(), Wyglad.nowoczesny);
+    // Motyw jest nad ekranami, więc o zmianie musi wiedzieć start aplikacji.
+    expect(zgloszony, Wyglad.nowoczesny);
   });
 }
 

@@ -1,0 +1,297 @@
+import 'package:flutter/material.dart';
+
+import '../../../app/uslugi.dart';
+import '../../../funkcje/dzialki/repozytorium_dzialek.dart';
+import '../../../funkcje/dzialki/repozytorium_pol.dart';
+import '../../../rdzen/wspolne/mapa_dzialek.dart';
+import '../motyw.dart';
+import '../widgety/karta.dart';
+import '../widgety/wybor.dart';
+import 'ekran_nowe_pole.dart';
+
+/// Zakładka „Pola" wyglądu nowoczesnego: mapa na całą szerokość,
+/// wyszukiwarka, filtry upraw i karta wybranego pola (plan, pkt 5).
+class WidokPola extends StatefulWidget {
+  const WidokPola({super.key, required this.uslugi, this.onZabiegNaPolu});
+
+  final Uslugi uslugi;
+
+  /// Skrót „zapisz zabieg na tym polu" — wpis otwiera się z już wybranym
+  /// polem, więc do zapisu zostaje mniej dotknięć.
+  final void Function(Pole pole)? onZabiegNaPolu;
+
+  @override
+  State<WidokPola> createState() => _WidokPolaState();
+}
+
+class _WidokPolaState extends State<WidokPola> {
+  late Future<({List<Pole> pola, List<DzialkaEwidencyjna> dzialki})> _dane;
+  String _szukane = '';
+  String? _uprawa;
+  Pole? _wybrane;
+
+  /// Numery działek ewidencyjnych wybranego pola — z nich bierze się
+  /// wyróżnienie na mapie.
+  Future<List<String>>? _dzialkiPola;
+
+  @override
+  void initState() {
+    super.initState();
+    _dane = _wczytaj();
+  }
+
+  Future<({List<Pole> pola, List<DzialkaEwidencyjna> dzialki})>
+  _wczytaj() async => (
+    pola: await widget.uslugi.pola.wszystkie(widget.uslugi.gospodarstwoId),
+    dzialki: await widget.uslugi.dzialki.wszystkie(
+      widget.uslugi.gospodarstwoId,
+    ),
+  );
+
+  Future<void> _dodajPole() async {
+    final dodano = await Navigator.of(context).push<bool>(
+      MaterialPageRoute<bool>(
+        builder: (_) => EkranNowePoleNowoczesny(uslugi: widget.uslugi),
+      ),
+    );
+    if ((dodano ?? false) && mounted) {
+      setState(() {
+        _dane = _wczytaj();
+      });
+    }
+  }
+
+  void _wybierz(Pole? pole) {
+    setState(() {
+      _wybrane = pole;
+      _dzialkiPola = pole == null
+          ? null
+          : widget.uslugi.pola.dzialkiReferencyjne(pole.id);
+    });
+  }
+
+  List<Pole> _pasujace(List<Pole> wszystkie) {
+    final szukane = _szukane.trim().toLowerCase();
+    return wszystkie
+        .where(
+          (pole) =>
+              (_uprawa == null || pole.uprawa == _uprawa) &&
+              (szukane.isEmpty ||
+                  pole.nazwa.toLowerCase().contains(szukane) ||
+                  pole.uprawa.toLowerCase().contains(szukane)),
+        )
+        .toList(growable: false);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<({List<Pole> pola, List<DzialkaEwidencyjna> dzialki})>(
+      future: _dane,
+      builder: (context, stan) {
+        if (!stan.hasData) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        final wszystkie = stan.data!.pola;
+        final dzialki = stan.data!.dzialki;
+        final pasujace = _pasujace(wszystkie);
+        final uprawy = {
+          for (final pole in wszystkie)
+            if (pole.uprawa.isNotEmpty) pole.uprawa,
+        }.toList(growable: false)..sort();
+
+        return ListView(
+          padding: const EdgeInsets.all(MotywNowoczesny.odstep),
+          children: [
+            if (dzialki.any((d) => d.maGranice))
+              FutureBuilder<List<String>>(
+                future: _dzialkiPola,
+                builder: (context, stanDzialek) => MapaDzialek(
+                  dzialki: dzialki,
+                  barwy: MotywNowoczesny.barwyMapy,
+                  wyrozniona: stanDzialek.data?.firstOrNull,
+                  wysokosc: 200,
+                ),
+              )
+            else
+              const OstrzezenieNowoczesne(
+                tresc: 'Żadna działka nie ma jeszcze granic.',
+                coZrobic:
+                    'Dodaj działkę po numerze ewidencyjnym — granice '
+                    'pobierają się raz i zostają w telefonie.',
+              ),
+            const SizedBox(height: MotywNowoczesny.odstep),
+            TextField(
+              style: Theme.of(context).textTheme.bodyLarge,
+              decoration: const InputDecoration(
+                labelText: 'Szukaj pola albo uprawy',
+                prefixIcon: Icon(Icons.search, size: 20),
+                border: OutlineInputBorder(),
+                isDense: true,
+              ),
+              onChanged: (tekst) => setState(() => _szukane = tekst),
+            ),
+            if (uprawy.length > 1) ...[
+              const SizedBox(height: MotywNowoczesny.odstep),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: [
+                  Wybor(
+                    etykieta: 'Wszystkie uprawy',
+                    wybrany: _uprawa == null,
+                    onTap: () => setState(() => _uprawa = null),
+                  ),
+                  for (final uprawa in uprawy)
+                    Wybor(
+                      etykieta: uprawa,
+                      wybrany: _uprawa == uprawa,
+                      onTap: () => setState(() => _uprawa = uprawa),
+                    ),
+                ],
+              ),
+            ],
+            const SizedBox(height: MotywNowoczesny.odstep),
+            if (_wybrane != null) ...[
+              _KartaPola(
+                pole: _wybrane!,
+                dzialki: _dzialkiPola,
+                onZamknij: () => _wybierz(null),
+                onZabieg: widget.onZabiegNaPolu == null
+                    ? null
+                    : () => widget.onZabiegNaPolu!(_wybrane!),
+              ),
+              const SizedBox(height: MotywNowoczesny.odstep),
+            ],
+            FilledButton.icon(
+              onPressed: _dodajPole,
+              icon: const Icon(Icons.add, size: 20),
+              label: const Text('Dodaj pole'),
+            ),
+            const SizedBox(height: MotywNowoczesny.odstep),
+            if (wszystkie.isEmpty)
+              const OstrzezenieNowoczesne(
+                tresc: 'Nie masz jeszcze żadnego pola.',
+                coZrobic:
+                    'Naciśnij „Dodaj pole" — wystarczy nazwa, powierzchnia '
+                    'i uprawa z listy.',
+              )
+            else if (pasujace.isEmpty)
+              const OstrzezenieNowoczesne(
+                tresc: 'Żadne pole nie pasuje do tego, czego szukasz.',
+                coZrobic: 'Zmień wpisane słowo albo wybierz inną uprawę.',
+              )
+            else
+              for (final pole in pasujace) ...[
+                Karta(
+                  onTap: () => _wybierz(pole),
+                  wyrozniona: pole.id == _wybrane?.id,
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              pole.nazwa,
+                              style: Theme.of(context).textTheme.bodyLarge
+                                  ?.copyWith(
+                                    color: pole.id == _wybrane?.id
+                                        ? MotywNowoczesny.karta
+                                        : MotywNowoczesny.tekst,
+                                  ),
+                            ),
+                            Text(
+                              '${pole.uprawa} • ${pole.powierzchniaOpis}',
+                              style: Theme.of(context).textTheme.bodyMedium
+                                  ?.copyWith(
+                                    color: pole.id == _wybrane?.id
+                                        ? MotywNowoczesny.karta
+                                        : MotywNowoczesny.tekstPomocniczy,
+                                  ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 8),
+              ],
+          ],
+        );
+      },
+    );
+  }
+}
+
+/// Karta wybranego pola: dane z wniosku i skrót do wpisu zabiegu.
+class _KartaPola extends StatelessWidget {
+  const _KartaPola({
+    required this.pole,
+    required this.dzialki,
+    required this.onZamknij,
+    this.onZabieg,
+  });
+
+  final Pole pole;
+  final Future<List<String>>? dzialki;
+  final VoidCallback onZamknij;
+  final VoidCallback? onZabieg;
+
+  @override
+  Widget build(BuildContext context) {
+    final teksty = Theme.of(context).textTheme;
+    return Karta(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Expanded(child: Text(pole.nazwa, style: teksty.headlineMedium)),
+              IconButton(
+                icon: const Icon(Icons.close),
+                tooltip: 'Zamknij kartę pola',
+                onPressed: onZamknij,
+              ),
+            ],
+          ),
+          Text(
+            '${pole.uprawa} • ${pole.powierzchniaOpis}'
+            '${pole.sezon == null ? '' : ' • sezon ${pole.sezon}'}',
+            style: teksty.bodyLarge,
+          ),
+          if (pole.oznaczenieZWniosku != null) ...[
+            const SizedBox(height: 4),
+            Text(
+              'We wniosku: ${pole.oznaczenieZWniosku}',
+              style: teksty.bodyMedium,
+            ),
+          ],
+          FutureBuilder<List<String>>(
+            future: dzialki,
+            builder: (context, stan) {
+              final numery = stan.data ?? const <String>[];
+              if (numery.isEmpty) {
+                return const SizedBox.shrink();
+              }
+              return Padding(
+                padding: const EdgeInsets.only(top: 4),
+                child: Text(
+                  'Działki: ${numery.join(', ')}',
+                  style: teksty.bodyMedium,
+                ),
+              );
+            },
+          ),
+          if (onZabieg != null) ...[
+            const SizedBox(height: MotywNowoczesny.odstep),
+            FilledButton(
+              onPressed: onZabieg,
+              child: const Text('Zapisz zabieg na tym polu'),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}

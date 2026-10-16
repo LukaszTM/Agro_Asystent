@@ -2,7 +2,7 @@ import 'package:agro_asystent/funkcje/zabiegi/rejestr_zabiegow.dart';
 import 'package:agro_asystent/funkcje/zabiegi/repozytorium_zabiegow.dart';
 import 'package:agro_asystent/rdzen/baza/baza_gospodarstwa.dart';
 import 'package:agro_asystent/rdzen/modele/zabieg.dart';
-import 'package:agro_asystent/wyglad/prosty/wpis/ekran_karencja.dart';
+import 'package:agro_asystent/rdzen/wspolne/opis_karencji.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 

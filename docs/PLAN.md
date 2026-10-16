@@ -69,8 +69,10 @@ Kolejność wewnątrz etapu; każdy krok ma dawać działającą aplikację:
    rozwoju, ekrany nie są dostępne.
 10. Konta i kilka gospodarstw.
 
-Dodatkowo, poza dziesięcioma krokami: trzy rejestry do wydruku i eksportu (pkt 8)
-oraz kopia danych do pliku.
+Dodatkowo, poza dziesięcioma krokami: trzy rejestry do wydruku i eksportu (pkt 8),
+kopia danych do pliku oraz **drugi wygląd telefonu („Nowoczesny") z przełącznikiem
+w ustawieniach** — zrobione 16.10.2026, raport
+`docs/raporty/etap1-wyglad-nowoczesny.md`.
 
 Później: program na Windows i synchronizacja; etap 2 — kontrola warunkowości, magazyn;
 etap 3 — koszty i przychody, wersja na iPhone'a.
@@ -119,7 +121,9 @@ reguły i dokumenty są wspólne (logika nie może zależeć od wyglądu).
 
 Nowoczesny: tło #F6F7F4, karty #FFFFFF z zaokrągleniem 18–20 px, tekst #0F1F12, tekst
 pomocniczy #4F5F51, zieleń #1E5B2E, pasek nawigacji #0F1F12 z przyciskiem #B9E26A.
-Kolejność: etap 1 buduje najpierw wygląd prosty w całości, nowoczesny dochodzi po nim.
+Kolejność: etap 1 zbudował najpierw wygląd prosty w całości, nowoczesny doszedł po nim
+(16.10.2026). Wybór wyglądu zapisuje się w ustawieniach gospodarstwa i da się go zmienić
+w każdej chwili — w obu wyglądach.
 Program na Windows ma jeden wygląd, z ustawieniem wielkości tekstu.
 
 ## 6. Źródła danych i wyniki prób

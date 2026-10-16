@@ -55,6 +55,22 @@ class RepozytoriumPol {
     return wiersze.map(Pole.zBazy).toList(growable: false);
   }
 
+  /// Numery działek ewidencyjnych, na których leży to pole — z wniosku
+  /// (jedna działka rolna leży zwykle na kilku ewidencyjnych).
+  Future<List<String>> dzialkiReferencyjne(String poleId) async {
+    final wiersze = await _baza.rawQuery(
+      '''
+      SELECT de.identyfikator
+      FROM dzialka_rolna_czesc c
+      JOIN dzialka_ewidencyjna de ON de.id = c.dzialka_ewidencyjna_id
+      WHERE c.dzialka_rolna_id = ?
+      ORDER BY de.identyfikator
+      ''',
+      [poleId],
+    );
+    return [for (final wiersz in wiersze) wiersz['identyfikator'] as String];
+  }
+
   Future<void> dodaj({
     required Pole pole,
     required String urzadzenie,

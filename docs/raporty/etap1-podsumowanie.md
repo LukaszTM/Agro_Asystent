@@ -28,18 +28,21 @@ telefonie, bez serwera i bez żadnej opłaty za to, czego wymagają przepisy.
 | **Kopia danych do pliku** + usuwanie gospodarstwa | plan (pkt 8) obiecuje ją w wersji darmowej; bez niej zgubiony telefon = utrata dokumentacji | `etap1-kopia-danych.md` |
 | **Współczynniki DJP** z obowiązującego rozporządzenia | dane z kroku 9 pochodziły z uchylonego aktu i trzy wartości były błędne | `djp-weryfikacja.md` |
 | **Okresy nawożenia azotem** + wykazy gmin | terminów nie było w danych; dziś są sprawdzone w tabeli 2 rozporządzenia, z dokładną datą dla konkretnego pola | `terminy-nawozenia-azotem.md` |
+| **Dane prawne z dwóch ustaw i dwóch załączników** (luka 1) | zakazy z ustawy o nawozach, próg planu z Prawa wodnego, uprawy intensywne, odległości od wód | `dane-prawne-uzupelnienie.md` |
+| **Kody EPPO: tylko potwierdzone wchodzą do słownika** (luka 2) | propozycja nie może trafić na urzędowy wydruk jako pewny kod | dopisek w `P3-raport.md` |
+| **Drugi wygląd telefonu „Nowoczesny"** + przełącznik (luka 6) | plan (pkt 5) obiecuje dwa wyglądy przełączane w ustawieniach | `etap1-wyglad-nowoczesny.md` |
 
 ## Liczby
 
 | Miara | Wartość |
 | --- | --- |
-| Pliki kodu w `lib/` | 85 |
-| Pliki testów | 34 |
-| Testy | **295** |
+| Pliki kodu w `lib/` | 102 |
+| Pliki testów | 35 |
+| Testy | **332** |
 | `flutter analyze` | bez ostrzeżeń |
 | `dart format` | bez zmian |
 | Migracje bazy | 3 |
-| Wersja słownika reguł | 2026.10.16.3 |
+| Wersja słownika reguł | 2026.10.16.4 |
 | Gminy w wykazach terminów | 2158 |
 | Grupy DJP | 93 |
 
@@ -61,15 +64,21 @@ telefonie, bez serwera i bez żadnej opłaty za to, czego wymagają przepisy.
 
 ## Luki do uzupełnienia
 
-1. **Dane prawne**: art. 20 ustawy o nawozach (zakaz dla gleb
-   zamarzniętych), progi planu nawożenia z Prawa wodnego art. 105a, lista
-   upraw intensywnych (załącznik nr 7), tabela 14 z maksymalnymi dawkami
-   azotu, tabela 1 z odległościami od wód.
-2. **Uprawy bez decyzji o kodzie EPPO** — `uprawy_eppo_do_decyzji.csv` z P3.
-3. **Rejestr stada do wydruku** — wymaga urzędowego układu kolumn IRZplus.
+1. ~~**Dane prawne**~~ — zrobione 16.10.2026 poza **tabelą 14** (maksymalne
+   ilości azotu działającego, załącznik nr 9): wymaga własnego ekranu
+   i ostrzeżenia, nie tylko wpisu w słowniku.
+2. ~~**Kody EPPO bez decyzji**~~ — lista ruszona i zabezpieczona: do słownika
+   wchodzą tylko kody `potwierdzone` (18). Zostaje 4 propozycje do
+   potwierdzenia przez rolnika i 138 upraw bez decyzji (pokrycie 44,7%).
+3. **Rejestr stada do wydruku** — wymaga urzędowego układu kolumn IRZplus;
+   dotyczy ścieżki rozwoju (produkcja zwierzęca poza zakresem, ADR-0007).
 4. **Pytanie do ministerstwa** o hurtowy dostęp do etykiet (P2) bez odpowiedzi.
 5. **Format „maszynowo odczytywalny"** wymagany od 1.01.2027 — nieogłoszony.
-6. **Wygląd „Nowoczesny"** — etap 1 dał tylko wygląd „Prosty" (plan, pkt 5).
+6. ~~**Wygląd „Nowoczesny"**~~ — zrobiony 16.10.2026 razem z przełącznikiem
+   w obu wyglądach. Zostają w nim cztery ekrany formularzowe, które ma tylko
+   wygląd prosty (działki z ULDK, import wniosku z PDF, nawozy i zestawienie
+   azotu, dane gospodarstwa) — do wyjęcia do `lib/rdzen/wspolne/`, nie do
+   przepisania drugi raz; szczegóły w `etap1-wyglad-nowoczesny.md`.
 
 Dalej według planu: program na Windows i synchronizacja, potem etap 2
 (kontrola warunkowości, magazyn) i etap 3 (API IRZplus, koszty

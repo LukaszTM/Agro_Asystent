@@ -20,6 +20,7 @@ import 'package:agro_asystent/funkcje/terminy/kalendarz_terminow.dart';
 import 'package:agro_asystent/funkcje/terminy/przypomnienia.dart';
 import 'package:agro_asystent/funkcje/terminy/ustawienia_przypomnien.dart';
 import 'package:agro_asystent/funkcje/ustawienia/gospodarstwa.dart';
+import 'package:agro_asystent/funkcje/ustawienia/wybor_wygladu.dart';
 import 'package:agro_asystent/funkcje/ustawienia/zwierzeta_w_gospodarstwie.dart';
 import 'package:agro_asystent/funkcje/zabiegi/rejestr_zabiegow.dart';
 import 'package:agro_asystent/funkcje/zabiegi/repozytorium_zabiegow.dart';
@@ -31,7 +32,7 @@ import 'package:agro_asystent/rdzen/reguly/gminy_terminy.dart';
 import 'package:agro_asystent/rdzen/reguly/regula_prawna.dart';
 import 'package:agro_asystent/rdzen/uslugi/kopia/kopia_danych.dart';
 import 'package:agro_asystent/wyglad/prosty/dzialki/ekran_dzialki.dart';
-import 'package:agro_asystent/wyglad/prosty/dzialki/mapa_dzialek.dart';
+import 'package:agro_asystent/rdzen/wspolne/mapa_dzialek.dart';
 import 'package:agro_asystent/wyglad/prosty/motyw.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -115,6 +116,7 @@ void main() {
       ),
       stado: RepozytoriumStada(baza: baza, reguly: reguly),
       zwierzetaWGospodarstwie: ZwierzetaWGospodarstwie(baza),
+      wyglad: WyborWygladu(baza),
       kopia: KopiaDanych(baza: baza, wersjaSchematu: najnowszaWersja),
       gospodarstwa: RepozytoriumGospodarstw(baza: baza),
       kalendarz: KalendarzTerminow(
