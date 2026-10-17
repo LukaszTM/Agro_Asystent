@@ -334,29 +334,6 @@ class Termin {
   bool get doWeryfikacji => statusWeryfikacji != 'potwierdzone';
 }
 
-/// Parametr liczbowy warunkowości, np. pas 3 m od wód.
-class ParametrWarunkowosci {
-  const ParametrWarunkowosci({
-    required this.id,
-    required this.nazwa,
-    required this.wartosc,
-    required this.jednostka,
-  });
-
-  factory ParametrWarunkowosci.zJson(Map<String, dynamic> json) =>
-      ParametrWarunkowosci(
-        id: json['id'] as String,
-        nazwa: json['nazwa'] as String,
-        wartosc: (json['wartosc'] as num).toDouble(),
-        jednostka: json['jednostka'] as String,
-      );
-
-  final String id;
-  final String nazwa;
-  final double wartosc;
-  final String jednostka;
-}
-
 /// Grupa zwierząt i jej współczynnik przeliczeniowy na DJP.
 class GrupaDjp {
   const GrupaDjp({
@@ -1106,6 +1083,304 @@ class MaksymalneDawkiAzotu {
   }
 }
 
+/// Próg albo limit liczbowy z normy GAEC — zawsze z danych, nigdy z kodu.
+class ProgNormy {
+  const ProgNormy({
+    required this.id,
+    required this.wartosc,
+    required this.jednostka,
+    required this.opis,
+    this.liczOdRoku,
+  });
+
+  factory ProgNormy.zJson(Map<String, dynamic> json) => ProgNormy(
+    id: json['id'] as String? ?? '',
+    wartosc: (json['wartosc'] as num?)?.toDouble() ?? 0,
+    jednostka: json['jednostka'] as String? ?? '',
+    opis: json['opis'] as String? ?? '',
+    liczOdRoku: (json['licz_od_roku'] as num?)?.toInt(),
+  );
+
+  final String id;
+  final double wartosc;
+  final String jednostka;
+  final String opis;
+
+  /// Rok, od którego przepis każe liczyć (GAEC 7: uprawy od 2023 r.).
+  final int? liczOdRoku;
+
+  int get calkowita => wartosc.round();
+}
+
+/// Termin z normy: dzień–miesiąc albo zdarzenie w gospodarstwie.
+///
+/// GAEC 6 liczy okrywę „od dnia zbioru uprawy w plonie głównym", więc
+/// początkiem bywa zdarzenie (`zbior`), nie data z kalendarza.
+class TerminNormy {
+  const TerminNormy({
+    required this.id,
+    required this.od,
+    required this.doDnia,
+    required this.opis,
+  });
+
+  factory TerminNormy.zJson(Map<String, dynamic> json) => TerminNormy(
+    id: json['id'] as String? ?? '',
+    od: json['od'] as String? ?? '',
+    doDnia: json['do'] as String? ?? '',
+    opis: json['opis'] as String? ?? '',
+  );
+
+  final String id;
+
+  /// `MM-DD` albo nazwa zdarzenia (np. `zbior`).
+  final String od;
+
+  /// `MM-DD`.
+  final String doDnia;
+
+  final String opis;
+
+  bool get odZdarzenia => !od.contains('-');
+
+  /// Czy dzień mieści się w terminie. Terminy przechodzące przez koniec
+  /// roku (1 listopada – 15 lutego) liczą się jako jeden okres.
+  bool obejmuje(DateTime dzien) {
+    if (odZdarzenia) {
+      return false;
+    }
+    final teraz = _numer(dzien.month, dzien.day);
+    final poczatek = _zTekstu(od);
+    final koniec = _zTekstu(doDnia);
+    if (poczatek == null || koniec == null) {
+      return false;
+    }
+    return poczatek <= koniec
+        ? teraz >= poczatek && teraz <= koniec
+        : teraz >= poczatek || teraz <= koniec;
+  }
+
+  static int _numer(int miesiac, int dzien) => miesiac * 100 + dzien;
+
+  static int? _zTekstu(String dataRoczna) {
+    final czesci = dataRoczna.split('-');
+    if (czesci.length != 2) {
+      return null;
+    }
+    final miesiac = int.tryParse(czesci.first);
+    final dzien = int.tryParse(czesci.last);
+    return miesiac == null || dzien == null ? null : _numer(miesiac, dzien);
+  }
+}
+
+/// Jedna norma GAEC ze słownika reguł.
+class NormaGaec {
+  const NormaGaec({
+    required this.id,
+    required this.numer,
+    required this.nazwa,
+    required this.opis,
+    required this.statusWeryfikacji,
+    this.paragraf,
+    this.aplikacjaLiczy = false,
+    this.dlaczegoNieLiczy = '',
+    this.coRolnikPodaje = const [],
+    this.progi = const [],
+    this.terminy = const [],
+    this.wylaczeniaUpraw = const [],
+    this.uznanieZaUprawe = const [],
+    this.spelnienieZastepcze = '',
+    this.zrodlo = '',
+    this.uwagi = '',
+  });
+
+  factory NormaGaec.zJson(Map<String, dynamic> json) => NormaGaec(
+    id: json['id'] as String? ?? '',
+    numer: json['numer'] as String? ?? '',
+    nazwa: json['nazwa'] as String? ?? '',
+    opis: json['opis'] as String? ?? '',
+    statusWeryfikacji: json['status_weryfikacji'] as String? ?? 'nieznany',
+    paragraf: json['paragraf'] as String?,
+    aplikacjaLiczy: json['aplikacja_liczy'] as bool? ?? false,
+    dlaczegoNieLiczy: json['dlaczego_nie_liczy'] as String? ?? '',
+    coRolnikPodaje: _napisy(json['co_rolnik_podaje']),
+    progi: ((json['progi'] as List<dynamic>?) ?? const [])
+        .map((p) => ProgNormy.zJson(p as Map<String, dynamic>))
+        .toList(growable: false),
+    terminy: ((json['terminy'] as List<dynamic>?) ?? const [])
+        .map((t) => TerminNormy.zJson(t as Map<String, dynamic>))
+        .toList(growable: false),
+    wylaczeniaUpraw: _napisy(json['wylaczenia_upraw']),
+    uznanieZaUprawe: _napisy(json['uznanie_za_uprawe']),
+    spelnienieZastepcze: json['spelnienie_zastepcze'] as String? ?? '',
+    zrodlo: json['zrodlo'] as String? ?? '',
+    uwagi: json['uwagi'] as String? ?? '',
+  );
+
+  final String id;
+
+  /// „GAEC 7" — tak normę nazywa ARiMR i tak pyta o nią kontrola.
+  final String numer;
+
+  final String nazwa;
+  final String opis;
+  final String statusWeryfikacji;
+
+  /// Przepis, z którego norma pochodzi („§ 5"). `null`, gdy norma nie jest
+  /// w rozporządzeniu o normach (GAEC 1 jest wskaźnikiem krajowym).
+  final String? paragraf;
+
+  /// Czy aplikacja umie sama policzyć spełnienie normy.
+  final bool aplikacjaLiczy;
+
+  /// Dlaczego nie umie — pokazujemy to rolnikowi zamiast udawać wynik.
+  final String dlaczegoNieLiczy;
+
+  /// Czego aplikacja potrzebuje od rolnika, żeby policzyć normę.
+  final List<String> coRolnikPodaje;
+
+  final List<ProgNormy> progi;
+  final List<TerminNormy> terminy;
+
+  /// Uprawy, do których warunku nie stosuje się (GAEC 7 § 5 ust. 3).
+  final List<String> wylaczeniaUpraw;
+
+  /// Co przepis uznaje za „uprawę" przy liczeniu zmianowania.
+  final List<String> uznanieZaUprawe;
+
+  /// Spełnienie zastępcze — przy GAEC 7 rejestr zabiegów agrotechnicznych
+  /// z wsiewką albo międzyplonem zastępuje warunek 40 %.
+  final String spelnienieZastepcze;
+
+  final String zrodlo;
+  final String uwagi;
+
+  bool get doWeryfikacji => statusWeryfikacji != 'potwierdzone';
+
+  ProgNormy? prog(String id) => progi.where((p) => p.id == id).firstOrNull;
+
+  TerminNormy? termin(String id) =>
+      terminy.where((t) => t.id == id).firstOrNull;
+
+  static List<String> _napisy(Object? wartosc) => [
+    for (final element in (wartosc as List<dynamic>?) ?? const []) '$element',
+  ];
+}
+
+/// Zwolnienie z kontroli warunkowości — np. gospodarstwa do 10 ha.
+class ZwolnienieZKontroli {
+  const ZwolnienieZKontroli({
+    required this.id,
+    required this.nazwa,
+    required this.opis,
+    required this.statusWeryfikacji,
+    this.doHa,
+    this.normy = const [],
+    this.wszystkieNormy = false,
+    this.zrodlo = '',
+    this.uwagi = '',
+  });
+
+  factory ZwolnienieZKontroli.zJson(Map<String, dynamic> json) {
+    final dotyczy = json['dotyczy_norm'];
+    return ZwolnienieZKontroli(
+      id: json['id'] as String? ?? '',
+      nazwa: json['nazwa'] as String? ?? '',
+      opis: json['opis'] as String? ?? '',
+      statusWeryfikacji: json['status_weryfikacji'] as String? ?? 'nieznany',
+      doHa: (json['do_ha'] as num?)?.toDouble(),
+      normy: dotyczy is List
+          ? [for (final n in dotyczy) '$n']
+          : const <String>[],
+      wszystkieNormy: dotyczy == 'wszystkich',
+      zrodlo: json['zrodlo'] as String? ?? '',
+      uwagi: json['uwagi'] as String? ?? '',
+    );
+  }
+
+  final String id;
+  final String nazwa;
+  final String opis;
+  final String statusWeryfikacji;
+
+  /// Próg powierzchni, do którego zwolnienie działa. `null` — zwolnienie
+  /// nie zależy od powierzchni (produkcja ekologiczna).
+  final double? doHa;
+
+  /// Normy objęte zwolnieniem; puste, gdy [wszystkieNormy].
+  final List<String> normy;
+
+  final bool wszystkieNormy;
+  final String zrodlo;
+  final String uwagi;
+
+  bool get doWeryfikacji => statusWeryfikacji != 'potwierdzone';
+
+  bool dotyczyNormy(String idNormy) =>
+      wszystkieNormy || normy.contains(idNormy);
+}
+
+/// Normy GAEC razem ze zwolnieniami — dane z wersją, nie kod.
+class Warunkowosc {
+  const Warunkowosc({
+    required this.statusWeryfikacji,
+    required this.zrodlo,
+    required this.opis,
+    required this.normy,
+    required this.zwolnienia,
+  });
+
+  static const Warunkowosc puste = Warunkowosc(
+    statusWeryfikacji: 'brak',
+    zrodlo: '',
+    opis: '',
+    normy: [],
+    zwolnienia: [],
+  );
+
+  factory Warunkowosc.zJson(Map<String, dynamic> json) => Warunkowosc(
+    statusWeryfikacji: json['status_weryfikacji'] as String? ?? 'nieznany',
+    zrodlo: json['zrodlo'] as String? ?? '',
+    opis: json['opis'] as String? ?? '',
+    normy: ((json['normy'] as List<dynamic>?) ?? const [])
+        .map((n) => NormaGaec.zJson(n as Map<String, dynamic>))
+        .toList(growable: false),
+    zwolnienia: ((json['zwolnienia'] as List<dynamic>?) ?? const [])
+        .map((z) => ZwolnienieZKontroli.zJson(z as Map<String, dynamic>))
+        .toList(growable: false),
+  );
+
+  final String statusWeryfikacji;
+  final String zrodlo;
+  final String opis;
+  final List<NormaGaec> normy;
+  final List<ZwolnienieZKontroli> zwolnienia;
+
+  bool get pusta => normy.isEmpty;
+
+  NormaGaec? norma(String id) => normy.where((n) => n.id == id).firstOrNull;
+
+  /// Normy, które aplikacja umie policzyć sama.
+  List<NormaGaec> get liczone =>
+      normy.where((n) => n.aplikacjaLiczy).toList(growable: false);
+
+  /// Zwolnienia, które przy tej powierzchni zdejmują kontrolę z normy.
+  ///
+  /// Zwolnienie bez progu powierzchni (produkcja ekologiczna) zależy od
+  /// certyfikatu, a nie od hektarów — aplikacja go sama nie stosuje.
+  List<ZwolnienieZKontroli> zwolnieniaDla({
+    required String idNormy,
+    required double powierzchniaUrHa,
+  }) => zwolnienia
+      .where(
+        (z) =>
+            z.dotyczyNormy(idNormy) &&
+            z.doHa != null &&
+            powierzchniaUrHa <= z.doHa!,
+      )
+      .toList(growable: false);
+}
+
 /// Cały słownik reguł prawnych — dane z numerem wersji, nie kod.
 class SlownikRegul {
   const SlownikRegul({
@@ -1113,11 +1388,11 @@ class SlownikRegul {
     required this.obowiazujeOd,
     required this.obowiazki,
     required this.terminy,
-    required this.parametryWarunkowosci,
     this.wspolczynnikiDjp = WspolczynnikiDjp.puste,
     this.zasadyNawozeniaAzotem = ZasadyNawozeniaAzotem.puste,
     this.uprawyIntensywne = UprawyIntensywne.puste,
     this.maksymalneDawkiAzotu = MaksymalneDawkiAzotu.puste,
+    this.warunkowosc = Warunkowosc.puste,
   });
 
   factory SlownikRegul.zTekstuJson(String tekst) =>
@@ -1132,10 +1407,6 @@ class SlownikRegul {
     terminy: ((json['terminy'] as List<dynamic>?) ?? const [])
         .map((t) => Termin.zJson(t as Map<String, dynamic>))
         .toList(growable: false),
-    parametryWarunkowosci:
-        ((json['parametry_warunkowosci'] as List<dynamic>?) ?? const [])
-            .map((p) => ParametrWarunkowosci.zJson(p as Map<String, dynamic>))
-            .toList(growable: false),
     wspolczynnikiDjp: json['wspolczynniki_djp'] == null
         ? WspolczynnikiDjp.puste
         : WspolczynnikiDjp.zJson(
@@ -1156,13 +1427,15 @@ class SlownikRegul {
         : MaksymalneDawkiAzotu.zJson(
             json['maksymalne_dawki_azotu'] as Map<String, dynamic>,
           ),
+    warunkowosc: json['warunkowosc'] == null
+        ? Warunkowosc.puste
+        : Warunkowosc.zJson(json['warunkowosc'] as Map<String, dynamic>),
   );
 
   final String wersja;
   final DateTime obowiazujeOd;
   final List<Obowiazek> obowiazki;
   final List<Termin> terminy;
-  final List<ParametrWarunkowosci> parametryWarunkowosci;
 
   /// Przeliczniki zwierząt na DJP — dane, nie stałe w kodzie.
   final WspolczynnikiDjp wspolczynnikiDjp;
@@ -1175,6 +1448,9 @@ class SlownikRegul {
 
   /// Maksymalne dawki azotu dla upraw (tabela 14, załącznik nr 9).
   final MaksymalneDawkiAzotu maksymalneDawkiAzotu;
+
+  /// Normy GAEC (warunkowość) — etap 2, krok 1.
+  final Warunkowosc warunkowosc;
 
   /// Graniczne terminy stosowania nawozów — te, które mówią o rodzaju
   /// nawozu i rodzaju gruntu.

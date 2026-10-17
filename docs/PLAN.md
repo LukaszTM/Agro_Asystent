@@ -88,8 +88,45 @@ przez dysk użytkownika (`docs/raporty/etap1-synchronizacja-przez-plik.md`),
 (`docs/wydanie-android.md`).
 
 Później: zbudowanie programu na Windows (przepływ `windows.yml`, uruchamiany
-ręcznie) i próba z rolnikami na prawdziwym telefonie; etap 2 — kontrola
-warunkowości, magazyn; etap 3 — koszty i przychody, wersja na iPhone'a.
+ręcznie) i próba z rolnikami na prawdziwym telefonie; etap 3 — koszty
+i przychody, wersja na iPhone'a.
+
+## 4a. Zakres etapu 2 (warunkowość i magazyn)
+
+Kolejność jak w etapie 1: każdy krok ma dawać działającą aplikację. Rozbicie
+powstało 17.10.2026 z **tekstu jednolitego** rozporządzenia o normach
+(Dz.U. z 2025 r. poz. 1674) — czyli z aktu w brzmieniu obowiązującym, a nie
+z wersji z 2023 r., która w czterech miejscach jest już nieaktualna (między
+innymi okrywa z § 4 i dywersyfikacja z § 5 ust. 4).
+
+1. **Dane warunkowości.** Normy GAEC 1–9 jako dane z wersją: progi (10 ha,
+   30 ha, 14 %, 80 %, 40 %, 75 %, 95 %), terminy (15.10, 1.11–15.02,
+   15.04–31.07, 1.07–20.08), wyłączenia i zwolnienia. Skrypt czyta akt
+   i odmawia zapisu, gdy którejkolwiek wartości nie ma w jego tekście.
+2. **Rodzaj użytku i historia upraw pola.** Bez podziału na grunty orne,
+   trwałe użytki zielone i uprawy trwałe nie da się policzyć żadnego progu
+   GAEC 7, a bez uprawy w plonie głównym rok po roku (od 2023 r.) — reguły
+   trzech lat. Nowa tabela upraw pola i możliwość dopisania lat wcześniejszych.
+3. **GAEC 7: zmianowanie i dywersyfikacja.** Liczenie obu warunków
+   z wyłączeniami z § 5 ust. 3 i 11 oraz ostrzeżenie przy zmianie uprawy
+   („ta uprawa będzie tu czwarty rok").
+4. **GAEC 6: okrywa ochronna gleby.** Udział 80 % gruntów ornych od zbioru
+   do 15 października, z przerwą do 4 tygodni na siew ozimin; formy okrywy
+   deklaruje rolnik — aplikacja podpowiada z wpisów, ale nie zgaduje.
+5. **GAEC 4 i GAEC 8.** Pas 3 m od wód jako cecha pola i ostrzeżenie przy
+   oprysku oraz nawożeniu; zakaz przycinania drzew i żywopłotów
+   15.04–31.07 w kalendarzu i przy wpisie zabiegu.
+6. **Ekran „Warunkowość"** w obu wyglądach: każda norma ze stanem
+   (dotyczy / nie dotyczy / spełniona / do sprawdzenia), jedno zdanie co
+   zrobić, wydruk na kontrolę.
+7. **Magazyn** (premium, pkt 8): zakup i zużycie środków oraz nawozów, stan
+   na dziś, zużycie liczone z wpisu zabiegu, ostrzeżenie o środku wycofanym.
+
+Czego aplikacja nie policzy sama i co mówi wprost: GAEC 1 (udział TUZ w skali
+kraju), GAEC 2 (wyznaczone torfowiska i obszary podmokłe — wykaz z Dz.U.
+z 2025 r. poz. 307 jest po stronie IUNG-PIB i ARiMR), GAEC 5 (nachylenie
+stoku) i GAEC 9 (TUZ cenne na Natura 2000). Tam rolnik dostaje treść normy
+i informację, że dane o jego działkach ma urząd, nie telefon.
 
 **Ścieżka rozwoju: produkcja zwierzęca.** Rejestr stada, liczenie DJP, terminy
 zgłoszeń do IRZplus i później wysyłka przez API IRZplus. Moduł jest napisany
