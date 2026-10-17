@@ -99,6 +99,7 @@ class _EkranDawkaState extends State<EkranDawka> {
       body: ListView(
         padding: const EdgeInsets.all(MotywProsty.odstep),
         children: [
+          _PasOdWody(uslugi: widget.uslugi, dane: dane),
           if (!srodek.dawkaZnana)
             Ostrzezenie(
               tresc: 'Rejestr nie podaje tu dawki w jednoznacznej postaci.',
@@ -147,6 +148,34 @@ class _EkranDawkaState extends State<EkranDawka> {
             child: const Text('Zapisz'),
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// Ostrzeżenie z normy GAEC 4: pas od brzegu wody bez nawozów i środków
+/// ochrony roślin. Nie blokuje zapisu — zabieg mógł być wykonany poza
+/// pasem, a dokumentacja ma być prawdziwa.
+class _PasOdWody extends StatelessWidget {
+  const _PasOdWody({required this.uslugi, required this.dane});
+
+  final Uslugi uslugi;
+  final DaneWpisu dane;
+
+  @override
+  Widget build(BuildContext context) {
+    final ostrzezenie = uslugi.pasOdWody.ostrzezeniePrzedZapisem(
+      pola: dane.pola,
+      rodzaj: dane.rodzaj,
+    );
+    if (ostrzezenie == null) {
+      return const SizedBox.shrink();
+    }
+    return Padding(
+      padding: const EdgeInsets.only(bottom: MotywProsty.odstep),
+      child: Ostrzezenie(
+        tresc: ostrzezenie.tresc,
+        coZrobic: ostrzezenie.coZrobic,
       ),
     );
   }

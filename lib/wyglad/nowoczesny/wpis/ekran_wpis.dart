@@ -370,6 +370,7 @@ class _EkranWpisuState extends State<EkranWpisu> {
           ],
           if (_dane.rodzaj == RodzajZabiegu.oprysk) ..._oprysk(context),
           if (_dane.rodzaj == RodzajZabiegu.nawozenie) ..._nawozenie(context),
+          ..._pasOdWody(),
           const SizedBox(height: MotywNowoczesny.odstep),
           if (_zapisuje)
             const Center(child: CircularProgressIndicator())
@@ -394,6 +395,26 @@ class _EkranWpisuState extends State<EkranWpisu> {
         ],
       ),
     );
+  }
+
+  /// Ostrzeżenie z normy GAEC 4 — pas od brzegu wody bez nawozów
+  /// i środków ochrony roślin. Nie blokuje zapisu: zabieg mógł być
+  /// wykonany poza pasem, a dokumentacja ma być prawdziwa.
+  List<Widget> _pasOdWody() {
+    final ostrzezenie = widget.uslugi.pasOdWody.ostrzezeniePrzedZapisem(
+      pola: _dane.pola,
+      rodzaj: _dane.rodzaj,
+    );
+    if (ostrzezenie == null) {
+      return const [];
+    }
+    return [
+      const SizedBox(height: 8),
+      OstrzezenieNowoczesne(
+        tresc: ostrzezenie.tresc,
+        coZrobic: ostrzezenie.coZrobic,
+      ),
+    ];
   }
 
   List<Widget> _oprysk(BuildContext context) {

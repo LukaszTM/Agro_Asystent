@@ -1,5 +1,6 @@
 import 'package:sqflite_common/sqlite_api.dart';
 
+import 'granica_z_woda.dart';
 import 'rodzaj_uzytku.dart';
 
 /// Pole, czyli działka rolna w rozumieniu wniosku: własna nazwa, uprawa
@@ -15,6 +16,7 @@ class Pole {
     this.kodEppo,
     this.sezon,
     this.rodzajUzytku = RodzajUzytku.nieznany,
+    this.granicaZWoda = GranicaZWoda.nieznana,
   });
 
   final String id;
@@ -31,6 +33,10 @@ class Pole {
   /// nie powiedział"; wtedy warunkowość pisze „do sprawdzenia".
   final RodzajUzytku rodzajUzytku;
 
+  /// Czy pole graniczy z wodą w rozumieniu normy GAEC 4. Przy
+  /// [GranicaZWoda.nieznana] aplikacja nie ostrzega i nie udaje, że wie.
+  final GranicaZWoda granicaZWoda;
+
   double get powierzchniaHa => powierzchniaAr / 100;
 
   String get powierzchniaOpis =>
@@ -46,6 +52,7 @@ class Pole {
     kodEppo: w['kod_eppo'] as String?,
     sezon: w['sezon'] as int?,
     rodzajUzytku: RodzajUzytku.zBazy(w['rodzaj_uzytku'] as String?),
+    granicaZWoda: GranicaZWoda.zBazy(w['granica_z_woda'] as String?),
   );
 }
 
@@ -106,6 +113,23 @@ class RepozytoriumPol {
     'dzialka_rolna',
     {
       'rodzaj_uzytku': rodzaj.wBazie,
+      'zmieniono': (teraz ?? DateTime.now()).toIso8601String(),
+      'urzadzenie': urzadzenie,
+    },
+    where: 'id = ?',
+    whereArgs: [poleId],
+  );
+
+  /// Odpowiedź rolnika na pytanie z normy GAEC 4.
+  Future<void> ustawGranicaZWoda({
+    required String poleId,
+    required GranicaZWoda granica,
+    required String urzadzenie,
+    DateTime? teraz,
+  }) => _baza.update(
+    'dzialka_rolna',
+    {
+      'granica_z_woda': granica.wBazie,
       'zmieniono': (teraz ?? DateTime.now()).toIso8601String(),
       'urzadzenie': urzadzenie,
     },

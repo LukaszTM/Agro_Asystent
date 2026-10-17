@@ -8,6 +8,7 @@ import 'package:agro_asystent/funkcje/dokumenty/wydruk_pdf.dart';
 import 'package:agro_asystent/funkcje/dokumenty/wyjscie_dokumentu.dart';
 import 'package:agro_asystent/funkcje/dzialki/import_wniosku.dart';
 import 'package:agro_asystent/funkcje/dzialki/repozytorium_dzialek.dart';
+import 'package:agro_asystent/funkcje/dzialki/granica_z_woda.dart';
 import 'package:agro_asystent/funkcje/dzialki/repozytorium_pol.dart';
 import 'package:agro_asystent/funkcje/dzialki/slownik_upraw.dart';
 import 'package:agro_asystent/funkcje/dzialki/zrodlo_pliku.dart';
@@ -32,6 +33,7 @@ import 'package:agro_asystent/rdzen/baza/migracje.dart';
 import 'package:agro_asystent/rdzen/reguly/gminy_terminy.dart';
 import 'package:agro_asystent/rdzen/reguly/regula_prawna.dart';
 import 'package:agro_asystent/rdzen/uslugi/kopia/kopia_danych.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
@@ -356,6 +358,61 @@ void main() {
 
     expect(find.textContaining('premium', findRichText: true), findsNothing);
     expect(find.textContaining('Kup'), findsNothing);
+  });
+
+  testWidgets('pole przy wodzie przypomina o pasie 3 m (GAEC 4)', (
+    tester,
+  ) async {
+    await uslugi.pola.ustawGranicaZWoda(
+      poleId: 'p1',
+      granica: GranicaZWoda.tak,
+      urzadzenie: 'telefon',
+    );
+
+    await otworz(tester);
+    for (final cel in [
+      'Dodaj zabieg',
+      'Za stodołą',
+      'Oprysk',
+      'Abydos 750 EC',
+    ]) {
+      await tester.tap(find.text(cel));
+      await tester.pumpAndSettle();
+    }
+
+    expect(find.textContaining('graniczy z wodą'), findsOneWidget);
+    expect(find.textContaining('w pasie 3 m od brzegu'), findsOneWidget);
+
+    // Ostrzeżenie nie blokuje zapisu — dokumentacja ma być prawdziwa.
+    await tester.scrollUntilVisible(
+      find.text('Zapisz'),
+      200,
+      scrollable: find
+          .descendant(
+            of: find.byType(ListView),
+            matching: find.byType(Scrollable),
+          )
+          .first,
+    );
+    await tester.tap(find.text('Zapisz'));
+    await tester.pumpAndSettle();
+    expect(find.text('Zabieg zapisany'), findsOneWidget);
+    expect(await uslugi.zabiegi.wszystkie('g1'), hasLength(1));
+  });
+
+  testWidgets('bez odpowiedzi o wodzie nie ma ostrzeżenia', (tester) async {
+    await otworz(tester);
+    for (final cel in [
+      'Dodaj zabieg',
+      'Za stodołą',
+      'Oprysk',
+      'Abydos 750 EC',
+    ]) {
+      await tester.tap(find.text(cel));
+      await tester.pumpAndSettle();
+    }
+
+    expect(find.textContaining('graniczy z wodą'), findsNothing);
   });
 }
 

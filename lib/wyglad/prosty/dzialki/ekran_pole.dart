@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../app/uslugi.dart';
+import '../../../funkcje/dzialki/granica_z_woda.dart';
 import '../../../funkcje/dzialki/historia_upraw.dart';
 import '../../../funkcje/dzialki/repozytorium_pol.dart';
 import '../../../funkcje/dzialki/rodzaj_uzytku.dart';
@@ -75,6 +76,23 @@ class _EkranPoleState extends State<EkranPole> {
         _odswiezHistorie();
       });
     }
+  }
+
+  Future<void> _ustawGranicaZWoda(GranicaZWoda granica) async {
+    await widget.uslugi.pola.ustawGranicaZWoda(
+      poleId: _pole.id,
+      granica: granica,
+      urzadzenie: widget.uslugi.urzadzenie,
+    );
+    final swieze = await widget.uslugi.pola.jedno(_pole.id);
+    if (!mounted) {
+      return;
+    }
+    setState(() {
+      _pole = swieze ?? _pole;
+      _zmienione = true;
+      _odswiezHistorie();
+    });
   }
 
   Future<void> _ustawRodzajUzytku(RodzajUzytku rodzaj) async {
@@ -286,6 +304,12 @@ class _EkranPoleState extends State<EkranPole> {
                   ],
                 );
               },
+            ),
+            const SizedBox(height: MotywProsty.odstep * 2),
+            _GranicaZWodaPola(
+              pole: _pole,
+              pytanie: widget.uslugi.pasOdWody.pytanie,
+              onWybor: _ustawGranicaZWoda,
             ),
             const SizedBox(height: MotywProsty.odstep * 2),
             FutureBuilder<OpisOkrywyPola>(
@@ -551,6 +575,60 @@ class _OkrywaPoZbiorze extends StatelessWidget {
                   'Przy kontroli to pole nie liczy się do okrywy. Wpis '
                   'zostaje taki, jak było — dokumentacja ma być prawdziwa.',
             ),
+        ],
+      ],
+    );
+  }
+}
+
+/// Czy pole graniczy z wodą — pytanie z normy GAEC 4.
+///
+/// Aplikacja tego nie zgadnie: granice z ULDK nie mówią, jak szeroki jest
+/// rów, a rowy węższe od granicy z przepisu norma wyłącza. Dopóki rolnik
+/// nie odpowie, aplikacja o pasie nie ostrzega.
+class _GranicaZWodaPola extends StatelessWidget {
+  const _GranicaZWodaPola({
+    required this.pole,
+    required this.pytanie,
+    required this.onWybor,
+  });
+
+  final Pole pole;
+  final String pytanie;
+  final void Function(GranicaZWoda granica) onWybor;
+
+  @override
+  Widget build(BuildContext context) {
+    final teksty = Theme.of(context).textTheme;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('Woda przy polu', style: teksty.titleLarge),
+        const SizedBox(height: 8),
+        if (!pole.granicaZWoda.znana)
+          Ostrzezenie(
+            tresc: 'Nie wiemy, czy to pole graniczy z wodą.',
+            coZrobic: pytanie,
+          )
+        else ...[
+          Text(pole.granicaZWoda.dlaRolnika, style: teksty.headlineMedium),
+          const SizedBox(height: 8),
+          Text(pytanie, style: teksty.bodyMedium),
+        ],
+        const SizedBox(height: MotywProsty.odstep),
+        for (final granica in GranicaZWoda.doWyboru) ...[
+          DuzyPrzycisk(
+            etykieta: granica.dlaRolnika,
+            opis: granica == pole.granicaZWoda
+                ? 'tak zapisane'
+                : 'dotknij, żeby wybrać',
+            ikona: granica == pole.granicaZWoda
+                ? Icons.check_circle_outline
+                : Icons.circle_outlined,
+            wyrozniony: granica == pole.granicaZWoda,
+            onTap: () => onWybor(granica),
+          ),
+          const SizedBox(height: 10),
         ],
       ],
     );

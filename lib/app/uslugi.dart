@@ -6,6 +6,7 @@ import '../funkcje/dzialki/repozytorium_pol.dart';
 import '../funkcje/dzialki/historia_upraw.dart';
 import '../funkcje/dzialki/uprawy_pola.dart';
 import '../funkcje/warunkowosc/okrywa.dart';
+import '../funkcje/warunkowosc/pas_od_wody.dart';
 import '../funkcje/warunkowosc/okrywa_pola.dart';
 import '../funkcje/warunkowosc/zmianowanie.dart';
 import '../funkcje/dzialki/slownik_upraw.dart';
@@ -141,6 +142,9 @@ class Uslugi {
     uprawy: uprawyPola,
     reguly: reguly,
   );
+
+  /// Norma GAEC 4: pas bez nawozów i środków ochrony roślin od brzegu wody.
+  PasOdWody get pasOdWody => PasOdWody(pola: pola, reguly: reguly);
 
   /// Historia upraw pola razem z zakresem lat z przepisu.
   UslugaHistoriiUpraw get historiaUpraw =>

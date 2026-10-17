@@ -531,4 +531,14 @@ const List<Migracja> migracje = [
       ''',
     ],
   ),
+
+  // GAEC 4 zabrania nawozów i środków ochrony roślin w pasie 3 m od wody.
+  // Czy pole graniczy z wodą w rozumieniu tej normy, wie tylko rolnik:
+  // granice z ULDK nie mówią, czy rów ma 4, czy 6 m szerokości, a rowy do
+  // 5 m przepis z tej normy wyłącza. Pusta kolumna znaczy „nie wiem".
+  Migracja(
+    wersja: 7,
+    opis: 'Czy pole graniczy z wodą (GAEC 4)',
+    polecenia: ['ALTER TABLE dzialka_rolna ADD COLUMN granica_z_woda TEXT'],
+  ),
 ];

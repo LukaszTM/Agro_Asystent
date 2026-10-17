@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../app/uslugi.dart';
+import '../../../funkcje/dzialki/granica_z_woda.dart';
 import '../../../funkcje/dzialki/historia_upraw.dart';
 import '../../../funkcje/dzialki/repozytorium_pol.dart';
 import '../../../funkcje/dzialki/rodzaj_uzytku.dart';
@@ -79,6 +80,15 @@ class _EkranPoleNowoczesnyState extends State<EkranPoleNowoczesny> {
       zrodlo: opis.podpowiedz?.forma.id == wybrana.id
           ? 'podpowiedz potwierdzona'
           : 'rolnik',
+    );
+    await _odswiez();
+  }
+
+  Future<void> _ustawGranicaZWoda(GranicaZWoda granica) async {
+    await widget.uslugi.pola.ustawGranicaZWoda(
+      poleId: _pole.id,
+      granica: granica,
+      urzadzenie: widget.uslugi.urzadzenie,
     );
     await _odswiez();
   }
@@ -269,6 +279,35 @@ class _EkranPoleNowoczesnyState extends State<EkranPoleNowoczesny> {
                     'Historia jest pełna od ${historia.odRoku} r.',
                     style: teksty.bodyMedium,
                   ),
+                const SizedBox(height: MotywNowoczesny.odstep),
+                Text('Woda przy polu', style: teksty.titleLarge),
+                const SizedBox(height: 4),
+                if (!_pole.granicaZWoda.znana)
+                  OstrzezenieNowoczesne(
+                    tresc: 'Nie wiemy, czy to pole graniczy z wodą.',
+                    coZrobic: widget.uslugi.pasOdWody.pytanie,
+                  )
+                else ...[
+                  Text(_pole.granicaZWoda.dlaRolnika, style: teksty.bodyLarge),
+                  const SizedBox(height: 4),
+                  Text(
+                    widget.uslugi.pasOdWody.pytanie,
+                    style: teksty.bodyMedium,
+                  ),
+                ],
+                const SizedBox(height: 8),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    for (final granica in GranicaZWoda.doWyboru)
+                      Wybor(
+                        etykieta: granica.dlaRolnika,
+                        wybrany: granica == _pole.granicaZWoda,
+                        onTap: () => _ustawGranicaZWoda(granica),
+                      ),
+                  ],
+                ),
                 const SizedBox(height: MotywNowoczesny.odstep),
                 FutureBuilder<OpisOkrywyPola>(
                   future: _okrywa,
