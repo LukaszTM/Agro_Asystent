@@ -212,11 +212,26 @@ class Uslugi {
 
   final DostepFunkcji dostep;
 
+  /// Te same usługi z innym dostępem do funkcji płatnych.
+  ///
+  /// Po zakupie premium (albo po jego wygaśnięciu) nie otwieramy bazy od
+  /// nowa — zmienia się tylko to, co mówi [DostepFunkcji]. Decyzja o tym,
+  /// które funkcje są płatne, zostaje w `lib/rdzen/dostep/`.
+  Uslugi zDostepem(DostepFunkcji nowy) => dlaGospodarstwa(
+    id: gospodarstwoId,
+    nazwa: nazwaGospodarstwa,
+    dostep: nowy,
+  );
+
   /// Te same usługi, ale dla innego gospodarstwa. Wszystkie repozytoria
   /// pracują na jednej bazie i same filtrują po gospodarstwie, więc
   /// przełączenie to zmiana identyfikatora i nazwy — bez ponownego
   /// otwierania bazy i rozpakowywania słowników.
-  Uslugi dlaGospodarstwa({required String id, required String nazwa}) => Uslugi(
+  Uslugi dlaGospodarstwa({
+    required String id,
+    required String nazwa,
+    DostepFunkcji? dostep,
+  }) => Uslugi(
     gospodarstwoId: id,
     nazwaGospodarstwa: nazwa,
     urzadzenie: urzadzenie,
@@ -246,6 +261,6 @@ class Uslugi {
     przypomnienia: przypomnienia,
     ustawieniaPrzypomnien: ustawieniaPrzypomnien,
     uldk: uldk,
-    dostep: dostep,
+    dostep: dostep ?? this.dostep,
   );
 }

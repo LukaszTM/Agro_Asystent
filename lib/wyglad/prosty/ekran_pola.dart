@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../app/uslugi.dart';
 import '../../funkcje/dzialki/repozytorium_pol.dart';
+import '../../rdzen/dostep/funkcja.dart';
+import '../../rdzen/dostep/opis_premium.dart';
 import '../../funkcje/dzialki/slownik_upraw.dart';
 import 'dzialki/ekran_dzialki.dart';
 import 'dzialki/ekran_pole.dart';
@@ -128,12 +130,25 @@ class _EkranPolaState extends State<EkranPola> {
                 ),
               ),
               const SizedBox(height: MotywProsty.odstep),
-              DuzyPrzycisk(
-                etykieta: 'Wczytaj wniosek z PDF',
-                opis: 'Działki i uprawy z eWniosekPlus',
-                ikona: Icons.upload_file_outlined,
-                onTap: _wczytajWniosek,
-              ),
+              // Wczytanie wniosku to dodatek płatny (plan, pkt 8). Bez
+              // premium nie ma przycisku, ale jest zdanie, jak zrobić to
+              // samo bez opłaty — nie chowamy funkcji bez wyjaśnienia.
+              if (widget.uslugi.dostep.czyDostepna(
+                Funkcja.importDzialekZWnioskuPdf,
+              ))
+                DuzyPrzycisk(
+                  etykieta: 'Wczytaj wniosek z PDF',
+                  opis: 'Działki i uprawy z eWniosekPlus',
+                  ikona: Icons.upload_file_outlined,
+                  onTap: _wczytajWniosek,
+                )
+              else
+                Ostrzezenie(
+                  tresc: OpisPremium.tresc(Funkcja.importDzialekZWnioskuPdf),
+                  coZrobic: OpisPremium.coZrobic(
+                    Funkcja.importDzialekZWnioskuPdf,
+                  ),
+                ),
             ],
           );
         },

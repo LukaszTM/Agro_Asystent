@@ -376,6 +376,8 @@ void main() {
 
     expect(find.textContaining('premium', findRichText: true), findsNothing);
     expect(find.textContaining('Kup'), findsNothing);
+    // Nowe słowa o wersji płatnej też są ofertą — podczas wpisu ich nie ma.
+    expect(find.textContaining('płatn', findRichText: true), findsNothing);
   });
 
   testWidgets('pole przy wodzie przypomina o pasie 3 m (GAEC 4)', (

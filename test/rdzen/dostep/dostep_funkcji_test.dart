@@ -1,5 +1,6 @@
 import 'package:agro_asystent/rdzen/dostep/dostep_funkcji.dart';
 import 'package:agro_asystent/rdzen/dostep/funkcja.dart';
+import 'package:agro_asystent/rdzen/dostep/opis_premium.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -80,6 +81,54 @@ void main() {
         premium.czyMoznaZaproponowacPremium(trwaWpisZabiegu: false),
         isFalse,
       );
+    });
+  });
+
+  group('słowa o funkcjach płatnych', () {
+    test('każda funkcja płatna ma nazwę w języku rolnika', () {
+      final bezNazwy = Funkcja.values
+          .where((f) => !darmowa.czyDostepna(f))
+          .where((f) => OpisPremium.nazwa(f) == 'Ta funkcja')
+          .toList();
+      expect(
+        bezNazwy,
+        isEmpty,
+        reason:
+            'Nowa funkcja płatna musi dostać nazwę w OpisPremium — inaczej '
+            'ekran powie rolnikowi „Ta funkcja".',
+      );
+    });
+
+    test('wyjaśnienie zawsze kończy się obietnicą darmowej dokumentacji', () {
+      for (final funkcja in Funkcja.values.where(
+        (f) => !darmowa.czyDostepna(f),
+      )) {
+        expect(
+          OpisPremium.coZrobic(funkcja),
+          endsWith(OpisPremium.dokumentacjaDarmowa),
+          reason: funkcja.name,
+        );
+      }
+    });
+
+    test('nigdzie nie namawiamy do zakupu', () {
+      // Aplikacja niczego nie sprzedaje w trakcie pracy (plan, pkt 8).
+      for (final funkcja in Funkcja.values) {
+        final slowa =
+            '${OpisPremium.tresc(funkcja)} '
+                    '${OpisPremium.coZrobic(funkcja)}'
+                .toLowerCase();
+        expect(slowa, isNot(contains('kup')), reason: funkcja.name);
+        expect(slowa, isNot(contains('zapłać')), reason: funkcja.name);
+      }
+    });
+
+    test('funkcja darmowa nie ma po co wyjaśniać', () {
+      // Wymagane przepisami są dostępne zawsze — tych nie opisujemy jako
+      // płatnych.
+      for (final funkcja in DostepFunkcji.wymaganePrzepisami) {
+        expect(darmowa.czyDostepna(funkcja), isTrue, reason: funkcja.name);
+      }
     });
   });
 }

@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import '../../../app/uslugi.dart';
 import '../../../funkcje/nawozenie/nawoz.dart';
 import '../../../funkcje/odczyt/czytnik_zdjecia.dart';
+import '../../../rdzen/dostep/funkcja.dart';
+import '../../../rdzen/dostep/opis_premium.dart';
 import '../../../funkcje/odczyt/odczyt_nawozu.dart';
 import '../motyw.dart';
 import '../widgety/karta.dart';
@@ -232,7 +234,15 @@ class _EkranNowyNawozNowoczesnyState extends State<EkranNowyNawozNowoczesny> {
       body: ListView(
         padding: const EdgeInsets.all(MotywNowoczesny.odstep),
         children: [
-          if (_czyta)
+          // Jedno zdanie, nie ramka — formularz ma służyć wpisowi.
+          if (!widget.uslugi.dostep.czyDostepna(
+            Funkcja.odczytZdjeciaOpakowaniaNawozu,
+          ))
+            Text(
+              OpisPremium.tresc(Funkcja.odczytZdjeciaOpakowaniaNawozu),
+              style: teksty.bodyMedium,
+            )
+          else if (_czyta)
             const Center(child: CircularProgressIndicator())
           else
             Karta(

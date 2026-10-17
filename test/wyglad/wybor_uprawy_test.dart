@@ -30,6 +30,7 @@ import 'package:agro_asystent/funkcje/zabiegi/repozytorium_zabiegow.dart';
 import 'package:agro_asystent/funkcje/zabiegi/slownik_srodkow.dart';
 import 'package:agro_asystent/funkcje/zwierzeta/stado.dart';
 import 'package:agro_asystent/rdzen/baza/baza_gospodarstwa.dart';
+import 'package:agro_asystent/rdzen/dostep/dostep_funkcji.dart';
 import 'package:agro_asystent/rdzen/baza/migracje.dart';
 import 'package:agro_asystent/rdzen/reguly/gminy_terminy.dart';
 import 'package:agro_asystent/rdzen/reguly/regula_prawna.dart';
@@ -116,7 +117,7 @@ void main() {
     await slowniki.close();
   });
 
-  Uslugi zbudujUslugi() => Uslugi(
+  Uslugi zbudujUslugi({bool premium = false}) => Uslugi(
     gospodarstwoId: 'g1',
     nazwaGospodarstwa: 'Gospodarstwo próbne',
     urzadzenie: 'telefon',
@@ -161,6 +162,7 @@ void main() {
     profil: ProfilZBazy(baza),
     przypomnienia: const _BrakPrzypomnien(),
     ustawieniaPrzypomnien: UstawieniaPrzypomnien(baza),
+    dostep: DostepFunkcji(maPremium: premium),
   );
 
   Future<void> otworzNowePole(WidgetTester tester) async {
@@ -611,6 +613,39 @@ void main() {
 
     expect(find.text('Czwarty rok tej samej uprawy'), findsNothing);
     expect((await RepozytoriumPol(baza).jedno('p1'))!.uprawa, 'kukurydza');
+  });
+
+  testWidgets('wczytanie wniosku z PDF widać tylko w premium', (tester) async {
+    tester.view.physicalSize = const Size(420, 1400);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: MotywProsty.zbuduj(),
+        home: EkranPola(uslugi: zbudujUslugi()),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    // Bez premium nie ma przycisku, ale jest zdanie — i obietnica, że
+    // dokumentacja zostaje darmowa.
+    await przewinDo(tester, find.textContaining('należy do wersji płatnej'));
+    expect(find.text('Wczytaj wniosek z PDF'), findsNothing);
+    expect(find.textContaining('Działki dodasz po numerze'), findsOneWidget);
+    expect(find.textContaining('są darmowe i zawsze będą'), findsOneWidget);
+
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: MotywProsty.zbuduj(),
+        home: EkranPola(uslugi: zbudujUslugi(premium: true)),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await przewinDo(tester, find.text('Wczytaj wniosek z PDF'));
+    expect(find.text('Wczytaj wniosek z PDF'), findsOneWidget);
+    expect(find.textContaining('należy do wersji płatnej'), findsNothing);
   });
 
   testWidgets('bez wybranej uprawy pola nie da się zapisać', (tester) async {

@@ -11,6 +11,7 @@ import '../../../funkcje/warunkowosc/okres_legowy.dart';
 import '../../../funkcje/zabiegi/dane_wpisu.dart';
 import '../../../funkcje/zabiegi/slownik_srodkow.dart';
 import '../../../rdzen/modele/zabieg.dart';
+import '../../../rdzen/dostep/funkcja.dart';
 import '../../../rdzen/reguly/regula_prawna.dart';
 import '../motyw.dart';
 import '../widgety/karta.dart';
@@ -128,12 +129,21 @@ class _EkranWpisuState extends State<EkranWpisu> {
   bool get _gotowyDoZapisu =>
       _dane.gotowyDoZapisu && (!_pytacOPrace || _praca != null);
 
+  bool get _wielePolNaraz =>
+      widget.uslugi.dostep.czyDostepna(Funkcja.zabiegNaWieluPolach);
+
   void _przelaczPole(Pole pole) {
     setState(() {
       final juzJest = _dane.pola.indexWhere((p) => p.id == pole.id);
       if (juzJest >= 0) {
         _dane.pola.removeAt(juzJest);
       } else {
+        // Zabieg na kilku polach naraz to dodatek płatny (plan, pkt 8).
+        // Bez niego wybór pola zamienia poprzedni — ewidencja wyjdzie taka
+        // sama, tylko wpisów będzie tyle, ile pól.
+        if (!_wielePolNaraz) {
+          _dane.pola.clear();
+        }
         _dane.pola.add(pole);
       }
       // Lista środków zależy od uprawy pierwszego pola, więc po zmianie pól
@@ -430,6 +440,11 @@ class _EkranWpisuState extends State<EkranWpisu> {
               style: teksty.bodyLarge,
             ),
           ],
+          // Fakt o wersji darmowej, nie oferta: wpis dotyczy jednego pola.
+          if (!_wielePolNaraz) ...[
+            const SizedBox(height: 4),
+            Text('Jeden wpis dotyczy jednego pola.', style: teksty.bodyMedium),
+          ],
           if (_rozneUprawy) ...[
             const SizedBox(height: 8),
             OstrzezenieNowoczesne(
@@ -564,19 +579,26 @@ class _EkranWpisuState extends State<EkranWpisu> {
                 }),
               ),
             ),
-            const SizedBox(width: 8),
-            if (_czytaEtykiete)
-              const SizedBox(
-                width: MotywNowoczesny.minCelDotyku,
-                height: MotywNowoczesny.minCelDotyku,
-                child: Center(child: CircularProgressIndicator()),
-              )
-            else
-              IconButton.filled(
-                tooltip: 'Rozpoznaj etykietę ze zdjęcia',
-                icon: const Icon(Icons.photo_camera_outlined),
-                onPressed: _rozpoznajEtykiete,
-              ),
+            // Zdjęcie etykiety to dodatek płatny. Podczas wpisu zabiegu
+            // nie wolno pokazywać oferty premium, więc bez dostępu nie ma
+            // ani przycisku, ani żadnej wzmianki.
+            if (widget.uslugi.dostep.czyDostepna(
+              Funkcja.odczytZdjeciaEtykiety,
+            )) ...[
+              const SizedBox(width: 8),
+              if (_czytaEtykiete)
+                const SizedBox(
+                  width: MotywNowoczesny.minCelDotyku,
+                  height: MotywNowoczesny.minCelDotyku,
+                  child: Center(child: CircularProgressIndicator()),
+                )
+              else
+                IconButton.filled(
+                  tooltip: 'Rozpoznaj etykietę ze zdjęcia',
+                  icon: const Icon(Icons.photo_camera_outlined),
+                  onPressed: _rozpoznajEtykiete,
+                ),
+            ],
           ],
         ),
         if (_bladOdczytu != null) ...[

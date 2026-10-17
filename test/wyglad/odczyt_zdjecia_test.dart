@@ -29,6 +29,7 @@ import 'package:agro_asystent/funkcje/zwierzeta/stado.dart';
 import 'package:agro_asystent/rdzen/baza/baza_gospodarstwa.dart';
 import 'package:agro_asystent/rdzen/baza/migracje.dart';
 import 'package:agro_asystent/rdzen/reguly/gminy_terminy.dart';
+import 'package:agro_asystent/rdzen/dostep/dostep_funkcji.dart';
 import 'package:agro_asystent/rdzen/reguly/regula_prawna.dart';
 import 'package:agro_asystent/rdzen/uslugi/kopia/kopia_danych.dart';
 import 'package:agro_asystent/wyglad/prosty/motyw.dart';
@@ -123,7 +124,10 @@ void main() {
     await slowniki.close();
   });
 
-  Uslugi zbudujUslugi() => Uslugi(
+  /// Odczyt ze zdjęcia to funkcja premium (plan, pkt 8), więc testy tej
+  /// funkcji budują usługi z dostępem; osobny test sprawdza, co widzi
+  /// rolnik bez premium.
+  Uslugi zbudujUslugi({bool premium = true}) => Uslugi(
     gospodarstwoId: 'g1',
     nazwaGospodarstwa: 'Gospodarstwo próbne',
     urzadzenie: 'telefon',
@@ -168,6 +172,7 @@ void main() {
     profil: ProfilZBazy(baza),
     przypomnienia: const _BrakPrzypomnien(),
     ustawieniaPrzypomnien: UstawieniaPrzypomnien(baza),
+    dostep: DostepFunkcji(maPremium: premium),
   );
 
   Future<void> pokaz(WidgetTester tester, Widget ekran) async {
@@ -241,6 +246,17 @@ void main() {
         find.textContaining('Nie udało się otworzyć aparatu'),
         findsOneWidget,
       );
+    });
+  });
+
+  group('bez premium', () {
+    testWidgets('na formularzu nawozu nie ma odczytu z worka, tylko zdanie', (
+      tester,
+    ) async {
+      await pokaz(tester, EkranNowyNawoz(uslugi: zbudujUslugi(premium: false)));
+
+      expect(find.text('Odczytaj z worka'), findsNothing);
+      expect(find.textContaining('należy do wersji płatnej'), findsOneWidget);
     });
   });
 

@@ -271,6 +271,13 @@ i eksport wymagany przepisami są zawsze darmowe. Podczas wpisu zabiegu żadnych
 | Zwierzęta | *(poza zakresem — ścieżka rozwoju)* | *(poza zakresem — ścieżka rozwoju)* |
 | Dodatki | Jedno gospodarstwo | Kilka gospodarstw, magazyn, koszty i przychody |
 
+Trzy pozycje z tabeli zostały 17.10.2026 **świadomie zostawione darmowe** przy
+porządkowaniu dostępu (raport: `docs/raporty/premium-w-calej-aplikacji.md`) — do
+decyzji właściciela: karencja z bazy etykiet (informacja o bezpieczeństwie
+żywności), ostrzeżenia przed błędem (chronią przed karą, nie oszczędzają czasu)
+i wczytanie kopii z pliku (bez niego rolnik nie odzyska dokumentacji po zmianie
+telefonu). Reszta tabeli jest już pilnowana w kodzie.
+
 Ceny (do potwierdzenia w rozmowach z rolnikami): cały 2027 r. premium za darmo dla wszystkich;
 potem 49 zł jednorazowo dla użytkowników z pierwszego sezonu i 99 zł dla nowych. Aktualizacje
 danych w cenie przez 2 lata od zakupu, potem dobrowolna wpłata co 2 lata (min. 20 zł; w sklepie

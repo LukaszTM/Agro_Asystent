@@ -196,10 +196,17 @@ void main() {
   }
 
   Future<void> przewinDo(WidgetTester tester, Finder czego) async {
+    // Przewijamy listę ekranu, a nie wnętrze pola tekstowego — TextField
+    // ma swój własny obszar przewijany i przeciąganie go nic nie daje.
     await tester.scrollUntilVisible(
       czego,
       200,
-      scrollable: find.byType(Scrollable).last,
+      scrollable: find
+          .descendant(
+            of: find.byType(ListView),
+            matching: find.byType(Scrollable),
+          )
+          .first,
     );
     await tester.pumpAndSettle();
   }

@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import '../../../app/uslugi.dart';
 import '../../../funkcje/nawozenie/nawoz.dart';
 import '../../../funkcje/odczyt/czytnik_zdjecia.dart';
+import '../../../rdzen/dostep/funkcja.dart';
+import '../../../rdzen/dostep/opis_premium.dart';
 import '../../../funkcje/odczyt/odczyt_nawozu.dart';
 import '../motyw.dart';
 import '../widgety/duzy_przycisk.dart';
@@ -193,7 +195,16 @@ class _EkranNowyNawozState extends State<EkranNowyNawoz> {
       body: ListView(
         padding: const EdgeInsets.all(MotywProsty.odstep),
         children: [
-          if (_czyta)
+          // Na formularzu zostaje jedno zdanie, nie ramka: rolnik przyszedł
+          // tu wpisać nawóz, a nie czytać o wersjach.
+          if (!widget.uslugi.dostep.czyDostepna(
+            Funkcja.odczytZdjeciaOpakowaniaNawozu,
+          ))
+            Text(
+              OpisPremium.tresc(Funkcja.odczytZdjeciaOpakowaniaNawozu),
+              style: Theme.of(context).textTheme.bodyMedium,
+            )
+          else if (_czyta)
             const Center(child: CircularProgressIndicator())
           else
             DuzyPrzycisk(

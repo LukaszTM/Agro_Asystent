@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../app/uslugi.dart';
 import '../../../funkcje/odczyt/czytnik_zdjecia.dart';
+import '../../../rdzen/dostep/funkcja.dart';
 import '../../../funkcje/odczyt/odczyt_etykiety.dart';
 import '../../../funkcje/zabiegi/dane_wpisu.dart';
 import '../../../funkcje/zabiegi/slownik_srodkow.dart';
@@ -124,17 +125,24 @@ class _EkranWyborSrodkaState extends State<EkranWyborSrodka> {
               }),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: MotywProsty.odstep),
-            child: _czytaEtykiete
-                ? const Center(child: CircularProgressIndicator())
-                : DuzyPrzycisk(
-                    etykieta: 'Rozpoznaj etykietę',
-                    opis: 'zrób zdjęcie napisu na opakowaniu',
-                    ikona: Icons.photo_camera_outlined,
-                    onTap: _rozpoznajEtykiete,
-                  ),
-          ),
+          // Zdjęcie etykiety to dodatek płatny (plan, pkt 8). Podczas
+          // wpisu zabiegu nie wolno pokazywać żadnej oferty premium, więc
+          // bez dostępu przycisku po prostu nie ma — rolnik wybiera środek
+          // z listy, tak jak zawsze.
+          if (widget.uslugi.dostep.czyDostepna(Funkcja.odczytZdjeciaEtykiety))
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: MotywProsty.odstep,
+              ),
+              child: _czytaEtykiete
+                  ? const Center(child: CircularProgressIndicator())
+                  : DuzyPrzycisk(
+                      etykieta: 'Rozpoznaj etykietę',
+                      opis: 'zrób zdjęcie napisu na opakowaniu',
+                      ikona: Icons.photo_camera_outlined,
+                      onTap: _rozpoznajEtykiete,
+                    ),
+            ),
           if (_bladOdczytu != null)
             Padding(
               padding: const EdgeInsets.fromLTRB(

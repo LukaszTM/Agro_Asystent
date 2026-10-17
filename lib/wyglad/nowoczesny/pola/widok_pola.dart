@@ -4,6 +4,8 @@ import '../../../app/uslugi.dart';
 import '../../../funkcje/dzialki/repozytorium_dzialek.dart';
 import '../../../funkcje/dzialki/repozytorium_pol.dart';
 import '../../../funkcje/dzialki/slownik_upraw.dart';
+import '../../../rdzen/dostep/funkcja.dart';
+import '../../../rdzen/dostep/opis_premium.dart';
 import '../../../rdzen/wspolne/mapa_dzialek.dart';
 import '../motyw.dart';
 import '../widgety/karta.dart';
@@ -299,16 +301,32 @@ class _WidokPolaState extends State<WidokPola> {
                     label: const Text('Działki'),
                   ),
                 ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: OutlinedButton.icon(
-                    onPressed: _importWniosku,
-                    icon: const Icon(Icons.upload_file, size: 20),
-                    label: const Text('Z wniosku'),
+                // Wczytanie wniosku to dodatek płatny (plan, pkt 8).
+                if (widget.uslugi.dostep.czyDostepna(
+                  Funkcja.importDzialekZWnioskuPdf,
+                )) ...[
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: OutlinedButton.icon(
+                      onPressed: _importWniosku,
+                      icon: const Icon(Icons.upload_file, size: 20),
+                      label: const Text('Z wniosku'),
+                    ),
                   ),
-                ),
+                ],
               ],
             ),
+            // Jedno zdanie pod przyciskami — lista pól ma zostać na
+            // pierwszym ekranie, a nie zjechać pod wyjaśnienie.
+            if (!widget.uslugi.dostep.czyDostepna(
+              Funkcja.importDzialekZWnioskuPdf,
+            )) ...[
+              const SizedBox(height: 8),
+              Text(
+                OpisPremium.tresc(Funkcja.importDzialekZWnioskuPdf),
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+            ],
             const SizedBox(height: MotywNowoczesny.odstep),
             if (wszystkie.isEmpty)
               const OstrzezenieNowoczesne(

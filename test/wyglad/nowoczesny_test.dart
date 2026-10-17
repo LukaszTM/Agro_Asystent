@@ -31,11 +31,13 @@ import 'package:agro_asystent/funkcje/zwierzeta/stado.dart';
 import 'package:agro_asystent/rdzen/baza/baza_gospodarstwa.dart';
 import 'package:agro_asystent/rdzen/baza/migracje.dart';
 import 'package:agro_asystent/rdzen/reguly/gminy_terminy.dart';
+import 'package:agro_asystent/rdzen/dostep/dostep_funkcji.dart';
 import 'package:agro_asystent/rdzen/reguly/regula_prawna.dart';
 import 'package:agro_asystent/rdzen/uslugi/kopia/kopia_danych.dart';
 import 'package:agro_asystent/rdzen/wspolne/mapa_dzialek.dart';
 import 'package:agro_asystent/wyglad/nowoczesny/ekran_glowny.dart';
 import 'package:agro_asystent/wyglad/nowoczesny/motyw.dart';
+import 'package:agro_asystent/wyglad/nowoczesny/wpis/ekran_wpis.dart';
 import 'package:agro_asystent/wyglad/nowoczesny/ustawienia/ekran_ustawienia.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -602,9 +604,44 @@ void main() {
       expect(oprysk.przyczyna, 'mączniak prawdziwy zbóż i traw');
     });
 
-    testWidgets('kilka pól naraz liczy powierzchnię samo', (tester) async {
+    testWidgets('w wersji darmowej jeden wpis dotyczy jednego pola', (
+      tester,
+    ) async {
       await otworz(tester);
       await tester.tap(find.bySemanticsLabel('Dodaj zabieg'));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Oprysk'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.textContaining('Za stodołą'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.textContaining('Pod lasem'));
+      await tester.pumpAndSettle();
+
+      // Zabieg na kilku polach naraz to dodatek płatny (plan, pkt 8):
+      // wybór drugiego pola zamienia pierwsze, a ewidencja wychodzi ta
+      // sama — tylko wpisów jest tyle, ile pól.
+      expect(find.text('Jeden wpis dotyczy jednego pola.'), findsOneWidget);
+      expect(find.textContaining('Razem 1,50 ha'), findsOneWidget);
+      // Podczas wpisu zabiegu nie ma żadnej oferty premium.
+      expect(find.textContaining('płatnej'), findsNothing);
+    });
+
+    testWidgets('w premium kilka pól naraz liczy powierzchnię samo', (
+      tester,
+    ) async {
+      tester.view.physicalSize = const Size(420, 900);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.reset);
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: MotywNowoczesny.zbuduj(),
+          home: EkranWpisu(
+            uslugi: uslugi.zDostepem(const DostepFunkcji(maPremium: true)),
+            teraz: teraz,
+          ),
+        ),
+      );
       await tester.pumpAndSettle();
 
       await tester.tap(find.text('Oprysk'));
@@ -647,6 +684,8 @@ void main() {
 
       expect(find.textContaining('premium'), findsNothing);
       expect(find.textContaining('Kup'), findsNothing);
+      // „Wersja płatna" to też oferta — podczas wpisu zabiegu jej nie ma.
+      expect(find.textContaining('płatn'), findsNothing);
     });
 
     testWidgets('nawożenie bez znanego azotu nie zgaduje dawki azotu', (
