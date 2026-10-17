@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../funkcje/nawozenie/terminy_azotowe.dart';
 import '../reguly/regula_prawna.dart';
+import 'daty.dart';
 
 /// Kolory i odstępy karty — każdy wygląd podaje swoje, żeby ten widget
 /// nie musiał nic wiedzieć o `lib/wyglad/` (CLAUDE.md, reguły architektury).
@@ -46,33 +47,6 @@ class KartaTerminowNawozenia extends StatelessWidget {
   /// Ostrzeżenie w wyglądzie wywołującego — treść jest wspólna, bo znaczy
   /// to samo w obu wyglądach, a wygląd ramki należy do ekranu.
   final Widget Function(String tresc, String? coZrobic) ostrzezenie;
-
-  static String _dzien(String dataRoczna) {
-    final czesci = dataRoczna.split('-');
-    if (czesci.length != 2) {
-      return dataRoczna;
-    }
-    const miesiace = [
-      'stycznia',
-      'lutego',
-      'marca',
-      'kwietnia',
-      'maja',
-      'czerwca',
-      'lipca',
-      'sierpnia',
-      'września',
-      'października',
-      'listopada',
-      'grudnia',
-    ];
-    final miesiac = int.tryParse(czesci.first);
-    final dzien = int.tryParse(czesci.last);
-    if (miesiac == null || dzien == null || miesiac < 1 || miesiac > 12) {
-      return dataRoczna;
-    }
-    return '$dzien ${miesiace[miesiac - 1]}';
-  }
 
   /// Data dla tego terminu: z wykazu gmin, gdy przepis go przewiduje
   /// i gminy działek są znane; inaczej domyślna ze słownika.
@@ -119,12 +93,12 @@ class KartaTerminowNawozenia extends StatelessWidget {
                 children: [
                   Text(
                     '${termin.coToZaNawoz ?? termin.nazwa}: '
-                    'do ${_dzien(_data(termin) ?? '')}',
+                    'do ${Daty.dzienIMiesiac(_data(termin) ?? '')}',
                     style: Theme.of(context).textTheme.bodyLarge,
                   ),
                   if (termin.okresOd != null)
                     Text(
-                      'wolno od ${_dzien(termin.okresOd!)}',
+                      'wolno od ${Daty.dzienIMiesiac(termin.okresOd!)}',
                       style: Theme.of(context).textTheme.bodyMedium,
                     ),
                   Text(
@@ -169,7 +143,7 @@ class KartaTerminowNawozenia extends StatelessWidget {
               odstepstwo.doDnia == null
                   ? '${odstepstwo.nazwa} — termin z tabeli nie obowiązuje'
                   : '${odstepstwo.nazwa} — wolno do '
-                        '${_dzien(odstepstwo.doDnia!)}',
+                        '${Daty.dzienIMiesiac(odstepstwo.doDnia!)}',
               style: Theme.of(context).textTheme.bodyLarge,
             ),
             Text(

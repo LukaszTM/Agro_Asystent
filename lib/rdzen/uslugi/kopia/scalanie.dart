@@ -72,6 +72,9 @@ const Map<String, ReguloScalania> regulyScalania = {
   // identyfikator wyliczany z pola i sezonu, więc dwa urządzenia dopisujące
   // to samo trafiają w ten sam wiersz.
   'uprawa_pola': ReguloScalania(RodzajScalania.poCzasie),
+  // Deklaracja okrywy — tak samo: identyfikator z pola i sezonu, więc
+  // wygrywa nowsza deklaracja, a starsza zostaje w dzienniku zmian.
+  'okrywa_pola': ReguloScalania(RodzajScalania.poCzasie),
   'nawoz': ReguloScalania(RodzajScalania.poCzasie),
   'zabieg': ReguloScalania(RodzajScalania.poCzasie),
   'zabieg_pole': ReguloScalania(

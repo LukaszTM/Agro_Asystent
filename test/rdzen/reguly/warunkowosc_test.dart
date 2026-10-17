@@ -211,4 +211,52 @@ void main() {
       );
     });
   });
+
+  group('formy okrywy ochronnej gleby (GAEC 6)', () {
+    test('lista jest w słowniku i ma formę „gleba odkryta"', () {
+      final formy = warunkowosc.formyOkrywy;
+      expect(formy.pusta, isFalse);
+      expect(formy.liczone.length, greaterThan(1));
+      expect(formy.formy.where((f) => !f.liczJakoOkrywe), hasLength(1));
+    });
+
+    test('rozporządzenie form nie wymienia — stąd „do weryfikacji"', () {
+      expect(warunkowosc.formyOkrywy.doWeryfikacji, isTrue);
+      expect(warunkowosc.formyOkrywy.zrodlo, contains('ARiMR'));
+    });
+
+    test('nieznana forma nie liczy się do udziału okrywy', () {
+      final formy = warunkowosc.formyOkrywy;
+      expect(formy.liczy('uprawa_ozima'), isTrue);
+      expect(formy.liczy('brak'), isFalse);
+      expect(formy.liczy('forma_z_przyszlej_wersji'), isFalse);
+      expect(formy.liczy(null), isFalse);
+    });
+
+    test('gleba odkryta nie ma słów do podpowiadania', () {
+      final odkryta = warunkowosc.formyOkrywy.formy.firstWhere(
+        (f) => !f.liczJakoOkrywe,
+      );
+      expect(odkryta.slowa, isEmpty);
+    });
+
+    test('próg i przerwa z normy GAEC 6 są danymi, nie liczbami w kodzie', () {
+      final gaec6 = warunkowosc.norma('gaec_6')!;
+      expect(gaec6.prog('udzial_gruntow_ornych_procent')?.wartosc, 80);
+      expect(gaec6.prog('przerwa_tygodnie')?.calkowita, 4);
+    });
+
+    test('termin okrywy zna swój ostatni dzień w podanym roku', () {
+      final termin = warunkowosc.norma('gaec_6')!.termin('okrywa_grunty_orne')!;
+      expect(termin.odZdarzenia, isTrue);
+      expect(termin.koniecWRoku(2026), DateTime(2026, 10, 15));
+    });
+
+    test('okrywa w sadach przechodzi przez koniec roku', () {
+      final sady = warunkowosc.norma('gaec_6')!.termin('okrywa_sady')!;
+      expect(sady.obejmuje(DateTime(2026, 12, 20)), isTrue);
+      expect(sady.obejmuje(DateTime(2026, 2, 1)), isTrue);
+      expect(sady.obejmuje(DateTime(2026, 6, 1)), isFalse);
+    });
+  });
 }

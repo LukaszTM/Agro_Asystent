@@ -39,6 +39,7 @@ import 'package:agro_asystent/wyglad/nowoczesny/motyw.dart';
 import 'package:agro_asystent/wyglad/nowoczesny/nawozenie/ekran_nawozenie.dart';
 import 'package:agro_asystent/wyglad/nowoczesny/pola/ekran_dzialki.dart';
 import 'package:agro_asystent/wyglad/nowoczesny/pola/ekran_import_wniosku.dart';
+import 'package:agro_asystent/funkcje/warunkowosc/okrywa_pola.dart';
 import 'package:agro_asystent/wyglad/nowoczesny/pola/ekran_pole.dart';
 import 'package:agro_asystent/wyglad/nowoczesny/ustawienia/ekran_dane_gospodarstwa.dart';
 import 'package:flutter/material.dart';
@@ -498,6 +499,38 @@ void main() {
       expect(find.text('Dopisz rok 2023'), findsOneWidget);
       // Rok bieżący wziął się z pola, więc nie ma go wśród brakujących.
       expect(find.text('Dopisz rok ${DateTime.now().year}'), findsNothing);
+    });
+
+    testWidgets('okrywa po zbiorze: podpowiedź, a zapis po dotknięciu', (
+      tester,
+    ) async {
+      await dodajPole(uprawa: 'pszenica ozima');
+      final pole = (await RepozytoriumPol(baza).jedno('p1'))!;
+      await pokaz(
+        tester,
+        EkranPoleNowoczesny(uslugi: zbudujUslugi(), pole: pole),
+      );
+
+      await przewinDo(tester, find.textContaining('Nie wiemy, co zostaje'));
+      expect(find.textContaining('Nie wiemy, co zostaje'), findsOneWidget);
+      // Ozimina w uprawie to podpowiedź, nie zapis.
+      expect(find.textContaining('Podpowiedź: Uprawa ozima'), findsOneWidget);
+      expect(
+        await RepozytoriumOkrywyPola(baza)
+            .dlaPola(poleId: 'p1', sezon: DateTime.now().year),
+        isNull,
+      );
+
+      await przewinDo(tester, find.text('Uprawa ozima'));
+      await tester.ensureVisible(find.text('Uprawa ozima'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Uprawa ozima'));
+      await tester.pumpAndSettle();
+
+      final deklaracja = await RepozytoriumOkrywyPola(baza)
+          .dlaPola(poleId: 'p1', sezon: DateTime.now().year);
+      expect(deklaracja?.forma, 'uprawa_ozima');
+      expect(deklaracja?.zrodlo, 'podpowiedz potwierdzona');
     });
   });
 

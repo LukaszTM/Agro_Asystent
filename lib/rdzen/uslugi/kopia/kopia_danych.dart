@@ -92,6 +92,7 @@ class KopiaDanych {
     'dzialka_rolna',
     'dzialka_rolna_czesc',
     'uprawa_pola',
+    'okrywa_pola',
     'nawoz',
     'zabieg',
     'zabieg_pole',

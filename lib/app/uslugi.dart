@@ -5,6 +5,8 @@ import '../funkcje/dzialki/repozytorium_dzialek.dart';
 import '../funkcje/dzialki/repozytorium_pol.dart';
 import '../funkcje/dzialki/historia_upraw.dart';
 import '../funkcje/dzialki/uprawy_pola.dart';
+import '../funkcje/warunkowosc/okrywa.dart';
+import '../funkcje/warunkowosc/okrywa_pola.dart';
 import '../funkcje/warunkowosc/zmianowanie.dart';
 import '../funkcje/dzialki/slownik_upraw.dart';
 import '../funkcje/dzialki/zrodlo_pliku.dart';
@@ -128,6 +130,17 @@ class Uslugi {
   /// Norma GAEC 7: zmianowanie i dywersyfikacja upraw.
   Zmianowanie get zmianowanie =>
       Zmianowanie(pola: pola, uprawy: uprawyPola, reguly: reguly);
+
+  /// Deklaracje okrywy ochronnej gleby — z nich liczy się GAEC 6.
+  RepozytoriumOkrywyPola get okrywaPola => RepozytoriumOkrywyPola(kopia.baza);
+
+  /// Norma GAEC 6: okrywa ochronna gleby na gruntach ornych.
+  Okrywa get okrywa => Okrywa(
+    pola: pola,
+    okrywy: okrywaPola,
+    uprawy: uprawyPola,
+    reguly: reguly,
+  );
 
   /// Historia upraw pola razem z zakresem lat z przepisu.
   UslugaHistoriiUpraw get historiaUpraw =>

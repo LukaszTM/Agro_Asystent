@@ -477,4 +477,58 @@ const List<Migracja> migracje = [
       ''',
     ],
   ),
+
+  // GAEC 6 pyta, co zostaje na polu po zbiorze: okrywa ochronna gleby ma
+  // być na co najmniej 80 % gruntów ornych od zbioru do 15 października.
+  // Czego tu nie ma, tego aplikacja nie policzy — formy okrywy nie da się
+  // wyczytać z uprawy w plonie głównym, więc **deklaruje ją rolnik**.
+  // Pusty wiersz znaczy „nie wiem", a nie „gleba odkryta".
+  //
+  // Identyfikator znowu jest wyliczany („ok-<pole>-<sezon>"), żeby ta sama
+  // deklaracja z dwóch urządzeń scaliła się w jeden wiersz.
+  Migracja(
+    wersja: 6,
+    opis: 'Deklaracja okrywy ochronnej gleby dla pola i sezonu',
+    polecenia: [
+      '''
+      CREATE TABLE okrywa_pola (
+        id               TEXT PRIMARY KEY,
+        dzialka_rolna_id TEXT NOT NULL REFERENCES dzialka_rolna(id),
+        sezon            INTEGER NOT NULL,
+        forma            TEXT NOT NULL,
+        data_zbioru      TEXT,
+        przerwa_dni      INTEGER,
+        uwagi            TEXT,
+        zrodlo           TEXT,
+        utworzono        TEXT NOT NULL,
+        zmieniono        TEXT NOT NULL,
+        urzadzenie       TEXT NOT NULL,
+        usuniety         INTEGER NOT NULL DEFAULT 0
+      )
+      ''',
+      'CREATE INDEX idx_okrywa_pola ON okrywa_pola(dzialka_rolna_id, sezon)',
+
+      // Deklaracje też są dopisywane, nie nadpisywane: po kontroli musi
+      // być widać, co rolnik podał wcześniej i kiedy to poprawił.
+      '''
+      CREATE TRIGGER historia_okrywa_pola_zmiana AFTER UPDATE ON okrywa_pola
+      WHEN OLD.forma IS NOT NEW.forma
+        OR OLD.data_zbioru IS NOT NEW.data_zbioru
+        OR OLD.przerwa_dni IS NOT NEW.przerwa_dni
+        OR OLD.uwagi IS NOT NEW.uwagi
+        OR OLD.usuniety IS NOT NEW.usuniety
+      BEGIN
+        INSERT INTO historia_zmian (tabela, wiersz_id, operacja, dane_json, czas, urzadzenie)
+        VALUES ('okrywa_pola', NEW.id,
+                CASE WHEN NEW.usuniety = 1 THEN 'usuniecie' ELSE 'zmiana' END,
+                json_object('poprzednio',
+                  json_object('sezon', OLD.sezon, 'forma', OLD.forma,
+                              'data_zbioru', OLD.data_zbioru,
+                              'przerwa_dni', OLD.przerwa_dni,
+                              'uwagi', OLD.uwagi)),
+                NEW.zmieniono, NEW.urzadzenie);
+      END
+      ''',
+    ],
+  ),
 ];

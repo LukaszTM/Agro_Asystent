@@ -6,6 +6,8 @@ import '../../../funkcje/dzialki/repozytorium_pol.dart';
 import '../../../funkcje/dzialki/rodzaj_uzytku.dart';
 import '../../../funkcje/dzialki/slownik_upraw.dart';
 import '../../../funkcje/dzialki/uprawy_pola.dart';
+import '../../../funkcje/warunkowosc/okrywa.dart';
+import '../../../rdzen/reguly/regula_prawna.dart';
 import '../motyw.dart';
 import '../widgety/duzy_przycisk.dart';
 import 'ekran_wybor_uprawy.dart';
@@ -32,6 +34,7 @@ class _EkranPoleState extends State<EkranPole> {
   bool _zmienione = false;
   bool _pracuje = false;
   Future<HistoriaUprawPola>? _historia;
+  Future<OpisOkrywyPola>? _okrywa;
 
   @override
   void initState() {
@@ -41,6 +44,37 @@ class _EkranPoleState extends State<EkranPole> {
 
   void _odswiezHistorie() {
     _historia = widget.uslugi.historiaUpraw.dla(_pole);
+    _okrywa = widget.uslugi.okrywa.dlaPola(pole: _pole);
+  }
+
+  /// Zapis deklaracji okrywy. Dzień zbioru bierzemy z wpisów zabiegów,
+  /// gdy tam jest — rolnik nie musi go podawać drugi raz.
+  Future<void> _ustawOkrywe({
+    required OpisOkrywyPola opis,
+    FormaOkrywy? forma,
+    int? przerwaDni,
+  }) async {
+    final wybrana = forma ?? opis.forma;
+    if (wybrana == null) {
+      return;
+    }
+    await widget.uslugi.okrywaPola.zapisz(
+      poleId: _pole.id,
+      sezon: opis.sezon,
+      forma: wybrana.id,
+      dataZbioru: opis.dataZbioru,
+      przerwaDni: przerwaDni ?? opis.deklaracja?.przerwaDni,
+      urzadzenie: widget.uslugi.urzadzenie,
+      zrodlo: opis.podpowiedz?.forma.id == wybrana.id
+          ? 'podpowiedz potwierdzona'
+          : 'rolnik',
+    );
+    if (mounted) {
+      setState(() {
+        _zmienione = true;
+        _odswiezHistorie();
+      });
+    }
   }
 
   Future<void> _ustawRodzajUzytku(RodzajUzytku rodzaj) async {
@@ -253,6 +287,22 @@ class _EkranPoleState extends State<EkranPole> {
                 );
               },
             ),
+            const SizedBox(height: MotywProsty.odstep * 2),
+            FutureBuilder<OpisOkrywyPola>(
+              future: _okrywa,
+              builder: (context, stan) {
+                if (!stan.hasData) {
+                  return const SizedBox.shrink();
+                }
+                return _OkrywaPoZbiorze(
+                  opis: stan.data!,
+                  onForma: (forma) =>
+                      _ustawOkrywe(opis: stan.data!, forma: forma),
+                  onPrzerwa: (wybor) =>
+                      _ustawOkrywe(opis: stan.data!, przerwaDni: wybor.dni),
+                );
+              },
+            ),
           ],
         ),
       ),
@@ -402,6 +452,105 @@ class _UprawyWLatach extends StatelessWidget {
             'Historia jest pełna od ${historia.odRoku} r.',
             style: teksty.bodyMedium,
           ),
+        ],
+      ],
+    );
+  }
+}
+
+/// Co zostaje na polu po zbiorze — deklaracja do normy GAEC 6.
+///
+/// Formy są danymi ze słownika reguł. Aplikacja podpowiada z wpisów
+/// rolnika, ale zapisuje tylko to, co rolnik dotknie: zgadnięta okrywa
+/// dałaby zgadnięty wynik kontroli.
+class _OkrywaPoZbiorze extends StatelessWidget {
+  const _OkrywaPoZbiorze({
+    required this.opis,
+    required this.onForma,
+    required this.onPrzerwa,
+  });
+
+  final OpisOkrywyPola opis;
+  final void Function(FormaOkrywy forma) onForma;
+  final void Function(WyborPrzerwy wybor) onPrzerwa;
+
+  @override
+  Widget build(BuildContext context) {
+    final teksty = Theme.of(context).textTheme;
+    if (opis.formy.pusta) {
+      return const SizedBox.shrink();
+    }
+    final wybrana = opis.forma;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(opis.naglowek, style: teksty.titleLarge),
+        const SizedBox(height: 8),
+        if (opis.doPodania)
+          Ostrzezenie(
+            tresc: 'Nie wiemy, co zostaje po zbiorze.',
+            coZrobic: opis.wyjasnienie,
+          )
+        else
+          Text(
+            wybrana?.nazwa ?? 'nie znamy tej formy',
+            style: teksty.headlineMedium,
+          ),
+        if (opis.opisZbioru != null) ...[
+          const SizedBox(height: 8),
+          Text(opis.opisZbioru!, style: teksty.bodyLarge),
+        ],
+        if (opis.opisPodpowiedzi != null) ...[
+          const SizedBox(height: 8),
+          Text(opis.opisPodpowiedzi!, style: teksty.bodyMedium),
+        ],
+        const SizedBox(height: MotywProsty.odstep),
+        for (final forma in opis.formy.formy) ...[
+          DuzyPrzycisk(
+            etykieta: forma.nazwa,
+            opis: forma.id == wybrana?.id
+                ? 'tak zapisane'
+                : (forma.id == opis.podpowiedz?.forma.id
+                      ? 'podpowiedź aplikacji'
+                      : forma.opis),
+            ikona: forma.id == wybrana?.id
+                ? Icons.check_circle_outline
+                : Icons.circle_outlined,
+            wyrozniony: forma.id == wybrana?.id,
+            onTap: () => onForma(forma),
+          ),
+          const SizedBox(height: 10),
+        ],
+        if (opis.pytacOPrzerwe && opis.wyboryPrzerwy.isNotEmpty) ...[
+          const SizedBox(height: MotywProsty.odstep),
+          Text('Przerwa bez okrywy', style: teksty.titleLarge),
+          const SizedBox(height: 8),
+          if (opis.opisPrzerwy != null)
+            Text(opis.opisPrzerwy!, style: teksty.bodyMedium),
+          const SizedBox(height: MotywProsty.odstep),
+          for (final wybor in opis.wyboryPrzerwy) ...[
+            DuzyPrzycisk(
+              etykieta: wybor.etykieta,
+              opis: wybor.dni == opis.wybranaPrzerwa?.dni
+                  ? 'tak zapisane'
+                  : (wybor.ponadLimit
+                        ? 'przy kontroli pole nie liczy się do okrywy'
+                        : 'dotknij, żeby wybrać'),
+              ikona: wybor.dni == opis.wybranaPrzerwa?.dni
+                  ? Icons.check_circle_outline
+                  : Icons.circle_outlined,
+              wyrozniony: wybor.dni == opis.wybranaPrzerwa?.dni,
+              onTap: () => onPrzerwa(wybor),
+            ),
+            const SizedBox(height: 10),
+          ],
+          if (opis.wybranaPrzerwa?.ponadLimit ?? false)
+            Ostrzezenie(
+              tresc: 'Przerwa dłuższa, niż pozwala przepis.',
+              coZrobic:
+                  'Przy kontroli to pole nie liczy się do okrywy. Wpis '
+                  'zostaje taki, jak było — dokumentacja ma być prawdziwa.',
+            ),
         ],
       ],
     );

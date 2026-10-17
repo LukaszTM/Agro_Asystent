@@ -10,6 +10,7 @@ import 'package:agro_asystent/funkcje/dzialki/repozytorium_dzialek.dart';
 import 'package:agro_asystent/funkcje/dzialki/repozytorium_pol.dart';
 import 'package:agro_asystent/funkcje/dzialki/rodzaj_uzytku.dart';
 import 'package:agro_asystent/funkcje/dzialki/uprawy_pola.dart';
+import 'package:agro_asystent/funkcje/warunkowosc/okrywa_pola.dart';
 import 'package:agro_asystent/funkcje/dzialki/slownik_upraw.dart';
 import 'package:agro_asystent/funkcje/dzialki/zrodlo_pliku.dart';
 import 'package:agro_asystent/funkcje/nawozenie/ewidencja_nawozenia.dart';
@@ -618,6 +619,60 @@ void main() {
 
     final przycisk = tester.widget<FilledButton>(find.byType(FilledButton));
     expect(przycisk.onPressed, isNull);
+  });
+
+  testWidgets('okrywę po zbiorze deklaruje rolnik (GAEC 6)', (tester) async {
+    await baza.insert('dzialka_rolna', {
+      'id': 'p1',
+      'gospodarstwo_id': 'g1',
+      'nazwa_wlasna': 'Za stodołą',
+      'sezon': 2026,
+      'uprawa': 'kukurydza',
+      'kod_eppo': 'ZEAMX',
+      'powierzchnia_ar': 320,
+      'rodzaj_uzytku': 'grunty_orne',
+      'utworzono': '2026-10-16T08:00:00',
+      'zmieniono': '2026-10-16T08:00:00',
+      'urzadzenie': 'telefon',
+    });
+
+    tester.view.physicalSize = const Size(420, 2400);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: MotywProsty.zbuduj(),
+        home: EkranPola(uslugi: zbudujUslugi()),
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Za stodołą'));
+    await tester.pumpAndSettle();
+
+    // Dopóki rolnik nie powie, aplikacja nie zgaduje.
+    await przewinDo(tester, find.textContaining('Nie wiemy, co zostaje'));
+    expect(find.textContaining('Nie wiemy, co zostaje'), findsOneWidget);
+    expect(find.textContaining('80 % gruntów ornych'), findsOneWidget);
+
+    await tester.tap(find.text('Międzyplon'));
+    await tester.pumpAndSettle();
+
+    final deklaracja = await RepozytoriumOkrywyPola(baza)
+        .dlaPola(poleId: 'p1', sezon: 2026);
+    expect(deklaracja?.forma, 'miedzyplon');
+    expect(find.textContaining('Nie wiemy, co zostaje'), findsNothing);
+
+    // Dopiero po wyborze formy pytamy o przerwę na siew — przy glebie
+    // odkrytej nie ma czego przerywać.
+    await przewinDo(tester, find.text('Przerwa bez okrywy'));
+    await tester.tap(find.text('Dłużej niż 4 tygodnie'));
+    await tester.pumpAndSettle();
+
+    final poPrzerwie = await RepozytoriumOkrywyPola(baza)
+        .dlaPola(poleId: 'p1', sezon: 2026);
+    expect(poPrzerwie?.przerwaDni, 35);
+    await przewinDo(tester, find.textContaining('Przerwa dłuższa'));
+    expect(find.textContaining('Przerwa dłuższa'), findsOneWidget);
   });
 }
 

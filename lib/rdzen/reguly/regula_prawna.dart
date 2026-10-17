@@ -1160,6 +1160,22 @@ class TerminNormy {
         : teraz >= poczatek || teraz <= koniec;
   }
 
+  /// Ostatni dzień terminu w podanym roku, np. 15 października 2026.
+  ///
+  /// Zwraca `null`, gdy termin kończy się zdarzeniem, a nie datą.
+  DateTime? koniecWRoku(int rok) {
+    final czesci = doDnia.split('-');
+    if (czesci.length != 2) {
+      return null;
+    }
+    final miesiac = int.tryParse(czesci.first);
+    final dzien = int.tryParse(czesci.last);
+    if (miesiac == null || dzien == null) {
+      return null;
+    }
+    return DateTime(rok, miesiac, dzien);
+  }
+
   static int _numer(int miesiac, int dzien) => miesiac * 100 + dzien;
 
   static int? _zTekstu(String dataRoczna) {
@@ -1521,6 +1537,91 @@ class KluczUprawy {
   };
 }
 
+/// Jedna forma okrywy ochronnej gleby — do wyboru przez rolnika.
+///
+/// Rozporządzenie form nie wymienia, więc lista jest danymi ze statusem
+/// `do_weryfikacji`. Aplikacja nigdy nie wybiera formy sama: podpowiada ją
+/// z wpisów, a rolnik potwierdza.
+class FormaOkrywy {
+  const FormaOkrywy({
+    required this.id,
+    required this.nazwa,
+    required this.opis,
+    required this.liczJakoOkrywe,
+    this.slowa = const [],
+  });
+
+  factory FormaOkrywy.zJson(Map<String, dynamic> json) => FormaOkrywy(
+    id: json['id'] as String? ?? '',
+    nazwa: json['nazwa'] as String? ?? '',
+    opis: json['opis'] as String? ?? '',
+    liczJakoOkrywe: json['licz_jako_okrywe'] as bool? ?? false,
+    slowa: [
+      for (final slowo in (json['slowa'] as List<dynamic>?) ?? const [])
+        '$slowo',
+    ],
+  );
+
+  final String id;
+  final String nazwa;
+  final String opis;
+
+  /// Czy pole z tą formą liczy się do udziału okrywy (GAEC 6).
+  final bool liczJakoOkrywe;
+
+  /// Słowa, po których aplikacja **podpowiada** tę formę z wpisów rolnika.
+  /// Pusta lista znaczy „nie podpowiadamy nigdy" (gleba odkryta).
+  final List<String> slowa;
+}
+
+/// Lista form okrywy ze słownika reguł.
+class FormyOkrywy {
+  const FormyOkrywy({
+    required this.statusWeryfikacji,
+    required this.opis,
+    required this.zrodlo,
+    required this.formy,
+  });
+
+  static const FormyOkrywy puste = FormyOkrywy(
+    statusWeryfikacji: 'brak',
+    opis: '',
+    zrodlo: '',
+    formy: [],
+  );
+
+  factory FormyOkrywy.zJson(Map<String, dynamic> json) => FormyOkrywy(
+    statusWeryfikacji: json['status_weryfikacji'] as String? ?? 'nieznany',
+    opis: json['opis'] as String? ?? '',
+    zrodlo: json['zrodlo'] as String? ?? '',
+    formy: ((json['formy'] as List<dynamic>?) ?? const [])
+        .map((f) => FormaOkrywy.zJson(f as Map<String, dynamic>))
+        .toList(growable: false),
+  );
+
+  final String statusWeryfikacji;
+  final String opis;
+  final String zrodlo;
+  final List<FormaOkrywy> formy;
+
+  bool get pusta => formy.isEmpty;
+
+  bool get doWeryfikacji => statusWeryfikacji != 'potwierdzone';
+
+  FormaOkrywy? forma(String id) => formy.where((f) => f.id == id).firstOrNull;
+
+  /// Formy, które liczą się do udziału okrywy.
+  List<FormaOkrywy> get liczone =>
+      formy.where((f) => f.liczJakoOkrywe).toList(growable: false);
+
+  /// Czy pole z tą formą liczy się do udziału okrywy.
+  ///
+  /// Nieznana forma nie liczy się nigdy — brak danych nie może wychodzić
+  /// na spełnienie normy.
+  bool liczy(String? idFormy) =>
+      idFormy != null && (forma(idFormy)?.liczJakoOkrywe ?? false);
+}
+
 /// Normy GAEC razem ze zwolnieniami — dane z wersją, nie kod.
 class Warunkowosc {
   const Warunkowosc({
@@ -1532,6 +1633,7 @@ class Warunkowosc {
     this.rodzajeUzytku = PodpowiedziRodzajuUzytku.puste,
     this.wylaczeniaZeZmianowania = WylaczeniaZeZmianowania.puste,
     this.kluczUprawy = KluczUprawy.pusty,
+    this.formyOkrywy = FormyOkrywy.puste,
   });
 
   static const Warunkowosc puste = Warunkowosc(
@@ -1565,6 +1667,9 @@ class Warunkowosc {
     kluczUprawy: json['klucz_uprawy'] == null
         ? KluczUprawy.pusty
         : KluczUprawy.zJson(json['klucz_uprawy'] as Map<String, dynamic>),
+    formyOkrywy: json['formy_okrywy'] == null
+        ? FormyOkrywy.puste
+        : FormyOkrywy.zJson(json['formy_okrywy'] as Map<String, dynamic>),
   );
 
   final String statusWeryfikacji;
@@ -1581,6 +1686,9 @@ class Warunkowosc {
 
   /// Jak porównywać uprawy przy zmianowaniu (§ 5 ust. 5 i 6).
   final KluczUprawy kluczUprawy;
+
+  /// Co uznaje się za okrywę ochronną gleby (GAEC 6).
+  final FormyOkrywy formyOkrywy;
 
   bool get pusta => normy.isEmpty;
 

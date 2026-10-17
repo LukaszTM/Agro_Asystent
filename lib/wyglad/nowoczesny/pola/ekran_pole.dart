@@ -6,6 +6,8 @@ import '../../../funkcje/dzialki/repozytorium_pol.dart';
 import '../../../funkcje/dzialki/rodzaj_uzytku.dart';
 import '../../../funkcje/dzialki/slownik_upraw.dart';
 import '../../../funkcje/dzialki/uprawy_pola.dart';
+import '../../../funkcje/warunkowosc/okrywa.dart';
+import '../../../rdzen/reguly/regula_prawna.dart';
 import '../motyw.dart';
 import '../widgety/karta.dart';
 import '../widgety/wybor.dart';
@@ -33,12 +35,14 @@ class EkranPoleNowoczesny extends StatefulWidget {
 class _EkranPoleNowoczesnyState extends State<EkranPoleNowoczesny> {
   late Pole _pole = widget.pole;
   late Future<HistoriaUprawPola> _historia;
+  late Future<OpisOkrywyPola> _okrywa;
   bool _zmienione = false;
 
   @override
   void initState() {
     super.initState();
     _historia = widget.uslugi.historiaUpraw.dla(_pole);
+    _okrywa = widget.uslugi.okrywa.dlaPola(pole: _pole);
   }
 
   Future<void> _odswiez() async {
@@ -50,7 +54,33 @@ class _EkranPoleNowoczesnyState extends State<EkranPoleNowoczesny> {
       _pole = swieze ?? _pole;
       _zmienione = true;
       _historia = widget.uslugi.historiaUpraw.dla(_pole);
+      _okrywa = widget.uslugi.okrywa.dlaPola(pole: _pole);
     });
+  }
+
+  /// Zapis deklaracji okrywy (GAEC 6). Dzień zbioru bierzemy z wpisów
+  /// zabiegów, gdy tam jest — rolnik nie podaje go drugi raz.
+  Future<void> _ustawOkrywe({
+    required OpisOkrywyPola opis,
+    FormaOkrywy? forma,
+    int? przerwaDni,
+  }) async {
+    final wybrana = forma ?? opis.forma;
+    if (wybrana == null) {
+      return;
+    }
+    await widget.uslugi.okrywaPola.zapisz(
+      poleId: _pole.id,
+      sezon: opis.sezon,
+      forma: wybrana.id,
+      dataZbioru: opis.dataZbioru,
+      przerwaDni: przerwaDni ?? opis.deklaracja?.przerwaDni,
+      urzadzenie: widget.uslugi.urzadzenie,
+      zrodlo: opis.podpowiedz?.forma.id == wybrana.id
+          ? 'podpowiedz potwierdzona'
+          : 'rolnik',
+    );
+    await _odswiez();
   }
 
   Future<void> _ustawRodzajUzytku(RodzajUzytku rodzaj) async {
@@ -239,11 +269,121 @@ class _EkranPoleNowoczesnyState extends State<EkranPoleNowoczesny> {
                     'Historia jest pełna od ${historia.odRoku} r.',
                     style: teksty.bodyMedium,
                   ),
+                const SizedBox(height: MotywNowoczesny.odstep),
+                FutureBuilder<OpisOkrywyPola>(
+                  future: _okrywa,
+                  builder: (context, stanOkrywy) {
+                    if (!stanOkrywy.hasData) {
+                      return const SizedBox.shrink();
+                    }
+                    final opis = stanOkrywy.data!;
+                    if (opis.formy.pusta) {
+                      return const SizedBox.shrink();
+                    }
+                    return _OkrywaPoZbiorze(
+                      opis: opis,
+                      onForma: (forma) =>
+                          _ustawOkrywe(opis: opis, forma: forma),
+                      onPrzerwa: (wybor) =>
+                          _ustawOkrywe(opis: opis, przerwaDni: wybor.dni),
+                    );
+                  },
+                ),
               ],
             );
           },
         ),
       ),
+    );
+  }
+}
+
+/// Co zostaje na polu po zbiorze — deklaracja do normy GAEC 6.
+///
+/// Te same zdania co w wyglądzie prostym (stoją w `OpisOkrywyPola`),
+/// tylko wybór idzie chipami zamiast dużych przycisków.
+class _OkrywaPoZbiorze extends StatelessWidget {
+  const _OkrywaPoZbiorze({
+    required this.opis,
+    required this.onForma,
+    required this.onPrzerwa,
+  });
+
+  final OpisOkrywyPola opis;
+  final void Function(FormaOkrywy forma) onForma;
+  final void Function(WyborPrzerwy wybor) onPrzerwa;
+
+  @override
+  Widget build(BuildContext context) {
+    final teksty = Theme.of(context).textTheme;
+    final wybrana = opis.forma;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(opis.naglowek, style: teksty.titleLarge),
+        const SizedBox(height: 4),
+        if (opis.doPodania)
+          OstrzezenieNowoczesne(
+            tresc: 'Nie wiemy, co zostaje po zbiorze.',
+            coZrobic: opis.wyjasnienie,
+          )
+        else
+          Text(
+            wybrana?.nazwa ?? 'nie znamy tej formy',
+            style: teksty.bodyLarge,
+          ),
+        if (opis.opisZbioru != null) ...[
+          const SizedBox(height: 4),
+          Text(opis.opisZbioru!, style: teksty.bodyMedium),
+        ],
+        if (opis.opisPodpowiedzi != null) ...[
+          const SizedBox(height: 4),
+          Text(opis.opisPodpowiedzi!, style: teksty.bodyMedium),
+        ],
+        const SizedBox(height: 8),
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: [
+            for (final forma in opis.formy.formy)
+              Wybor(
+                etykieta: forma.nazwa,
+                wybrany: forma.id == wybrana?.id,
+                onTap: () => onForma(forma),
+              ),
+          ],
+        ),
+        if (opis.pytacOPrzerwe && opis.wyboryPrzerwy.isNotEmpty) ...[
+          const SizedBox(height: MotywNowoczesny.odstep),
+          Text('Przerwa bez okrywy', style: teksty.titleLarge),
+          if (opis.opisPrzerwy != null) ...[
+            const SizedBox(height: 4),
+            Text(opis.opisPrzerwy!, style: teksty.bodyMedium),
+          ],
+          const SizedBox(height: 8),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              for (final wybor in opis.wyboryPrzerwy)
+                Wybor(
+                  etykieta: wybor.etykieta,
+                  wybrany: wybor.dni == opis.wybranaPrzerwa?.dni,
+                  onTap: () => onPrzerwa(wybor),
+                ),
+            ],
+          ),
+          if (opis.wybranaPrzerwa?.ponadLimit ?? false) ...[
+            const SizedBox(height: 8),
+            OstrzezenieNowoczesne(
+              tresc: 'Przerwa dłuższa, niż pozwala przepis.',
+              coZrobic:
+                  'Przy kontroli to pole nie liczy się do okrywy. Wpis '
+                  'zostaje taki, jak było — dokumentacja ma być prawdziwa.',
+            ),
+          ],
+        ],
+      ],
     );
   }
 }

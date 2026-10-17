@@ -765,6 +765,103 @@ KLUCZ_UPRAWY = {
 }
 
 
+#: Co uznaje się za okrywę ochronną gleby (GAEC 6).
+#:
+#: Rozporządzenie mówi tylko „okrywę ochronną gleby utrzymuje się" — form
+#: nie wymienia. Lista pochodzi z komunikatu ARiMR o normach GAEC
+#: obowiązujących w 2026 r., dlatego ma status „do_weryfikacji", a przy
+#: każdym polu decyduje **deklaracja rolnika**, nie domysł aplikacji.
+FORMY_OKRYWY = [
+    {
+        "id": "uprawa_ozima",
+        "nazwa": "Uprawa ozima",
+        "opis": "Zasiana ozimina zostaje na polu przez zimę.",
+        "licz_jako_okrywe": True,
+        "slowa": ["ozima", "ozimy", "ozime", "ozimina", "oziminy"],
+    },
+    {
+        "id": "miedzyplon",
+        "nazwa": "Międzyplon",
+        "opis": "Ozimy albo ścierniskowy, wysiany po zbiorze plonu głównego.",
+        "licz_jako_okrywe": True,
+        "slowa": ["miedzyplon", "miedzyplony", "poplon", "facelia"],
+    },
+    {
+        "id": "wsiewka",
+        "nazwa": "Wsiewka",
+        "opis": "Wsiana w plon główny i utrzymana po zbiorze.",
+        "licz_jako_okrywe": True,
+        "slowa": ["wsiewka", "wsiewki"],
+    },
+    {
+        "id": "trawy",
+        "nazwa": "Trawy",
+        "opis": "Trawy, bobowate drobnonasienne i ich mieszanki — na gruntach ornych.",
+        "licz_jako_okrywe": True,
+        "slowa": ["trawy", "trawa", "lucerna", "koniczyna"],
+    },
+    {
+        "id": "sciernisko",
+        "nazwa": "Ściernisko",
+        "opis": "Pole po zbiorze, bez orki.",
+        "licz_jako_okrywe": True,
+        "slowa": ["sciernisko", "sciern"],
+    },
+    {
+        "id": "resztki_pozniwne",
+        "nazwa": "Resztki po zbiorze",
+        "opis": "Resztki pożniwne, samosiewy albo mulcz na polu.",
+        "licz_jako_okrywe": True,
+        "slowa": ["resztki", "mulcz", "samosiew", "samosiewy"],
+    },
+    {
+        "id": "ugor_zielony",
+        "nazwa": "Ugór zielony",
+        "opis": "Pole wyłączone z uprawy, pokryte roślinnością.",
+        "licz_jako_okrywe": True,
+        "slowa": ["ugor", "ugorowany", "ugorowana"],
+    },
+    {
+        "id": "brak",
+        "nazwa": "Gleba odkryta",
+        "opis": "Pole zaorane albo bez okrywy — nie liczy się do 80 %.",
+        "licz_jako_okrywe": False,
+        # Pusta lista: gleby odkrytej nigdy nie podpowiadamy — to musi
+        # powiedzieć rolnik.
+        "slowa": [],
+    },
+]
+
+
+# Litery, cyfry i znaki, jakie mogą stać w danych. Reszta to pomyłka —
+# najczęściej homoglif z cyrylicy wklejony razem z tekstem ze strony.
+ALFABET = "abcdefghijklmnopqrstuvwxyz" + "ąćęłńóśźż"
+ZNAKI_POZA_ALFABETEM = " .,;:!?()[]{}/%+-_=\n §°²–—’„”«»"
+DOZWOLONE_ZNAKI = (
+    set(ALFABET)
+    | set(ALFABET.upper())
+    | set("0123456789")
+    | set(ZNAKI_POZA_ALFABETEM)
+)
+
+
+def obce_znaki(dane) -> list[str]:
+    """Znajduje w danych znaki, których nie ma w polskim alfabecie."""
+    znalezione: list[str] = []
+    if isinstance(dane, dict):
+        for klucz, wartosc in dane.items():
+            znalezione += obce_znaki(klucz)
+            znalezione += obce_znaki(wartosc)
+    elif isinstance(dane, list):
+        for element in dane:
+            znalezione += obce_znaki(element)
+    elif isinstance(dane, str):
+        for znak in dane:
+            if znak not in DOZWOLONE_ZNAKI:
+                znalezione.append(f"„{znak}” (U+{ord(znak):04X})")
+    return sorted(set(znalezione))
+
+
 def sprawdz(tekst: str) -> list[str]:
     """Kontrole negatywne: każdy zwrot z `kontrola` musi stać w akcie."""
     bledy: list[str] = []
@@ -797,6 +894,33 @@ def sprawdz(tekst: str) -> list[str]:
                     f"podpowiedź „{slowo}” ma ogonki albo wielkie litery — "
                     "aplikacja porównuje nazwy znormalizowane"
                 )
+    liczone = [f for f in FORMY_OKRYWY if f["licz_jako_okrywe"]]
+    if len(liczone) < 2:
+        bledy.append("lista form okrywy jest podejrzanie krótka")
+    if not any(not f["licz_jako_okrywe"] for f in FORMY_OKRYWY):
+        bledy.append(
+            "brakuje formy „gleba odkryta” — rolnik musi móc powiedzieć, "
+            "że okrywy nie ma"
+        )
+    for forma in FORMY_OKRYWY:
+        for slowo in forma["slowa"]:
+            if slowo != slowo.lower() or any(
+                znak in slowo for znak in "ąćęłńóśźż"
+            ):
+                bledy.append(
+                    f"forma {forma['id']}: podpowiedź „{slowo}” ma ogonki "
+                    "albo wielkie litery"
+                )
+    bez_okrywy = [f for f in FORMY_OKRYWY if not f["licz_jako_okrywe"]]
+    if any(f["slowa"] for f in bez_okrywy):
+        bledy.append(
+            "forma „gleba odkryta” ma podpowiedzi — tego aplikacja nie "
+            "może podpowiadać sama"
+        )
+    idki_form = [f["id"] for f in FORMY_OKRYWY]
+    if len(set(idki_form)) != len(idki_form):
+        bledy.append(f"powtórzone identyfikatory form okrywy: {idki_form}")
+
     for formy in KLUCZ_UPRAWY["formy"]:
         for slowo in formy["slowa"]:
             if slowo != slowo.lower() or any(
@@ -855,6 +979,12 @@ def sprawdz(tekst: str) -> list[str]:
             f"({len(WYLACZENIA_ZMIANOWANIA)}) nie zgadza się z listą "
             f"w normie GAEC 7 ({len(gaec7['wylaczenia_upraw'])})"
         )
+    obce = obce_znaki(do_regul())
+    if obce:
+        bledy.append(
+            "w danych są znaki z obcego alfabetu (np. cyrylicy), które "
+            f"wyglądają jak polskie litery: {obce}"
+        )
     idki = [n["id"] for n in NORMY]
     if len(set(idki)) != len(idki):
         bledy.append(f"powtórzone identyfikatory norm: {idki}")
@@ -903,6 +1033,17 @@ def do_regul() -> dict:
             "wylaczenia": WYLACZENIA_ZMIANOWANIA,
         },
         "klucz_uprawy": KLUCZ_UPRAWY,
+        "formy_okrywy": {
+            "status_weryfikacji": "do_weryfikacji",
+            "opis": (
+                "Co uznaje się za okrywę ochronną gleby. Rozporządzenie "
+                "form nie wymienia — lista pochodzi z komunikatu ARiMR "
+                "o normach GAEC obowiązujących w 2026 r. Formę dla każdego "
+                "pola deklaruje rolnik."
+            ),
+            "zrodlo": "komunikat ARiMR o normach GAEC obowiązujących w 2026 r.",
+            "formy": FORMY_OKRYWY,
+        },
         "normy": [
             {k: v for k, v in norma.items() if k != "kontrola"}
             for norma in NORMY
@@ -936,6 +1077,7 @@ def main(argv: list[str] | None = None) -> int:
     print(f"Zwolnień z kontroli: {len(ZWOLNIENIA)}")
     print(f"Rodzajów użytku: {len(RODZAJE_UZYTKU)}")
     print(f"Wyłączeń ze zmianowania: {len(WYLACZENIA_ZMIANOWANIA)}")
+    print(f"Form okrywy: {len(FORMY_OKRYWY)}")
     progi = sum(len(n.get("progi", [])) for n in NORMY)
     terminy = sum(len(n.get("terminy", [])) for n in NORMY)
     print(f"Progów: {progi}, terminów: {terminy}")
@@ -952,6 +1094,28 @@ def main(argv: list[str] | None = None) -> int:
 
     reguly = json.loads(args.reguly.read_text(encoding="utf-8"))
     reguly["warunkowosc"] = do_regul()
+
+    # Terminy GAEC 6 i GAEC 8 stoją w słowniku od etapu 1 (kalendarz czyta
+    # je sam). Teraz, gdy mamy akt, dopisujemy im paragraf — żeby rolnik
+    # widział, skąd data się bierze.
+    podstawy = {
+        "gaec6_okrywa_gruntow": (
+            f"{ZRODLO}, § 4 ust. 1 pkt 1",
+            "GAEC 6: okrywa na co najmniej 80 % gruntów ornych od dnia "
+            "zbioru plonu głównego do 15 października. Dopuszczalna "
+            "przerwa do 4 tygodni na siew ozimin albo międzyplonów.",
+        ),
+        "gaec8_zakaz_przycinania_drzew": (
+            f"{ZRODLO}, § 6 ust. 10 pkt 2",
+            "GAEC 8: okres lęgowy ptaków. Zakaz nie dotyczy wierzb, drzew "
+            "owocowych i zagajników o krótkiej rotacji.",
+        ),
+    }
+    for termin in reguly.get("terminy", []):
+        if termin["id"] in podstawy:
+            zrodlo, uwagi = podstawy[termin["id"]]
+            termin["zrodlo"] = zrodlo
+            termin["uwagi"] = uwagi
     args.reguly.write_text(
         json.dumps(reguly, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",

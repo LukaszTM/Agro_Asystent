@@ -326,6 +326,33 @@ void main() {
     });
   });
 
+  group('żadna tabela nie wypada z kopii i ze scalania', () {
+    // Nowa tabela w migracji musi trafić do kopii i dostać regułę
+    // scalania. Bez tego dane z drugiego urządzenia po cichu by nie
+    // dochodziły — a nikt by tego nie zauważył aż do kontroli.
+    test('każda tabela bazy jest w kopii danych', () async {
+      final wiersze = await telefon.rawQuery(
+        "SELECT name FROM sqlite_master WHERE type = 'table' "
+        "AND name NOT LIKE 'sqlite_%' AND name <> 'android_metadata'",
+      );
+      final wBazie = wiersze.map((w) => w['name'] as String).toSet();
+      expect(wBazie.difference(KopiaDanych.tabele.toSet()), isEmpty);
+    });
+
+    test('każda tabela z kopii ma regułę scalania', () {
+      // Dziennik zmian ma własną ścieżkę (dopisujemy wszystko, nic nie
+      // nadpisujemy), więc reguły nie potrzebuje.
+      final bezReguly = KopiaDanych.tabele
+          .where(
+            (tabela) =>
+                tabela != 'historia_zmian' &&
+                !regulyScalania.containsKey(tabela),
+          )
+          .toList();
+      expect(bezReguly, isEmpty);
+    });
+  });
+
   group('plik, którego nie rozumiemy', () {
     test('obcy plik jest odrzucony, baza bez zmian', () async {
       await oprysk(telefon, id: 'z1', urzadzenie: 'telefon');

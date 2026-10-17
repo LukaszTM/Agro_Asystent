@@ -47,10 +47,15 @@ class Wybor extends StatelessWidget {
                   Icon(ikona, size: 18, color: kolorTekstu),
                   const SizedBox(width: 6),
                 ],
-                Text(
-                  etykieta,
-                  style: Theme.of(context).textTheme.labelLarge
-                      ?.copyWith(color: kolorTekstu),
+                // Długa etykieta łamie się na dwie linie, zamiast
+                // wychodzić za ekran — nazwy ze słownika mogą być dłuższe,
+                // niż zmieści się na telefonie.
+                Flexible(
+                  child: Text(
+                    etykieta,
+                    style: Theme.of(context).textTheme.labelLarge
+                        ?.copyWith(color: kolorTekstu),
+                  ),
                 ),
               ],
             ),

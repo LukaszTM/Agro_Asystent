@@ -1,5 +1,5 @@
 {
-  "wersja": "2026.10.17.3",
+  "wersja": "2026.10.17.5",
   "obowiazuje_od": "2026-10-16",
   "opis": "Progi, limity i terminy obowiązków dokumentacyjnych. Dane, nie kod — aktualizowane bez przebudowy aplikacji. Zestawienie służy do planowania i nie jest poradą prawną.",
   "obowiazki": [
@@ -305,7 +305,8 @@
       "rodzaj": "data_roczna",
       "data_roczna": "10-15",
       "status_weryfikacji": "potwierdzone",
-      "uwagi": "GAEC 6: okrywa do 15 października."
+      "uwagi": "GAEC 6: okrywa na co najmniej 80 % gruntów ornych od dnia zbioru plonu głównego do 15 października. Dopuszczalna przerwa do 4 tygodni na siew ozimin albo międzyplonów.",
+      "zrodlo": "Dz.U. z 2025 r. poz. 1674 — tekst jednolity rozporządzenia Ministra Rolnictwa i Rozwoju Wsi z dnia 10 marca 2023 r. w sprawie norm oraz szczegółowych warunków ich stosowania, § 4 ust. 1 pkt 1"
     },
     {
       "id": "gaec8_zakaz_przycinania_drzew",
@@ -315,7 +316,8 @@
       "okres_od": "04-15",
       "okres_do": "07-31",
       "status_weryfikacji": "potwierdzone",
-      "uwagi": "GAEC 8: okres lęgowy ptaków."
+      "uwagi": "GAEC 8: okres lęgowy ptaków. Zakaz nie dotyczy wierzb, drzew owocowych i zagajników o krótkiej rotacji.",
+      "zrodlo": "Dz.U. z 2025 r. poz. 1674 — tekst jednolity rozporządzenia Ministra Rolnictwa i Rozwoju Wsi z dnia 10 marca 2023 r. w sprawie norm oraz szczegółowych warunków ich stosowania, § 6 ust. 10 pkt 2"
     },
     {
       "id": "irzplus_urodzenie_cielecia",
@@ -2116,6 +2118,100 @@
             "arbuz",
             "patison"
           ]
+        }
+      ]
+    },
+    "formy_okrywy": {
+      "status_weryfikacji": "do_weryfikacji",
+      "opis": "Co uznaje się za okrywę ochronną gleby. Rozporządzenie form nie wymienia — lista pochodzi z komunikatu ARiMR o normach GAEC obowiązujących w 2026 r. Formę dla każdego pola deklaruje rolnik.",
+      "zrodlo": "komunikat ARiMR o normach GAEC obowiązujących w 2026 r.",
+      "formy": [
+        {
+          "id": "uprawa_ozima",
+          "nazwa": "Uprawa ozima",
+          "opis": "Zasiana ozimina zostaje na polu przez zimę.",
+          "licz_jako_okrywe": true,
+          "slowa": [
+            "ozima",
+            "ozimy",
+            "ozime",
+            "ozimina",
+            "oziminy"
+          ]
+        },
+        {
+          "id": "miedzyplon",
+          "nazwa": "Międzyplon",
+          "opis": "Ozimy albo ścierniskowy, wysiany po zbiorze plonu głównego.",
+          "licz_jako_okrywe": true,
+          "slowa": [
+            "miedzyplon",
+            "miedzyplony",
+            "poplon",
+            "facelia"
+          ]
+        },
+        {
+          "id": "wsiewka",
+          "nazwa": "Wsiewka",
+          "opis": "Wsiana w plon główny i utrzymana po zbiorze.",
+          "licz_jako_okrywe": true,
+          "slowa": [
+            "wsiewka",
+            "wsiewki"
+          ]
+        },
+        {
+          "id": "trawy",
+          "nazwa": "Trawy",
+          "opis": "Trawy, bobowate drobnonasienne i ich mieszanki — na gruntach ornych.",
+          "licz_jako_okrywe": true,
+          "slowa": [
+            "trawy",
+            "trawa",
+            "lucerna",
+            "koniczyna"
+          ]
+        },
+        {
+          "id": "sciernisko",
+          "nazwa": "Ściernisko",
+          "opis": "Pole po zbiorze, bez orki.",
+          "licz_jako_okrywe": true,
+          "slowa": [
+            "sciernisko",
+            "sciern"
+          ]
+        },
+        {
+          "id": "resztki_pozniwne",
+          "nazwa": "Resztki po zbiorze",
+          "opis": "Resztki pożniwne, samosiewy albo mulcz na polu.",
+          "licz_jako_okrywe": true,
+          "slowa": [
+            "resztki",
+            "mulcz",
+            "samosiew",
+            "samosiewy"
+          ]
+        },
+        {
+          "id": "ugor_zielony",
+          "nazwa": "Ugór zielony",
+          "opis": "Pole wyłączone z uprawy, pokryte roślinnością.",
+          "licz_jako_okrywe": true,
+          "slowa": [
+            "ugor",
+            "ugorowany",
+            "ugorowana"
+          ]
+        },
+        {
+          "id": "brak",
+          "nazwa": "Gleba odkryta",
+          "opis": "Pole zaorane albo bez okrywy — nie liczy się do 80 %.",
+          "licz_jako_okrywe": false,
+          "slowa": []
         }
       ]
     },

@@ -14,9 +14,11 @@ sys.path.insert(0, str(Path(__file__).parent))
 import pytest  # noqa: E402
 
 from normy_gaec import (  # noqa: E402
+    FORMY_OKRYWY,
     NORMY,
     ZWOLNIENIA,
     do_regul,
+    obce_znaki,
     sprawdz,
     tekst_aktu,
 )
@@ -76,6 +78,35 @@ def test_blok_do_regul_nie_wynosi_kontroli_do_slownika():
     assert "poz. 1674" in blok["zrodlo"]
     for norma in blok["normy"]:
         assert "kontrola" not in norma, norma["numer"]
+
+
+def test_formy_okrywy_maja_wariant_bez_okrywy_i_wlasne_identyfikatory():
+    # Rolnik musi móc powiedzieć „nic tu nie rośnie" — bez tego aplikacja
+    # liczyłaby każde pole jako pokryte.
+    bez_okrywy = [f for f in FORMY_OKRYWY if not f["licz_jako_okrywe"]]
+    assert len(bez_okrywy) == 1
+    liczone = [f for f in FORMY_OKRYWY if f["licz_jako_okrywe"]]
+    assert len(liczone) >= 2
+    idki = [f["id"] for f in FORMY_OKRYWY]
+    assert len(set(idki)) == len(idki)
+    for forma in FORMY_OKRYWY:
+        assert forma["nazwa"] and forma["opis"], forma["id"]
+
+
+def test_formy_okrywy_ida_do_slownika_jako_do_weryfikacji():
+    # Rozporządzenie form nie wymienia — lista jest z komunikatu ARiMR,
+    # więc nie wolno jej podawać jako potwierdzonej.
+    blok = do_regul()["formy_okrywy"]
+    assert blok["status_weryfikacji"] == "do_weryfikacji"
+    assert "ARiMR" in blok["zrodlo"]
+    assert len(blok["formy"]) == len(FORMY_OKRYWY)
+
+
+def test_obce_znaki_lapia_homoglif_z_cyrylicy():
+    # Cyrylickie \u0430 wygląda jak polskie „a”, a psuje porównania nazw.
+    assert obce_znaki({"opis": "ozimin\u0430"}) == ["„\u0430” (U+0430)"]
+    assert obce_znaki(["dobry opis", {"a": 1, "b": None}]) == []
+    assert obce_znaki(do_regul()) == []
 
 
 @pytest.mark.skipif(not AKT.exists(), reason="brak tekstu jednolitego")
