@@ -1,5 +1,5 @@
 {
-  "wersja": "2026.10.17.1",
+  "wersja": "2026.10.17.2",
   "obowiazuje_od": "2026-10-16",
   "opis": "Progi, limity i terminy obowiązków dokumentacyjnych. Dane, nie kod — aktualizowane bez przebudowy aplikacji. Zestawienie służy do planowania i nie jest poradą prawną.",
   "obowiazki": [
@@ -1883,6 +1883,66 @@
         "uwagi": "Rozporządzenie o normach daje przy GAEC 7 własne odstępstwo dla produkcji ekologicznej (§ 5 ust. 12); szersze uznanie pozostałych norm jest na razie tylko z komunikatu."
       }
     ],
+    "rodzaje_uzytku": {
+      "status_weryfikacji": "podpowiedz",
+      "opis": "Podpowiedź rodzaju użytku po nazwie uprawy. Nie pochodzi z przepisu — rolnik potwierdza rodzaj użytku dla każdego pola, bo od niego zależą wszystkie progi GAEC 7.",
+      "rodzaje": [
+        {
+          "id": "grunty_orne",
+          "nazwa": "Grunty orne",
+          "na_wydruku": "grunty orne",
+          "domyslny": true,
+          "slowa": []
+        },
+        {
+          "id": "tuz",
+          "nazwa": "Łąka lub pastwisko",
+          "na_wydruku": "trwały użytek zielony",
+          "domyslny": false,
+          "slowa": [
+            "laka",
+            "laki",
+            "pastwisko",
+            "pastwiska",
+            "tuz",
+            "trwaly uzytek zielony",
+            "trwale uzytki zielone"
+          ]
+        },
+        {
+          "id": "uprawy_trwale",
+          "nazwa": "Sad lub uprawa trwała",
+          "na_wydruku": "uprawa trwała",
+          "domyslny": false,
+          "slowa": [
+            "sad",
+            "sady",
+            "plantacja",
+            "chmiel",
+            "szkolka",
+            "jablon",
+            "grusza",
+            "sliwa",
+            "czeresnia",
+            "wisnia",
+            "brzoskwinia",
+            "morela",
+            "orzech",
+            "winorosl",
+            "porzeczka",
+            "malina",
+            "borowka",
+            "aronia",
+            "agrest",
+            "bez czarny",
+            "miskant",
+            "slazowiec",
+            "wierzba energetyczna",
+            "zagajnik"
+          ]
+        }
+      ]
+    },
     "normy": [
       {
         "id": "gaec_1",

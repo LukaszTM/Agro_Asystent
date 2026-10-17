@@ -10,6 +10,7 @@ import '../widgety/karta.dart';
 import '../widgety/wybor.dart';
 import 'ekran_dzialki.dart';
 import 'ekran_import_wniosku.dart';
+import 'ekran_pole.dart';
 import 'ekran_nowe_pole.dart';
 import 'ekran_wybor_uprawy.dart';
 
@@ -87,6 +88,21 @@ class _WidokPolaState extends State<WidokPola> {
       ),
     );
     if ((zapisano ?? false) && mounted) {
+      setState(() {
+        _dane = _wczytaj();
+        _wybrane = null;
+      });
+    }
+  }
+
+  /// Rodzaj użytku i historia upraw — dane dla normy GAEC 7.
+  Future<void> _rodzajIHistoria(Pole pole) async {
+    final zmiana = await Navigator.of(context).push<bool>(
+      MaterialPageRoute<bool>(
+        builder: (_) => EkranPoleNowoczesny(uslugi: widget.uslugi, pole: pole),
+      ),
+    );
+    if ((zmiana ?? false) && mounted) {
       setState(() {
         _dane = _wczytaj();
         _wybrane = null;
@@ -225,6 +241,7 @@ class _WidokPolaState extends State<WidokPola> {
                 dzialki: _dzialkiPola,
                 onZamknij: () => _wybierz(null),
                 onZmianaUprawy: () => _zmienUprawe(_wybrane!),
+                onHistoria: () => _rodzajIHistoria(_wybrane!),
                 onZabieg: widget.onZabiegNaPolu == null
                     ? null
                     : () => widget.onZabiegNaPolu!(_wybrane!),
@@ -320,6 +337,7 @@ class _KartaPola extends StatelessWidget {
     required this.dzialki,
     required this.onZamknij,
     required this.onZmianaUprawy,
+    required this.onHistoria,
     this.onZabieg,
   });
 
@@ -327,6 +345,11 @@ class _KartaPola extends StatelessWidget {
   final Future<List<String>>? dzialki;
   final VoidCallback onZamknij;
   final VoidCallback onZmianaUprawy;
+
+  /// Rodzaj użytku i uprawy z poprzednich lat — osobny ekran, bo to dane
+  /// do wypełnienia raz, a nie przy każdym zabiegu.
+  final VoidCallback onHistoria;
+
   final VoidCallback? onZabieg;
 
   @override
@@ -399,6 +422,21 @@ class _KartaPola extends StatelessWidget {
                 ),
               ),
             ],
+          ),
+          const SizedBox(height: 8),
+          OutlinedButton.icon(
+            onPressed: onHistoria,
+            icon: Icon(
+              pole.rodzajUzytku.znany
+                  ? Icons.history_outlined
+                  : Icons.help_outline,
+              size: 20,
+            ),
+            label: Text(
+              pole.rodzajUzytku.znany
+                  ? 'Rodzaj użytku i uprawy w latach'
+                  : 'Podaj rodzaj użytku (GAEC 7)',
+            ),
           ),
         ],
       ),

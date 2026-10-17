@@ -8,6 +8,8 @@ import 'package:agro_asystent/funkcje/dokumenty/wyjscie_dokumentu.dart';
 import 'package:agro_asystent/funkcje/dzialki/import_wniosku.dart';
 import 'package:agro_asystent/funkcje/dzialki/repozytorium_dzialek.dart';
 import 'package:agro_asystent/funkcje/dzialki/repozytorium_pol.dart';
+import 'package:agro_asystent/funkcje/dzialki/rodzaj_uzytku.dart';
+import 'package:agro_asystent/funkcje/dzialki/uprawy_pola.dart';
 import 'package:agro_asystent/funkcje/dzialki/slownik_upraw.dart';
 import 'package:agro_asystent/funkcje/dzialki/zrodlo_pliku.dart';
 import 'package:agro_asystent/funkcje/nawozenie/ewidencja_nawozenia.dart';
@@ -369,7 +371,9 @@ void main() {
 
     await tester.tap(find.text('Za stodołą'));
     await tester.pumpAndSettle();
-    expect(find.text('pszenica ozima'), findsOneWidget);
+    // Nazwa uprawy stoi dwa razy: jako uprawa pola i jako wpis roku 2026
+    // w historii upraw (potrzebnej normie GAEC 7).
+    expect(find.text('pszenica ozima'), findsNWidgets(2));
     expect(find.textContaining('Kod EPPO: TRZAW'), findsOneWidget);
 
     await tester.tap(find.text('Zmień uprawę'));
@@ -391,6 +395,110 @@ void main() {
     );
     expect(historia, hasLength(1));
     expect(historia.single['dane_json'], contains('pszenica ozima'));
+
+    // Ta sama zmiana musi dojść do historii upraw, bo z niej liczy się
+    // zmianowanie — wpisuje ją wyzwalacz bazy.
+    final uprawy = await RepozytoriumUprawPola(baza).historia('p1');
+    expect(uprawy.single.sezon, 2026);
+    expect(uprawy.single.uprawa, 'kukurydza');
+  });
+
+  testWidgets('rodzaj użytku pola ustawia rolnik, nie aplikacja', (
+    tester,
+  ) async {
+    await baza.insert('dzialka_rolna', {
+      'id': 'p1',
+      'gospodarstwo_id': 'g1',
+      'nazwa_wlasna': 'Za stodołą',
+      'sezon': 2026,
+      'uprawa': 'pszenica ozima',
+      'kod_eppo': 'TRZAW',
+      'powierzchnia_ar': 320,
+      'utworzono': '2026-10-16T08:00:00',
+      'zmieniono': '2026-10-16T08:00:00',
+      'urzadzenie': 'telefon',
+    });
+
+    tester.view.physicalSize = const Size(420, 1400);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: MotywProsty.zbuduj(),
+        home: EkranPola(uslugi: zbudujUslugi()),
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Za stodołą'));
+    await tester.pumpAndSettle();
+
+    // Dopóki rolnik nie powie, aplikacja nie zgaduje — tylko podpowiada.
+    await przewinDo(tester, find.textContaining('Nie wiemy, czy to grunt'));
+    expect(find.textContaining('Nie wiemy, czy to grunt'), findsOneWidget);
+    expect(
+      find.textContaining('Z nazwy uprawy wychodzi: Grunty orne'),
+      findsOneWidget,
+    );
+    expect(
+      (await RepozytoriumPol(baza).jedno('p1'))!.rodzajUzytku,
+      RodzajUzytku.nieznany,
+    );
+
+    await tester.tap(find.text('Grunty orne'));
+    await tester.pumpAndSettle();
+
+    expect(
+      (await RepozytoriumPol(baza).jedno('p1'))!.rodzajUzytku,
+      RodzajUzytku.gruntyOrne,
+    );
+    expect(find.textContaining('Nie wiemy, czy to grunt'), findsNothing);
+  });
+
+  testWidgets('uprawę z wcześniejszego roku dopisuje się z listy', (
+    tester,
+  ) async {
+    await baza.insert('dzialka_rolna', {
+      'id': 'p1',
+      'gospodarstwo_id': 'g1',
+      'nazwa_wlasna': 'Za stodołą',
+      'sezon': 2026,
+      'uprawa': 'pszenica ozima',
+      'kod_eppo': 'TRZAW',
+      'powierzchnia_ar': 320,
+      'utworzono': '2026-10-16T08:00:00',
+      'zmieniono': '2026-10-16T08:00:00',
+      'urzadzenie': 'telefon',
+    });
+
+    tester.view.physicalSize = const Size(420, 1400);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: MotywProsty.zbuduj(),
+        home: EkranPola(uslugi: zbudujUslugi()),
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Za stodołą'));
+    await tester.pumpAndSettle();
+
+    // Zakres lat jest z przepisu (GAEC 7: od 2023 r.), nie z kodu.
+    await przewinDo(tester, find.textContaining('od 2023 r.'));
+    expect(find.textContaining('od 2023 r.'), findsWidgets);
+
+    await przewinDo(tester, find.text('Dopisz rok 2025'));
+    await tester.tap(find.text('Dopisz rok 2025'));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byType(TextField), 'kuku');
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('kukurydza'));
+    await tester.pumpAndSettle();
+
+    final uprawy = await RepozytoriumUprawPola(baza).historia('p1');
+    expect(uprawy.map((u) => u.sezon), [2026, 2025]);
+    expect(uprawy.last.uprawa, 'kukurydza');
+    expect(uprawy.last.zrodlo, 'rolnik');
   });
 
   testWidgets('bez wybranej uprawy pola nie da się zapisać', (tester) async {

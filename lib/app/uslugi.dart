@@ -3,6 +3,8 @@ import '../funkcje/dzialki/import_wniosku.dart';
 import '../funkcje/dzialki/klient_uldk.dart';
 import '../funkcje/dzialki/repozytorium_dzialek.dart';
 import '../funkcje/dzialki/repozytorium_pol.dart';
+import '../funkcje/dzialki/historia_upraw.dart';
+import '../funkcje/dzialki/uprawy_pola.dart';
 import '../funkcje/dzialki/slownik_upraw.dart';
 import '../funkcje/dzialki/zrodlo_pliku.dart';
 import '../funkcje/nawozenie/ewidencja_nawozenia.dart';
@@ -117,6 +119,14 @@ class Uslugi {
 
   /// Lista gospodarstw, wybór aktywnego i konto (plan, pkt 7).
   final RepozytoriumGospodarstw gospodarstwa;
+
+  /// Uprawy pola po sezonach — z nich liczy się zmianowanie (GAEC 7).
+  /// Pracują na tej samej bazie co repozytorium pól, więc biorą ją stąd.
+  RepozytoriumUprawPola get uprawyPola => RepozytoriumUprawPola(kopia.baza);
+
+  /// Historia upraw pola razem z zakresem lat z przepisu.
+  UslugaHistoriiUpraw get historiaUpraw =>
+      UslugaHistoriiUpraw(pola: pola, uprawy: uprawyPola, reguly: reguly);
 
   /// Kopia danych do pliku — zawsze darmowa (plan, pkt 8).
   final KopiaDanych kopia;

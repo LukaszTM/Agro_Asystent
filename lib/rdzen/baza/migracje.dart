@@ -351,4 +351,130 @@ const List<Migracja> migracje = [
       ''',
     ],
   ),
+
+  // Warunkowość (etap 2) pyta o rzeczy, których baza nie miała: norma GAEC 7
+  // liczy progi **gruntów ornych**, a nie całej powierzchni, i porównuje
+  // uprawę w plonie głównym rok po roku, licząc od 2023 r. Dlatego pole
+  // dostaje rodzaj użytku, a uprawy dostają własną tabelę z sezonem —
+  // kolumna `uprawa` w `dzialka_rolna` mówi tylko, co rośnie teraz.
+  //
+  // Identyfikator wiersza uprawy jest wyliczany („up-<pole>-<sezon>-g"),
+  // a nie losowy: dwa urządzenia dopisujące to samo dostaną ten sam
+  // identyfikator, więc scalanie danych nie zrobi z tego dwóch wpisów.
+  Migracja(
+    wersja: 5,
+    opis: 'Rodzaj użytku pola i uprawy pola po sezonach',
+    polecenia: [
+      'ALTER TABLE dzialka_rolna ADD COLUMN rodzaj_uzytku TEXT',
+      '''
+      CREATE TABLE uprawa_pola (
+        id               TEXT PRIMARY KEY,
+        dzialka_rolna_id TEXT NOT NULL REFERENCES dzialka_rolna(id),
+        sezon            INTEGER NOT NULL,
+        uprawa           TEXT NOT NULL,
+        kod_eppo         TEXT,
+        plon_glowny      INTEGER NOT NULL DEFAULT 1,
+        zrodlo           TEXT,
+        utworzono        TEXT NOT NULL,
+        zmieniono        TEXT NOT NULL,
+        urzadzenie       TEXT NOT NULL,
+        usuniety         INTEGER NOT NULL DEFAULT 0
+      )
+      ''',
+      'CREATE INDEX idx_uprawa_pola ON uprawa_pola(dzialka_rolna_id, sezon)',
+
+      // Co rośnie teraz — przepisane z pola, żeby rolnik nie wpisywał
+      // tego, co aplikacja już wie.
+      '''
+      INSERT OR IGNORE INTO uprawa_pola
+        (id, dzialka_rolna_id, sezon, uprawa, kod_eppo, plon_glowny,
+         zrodlo, utworzono, zmieniono, urzadzenie)
+      SELECT 'up-' || r.id || '-' || r.sezon || '-g', r.id, r.sezon,
+             r.uprawa, r.kod_eppo, 1, 'pole', r.utworzono, r.zmieniono,
+             r.urzadzenie
+      FROM dzialka_rolna r
+      WHERE r.usuniety = 0 AND r.uprawa IS NOT NULL AND TRIM(r.uprawa) <> ''
+      ''',
+
+      // Co rosło wcześniej — z dziennika zmian, ale tylko wtedy, gdy
+      // zapisana poprzednia uprawa dotyczy **innego** sezonu niż obecny.
+      // Poprawka uprawy w tym samym sezonie to nie historia plonów.
+      '''
+      INSERT OR IGNORE INTO uprawa_pola
+        (id, dzialka_rolna_id, sezon, uprawa, kod_eppo, plon_glowny,
+         zrodlo, utworzono, zmieniono, urzadzenie)
+      SELECT 'up-' || h.wiersz_id || '-'
+               || json_extract(h.dane_json, '\$.poprzednio.sezon') || '-g',
+             h.wiersz_id,
+             json_extract(h.dane_json, '\$.poprzednio.sezon'),
+             json_extract(h.dane_json, '\$.poprzednio.uprawa'),
+             json_extract(h.dane_json, '\$.poprzednio.kod_eppo'),
+             1, 'dziennik zmian', h.czas, h.czas,
+             COALESCE(h.urzadzenie, 'nieznane')
+      FROM historia_zmian h
+      JOIN dzialka_rolna r ON r.id = h.wiersz_id
+      WHERE h.tabela = 'dzialka_rolna'
+        AND h.operacja = 'zmiana'
+        AND json_extract(h.dane_json, '\$.poprzednio.uprawa') IS NOT NULL
+        AND TRIM(json_extract(h.dane_json, '\$.poprzednio.uprawa')) <> ''
+        AND json_extract(h.dane_json, '\$.poprzednio.sezon') IS NOT NULL
+        AND json_extract(h.dane_json, '\$.poprzednio.sezon') <> r.sezon
+      ''',
+
+      // Uprawa z pola wpisuje się do historii sama, wyzwalaczem — a nie
+      // z kodu, który o tym pamięta. Pola wstawia nie tylko ekran „Nowe
+      // pole": robi to też import wniosku i scalanie danych z drugiego
+      // urządzenia. Jedno miejsce w bazie zamiast trzech w kodzie.
+      '''
+      CREATE TRIGGER uprawa_pola_z_dzialki AFTER INSERT ON dzialka_rolna
+      WHEN NEW.uprawa IS NOT NULL AND TRIM(NEW.uprawa) <> ''
+      BEGIN
+        INSERT OR IGNORE INTO uprawa_pola
+          (id, dzialka_rolna_id, sezon, uprawa, kod_eppo, plon_glowny,
+           zrodlo, utworzono, zmieniono, urzadzenie)
+        VALUES ('up-' || NEW.id || '-' || NEW.sezon || '-g', NEW.id,
+                NEW.sezon, NEW.uprawa, NEW.kod_eppo, 1, 'pole',
+                NEW.utworzono, NEW.zmieniono, NEW.urzadzenie);
+      END
+      ''',
+
+      // Zmiana uprawy na polu też musi dojść do historii. Przy nowym
+      // sezonie powstaje nowy wiersz, a ten z poprzedniego roku zostaje —
+      // właśnie o niego pyta zmianowanie. Poprzednią treść zapisuje
+      // wyzwalacz `historia_dzialka_rolna_zmiana`, więc nic nie ginie.
+      '''
+      CREATE TRIGGER uprawa_pola_z_dzialki_zmiana
+      AFTER UPDATE OF uprawa, kod_eppo, sezon ON dzialka_rolna
+      WHEN NEW.uprawa IS NOT NULL AND TRIM(NEW.uprawa) <> ''
+      BEGIN
+        INSERT OR REPLACE INTO uprawa_pola
+          (id, dzialka_rolna_id, sezon, uprawa, kod_eppo, plon_glowny,
+           zrodlo, utworzono, zmieniono, urzadzenie)
+        VALUES ('up-' || NEW.id || '-' || NEW.sezon || '-g', NEW.id,
+                NEW.sezon, NEW.uprawa, NEW.kod_eppo, 1, 'pole',
+                NEW.utworzono, NEW.zmieniono, NEW.urzadzenie);
+      END
+      ''',
+
+      // Uprawy pola też są dopisywane, nie nadpisywane: poprawka wpisu
+      // o roku 2024 musi zostawić ślad, bo od niej zależy wynik GAEC 7.
+      '''
+      CREATE TRIGGER historia_uprawa_pola_zmiana AFTER UPDATE ON uprawa_pola
+      WHEN OLD.uprawa IS NOT NEW.uprawa
+        OR OLD.kod_eppo IS NOT NEW.kod_eppo
+        OR OLD.sezon IS NOT NEW.sezon
+        OR OLD.usuniety IS NOT NEW.usuniety
+      BEGIN
+        INSERT INTO historia_zmian (tabela, wiersz_id, operacja, dane_json, czas, urzadzenie)
+        VALUES ('uprawa_pola', NEW.id,
+                CASE WHEN NEW.usuniety = 1 THEN 'usuniecie' ELSE 'zmiana' END,
+                json_object('poprzednio',
+                  json_object('sezon', OLD.sezon, 'uprawa', OLD.uprawa,
+                              'kod_eppo', OLD.kod_eppo,
+                              'plon_glowny', OLD.plon_glowny)),
+                NEW.zmieniono, NEW.urzadzenie);
+      END
+      ''',
+    ],
+  ),
 ];

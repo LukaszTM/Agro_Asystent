@@ -9,6 +9,7 @@ import 'package:agro_asystent/funkcje/dzialki/import_wniosku.dart';
 import 'package:agro_asystent/funkcje/dzialki/klient_uldk.dart';
 import 'package:agro_asystent/funkcje/dzialki/repozytorium_dzialek.dart';
 import 'package:agro_asystent/funkcje/dzialki/repozytorium_pol.dart';
+import 'package:agro_asystent/funkcje/dzialki/rodzaj_uzytku.dart';
 import 'package:agro_asystent/funkcje/dzialki/slownik_upraw.dart';
 import 'package:agro_asystent/funkcje/dzialki/zrodlo_pliku.dart';
 import 'package:agro_asystent/funkcje/nawozenie/ewidencja_nawozenia.dart';
@@ -38,6 +39,7 @@ import 'package:agro_asystent/wyglad/nowoczesny/motyw.dart';
 import 'package:agro_asystent/wyglad/nowoczesny/nawozenie/ekran_nawozenie.dart';
 import 'package:agro_asystent/wyglad/nowoczesny/pola/ekran_dzialki.dart';
 import 'package:agro_asystent/wyglad/nowoczesny/pola/ekran_import_wniosku.dart';
+import 'package:agro_asystent/wyglad/nowoczesny/pola/ekran_pole.dart';
 import 'package:agro_asystent/wyglad/nowoczesny/ustawienia/ekran_dane_gospodarstwa.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -451,6 +453,51 @@ void main() {
         await RepozytoriumGospodarstw(baza: baza).wszystkie(),
         hasLength(1),
       );
+    });
+  });
+
+  group('rodzaj użytku i uprawy w latach', () {
+    testWidgets('rodzaj użytku zapisuje wybór rolnika, nie podpowiedź', (
+      tester,
+    ) async {
+      await dodajPole();
+      final pole = (await RepozytoriumPol(baza).jedno('p1'))!;
+      await pokaz(
+        tester,
+        EkranPoleNowoczesny(uslugi: zbudujUslugi(), pole: pole),
+      );
+
+      expect(find.textContaining('Nie wiemy, czy to grunt'), findsOneWidget);
+      expect(
+        find.textContaining('Z nazwy uprawy wychodzi: Grunty orne'),
+        findsOneWidget,
+      );
+      expect(pole.rodzajUzytku, RodzajUzytku.nieznany);
+
+      await tester.tap(find.text('Łąka lub pastwisko'));
+      await tester.pumpAndSettle();
+
+      expect(
+        (await RepozytoriumPol(baza).jedno('p1'))!.rodzajUzytku,
+        RodzajUzytku.tuz,
+      );
+      expect(find.textContaining('Nie wiemy, czy to grunt'), findsNothing);
+    });
+
+    testWidgets('brakujące lata idą od roku z przepisu', (tester) async {
+      await dodajPole();
+      final pole = (await RepozytoriumPol(baza).jedno('p1'))!;
+      await pokaz(
+        tester,
+        EkranPoleNowoczesny(uslugi: zbudujUslugi(), pole: pole),
+      );
+
+      await przewinDo(tester, find.textContaining('od 2023 r.'));
+      expect(find.textContaining('od 2023 r.'), findsWidgets);
+      expect(find.text('Dopisz rok 2025'), findsOneWidget);
+      expect(find.text('Dopisz rok 2023'), findsOneWidget);
+      // Rok bieżący wziął się z pola, więc nie ma go wśród brakujących.
+      expect(find.text('Dopisz rok ${DateTime.now().year}'), findsNothing);
     });
   });
 

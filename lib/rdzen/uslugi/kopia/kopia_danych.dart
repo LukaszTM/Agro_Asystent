@@ -91,6 +91,7 @@ class KopiaDanych {
     'dzialka_ewidencyjna',
     'dzialka_rolna',
     'dzialka_rolna_czesc',
+    'uprawa_pola',
     'nawoz',
     'zabieg',
     'zabieg_pole',

@@ -497,6 +497,74 @@ NORMY = [
 ]
 
 
+#: Podpowiedź rodzaju użytku po nazwie uprawy.
+#:
+#: To **nie** jest dane z przepisu — rozporządzenie nie zawiera listy
+#: „które uprawy rosną na gruntach ornych". Aplikacja podpowiada rolnikowi
+#: rodzaj użytku na podstawie nazwy uprawy, a rolnik potwierdza każde pole:
+#: od rodzaju użytku zależy próg 10 ha i wszystkie udziały z GAEC 7, więc
+#: zgadnięta wartość dałaby zgadnięty wynik kontroli.
+#:
+#: Słowa są bez ogonków i małymi literami — aplikacja normalizuje nazwę
+#: uprawy tą samą drogą co wyszukiwarka upraw.
+RODZAJE_UZYTKU = [
+    {
+        "id": "grunty_orne",
+        "nazwa": "Grunty orne",
+        "na_wydruku": "grunty orne",
+        "domyslny": True,
+        "slowa": [],
+    },
+    {
+        "id": "tuz",
+        "nazwa": "Łąka lub pastwisko",
+        "na_wydruku": "trwały użytek zielony",
+        "domyslny": False,
+        "slowa": [
+            "laka",
+            "laki",
+            "pastwisko",
+            "pastwiska",
+            "tuz",
+            "trwaly uzytek zielony",
+            "trwale uzytki zielone",
+        ],
+    },
+    {
+        "id": "uprawy_trwale",
+        "nazwa": "Sad lub uprawa trwała",
+        "na_wydruku": "uprawa trwała",
+        "domyslny": False,
+        "slowa": [
+            "sad",
+            "sady",
+            "plantacja",
+            "chmiel",
+            "szkolka",
+            "jablon",
+            "grusza",
+            "sliwa",
+            "czeresnia",
+            "wisnia",
+            "brzoskwinia",
+            "morela",
+            "orzech",
+            "winorosl",
+            "porzeczka",
+            "malina",
+            "borowka",
+            "aronia",
+            "agrest",
+            "bez czarny",
+            "miskant",
+            "slazowiec",
+            "wierzba energetyczna",
+            "zagajnik",
+        ],
+    },
+]
+
+
 def sprawdz(tekst: str) -> list[str]:
     """Kontrole negatywne: każdy zwrot z `kontrola` musi stać w akcie."""
     bledy: list[str] = []
@@ -514,6 +582,21 @@ def sprawdz(tekst: str) -> list[str]:
             "w akcie nie widać uchylenia § 6 ust. 1 (4 % obszarów "
             "nieprodukcyjnych) — sprawdź brzmienie normy GAEC 8"
         )
+    domyslne = [r for r in RODZAJE_UZYTKU if r["domyslny"]]
+    if len(domyslne) != 1:
+        bledy.append(
+            "dokładnie jeden rodzaj użytku ma być podpowiedzią domyślną, "
+            f"a jest ich {len(domyslne)}"
+        )
+    for rodzaj in RODZAJE_UZYTKU:
+        for slowo in rodzaj["slowa"]:
+            if slowo != slowo.lower() or any(
+                znak in slowo for znak in "ąćęłńóśźż"
+            ):
+                bledy.append(
+                    f"podpowiedź „{slowo}” ma ogonki albo wielkie litery — "
+                    "aplikacja porównuje nazwy znormalizowane"
+                )
     idki = [n["id"] for n in NORMY]
     if len(set(idki)) != len(idki):
         bledy.append(f"powtórzone identyfikatory norm: {idki}")
@@ -541,6 +624,15 @@ def do_regul() -> dict:
             "unijnego i komunikatu ARiMR."
         ),
         "zwolnienia": ZWOLNIENIA,
+        "rodzaje_uzytku": {
+            "status_weryfikacji": "podpowiedz",
+            "opis": (
+                "Podpowiedź rodzaju użytku po nazwie uprawy. Nie pochodzi "
+                "z przepisu — rolnik potwierdza rodzaj użytku dla każdego "
+                "pola, bo od niego zależą wszystkie progi GAEC 7."
+            ),
+            "rodzaje": RODZAJE_UZYTKU,
+        },
         "normy": [
             {k: v for k, v in norma.items() if k != "kontrola"}
             for norma in NORMY
@@ -572,6 +664,7 @@ def main(argv: list[str] | None = None) -> int:
     print(f"Norm w słowniku: {len(NORMY)}")
     print(f"Aplikacja liczy: {', '.join(liczy)}")
     print(f"Zwolnień z kontroli: {len(ZWOLNIENIA)}")
+    print(f"Rodzajów użytku: {len(RODZAJE_UZYTKU)}")
     progi = sum(len(n.get("progi", [])) for n in NORMY)
     terminy = sum(len(n.get("terminy", [])) for n in NORMY)
     print(f"Progów: {progi}, terminów: {terminy}")

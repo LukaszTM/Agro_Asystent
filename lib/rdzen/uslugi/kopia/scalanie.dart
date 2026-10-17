@@ -68,6 +68,10 @@ const Map<String, ReguloScalania> regulyScalania = {
     rodzic: 'dzialka_rolna',
     kluczRodzica: 'dzialka_rolna_id',
   ),
+  // Uprawa pola ma własny czas zmiany, więc wygrywa nowsza; wiersze mają
+  // identyfikator wyliczany z pola i sezonu, więc dwa urządzenia dopisujące
+  // to samo trafiają w ten sam wiersz.
+  'uprawa_pola': ReguloScalania(RodzajScalania.poCzasie),
   'nawoz': ReguloScalania(RodzajScalania.poCzasie),
   'zabieg': ReguloScalania(RodzajScalania.poCzasie),
   'zabieg_pole': ReguloScalania(

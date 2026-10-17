@@ -1320,6 +1320,78 @@ class ZwolnienieZKontroli {
       wszystkieNormy || normy.contains(idNormy);
 }
 
+/// Jeden rodzaj użytku razem ze słowami, po których aplikacja go
+/// podpowiada.
+class RodzajUzytkuZeSlownika {
+  const RodzajUzytkuZeSlownika({
+    required this.id,
+    required this.nazwa,
+    required this.naWydruku,
+    required this.domyslny,
+    required this.slowa,
+  });
+
+  factory RodzajUzytkuZeSlownika.zJson(Map<String, dynamic> json) =>
+      RodzajUzytkuZeSlownika(
+        id: json['id'] as String? ?? '',
+        nazwa: json['nazwa'] as String? ?? '',
+        naWydruku: json['na_wydruku'] as String? ?? '',
+        domyslny: json['domyslny'] as bool? ?? false,
+        slowa: [
+          for (final slowo in (json['slowa'] as List<dynamic>?) ?? const [])
+            '$slowo',
+        ],
+      );
+
+  final String id;
+  final String nazwa;
+  final String naWydruku;
+
+  /// Podpowiedź, gdy żadne słowo nie pasuje.
+  final bool domyslny;
+
+  /// Słowa w nazwie uprawy, które wskazują ten rodzaj użytku.
+  final List<String> slowa;
+}
+
+/// Podpowiedzi rodzaju użytku — **nie** są danymi z przepisu.
+///
+/// Rozporządzenie nie zawiera listy „które uprawy rosną na gruntach
+/// ornych". Podpowiedź ma oszczędzić rolnikowi dotknięć, a nie zastąpić
+/// jego decyzję: od rodzaju użytku zależą wszystkie progi GAEC 7, więc
+/// zgadnięta wartość dałaby zgadnięty wynik kontroli.
+class PodpowiedziRodzajuUzytku {
+  const PodpowiedziRodzajuUzytku({
+    required this.statusWeryfikacji,
+    required this.opis,
+    required this.rodzaje,
+  });
+
+  static const PodpowiedziRodzajuUzytku puste = PodpowiedziRodzajuUzytku(
+    statusWeryfikacji: 'brak',
+    opis: '',
+    rodzaje: [],
+  );
+
+  factory PodpowiedziRodzajuUzytku.zJson(Map<String, dynamic> json) =>
+      PodpowiedziRodzajuUzytku(
+        statusWeryfikacji: json['status_weryfikacji'] as String? ?? 'nieznany',
+        opis: json['opis'] as String? ?? '',
+        rodzaje: ((json['rodzaje'] as List<dynamic>?) ?? const [])
+            .map((r) => RodzajUzytkuZeSlownika.zJson(r as Map<String, dynamic>))
+            .toList(growable: false),
+      );
+
+  final String statusWeryfikacji;
+  final String opis;
+  final List<RodzajUzytkuZeSlownika> rodzaje;
+
+  bool get pusta => rodzaje.isEmpty;
+
+  RodzajUzytkuZeSlownika? get domyslny =>
+      rodzaje.where((r) => r.domyslny).firstOrNull;
+}
+
 /// Normy GAEC razem ze zwolnieniami — dane z wersją, nie kod.
 class Warunkowosc {
   const Warunkowosc({
@@ -1328,6 +1400,7 @@ class Warunkowosc {
     required this.opis,
     required this.normy,
     required this.zwolnienia,
+    this.rodzajeUzytku = PodpowiedziRodzajuUzytku.puste,
   });
 
   static const Warunkowosc puste = Warunkowosc(
@@ -1348,6 +1421,11 @@ class Warunkowosc {
     zwolnienia: ((json['zwolnienia'] as List<dynamic>?) ?? const [])
         .map((z) => ZwolnienieZKontroli.zJson(z as Map<String, dynamic>))
         .toList(growable: false),
+    rodzajeUzytku: json['rodzaje_uzytku'] == null
+        ? PodpowiedziRodzajuUzytku.puste
+        : PodpowiedziRodzajuUzytku.zJson(
+            json['rodzaje_uzytku'] as Map<String, dynamic>,
+          ),
   );
 
   final String statusWeryfikacji;
@@ -1355,6 +1433,9 @@ class Warunkowosc {
   final String opis;
   final List<NormaGaec> normy;
   final List<ZwolnienieZKontroli> zwolnienia;
+
+  /// Podpowiedzi rodzaju użytku — pomoc przy wypełnianiu, nie przepis.
+  final PodpowiedziRodzajuUzytku rodzajeUzytku;
 
   bool get pusta => normy.isEmpty;
 

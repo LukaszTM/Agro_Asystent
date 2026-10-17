@@ -1,0 +1,249 @@
+import 'package:flutter/material.dart';
+
+import '../../../app/uslugi.dart';
+import '../../../funkcje/dzialki/historia_upraw.dart';
+import '../../../funkcje/dzialki/repozytorium_pol.dart';
+import '../../../funkcje/dzialki/rodzaj_uzytku.dart';
+import '../../../funkcje/dzialki/slownik_upraw.dart';
+import '../../../funkcje/dzialki/uprawy_pola.dart';
+import '../motyw.dart';
+import '../widgety/karta.dart';
+import '../widgety/wybor.dart';
+import 'ekran_wybor_uprawy.dart';
+
+/// Rodzaj użytku i uprawy pola w kolejnych latach — wygląd nowoczesny.
+///
+/// Oba te dane są potrzebne normie GAEC 7: próg 10 ha liczy się od gruntów
+/// ornych, a zmianowanie porównuje uprawę w plonie głównym rok po roku.
+/// Aplikacja podpowiada, ale zapisuje tylko to, co wybierze rolnik.
+class EkranPoleNowoczesny extends StatefulWidget {
+  const EkranPoleNowoczesny({
+    super.key,
+    required this.uslugi,
+    required this.pole,
+  });
+
+  final Uslugi uslugi;
+  final Pole pole;
+
+  @override
+  State<EkranPoleNowoczesny> createState() => _EkranPoleNowoczesnyState();
+}
+
+class _EkranPoleNowoczesnyState extends State<EkranPoleNowoczesny> {
+  late Pole _pole = widget.pole;
+  late Future<HistoriaUprawPola> _historia;
+  bool _zmienione = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _historia = widget.uslugi.historiaUpraw.dla(_pole);
+  }
+
+  Future<void> _odswiez() async {
+    final swieze = await widget.uslugi.pola.jedno(_pole.id);
+    if (!mounted) {
+      return;
+    }
+    setState(() {
+      _pole = swieze ?? _pole;
+      _zmienione = true;
+      _historia = widget.uslugi.historiaUpraw.dla(_pole);
+    });
+  }
+
+  Future<void> _ustawRodzajUzytku(RodzajUzytku rodzaj) async {
+    await widget.uslugi.pola.ustawRodzajUzytku(
+      poleId: _pole.id,
+      rodzaj: rodzaj,
+      urzadzenie: widget.uslugi.urzadzenie,
+    );
+    await _odswiez();
+  }
+
+  Future<void> _dopiszRok(int rok) async {
+    final wybrana = await Navigator.of(context).push<UprawaDoWyboru>(
+      MaterialPageRoute<UprawaDoWyboru>(
+        builder: (_) => EkranWyborUprawyNowoczesny(uslugi: widget.uslugi),
+      ),
+    );
+    if (wybrana == null || !mounted) {
+      return;
+    }
+    await widget.uslugi.uprawyPola.zapisz(
+      poleId: _pole.id,
+      sezon: rok,
+      uprawa: wybrana.nazwa,
+      kodEppo: wybrana.kodEppo,
+      urzadzenie: widget.uslugi.urzadzenie,
+    );
+    await _odswiez();
+  }
+
+  Future<void> _przyjmijPropozycje(UprawaSezonu propozycja) async {
+    await widget.uslugi.uprawyPola.zapisz(
+      poleId: _pole.id,
+      sezon: propozycja.sezon,
+      uprawa: propozycja.uprawa,
+      kodEppo: propozycja.kodEppo,
+      urzadzenie: widget.uslugi.urzadzenie,
+      zrodlo: 'wniosek',
+    );
+    await _odswiez();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final teksty = Theme.of(context).textTheme;
+
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (juzZdjety, _) {
+        if (!juzZdjety) {
+          Navigator.of(context).pop(_zmienione);
+        }
+      },
+      child: Scaffold(
+        appBar: AppBar(title: Text(_pole.nazwa)),
+        body: FutureBuilder<HistoriaUprawPola>(
+          future: _historia,
+          builder: (context, stan) {
+            if (!stan.hasData) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            final historia = stan.data!;
+            return ListView(
+              padding: const EdgeInsets.all(MotywNowoczesny.odstep),
+              children: [
+                Karta(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        _pole.uprawa.isEmpty ? 'Bez uprawy' : _pole.uprawa,
+                        style: teksty.titleLarge,
+                      ),
+                      Text(
+                        '${_pole.powierzchniaOpis}'
+                        '${_pole.sezon == null ? '' : ' • sezon ${_pole.sezon}'}',
+                        style: teksty.bodyMedium,
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: MotywNowoczesny.odstep),
+                Text('Rodzaj użytku', style: teksty.titleLarge),
+                const SizedBox(height: 4),
+                if (historia.rodzajUzytkuDoPodania)
+                  OstrzezenieNowoczesne(
+                    tresc: 'Nie wiemy, czy to grunt orny, łąka czy sad.',
+                    coZrobic:
+                        'Od tego zależą progi normy GAEC 7 (zmianowanie '
+                        'i dywersyfikacja).'
+                        '${historia.podpowiedzRodzajuUzytku.znany ? ' Z nazwy uprawy wychodzi: ${historia.podpowiedzRodzajuUzytku.dlaRolnika}.' : ''}',
+                  )
+                else
+                  Text(_pole.rodzajUzytku.dlaRolnika, style: teksty.bodyLarge),
+                const SizedBox(height: 8),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    for (final rodzaj in RodzajUzytku.doWyboru)
+                      Wybor(
+                        etykieta: rodzaj.dlaRolnika,
+                        wybrany: rodzaj == _pole.rodzajUzytku,
+                        onTap: () => _ustawRodzajUzytku(rodzaj),
+                      ),
+                  ],
+                ),
+                const SizedBox(height: MotywNowoczesny.odstep),
+                Text('Co rosło w poprzednich latach', style: teksty.titleLarge),
+                const SizedBox(height: 4),
+                Text(
+                  'Kontrola zmianowania porównuje uprawy rok po roku, '
+                  'od ${historia.odRoku} r.',
+                  style: teksty.bodyMedium,
+                ),
+                const SizedBox(height: 8),
+                for (final wpis in historia.wpisy) ...[
+                  Karta(
+                    child: Row(
+                      children: [
+                        SizedBox(
+                          width: 56,
+                          child: Text(
+                            '${wpis.sezon}',
+                            style: teksty.titleLarge,
+                          ),
+                        ),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(wpis.uprawa, style: teksty.bodyLarge),
+                              Text(
+                                wpis.maKod
+                                    ? 'kod EPPO: ${wpis.kodEppo}'
+                                    : 'bez kodu EPPO',
+                                style: teksty.bodyMedium,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                ],
+                if (historia.propozycje.isNotEmpty) ...[
+                  Text(
+                    'Z wniosków z wcześniejszych lat — to samo oznaczenie '
+                    'działki rolnej. Dopisz, jeśli to ten sam kawałek pola.',
+                    style: teksty.bodyMedium,
+                  ),
+                  const SizedBox(height: 8),
+                  for (final propozycja in historia.propozycje) ...[
+                    Karta(
+                      onTap: () => _przyjmijPropozycje(propozycja),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              '${propozycja.sezon}: ${propozycja.uprawa}',
+                              style: teksty.bodyLarge,
+                            ),
+                          ),
+                          const Icon(
+                            Icons.playlist_add_outlined,
+                            size: 20,
+                            color: MotywNowoczesny.tekstPomocniczy,
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                  ],
+                ],
+                for (final rok in historia.brakujaceLata) ...[
+                  OutlinedButton.icon(
+                    onPressed: () => _dopiszRok(rok),
+                    icon: const Icon(Icons.add, size: 20),
+                    label: Text('Dopisz rok $rok'),
+                  ),
+                  const SizedBox(height: 8),
+                ],
+                if (historia.kompletna)
+                  Text(
+                    'Historia jest pełna od ${historia.odRoku} r.',
+                    style: teksty.bodyMedium,
+                  ),
+              ],
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
