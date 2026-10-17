@@ -22,6 +22,7 @@ class DopuszczonySrodek {
     this.karencjaDni,
     this.karencjaStan,
     this.karencjaDataEtykiety,
+    this.terminDoStosowania,
   });
 
   final int srodekId;
@@ -40,6 +41,10 @@ class DopuszczonySrodek {
   final int? karencjaDni;
   final String? karencjaStan;
   final String? karencjaDataEtykiety;
+
+  /// Do kiedy wolno stosować środek wycofany z obrotu (rejestr MRiRW).
+  /// `null` znaczy „rejestr nic o tym nie mówi", nie „bez ograniczeń".
+  final String? terminDoStosowania;
 
   /// Czy dawkę można podpowiedzieć rolnikowi jako gotową liczbę.
   bool get dawkaZnana => dawka != null && dawkaPewnosc != 'do_sprawdzenia';
@@ -72,6 +77,7 @@ class SlownikSrodkow {
     SELECT s.id AS srodek_id, s.nazwa, s.nr_zezwolenia, s.rodzaj,
            z.id AS zastosowanie_id, z.agrofag, z.dawka_wartosc, z.dawka_jednostka,
            z.dawka_odniesienie, z.dawka_tekst, z.dawka_pewnosc, z.bbch_od, z.bbch_do,
+           s.termin_do_stosowania,
            k.dni AS karencja_dni, k.stan AS karencja_stan, k.data_etykiety
     FROM zastosowanie_uprawa zu
     JOIN zastosowanie z ON z.id = zu.zastosowanie_id
@@ -107,6 +113,26 @@ class SlownikSrodkow {
     return wiersze.map(_zWiersza).toList(growable: false);
   }
 
+  /// Do kiedy wolno stosować ten środek — z rejestru MRiRW.
+  ///
+  /// `null` znaczy „rejestr nie podaje terminu" (albo nie zna tego
+  /// środka), a nie „wolno bez końca". Magazyn używa tego, żeby ostrzec
+  /// o zapasie, którego nie wolno już wylać na pole.
+  Future<DateTime?> terminDoStosowania(String nazwa) async {
+    final wiersze = await _baza.rawQuery(
+      '''
+      SELECT termin_do_stosowania FROM srodek
+      WHERE nazwa = ? AND termin_do_stosowania IS NOT NULL
+      ORDER BY termin_do_stosowania LIMIT 1
+      ''',
+      [nazwa],
+    );
+    if (wiersze.isEmpty) {
+      return null;
+    }
+    return DateTime.tryParse(wiersze.first['termin_do_stosowania'] as String);
+  }
+
   /// Uprawy, dla których rejestr cokolwiek przewiduje.
   Future<List<String>> uprawy() async {
     final wiersze = await _baza.rawQuery(
@@ -138,6 +164,7 @@ class SlownikSrodkow {
         dawkaPewnosc: (w['dawka_pewnosc'] as String?) ?? 'do_sprawdzenia',
         bbchOd: w['bbch_od'] as int?,
         bbchDo: w['bbch_do'] as int?,
+        terminDoStosowania: w['termin_do_stosowania'] as String?,
         karencjaDni: w['karencja_dni'] as int?,
         karencjaStan: w['karencja_stan'] as String?,
         karencjaDataEtykiety: w['data_etykiety'] as String?,

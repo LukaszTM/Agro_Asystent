@@ -358,6 +358,68 @@ void main() {
     );
   });
 
+  testWidgets('magazyn bez premium mówi o tym wprost i nic nie blokuje', (
+    tester,
+  ) async {
+    await pokaz(tester, EkranGospodarstwa(uslugi: zbudujUslugi()));
+
+    await przewinDo(tester, find.text('Magazyn'));
+    await tester.tap(find.text('Magazyn'));
+    await tester.pumpAndSettle();
+
+    expect(find.textContaining('należy do wersji płatnej'), findsOneWidget);
+    expect(
+      find.textContaining('działają bez'),
+      findsOneWidget,
+      reason: 'dokumentacji nie wolno warunkować płatnością',
+    );
+    expect(find.text('Dodaj nawóz'), findsNothing);
+  });
+
+  testWidgets('w premium magazyn liczy stan z zakupów', (tester) async {
+    final uslugi = zbudujUslugi(premium: true);
+    await uslugi.nawozy.zapisz(
+      nawoz: const Nawoz(
+        id: 'n1',
+        gospodarstwoId: 'g1',
+        nazwa: 'Saletra amonowa',
+        azotProcent: 34,
+        naturalny: false,
+      ),
+      urzadzenie: 'telefon',
+    );
+
+    await pokaz(tester, EkranGospodarstwa(uslugi: uslugi));
+    await przewinDo(tester, find.text('Magazyn'));
+    await tester.tap(find.text('Magazyn'));
+    await tester.pumpAndSettle();
+
+    expect(find.textContaining('Magazyn jest jeszcze pusty'), findsOneWidget);
+
+    await przewinDo(tester, find.text('Dodaj nawóz'));
+    await tester.tap(find.text('Dodaj nawóz'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Saletra amonowa').last);
+    await tester.pumpAndSettle();
+
+    expect(find.text('0,00 kg'), findsOneWidget);
+
+    // Zakup: przyciski „+" i „−", bez klawiatury.
+    await przewinDo(tester, find.text('Zakup'));
+    await tester.tap(find.text('Zakup'));
+    await tester.pumpAndSettle();
+    for (var i = 0; i < 3; i++) {
+      await tester.tap(find.text('+'));
+      await tester.pumpAndSettle();
+    }
+    await tester.tap(find.text('Zapisz'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('3,00 kg'), findsOneWidget);
+    final stan = await uslugi.magazyn.stan(gospodarstwoId: 'g1');
+    expect(stan.single.zakupy, 3);
+  });
+
   testWidgets('wygląd przełącza się w ustawieniach i zapisuje w bazie', (
     tester,
   ) async {

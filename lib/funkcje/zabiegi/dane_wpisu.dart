@@ -55,6 +55,16 @@ class DaneWpisu {
     return wybrany.azotKgNaHa(wartosc, jednostkaDawki);
   }
 
+  /// Ile razem nawozu idzie na wybrane pola — w jednostce, którą wybrał
+  /// rolnik (kg albo t). `null`, gdy nie ma jeszcze dawki.
+  double? get iloscNawozuRazem {
+    final wartosc = dawka;
+    if (nawoz == null || wartosc == null) {
+      return null;
+    }
+    return wartosc * powierzchniaAr / 100;
+  }
+
   /// Ile razem środka trzeba na wybrane pola — rolnik pyta o to przy nalewaniu.
   double? get iloscSrodkaRazem {
     final wartosc = dawka;

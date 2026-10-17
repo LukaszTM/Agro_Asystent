@@ -94,6 +94,8 @@ class KopiaDanych {
     'uprawa_pola',
     'okrywa_pola',
     'nawoz',
+    'magazyn_pozycja',
+    'magazyn_ruch',
     'zabieg',
     'zabieg_pole',
     'zabieg_oprysk',

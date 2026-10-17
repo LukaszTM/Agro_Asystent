@@ -76,6 +76,13 @@ const Map<String, ReguloScalania> regulyScalania = {
   // wygrywa nowsza deklaracja, a starsza zostaje w dzienniku zmian.
   'okrywa_pola': ReguloScalania(RodzajScalania.poCzasie),
   'nawoz': ReguloScalania(RodzajScalania.poCzasie),
+  // Pozycja magazynu ma identyfikator wyliczany z nazwy, więc ten sam
+  // środek wpisany na dwóch urządzeniach to jeden wiersz.
+  'magazyn_pozycja': ReguloScalania(RodzajScalania.poCzasie),
+  // Ruch ma własny czas zmiany, a zużycie przy zabiegu — identyfikator
+  // wyliczany z zabiegu i pozycji, więc ten sam oprysk nie odpisze towaru
+  // dwa razy po scaleniu.
+  'magazyn_ruch': ReguloScalania(RodzajScalania.poCzasie),
   'zabieg': ReguloScalania(RodzajScalania.poCzasie),
   'zabieg_pole': ReguloScalania(
     RodzajScalania.poRodzicu,

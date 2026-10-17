@@ -6,6 +6,7 @@ import '../../../funkcje/ustawienia/wybor_wygladu.dart';
 import '../../../funkcje/ustawienia/zwierzeta_w_gospodarstwie.dart';
 import '../../../rdzen/uslugi/kopia/kopia_danych.dart';
 import '../../../rdzen/uslugi/kopia/scalanie.dart';
+import '../magazyn/ekran_magazyn.dart';
 import '../motyw.dart';
 import '../widgety/karta.dart';
 import '../widgety/wybor.dart';
@@ -457,6 +458,35 @@ class _EkranUstawieniaState extends State<EkranUstawienia> {
                       onTap: () => _ustawZwierzeta(odpowiedz),
                     ),
                 ],
+              ),
+              const SizedBox(height: MotywNowoczesny.odstep),
+              Text('Magazyn', style: teksty.titleLarge),
+              const SizedBox(height: 4),
+              Text(
+                'Ile środków i nawozów zostało. Zużycie dopisuje się samo '
+                'przy wpisie zabiegu.',
+                style: teksty.bodyMedium,
+              ),
+              const SizedBox(height: 8),
+              Karta(
+                onTap: () => Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (_) => EkranMagazynNowoczesny(uslugi: _uslugi),
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    const Icon(
+                      Icons.inventory_2_outlined,
+                      size: 20,
+                      color: MotywNowoczesny.tekstPomocniczy,
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text('Otwórz magazyn', style: teksty.bodyLarge),
+                    ),
+                  ],
+                ),
               ),
               const SizedBox(height: MotywNowoczesny.odstep),
               Text('Kopia danych', style: teksty.titleLarge),

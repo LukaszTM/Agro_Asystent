@@ -122,6 +122,9 @@ innymi okrywa z § 4 i dywersyfikacja z § 5 ust. 4).
 7. **Magazyn** (premium, pkt 8): zakup i zużycie środków oraz nawozów, stan
    na dziś, zużycie liczone z wpisu zabiegu, ostrzeżenie o środku wycofanym.
 
+Wszystkie siedem kroków zrobione 17.10.2026 — raporty w `docs/raporty/`
+(`etap2-krok1-dane-warunkowosci.md` … `etap2-krok7-magazyn.md`).
+
 Czego aplikacja nie policzy sama i co mówi wprost: GAEC 1 (udział TUZ w skali
 kraju), GAEC 2 (wyznaczone torfowiska i obszary podmokłe — wykaz z Dz.U.
 z 2025 r. poz. 307 jest po stronie IUNG-PIB i ARiMR), GAEC 5 (nachylenie

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../app/uslugi.dart';
+import '../../../funkcje/magazyn/zuzycie_z_zabiegu.dart';
 import '../../../funkcje/zabiegi/dane_wpisu.dart';
 import '../../../rdzen/modele/zabieg.dart';
 import '../motyw.dart';
@@ -73,6 +74,16 @@ class _EkranDawkaState extends State<EkranDawka> {
         karencjaZrodlo: srodek.karencjaZnana ? 'etykieta MRiRW' : null,
         karencjaDataEtykiety: srodek.karencjaDataEtykiety,
       ),
+    );
+
+    // Magazyn (premium) odpisuje zużycie sam; ewidencja zabiegu zapisuje
+    // się tak samo w wersji darmowej.
+    await ZuzycieZZabiegu.odpisz(
+      magazyn: widget.uslugi.magazyn,
+      dostep: widget.uslugi.dostep,
+      dane: dane,
+      zabiegId: identyfikator,
+      urzadzenie: dane.urzadzenie,
     );
 
     if (!mounted) {

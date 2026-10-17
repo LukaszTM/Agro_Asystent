@@ -6,6 +6,7 @@ import '../../../funkcje/nawozenie/nawoz.dart';
 import '../../../funkcje/nawozenie/plan_nawozenia.dart';
 import '../../../funkcje/odczyt/czytnik_zdjecia.dart';
 import '../../../funkcje/odczyt/odczyt_etykiety.dart';
+import '../../../funkcje/magazyn/zuzycie_z_zabiegu.dart';
 import '../../../funkcje/warunkowosc/okres_legowy.dart';
 import '../../../funkcje/zabiegi/dane_wpisu.dart';
 import '../../../funkcje/zabiegi/slownik_srodkow.dart';
@@ -238,6 +239,15 @@ class _EkranWpisuState extends State<EkranWpisu> {
         RodzajZabiegu.nawozenie => await _zapiszNawozenie(),
         _ => await _zapiszProsty(),
       };
+      // Magazyn (premium) odpisuje zużycie sam; ewidencja zapisuje się
+      // tak samo w wersji darmowej.
+      await ZuzycieZZabiegu.odpisz(
+        magazyn: widget.uslugi.magazyn,
+        dostep: widget.uslugi.dostep,
+        dane: _dane,
+        zabiegId: zabieg.id,
+        urzadzenie: _dane.urzadzenie,
+      );
       if (mounted) {
         setState(() => _zapisany = zabieg);
       }

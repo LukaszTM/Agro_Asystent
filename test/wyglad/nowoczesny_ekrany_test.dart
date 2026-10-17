@@ -30,11 +30,14 @@ import 'package:agro_asystent/funkcje/zabiegi/slownik_srodkow.dart';
 import 'package:agro_asystent/funkcje/zwierzeta/stado.dart';
 import 'package:agro_asystent/rdzen/baza/baza_gospodarstwa.dart';
 import 'package:agro_asystent/rdzen/baza/migracje.dart';
+import 'package:agro_asystent/rdzen/dostep/dostep_funkcji.dart';
 import 'package:agro_asystent/rdzen/modele/zabieg.dart';
 import 'package:agro_asystent/rdzen/reguly/gminy_terminy.dart';
 import 'package:agro_asystent/rdzen/reguly/regula_prawna.dart';
 import 'package:agro_asystent/rdzen/uslugi/kopia/kopia_danych.dart';
 import 'package:agro_asystent/rdzen/wspolne/mapa_dzialek.dart';
+import 'package:agro_asystent/funkcje/magazyn/magazyn.dart';
+import 'package:agro_asystent/wyglad/nowoczesny/magazyn/ekran_magazyn.dart';
 import 'package:agro_asystent/wyglad/nowoczesny/motyw.dart';
 import 'package:agro_asystent/wyglad/nowoczesny/nawozenie/ekran_nawozenie.dart';
 import 'package:agro_asystent/wyglad/nowoczesny/pola/ekran_dzialki.dart';
@@ -110,7 +113,7 @@ void main() {
     await slowniki.close();
   });
 
-  Uslugi zbudujUslugi({KlientUldk? uldk}) => Uslugi(
+  Uslugi zbudujUslugi({KlientUldk? uldk, bool premium = false}) => Uslugi(
     gospodarstwoId: 'g1',
     nazwaGospodarstwa: 'Gospodarstwo próbne',
     urzadzenie: 'telefon',
@@ -156,6 +159,7 @@ void main() {
     przypomnienia: const _BrakPrzypomnien(),
     ustawieniaPrzypomnien: UstawieniaPrzypomnien(baza),
     uldk: uldk ?? udawanaUsluga(odpowiedzUldk),
+    dostep: DostepFunkcji(maPremium: premium),
   );
 
   Future<void> pokaz(WidgetTester tester, Widget ekran) async {
@@ -652,6 +656,59 @@ void main() {
       await przewinDo(tester, find.text('Wydrukuj PDF'));
       expect(find.text('Wydrukuj PDF'), findsOneWidget);
       expect(find.textContaining('premium'), findsNothing);
+    });
+  });
+
+  group('magazyn', () {
+    testWidgets('bez premium ekran mówi o tym wprost', (tester) async {
+      await pokaz(tester, EkranMagazynNowoczesny(uslugi: zbudujUslugi()));
+
+      expect(find.textContaining('należy do wersji płatnej'), findsOneWidget);
+      expect(find.text('Dodaj nawozy ze spisu'), findsNothing);
+    });
+
+    testWidgets('w premium zużycie z zabiegu zdejmuje towar ze stanu', (
+      tester,
+    ) async {
+      final uslugi = zbudujUslugi(premium: true);
+      await uslugi.magazyn.zapiszPozycje(
+        gospodarstwoId: 'g1',
+        rodzaj: RodzajPozycji.srodek,
+        nazwa: 'Abydos 750 EC',
+        jednostka: 'l',
+        urzadzenie: 'telefon',
+        teraz: DateTime(2026, 4, 1),
+      );
+      await uslugi.magazyn.zapiszZakup(
+        pozycjaId: PozycjaMagazynu.identyfikator(
+          gospodarstwoId: 'g1',
+          rodzaj: RodzajPozycji.srodek,
+          nazwa: 'Abydos 750 EC',
+        ),
+        ilosc: 10,
+        kiedy: DateTime(2026, 4, 2),
+        urzadzenie: 'telefon',
+        teraz: DateTime(2026, 4, 2),
+      );
+
+      // Wpis oprysku na 3,20 ha dawką 0,75 l/ha zdejmuje 2,40 l.
+      await uslugi.magazyn.odpiszZabieg(
+        gospodarstwoId: 'g1',
+        zabiegId: 'z1',
+        rodzaj: RodzajPozycji.srodek,
+        nazwa: 'Abydos 750 EC',
+        ilosc: 2.4,
+        kiedy: DateTime(2026, 4, 10),
+        urzadzenie: 'telefon',
+      );
+
+      await pokaz(
+        tester,
+        EkranMagazynNowoczesny(uslugi: uslugi, teraz: DateTime(2026, 4, 20)),
+      );
+      expect(find.textContaining('7,60 l'), findsOneWidget);
+      expect(find.textContaining('kupione 10,00'), findsOneWidget);
+      expect(find.textContaining('zużyte 2,40'), findsOneWidget);
     });
   });
 

@@ -13,6 +13,7 @@ import '../funkcje/warunkowosc/okrywa_pola.dart';
 import '../funkcje/warunkowosc/zmianowanie.dart';
 import '../funkcje/dzialki/slownik_upraw.dart';
 import '../funkcje/dzialki/zrodlo_pliku.dart';
+import '../funkcje/magazyn/magazyn.dart';
 import '../funkcje/nawozenie/ewidencja_nawozenia.dart';
 import '../funkcje/nawozenie/nawoz.dart';
 import '../funkcje/nawozenie/plan_nawozenia.dart';
@@ -144,6 +145,10 @@ class Uslugi {
     uprawy: uprawyPola,
     reguly: reguly,
   );
+
+  /// Magazyn środków i nawozów (premium, plan pkt 8). Pracuje na tej
+  /// samej bazie co pozostałe repozytoria.
+  Magazyn get magazyn => Magazyn(kopia.baza);
 
   /// Przegląd warunkowości: wszystkie normy GAEC ze stanem, jaki
   /// aplikacja umie policzyć.

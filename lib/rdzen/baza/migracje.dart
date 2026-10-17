@@ -552,4 +552,78 @@ const List<Migracja> migracje = [
     opis: 'Podrodzaj zabiegu — prace przy elementach krajobrazu (GAEC 8)',
     polecenia: ['ALTER TABLE zabieg ADD COLUMN podrodzaj TEXT'],
   ),
+
+  // Magazyn: zakupy i zużycie środków oraz nawozów. Stan na dziś nie jest
+  // osobną liczbą do nadpisywania — liczy się z ruchów, więc każdą zmianę
+  // da się wytłumaczyć i cofnąć (plan, pkt 7: wpisy są dopisywane).
+  //
+  // Zużycie przy zabiegu dostaje identyfikator wyliczany z zabiegu
+  // i pozycji, żeby poprawka wpisu nie odpisała towaru drugi raz, a dwa
+  // urządzenia nie zrobiły z jednego oprysku dwóch zużyć.
+  Migracja(
+    wersja: 9,
+    opis: 'Magazyn środków i nawozów: pozycje i ruchy',
+    polecenia: [
+      '''
+      CREATE TABLE magazyn_pozycja (
+        id              TEXT PRIMARY KEY,
+        gospodarstwo_id TEXT NOT NULL REFERENCES gospodarstwo(id),
+        rodzaj          TEXT NOT NULL CHECK (rodzaj IN ('srodek','nawoz')),
+        nazwa           TEXT NOT NULL,
+        nr_zezwolenia   TEXT,
+        nawoz_id        TEXT,
+        jednostka       TEXT NOT NULL,
+        termin_do_stosowania TEXT,
+        utworzono       TEXT NOT NULL,
+        zmieniono       TEXT NOT NULL,
+        urzadzenie      TEXT NOT NULL,
+        usuniety        INTEGER NOT NULL DEFAULT 0
+      )
+      ''',
+      '''
+      CREATE TABLE magazyn_ruch (
+        id          TEXT PRIMARY KEY,
+        pozycja_id  TEXT NOT NULL REFERENCES magazyn_pozycja(id),
+        rodzaj      TEXT NOT NULL CHECK (rodzaj IN ('zakup','zuzycie','korekta')),
+        ilosc       REAL NOT NULL,
+        data        TEXT NOT NULL,
+        zabieg_id   TEXT,
+        cena_za_jednostke REAL,
+        uwagi       TEXT,
+        utworzono   TEXT NOT NULL,
+        zmieniono   TEXT NOT NULL,
+        urzadzenie  TEXT NOT NULL,
+        usuniety    INTEGER NOT NULL DEFAULT 0
+      )
+      ''',
+      '''
+      CREATE INDEX idx_magazyn_pozycja
+        ON magazyn_pozycja(gospodarstwo_id, rodzaj)
+      ''',
+      'CREATE INDEX idx_magazyn_ruch ON magazyn_ruch(pozycja_id, data)',
+
+      // Ruch magazynowy też zostaje w dzienniku zmian: poprawka ilości
+      // zmienia stan, a przy kontroli i przy liczeniu kosztów musi być
+      // widać, co było wpisane wcześniej.
+      '''
+      CREATE TRIGGER historia_magazyn_ruch_zmiana AFTER UPDATE ON magazyn_ruch
+      WHEN OLD.ilosc IS NOT NEW.ilosc
+        OR OLD.data IS NOT NEW.data
+        OR OLD.cena_za_jednostke IS NOT NEW.cena_za_jednostke
+        OR OLD.uwagi IS NOT NEW.uwagi
+        OR OLD.usuniety IS NOT NEW.usuniety
+      BEGIN
+        INSERT INTO historia_zmian (tabela, wiersz_id, operacja, dane_json, czas, urzadzenie)
+        VALUES ('magazyn_ruch', NEW.id,
+                CASE WHEN NEW.usuniety = 1 THEN 'usuniecie' ELSE 'zmiana' END,
+                json_object('poprzednio',
+                  json_object('rodzaj', OLD.rodzaj, 'ilosc', OLD.ilosc,
+                              'data', OLD.data,
+                              'cena_za_jednostke', OLD.cena_za_jednostke,
+                              'uwagi', OLD.uwagi)),
+                NEW.zmieniono, NEW.urzadzenie);
+      END
+      ''',
+    ],
+  ),
 ];

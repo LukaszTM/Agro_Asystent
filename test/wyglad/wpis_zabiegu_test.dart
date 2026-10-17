@@ -115,6 +115,9 @@ void main() {
       'id': 2,
       'nazwa': 'Bez Etykiety 100 SC',
       'nr_zezwolenia': 'R-99/2024',
+      // Środek wycofany z obrotu, ale jeszcze wolno go zużyć — stąd
+      // magazyn wie, kiedy ostrzec o zapasie.
+      'termin_do_stosowania': '2026-12-31',
     });
     await baza.insert('zastosowanie', {
       'id': 11,
@@ -405,6 +408,20 @@ void main() {
     expect(find.text('Zabieg zapisany'), findsOneWidget);
     expect(await uslugi.zabiegi.wszystkie('g1'), hasLength(1));
   });
+
+  test(
+    'termin stosowania środka bierze się z rejestru, nie z domysłu',
+    () async {
+      final srodki = SlownikSrodkow(slowniki);
+      expect(
+        await srodki.terminDoStosowania('Bez Etykiety 100 SC'),
+        DateTime(2026, 12, 31),
+      );
+      // Rejestr nic nie mówi — i tego nie zamieniamy na „wolno bez końca".
+      expect(await srodki.terminDoStosowania('Abydos 750 EC'), isNull);
+      expect(await srodki.terminDoStosowania('Czego nie ma'), isNull);
+    },
+  );
 
   testWidgets('zbiór zapisuje się bez środka i bez dawki', (tester) async {
     await otworz(tester);

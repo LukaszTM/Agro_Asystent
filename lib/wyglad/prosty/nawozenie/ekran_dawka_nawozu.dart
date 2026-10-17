@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../app/uslugi.dart';
 import '../../../funkcje/nawozenie/nawoz.dart';
 import '../../../funkcje/nawozenie/plan_nawozenia.dart';
+import '../../../funkcje/magazyn/zuzycie_z_zabiegu.dart';
 import '../../../funkcje/zabiegi/dane_wpisu.dart';
 import '../../../rdzen/modele/zabieg.dart';
 import '../motyw.dart';
@@ -51,7 +52,7 @@ class _EkranDawkaNawozuState extends State<EkranDawkaNawozu> {
     setState(() => _zapisuje = true);
 
     final dane = widget.dane;
-    await widget.uslugi.nawozenie.zapisz(
+    final zabiegId = await widget.uslugi.nawozenie.zapisz(
       gospodarstwoId: dane.gospodarstwoId,
       nawoz: dane.nawoz!,
       pola: [
@@ -65,6 +66,16 @@ class _EkranDawkaNawozuState extends State<EkranDawkaNawozu> {
       jednostka: dane.jednostkaDawki,
       urzadzenie: dane.urzadzenie,
       kiedy: dane.kiedy,
+    );
+
+    // Magazyn (premium) odpisuje zużycie sam; ewidencja nawożenia zapisuje
+    // się tak samo w wersji darmowej.
+    await ZuzycieZZabiegu.odpisz(
+      magazyn: widget.uslugi.magazyn,
+      dostep: widget.uslugi.dostep,
+      dane: dane..dawka = _dawka,
+      zabiegId: zabiegId,
+      urzadzenie: dane.urzadzenie,
     );
 
     if (!mounted) {

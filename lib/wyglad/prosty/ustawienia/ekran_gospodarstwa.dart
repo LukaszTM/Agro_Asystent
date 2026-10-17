@@ -4,6 +4,7 @@ import '../../../app/uslugi.dart';
 import '../../../funkcje/ustawienia/gospodarstwa.dart';
 import '../../../funkcje/ustawienia/wybor_wygladu.dart';
 import '../../../funkcje/ustawienia/zwierzeta_w_gospodarstwie.dart';
+import '../magazyn/ekran_magazyn.dart';
 import '../motyw.dart';
 import '../widgety/duzy_przycisk.dart';
 import 'ekran_kopia.dart';
@@ -236,6 +237,17 @@ class _EkranGospodarstwaState extends State<EkranGospodarstwa> {
               _WyborWygladuProsty(
                 wybrany: dane.wyglad,
                 onZmiana: _zapiszWyglad,
+              ),
+              const SizedBox(height: MotywProsty.odstep),
+              DuzyPrzycisk(
+                etykieta: 'Magazyn',
+                opis: 'ile środków i nawozów zostało',
+                ikona: Icons.inventory_2_outlined,
+                onTap: () => Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (_) => EkranMagazyn(uslugi: _uslugi),
+                  ),
+                ),
               ),
               const SizedBox(height: MotywProsty.odstep),
               DuzyPrzycisk(
