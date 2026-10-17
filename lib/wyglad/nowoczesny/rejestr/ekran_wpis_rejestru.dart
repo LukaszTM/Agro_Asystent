@@ -192,7 +192,7 @@ class _EkranWpisuRejestruState extends State<EkranWpisuRejestru> {
             final wpis = stan.data!;
             final teksty = Theme.of(context).textTheme;
             final obowiazek = widget.uslugi.reguly.obowiazek(
-              KompletnoscEwidencji.idObowiazku(wpis.zabieg.rodzaj),
+              KompletnoscEwidencji.idObowiazku(wpis.zabieg.rodzaj) ?? '',
             );
             final ocena = obowiazek == null
                 ? null

@@ -66,10 +66,16 @@ class OcenaEwidencji {
 abstract final class KompletnoscEwidencji {
   /// Obowiązek, którym mierzymy dany rodzaj zabiegu w podglądzie wpisu.
   /// Wydruki wybiera się po rejestrze, nie po rodzaju zabiegu.
-  static String idObowiazku(RodzajZabiegu rodzaj) =>
-      rodzaj == RodzajZabiegu.oprysk
-      ? 'ewidencja_sor'
-      : 'program_azotanowy_ewidencja';
+  ///
+  /// `null` znaczy „żaden przepis nie wymaga tu dodatkowych pól" — tak jest
+  /// przy siewie, zbiorze, uprawie gleby i innych pracach. Mierzenie ich
+  /// wymaganiami ewidencji nawożenia pokazywałoby braki, których przepis
+  /// nie wymaga.
+  static String? idObowiazku(RodzajZabiegu rodzaj) => switch (rodzaj) {
+    RodzajZabiegu.oprysk => 'ewidencja_sor',
+    RodzajZabiegu.nawozenie => 'program_azotanowy_ewidencja',
+    _ => null,
+  };
 
   static OcenaEwidencji sprawdz(WpisRejestru wpis, Obowiazek obowiazek) =>
       OcenaEwidencji(

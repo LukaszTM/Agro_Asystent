@@ -1,5 +1,5 @@
 {
-  "wersja": "2026.10.17.5",
+  "wersja": "2026.10.17.6",
   "obowiazuje_od": "2026-10-16",
   "opis": "Progi, limity i terminy obowiązków dokumentacyjnych. Dane, nie kod — aktualizowane bez przebudowy aplikacji. Zestawienie służy do planowania i nie jest poradą prawną.",
   "obowiazki": [
@@ -2212,6 +2212,44 @@
           "opis": "Pole zaorane albo bez okrywy — nie liczy się do 80 %.",
           "licz_jako_okrywe": false,
           "slowa": []
+        }
+      ]
+    },
+    "prace_krajobrazowe": {
+      "status_weryfikacji": "podpowiedz",
+      "opis": "Prace przy elementach krajobrazu, które rolnik wybiera przy wpisie zabiegu. Podział na rodzaje prac nie pochodzi z przepisu — pochodzi z niego to, czego dotyczy zakaz (§ 6 ust. 10) i w jakim okresie obowiązuje.",
+      "prace": [
+        {
+          "id": "przycinanie_drzew",
+          "nazwa": "Przycinanie drzew albo żywopłotu",
+          "opis": "Cięcie gałęzi, formowanie żywopłotu, prześwietlanie.",
+          "norma": "gaec_8",
+          "zakaz_w_okresie": "zakaz_przycinania",
+          "zawsze_ostrzegaj": false
+        },
+        {
+          "id": "przycinanie_wylaczone",
+          "nazwa": "Przycinanie wierzby, drzewa owocowego albo zagajnika",
+          "opis": "Te rośliny przepis wyłącza z zakazu w okresie lęgowym.",
+          "norma": "gaec_8",
+          "zakaz_w_okresie": null,
+          "zawsze_ostrzegaj": false
+        },
+        {
+          "id": "usuwanie_elementu",
+          "nazwa": "Usunięcie drzewa, rowu albo oczka wodnego",
+          "opis": "Wycinka, zasypanie rowu, likwidacja oczka.",
+          "norma": "gaec_8",
+          "zakaz_w_okresie": null,
+          "zawsze_ostrzegaj": true
+        },
+        {
+          "id": "inna",
+          "nazwa": "Inna praca na polu",
+          "opis": "Nie dotyczy drzew, rowów ani oczek wodnych.",
+          "norma": null,
+          "zakaz_w_okresie": null,
+          "zawsze_ostrzegaj": false
         }
       ]
     },

@@ -845,6 +845,47 @@ DOZWOLONE_ZNAKI = (
 )
 
 
+# Prace przy elementach krajobrazu — stąd wiadomo, kiedy ostrzegać
+# o normie GAEC 8. Rolnik wybiera pracę z listy, więc aplikacja nie musi
+# odgadywać z tekstu uwag, co robił. Nazwy prac nie są z przepisu
+# (rozporządzenie nie dzieli prac na rodzaje), ale to, czego dotyczy
+# zakaz i w jakim okresie, już tak — stąd wskazania na normę i termin.
+PRACE_KRAJOBRAZOWE = [
+    {
+        "id": "przycinanie_drzew",
+        "nazwa": "Przycinanie drzew albo żywopłotu",
+        "opis": "Cięcie gałęzi, formowanie żywopłotu, prześwietlanie.",
+        "norma": "gaec_8",
+        "zakaz_w_okresie": "zakaz_przycinania",
+        "zawsze_ostrzegaj": False,
+    },
+    {
+        "id": "przycinanie_wylaczone",
+        "nazwa": "Przycinanie wierzby, drzewa owocowego albo zagajnika",
+        "opis": "Te rośliny przepis wyłącza z zakazu w okresie lęgowym.",
+        "norma": "gaec_8",
+        "zakaz_w_okresie": None,
+        "zawsze_ostrzegaj": False,
+    },
+    {
+        "id": "usuwanie_elementu",
+        "nazwa": "Usunięcie drzewa, rowu albo oczka wodnego",
+        "opis": "Wycinka, zasypanie rowu, likwidacja oczka.",
+        "norma": "gaec_8",
+        "zakaz_w_okresie": None,
+        "zawsze_ostrzegaj": True,
+    },
+    {
+        "id": "inna",
+        "nazwa": "Inna praca na polu",
+        "opis": "Nie dotyczy drzew, rowów ani oczek wodnych.",
+        "norma": None,
+        "zakaz_w_okresie": None,
+        "zawsze_ostrzegaj": False,
+    },
+]
+
+
 def obce_znaki(dane) -> list[str]:
     """Znajduje w danych znaki, których nie ma w polskim alfabecie."""
     znalezione: list[str] = []
@@ -920,6 +961,34 @@ def sprawdz(tekst: str) -> list[str]:
     idki_form = [f["id"] for f in FORMY_OKRYWY]
     if len(set(idki_form)) != len(idki_form):
         bledy.append(f"powtórzone identyfikatory form okrywy: {idki_form}")
+
+    idki_norm = {n["id"] for n in NORMY}
+    for praca in PRACE_KRAJOBRAZOWE:
+        norma_pracy = praca["norma"]
+        if norma_pracy is not None and norma_pracy not in idki_norm:
+            bledy.append(
+                f"praca {praca['id']} wskazuje nieznaną normę: {norma_pracy}"
+            )
+        okres = praca["zakaz_w_okresie"]
+        if okres is not None:
+            norma = next(
+                (n for n in NORMY if n["id"] == norma_pracy),
+                None,
+            )
+            terminy = [t["id"] for t in (norma or {}).get("terminy", [])]
+            if okres not in terminy:
+                bledy.append(
+                    f"praca {praca['id']} wskazuje termin {okres}, "
+                    f"którego norma {norma_pracy} nie ma"
+                )
+    idki_prac = [p["id"] for p in PRACE_KRAJOBRAZOWE]
+    if len(set(idki_prac)) != len(idki_prac):
+        bledy.append(f"powtórzone identyfikatory prac: {idki_prac}")
+    if not any(p["zakaz_w_okresie"] for p in PRACE_KRAJOBRAZOWE):
+        bledy.append(
+            "żadna praca nie wskazuje okresu zakazu — aplikacja nie "
+            "ostrzegłaby o okresie lęgowym ptaków"
+        )
 
     for formy in KLUCZ_UPRAWY["formy"]:
         for slowo in formy["slowa"]:
@@ -1044,6 +1113,16 @@ def do_regul() -> dict:
             "zrodlo": "komunikat ARiMR o normach GAEC obowiązujących w 2026 r.",
             "formy": FORMY_OKRYWY,
         },
+        "prace_krajobrazowe": {
+            "status_weryfikacji": "podpowiedz",
+            "opis": (
+                "Prace przy elementach krajobrazu, które rolnik wybiera "
+                "przy wpisie zabiegu. Podział na rodzaje prac nie pochodzi "
+                "z przepisu — pochodzi z niego to, czego dotyczy zakaz "
+                "(§ 6 ust. 10) i w jakim okresie obowiązuje."
+            ),
+            "prace": PRACE_KRAJOBRAZOWE,
+        },
         "normy": [
             {k: v for k, v in norma.items() if k != "kontrola"}
             for norma in NORMY
@@ -1078,6 +1157,7 @@ def main(argv: list[str] | None = None) -> int:
     print(f"Rodzajów użytku: {len(RODZAJE_UZYTKU)}")
     print(f"Wyłączeń ze zmianowania: {len(WYLACZENIA_ZMIANOWANIA)}")
     print(f"Form okrywy: {len(FORMY_OKRYWY)}")
+    print(f"Prac przy elementach krajobrazu: {len(PRACE_KRAJOBRAZOWE)}")
     progi = sum(len(n.get("progi", [])) for n in NORMY)
     terminy = sum(len(n.get("terminy", [])) for n in NORMY)
     print(f"Progów: {progi}, terminów: {terminy}")

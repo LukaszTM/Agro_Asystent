@@ -29,6 +29,7 @@ import 'package:agro_asystent/funkcje/zabiegi/repozytorium_zabiegow.dart';
 import 'package:agro_asystent/funkcje/zabiegi/slownik_srodkow.dart';
 import 'package:agro_asystent/funkcje/zwierzeta/stado.dart';
 import 'package:agro_asystent/rdzen/baza/baza_gospodarstwa.dart';
+import 'package:agro_asystent/rdzen/modele/zabieg.dart';
 import 'package:agro_asystent/rdzen/baza/migracje.dart';
 import 'package:agro_asystent/rdzen/reguly/gminy_terminy.dart';
 import 'package:agro_asystent/rdzen/reguly/regula_prawna.dart';
@@ -220,6 +221,20 @@ void main() {
     await slowniki.close();
   });
 
+  /// Przewija listę ekranu do wskazanego miejsca — na ekranie testowym
+  /// mieści się mniej niż na telefonie, więc przycisk bywa niżej.
+  Future<void> przewin(WidgetTester tester, Finder czego) =>
+      tester.scrollUntilVisible(
+        czego,
+        200,
+        scrollable: find
+            .descendant(
+              of: find.byType(ListView),
+              matching: find.byType(Scrollable),
+            )
+            .first,
+      );
+
   Future<void> otworz(WidgetTester tester) async {
     await tester.pumpWidget(AplikacjaAgroAsystent(uslugi: uslugi));
     await tester.pumpAndSettle();
@@ -384,20 +399,54 @@ void main() {
     expect(find.textContaining('w pasie 3 m od brzegu'), findsOneWidget);
 
     // Ostrzeżenie nie blokuje zapisu — dokumentacja ma być prawdziwa.
-    await tester.scrollUntilVisible(
-      find.text('Zapisz'),
-      200,
-      scrollable: find
-          .descendant(
-            of: find.byType(ListView),
-            matching: find.byType(Scrollable),
-          )
-          .first,
-    );
+    await przewin(tester, find.text('Zapisz'));
     await tester.tap(find.text('Zapisz'));
     await tester.pumpAndSettle();
     expect(find.text('Zabieg zapisany'), findsOneWidget);
     expect(await uslugi.zabiegi.wszystkie('g1'), hasLength(1));
+  });
+
+  testWidgets('zbiór zapisuje się bez środka i bez dawki', (tester) async {
+    await otworz(tester);
+    for (final cel in ['Dodaj zabieg', 'Za stodołą', 'Zbiór']) {
+      await tester.tap(find.text(cel));
+      await tester.pumpAndSettle();
+    }
+
+    expect(find.textContaining('uzupełniona sama'), findsOneWidget);
+    await tester.tap(find.text('Zapisz'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Zabieg zapisany'), findsOneWidget);
+    final zabiegi = await uslugi.zabiegi.wszystkie('g1');
+    expect(zabiegi.single.rodzaj, RodzajZabiegu.zbior);
+    expect(zabiegi.single.powierzchniaAr, 320, reason: 'powierzchnia z pola');
+  });
+
+  testWidgets('praca „inny" pyta, co dokładnie robisz (GAEC 8)', (
+    tester,
+  ) async {
+    await otworz(tester);
+    for (final cel in ['Dodaj zabieg', 'Za stodołą', 'Inny']) {
+      await tester.tap(find.text(cel));
+      await tester.pumpAndSettle();
+    }
+
+    // Bez odpowiedzi nie zapisujemy — od niej zależy ostrzeżenie o okresie
+    // lęgowym ptaków.
+    expect(find.text('Co robisz?'), findsOneWidget);
+    expect(find.text('Przycinanie drzew albo żywopłotu'), findsOneWidget);
+
+    await przewin(tester, find.text('Inna praca na polu'));
+    await tester.tap(find.text('Inna praca na polu'));
+    await tester.pumpAndSettle();
+    await przewin(tester, find.text('Zapisz'));
+    await tester.tap(find.text('Zapisz'));
+    await tester.pumpAndSettle();
+
+    final zabiegi = await uslugi.zabiegi.wszystkie('g1');
+    expect(zabiegi.single.rodzaj, RodzajZabiegu.inny);
+    expect(zabiegi.single.podrodzaj, 'inna');
   });
 
   testWidgets('bez odpowiedzi o wodzie nie ma ostrzeżenia', (tester) async {

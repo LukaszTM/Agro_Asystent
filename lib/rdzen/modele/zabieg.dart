@@ -35,6 +35,7 @@ class Zabieg {
     this.godzina,
     this.powierzchniaAr = 0,
     this.uwagi,
+    this.podrodzaj,
     this.usuniety = false,
   });
 
@@ -45,6 +46,11 @@ class Zabieg {
   final String? godzina;
   final int powierzchniaAr;
   final String? uwagi;
+
+  /// Co dokładnie rolnik wybrał — identyfikator pracy ze słownika reguł
+  /// (np. `przycinanie_drzew`). Puste przy opryskach i nawożeniu.
+  final String? podrodzaj;
+
   final String urzadzenie;
   final bool usuniety;
 
@@ -56,6 +62,7 @@ class Zabieg {
     'godzina': godzina,
     'powierzchnia_ar': powierzchniaAr,
     'uwagi': uwagi,
+    'podrodzaj': podrodzaj,
     'utworzono': teraz.toIso8601String(),
     'zmieniono': teraz.toIso8601String(),
     'urzadzenie': urzadzenie,
@@ -70,6 +77,7 @@ class Zabieg {
     godzina: wiersz['godzina'] as String?,
     powierzchniaAr: (wiersz['powierzchnia_ar'] as int?) ?? 0,
     uwagi: wiersz['uwagi'] as String?,
+    podrodzaj: wiersz['podrodzaj'] as String?,
     urzadzenie: wiersz['urzadzenie']! as String,
     usuniety: (wiersz['usuniety'] as int? ?? 0) == 1,
   );

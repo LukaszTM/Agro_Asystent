@@ -6,6 +6,7 @@ import '../../../rdzen/modele/zabieg.dart';
 import '../motyw.dart';
 import '../widgety/duzy_przycisk.dart';
 import '../nawozenie/ekran_wybor_nawozu.dart';
+import 'ekran_inny_zabieg.dart';
 import 'ekran_wybor_srodka.dart';
 
 /// Krok 2: co robimy na tym polu. Kafelki, jedna decyzja na ekranie.
@@ -25,6 +26,7 @@ class EkranRodzajZabiegu extends StatelessWidget {
     (RodzajZabiegu.siew, Icons.scatter_plot_outlined),
     (RodzajZabiegu.zbior, Icons.agriculture_outlined),
     (RodzajZabiegu.uprawaGleby, Icons.landscape_outlined),
+    (RodzajZabiegu.inny, Icons.handyman_outlined),
   ];
 
   void _wybierz(BuildContext context, RodzajZabiegu rodzaj) {
@@ -45,10 +47,10 @@ class EkranRodzajZabiegu extends StatelessWidget {
       );
       return;
     }
-    // Pozostałe rodzaje zabiegów dojdą w kolejnych krokach etapu 1.
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('${rodzaj.dlaRolnika}: ta część jeszcze nie działa.'),
+    // Siew, zbiór, uprawa gleby i inne prace — wpis bez środka i dawki.
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => EkranInnyZabieg(uslugi: uslugi, dane: dane),
       ),
     );
   }

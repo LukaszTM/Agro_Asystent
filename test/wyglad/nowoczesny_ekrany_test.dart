@@ -42,6 +42,7 @@ import 'package:agro_asystent/wyglad/nowoczesny/pola/ekran_import_wniosku.dart';
 import 'package:agro_asystent/funkcje/warunkowosc/okrywa_pola.dart';
 import 'package:agro_asystent/wyglad/nowoczesny/pola/ekran_pole.dart';
 import 'package:agro_asystent/wyglad/nowoczesny/ustawienia/ekran_dane_gospodarstwa.dart';
+import 'package:agro_asystent/wyglad/nowoczesny/wpis/ekran_wpis.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
@@ -531,6 +532,91 @@ void main() {
           .dlaPola(poleId: 'p1', sezon: DateTime.now().year);
       expect(deklaracja?.forma, 'uprawa_ozima');
       expect(deklaracja?.zrodlo, 'podpowiedz potwierdzona');
+    });
+  });
+
+  group('siew, zbiór i prace przy drzewach', () {
+    testWidgets('zbiór zapisuje się bez środka i bez dawki', (tester) async {
+      await dodajPole();
+      await pokaz(
+        tester,
+        EkranWpisu(uslugi: zbudujUslugi(), teraz: DateTime(2026, 8, 2, 10)),
+      );
+
+      await tester.tap(find.text('Zbiór'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.textContaining('Za stodołą'));
+      await tester.pumpAndSettle();
+      await przewinDo(tester, find.text('Zapisz'));
+      await tester.ensureVisible(find.text('Zapisz'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Zapisz'));
+      await tester.pumpAndSettle();
+
+      final zabiegi = await RepozytoriumZabiegow(baza).wszystkie('g1');
+      expect(zabiegi.single.rodzaj, RodzajZabiegu.zbior);
+      // Baza trzyma dzień i godzinę w osobnych kolumnach.
+      expect(zabiegi.single.data, DateTime(2026, 8, 2));
+      expect(zabiegi.single.godzina, '10:00');
+      // Dzień zbioru jest potrzebny normie GAEC 6 — teraz ma skąd się wziąć.
+      expect(
+        await RepozytoriumOkrywyPola(baza)
+            .dzienZbioruZWpisow(poleId: 'p1', sezon: 2026),
+        DateTime(2026, 8, 2),
+      );
+    });
+
+    testWidgets('przycinanie w okresie lęgowym ostrzega, ale nie blokuje', (
+      tester,
+    ) async {
+      await dodajPole();
+      await pokaz(
+        tester,
+        EkranWpisu(uslugi: zbudujUslugi(), teraz: DateTime(2026, 5, 10, 9)),
+      );
+
+      await tester.tap(find.text('Inny'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.textContaining('Za stodołą'));
+      await tester.pumpAndSettle();
+
+      await przewinDo(tester, find.text('Przycinanie drzew albo żywopłotu'));
+      await tester.ensureVisible(find.text('Przycinanie drzew albo żywopłotu'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Przycinanie drzew albo żywopłotu'));
+      await tester.pumpAndSettle();
+
+      expect(find.textContaining('okres lęgowy'), findsOneWidget);
+      expect(find.textContaining('15 kwietnia'), findsOneWidget);
+
+      await przewinDo(tester, find.text('Zapisz'));
+      await tester.ensureVisible(find.text('Zapisz'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Zapisz'));
+      await tester.pumpAndSettle();
+
+      final zabiegi = await RepozytoriumZabiegow(baza).wszystkie('g1');
+      expect(zabiegi.single.rodzaj, RodzajZabiegu.inny);
+      expect(zabiegi.single.podrodzaj, 'przycinanie_drzew');
+      expect(zabiegi.single.uwagi, 'Przycinanie drzew albo żywopłotu');
+    });
+
+    testWidgets('przy pracy „inny" bez wyboru zapis jest zablokowany', (
+      tester,
+    ) async {
+      await dodajPole();
+      await pokaz(
+        tester,
+        EkranWpisu(uslugi: zbudujUslugi(), teraz: DateTime(2026, 5, 10, 9)),
+      );
+
+      await tester.tap(find.text('Inny'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.textContaining('Za stodołą'));
+      await tester.pumpAndSettle();
+
+      await przewinDo(tester, find.text('Wybierz z listy, co robisz.'));
+      expect(find.text('Wybierz z listy, co robisz.'), findsOneWidget);
     });
   });
 

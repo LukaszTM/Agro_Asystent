@@ -56,7 +56,7 @@ class _EkranRejestrState extends State<EkranRejestr> {
     var ile = 0;
     for (final wpis in wpisy) {
       final obowiazek = widget.uslugi.reguly.obowiazek(
-        KompletnoscEwidencji.idObowiazku(wpis.zabieg.rodzaj),
+        KompletnoscEwidencji.idObowiazku(wpis.zabieg.rodzaj) ?? '',
       );
       if (obowiazek == null) {
         continue;
@@ -284,7 +284,7 @@ class _WpisNaLiscie extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final obowiazek = uslugi.reguly.obowiazek(
-      KompletnoscEwidencji.idObowiazku(wpis.zabieg.rodzaj),
+      KompletnoscEwidencji.idObowiazku(wpis.zabieg.rodzaj) ?? '',
     );
     final kompletny =
         obowiazek == null ||
@@ -297,6 +297,10 @@ class _WpisNaLiscie extends StatelessWidget {
           '${wpis.zabieg.rodzaj.dlaRolnika}',
       opis: [
         if (srodek case final String nazwa) nazwa,
+        // Przy pracy „inny" w uwagach stoi nazwa pracy wybranej przez
+        // rolnika — bez niej wpis mówiłby tylko „Inny".
+        if (srodek == null)
+          if (wpis.zabieg.uwagi case final String uwagi) uwagi,
         wpis.opisPol,
         wpis.powierzchniaOpis,
       ].join(' • '),

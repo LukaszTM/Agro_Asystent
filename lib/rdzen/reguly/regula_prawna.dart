@@ -1622,6 +1622,82 @@ class FormyOkrywy {
       idFormy != null && (forma(idFormy)?.liczJakoOkrywe ?? false);
 }
 
+/// Praca przy elemencie krajobrazu, którą rolnik wybiera przy wpisie
+/// zabiegu — stąd aplikacja wie, kiedy ostrzegać o normie GAEC 8.
+///
+/// Podział na rodzaje prac nie jest z przepisu; z przepisu jest to, czego
+/// zakaz dotyczy i w jakim okresie obowiązuje — dlatego praca wskazuje
+/// normę i jej termin, a nie trzyma własnych dat.
+class PracaKrajobrazowa {
+  const PracaKrajobrazowa({
+    required this.id,
+    required this.nazwa,
+    required this.opis,
+    this.idNormy,
+    this.idTerminuZakazu,
+    this.zawszeOstrzegaj = false,
+  });
+
+  factory PracaKrajobrazowa.zJson(Map<String, dynamic> json) =>
+      PracaKrajobrazowa(
+        id: json['id'] as String? ?? '',
+        nazwa: json['nazwa'] as String? ?? '',
+        opis: json['opis'] as String? ?? '',
+        idNormy: json['norma'] as String?,
+        idTerminuZakazu: json['zakaz_w_okresie'] as String?,
+        zawszeOstrzegaj: json['zawsze_ostrzegaj'] as bool? ?? false,
+      );
+
+  final String id;
+  final String nazwa;
+  final String opis;
+
+  /// Norma, której ta praca dotyczy, albo `null`.
+  final String? idNormy;
+
+  /// Termin z tej normy, w którym praca jest zabroniona, albo `null`.
+  final String? idTerminuZakazu;
+
+  /// Czy ostrzegać niezależnie od daty (zakaz niszczenia elementów
+  /// krajobrazu obowiązuje cały rok).
+  final bool zawszeOstrzegaj;
+
+  bool get maZakazOkresowy => idTerminuZakazu != null;
+}
+
+/// Lista prac przy elementach krajobrazu ze słownika reguł.
+class PraceKrajobrazowe {
+  const PraceKrajobrazowe({
+    required this.statusWeryfikacji,
+    required this.opis,
+    required this.prace,
+  });
+
+  static const PraceKrajobrazowe puste = PraceKrajobrazowe(
+    statusWeryfikacji: 'brak',
+    opis: '',
+    prace: [],
+  );
+
+  factory PraceKrajobrazowe.zJson(Map<String, dynamic> json) =>
+      PraceKrajobrazowe(
+        statusWeryfikacji: json['status_weryfikacji'] as String? ?? 'nieznany',
+        opis: json['opis'] as String? ?? '',
+        prace: ((json['prace'] as List<dynamic>?) ?? const [])
+            .map((p) => PracaKrajobrazowa.zJson(p as Map<String, dynamic>))
+            .toList(growable: false),
+      );
+
+  final String statusWeryfikacji;
+  final String opis;
+  final List<PracaKrajobrazowa> prace;
+
+  bool get pusta => prace.isEmpty;
+
+  PracaKrajobrazowa? praca(String? id) =>
+      id == null ? null : prace.where((p) => p.id == id).firstOrNull;
+}
+
 /// Normy GAEC razem ze zwolnieniami — dane z wersją, nie kod.
 class Warunkowosc {
   const Warunkowosc({
@@ -1634,6 +1710,7 @@ class Warunkowosc {
     this.wylaczeniaZeZmianowania = WylaczeniaZeZmianowania.puste,
     this.kluczUprawy = KluczUprawy.pusty,
     this.formyOkrywy = FormyOkrywy.puste,
+    this.praceKrajobrazowe = PraceKrajobrazowe.puste,
   });
 
   static const Warunkowosc puste = Warunkowosc(
@@ -1670,6 +1747,11 @@ class Warunkowosc {
     formyOkrywy: json['formy_okrywy'] == null
         ? FormyOkrywy.puste
         : FormyOkrywy.zJson(json['formy_okrywy'] as Map<String, dynamic>),
+    praceKrajobrazowe: json['prace_krajobrazowe'] == null
+        ? PraceKrajobrazowe.puste
+        : PraceKrajobrazowe.zJson(
+            json['prace_krajobrazowe'] as Map<String, dynamic>,
+          ),
   );
 
   final String statusWeryfikacji;
@@ -1689,6 +1771,9 @@ class Warunkowosc {
 
   /// Co uznaje się za okrywę ochronną gleby (GAEC 6).
   final FormyOkrywy formyOkrywy;
+
+  /// Prace przy elementach krajobrazu (GAEC 8).
+  final PraceKrajobrazowe praceKrajobrazowe;
 
   bool get pusta => normy.isEmpty;
 

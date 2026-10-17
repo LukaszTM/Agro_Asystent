@@ -6,9 +6,11 @@ import '../../../funkcje/nawozenie/nawoz.dart';
 import '../../../funkcje/nawozenie/plan_nawozenia.dart';
 import '../../../funkcje/odczyt/czytnik_zdjecia.dart';
 import '../../../funkcje/odczyt/odczyt_etykiety.dart';
+import '../../../funkcje/warunkowosc/okres_legowy.dart';
 import '../../../funkcje/zabiegi/dane_wpisu.dart';
 import '../../../funkcje/zabiegi/slownik_srodkow.dart';
 import '../../../rdzen/modele/zabieg.dart';
+import '../../../rdzen/reguly/regula_prawna.dart';
 import '../motyw.dart';
 import '../widgety/karta.dart';
 import '../widgety/wybor.dart';
@@ -59,6 +61,10 @@ class _EkranWpisuState extends State<EkranWpisu> {
   /// Zapisany zabieg — ekran przechodzi wtedy w potwierdzenie z karencją.
   Zabieg? _zapisany;
 
+  /// Co rolnik robi przy pracy „inny" — stąd ostrzeżenie o okresie
+  /// lęgowym ptaków (GAEC 8).
+  PracaKrajobrazowa? _praca;
+
   @override
   void initState() {
     super.initState();
@@ -99,9 +105,27 @@ class _EkranWpisuState extends State<EkranWpisu> {
       _odczyt = null;
       _bladOdczytu = null;
       _szukane = '';
+      _praca = null;
       _odswiezSrodki();
     });
   }
+
+  static const List<(RodzajZabiegu, IconData)> _pozostaleRodzaje = [
+    (RodzajZabiegu.siew, Icons.scatter_plot_outlined),
+    (RodzajZabiegu.zbior, Icons.agriculture_outlined),
+    (RodzajZabiegu.uprawaGleby, Icons.landscape_outlined),
+    (RodzajZabiegu.inny, Icons.handyman_outlined),
+  ];
+
+  OkresLegowy get _okresLegowy => widget.uslugi.okresLegowy;
+
+  bool get _pytacOPrace =>
+      _dane.rodzaj == RodzajZabiegu.inny && !_okresLegowy.prace.pusta;
+
+  /// Zapis jest gotowy, gdy dane wpisu są pełne, a przy pracy „inny" —
+  /// gdy rolnik powiedział, co robi (od tego zależy ostrzeżenie GAEC 8).
+  bool get _gotowyDoZapisu =>
+      _dane.gotowyDoZapisu && (!_pytacOPrace || _praca != null);
 
   void _przelaczPole(Pole pole) {
     setState(() {
@@ -204,14 +228,16 @@ class _EkranWpisuState extends State<EkranWpisu> {
       _dane.jednostkaDawki == JednostkaDawki.kilogramyNaHektar ? 10 : 1;
 
   Future<void> _zapisz() async {
-    if (_zapisuje || !_dane.gotowyDoZapisu) {
+    if (_zapisuje || !_gotowyDoZapisu) {
       return;
     }
     setState(() => _zapisuje = true);
     try {
-      final zabieg = _dane.rodzaj == RodzajZabiegu.oprysk
-          ? await _zapiszOprysk()
-          : await _zapiszNawozenie();
+      final zabieg = switch (_dane.rodzaj) {
+        RodzajZabiegu.oprysk => await _zapiszOprysk(),
+        RodzajZabiegu.nawozenie => await _zapiszNawozenie(),
+        _ => await _zapiszProsty(),
+      };
       if (mounted) {
         setState(() => _zapisany = zabieg);
       }
@@ -284,6 +310,32 @@ class _EkranWpisuState extends State<EkranWpisu> {
     );
   }
 
+  /// Siew, zbiór, uprawa gleby i inne prace — bez środka i bez dawki.
+  Future<Zabieg> _zapiszProsty() async {
+    final id =
+        'z-${_dane.kiedy.microsecondsSinceEpoch}-'
+        '${_dane.pola.first.id}';
+    final zabieg = Zabieg(
+      id: id,
+      gospodarstwoId: _dane.gospodarstwoId,
+      rodzaj: _dane.rodzaj ?? RodzajZabiegu.inny,
+      data: _dane.kiedy,
+      godzina:
+          '${_dane.kiedy.hour.toString().padLeft(2, '0')}:'
+          '${_dane.kiedy.minute.toString().padLeft(2, '0')}',
+      powierzchniaAr: _dane.powierzchniaAr,
+      uwagi: _praca?.nazwa,
+      podrodzaj: _praca?.id,
+      urzadzenie: _dane.urzadzenie,
+    );
+    await widget.uslugi.zabiegi.zapisz(
+      zabieg: zabieg,
+      pola: _poleZabiegu(),
+      teraz: _dane.kiedy,
+    );
+    return zabieg;
+  }
+
   List<PoleZabiegu> _poleZabiegu() => [
     for (final pole in _dane.pola)
       PoleZabiegu(dzialkaRolnaId: pole.id, powierzchniaAr: pole.powierzchniaAr),
@@ -319,6 +371,15 @@ class _EkranWpisuState extends State<EkranWpisu> {
                 wybrany: _dane.rodzaj == RodzajZabiegu.nawozenie,
                 onTap: () => _ustawRodzaj(RodzajZabiegu.nawozenie),
               ),
+              // Rejestr zabiegów agrotechnicznych to nie tylko oprysk
+              // i nawożenie; dzień zbioru potrzebuje też norma GAEC 6.
+              for (final (rodzaj, ikona) in _pozostaleRodzaje)
+                Wybor(
+                  etykieta: rodzaj.dlaRolnika,
+                  ikona: ikona,
+                  wybrany: _dane.rodzaj == rodzaj,
+                  onTap: () => _ustawRodzaj(rodzaj),
+                ),
             ],
           ),
           const SizedBox(height: MotywNowoczesny.odstep),
@@ -370,16 +431,17 @@ class _EkranWpisuState extends State<EkranWpisu> {
           ],
           if (_dane.rodzaj == RodzajZabiegu.oprysk) ..._oprysk(context),
           if (_dane.rodzaj == RodzajZabiegu.nawozenie) ..._nawozenie(context),
+          ..._praceKrajobrazowe(context),
           ..._pasOdWody(),
           const SizedBox(height: MotywNowoczesny.odstep),
           if (_zapisuje)
             const Center(child: CircularProgressIndicator())
           else
             FilledButton(
-              onPressed: _dane.gotowyDoZapisu ? _zapisz : null,
+              onPressed: _gotowyDoZapisu ? _zapisz : null,
               child: const Text('Zapisz'),
             ),
-          if (!_dane.gotowyDoZapisu) ...[
+          if (!_gotowyDoZapisu) ...[
             const SizedBox(height: 8),
             Text(
               _dane.rodzaj == null
@@ -388,13 +450,57 @@ class _EkranWpisuState extends State<EkranWpisu> {
                   ? 'Wybierz co najmniej jedno pole.'
                   : _dane.rodzaj == RodzajZabiegu.oprysk
                   ? 'Wybierz środek z listy.'
-                  : 'Wybierz nawóz z listy.',
+                  : _dane.rodzaj == RodzajZabiegu.nawozenie
+                  ? 'Wybierz nawóz z listy.'
+                  : 'Wybierz z listy, co robisz.',
               style: teksty.bodyMedium,
             ),
           ],
         ],
       ),
     );
+  }
+
+  /// Wybór pracy przy „innym" zabiegu i ostrzeżenie z normy GAEC 8.
+  ///
+  /// Rolnik mówi, co robi — aplikacja nie odgaduje tego z uwag.
+  List<Widget> _praceKrajobrazowe(BuildContext context) {
+    if (!_pytacOPrace) {
+      return const [];
+    }
+    final teksty = Theme.of(context).textTheme;
+    final ostrzezenie = _okresLegowy.ostrzezeniePrzedZapisem(
+      idPracy: _praca?.id,
+      kiedy: _dane.kiedy,
+    );
+    return [
+      const SizedBox(height: MotywNowoczesny.odstep),
+      Text('Co robisz dokładnie?', style: teksty.titleLarge),
+      const SizedBox(height: 8),
+      Wrap(
+        spacing: 8,
+        runSpacing: 8,
+        children: [
+          for (final praca in _okresLegowy.prace.prace)
+            Wybor(
+              etykieta: praca.nazwa,
+              wybrany: praca.id == _praca?.id,
+              onTap: () => setState(() => _praca = praca),
+            ),
+        ],
+      ),
+      if (_praca != null) ...[
+        const SizedBox(height: 4),
+        Text(_praca!.opis, style: teksty.bodyMedium),
+      ],
+      if (ostrzezenie != null) ...[
+        const SizedBox(height: 8),
+        OstrzezenieNowoczesne(
+          tresc: ostrzezenie.tresc,
+          coZrobic: ostrzezenie.coZrobic,
+        ),
+      ],
+    ];
   }
 
   /// Ostrzeżenie z normy GAEC 4 — pas od brzegu wody bez nawozów

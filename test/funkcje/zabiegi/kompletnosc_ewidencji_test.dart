@@ -151,6 +151,23 @@ void main() {
     expect(ocena.kompletna, isFalse);
   });
 
+  test('siew, zbiór i inne prace nie mają wymaganych pól z przepisu', () {
+    // Mierzenie zbioru wymaganiami ewidencji nawożenia pokazywałoby braki,
+    // których przepis nie wymaga — wpis byłby „niekompletny" bez powodu.
+    for (final rodzaj in [
+      RodzajZabiegu.siew,
+      RodzajZabiegu.zbior,
+      RodzajZabiegu.uprawaGleby,
+      RodzajZabiegu.inny,
+    ]) {
+      expect(
+        KompletnoscEwidencji.idObowiazku(rodzaj),
+        isNull,
+        reason: rodzaj.wBazie,
+      );
+    }
+  });
+
   test('nawożenie mierzymy ewidencją nawożenia azotem', () {
     expect(
       KompletnoscEwidencji.idObowiazku(RodzajZabiegu.oprysk),

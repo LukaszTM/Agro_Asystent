@@ -541,4 +541,15 @@ const List<Migracja> migracje = [
     opis: 'Czy pole graniczy z wodą (GAEC 4)',
     polecenia: ['ALTER TABLE dzialka_rolna ADD COLUMN granica_z_woda TEXT'],
   ),
+
+  // Rejestr zabiegów to nie tylko oprysk i nawożenie: siew, zbiór i uprawa
+  // gleby też są zabiegami agrotechnicznymi, a dzień zbioru potrzebuje
+  // norma GAEC 6. Kolumna `podrodzaj` mówi, co dokładnie rolnik wybrał
+  // przy zabiegu „inny" (np. przycinanie drzew) — stąd aplikacja wie,
+  // kiedy ostrzec o okresie lęgowym ptaków, bez odgadywania z uwag.
+  Migracja(
+    wersja: 8,
+    opis: 'Podrodzaj zabiegu — prace przy elementach krajobrazu (GAEC 8)',
+    polecenia: ['ALTER TABLE zabieg ADD COLUMN podrodzaj TEXT'],
+  ),
 ];

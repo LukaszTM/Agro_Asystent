@@ -161,7 +161,7 @@ class _EkranRejestrNowoczesnyState extends State<EkranRejestrNowoczesny> {
   /// w słowniku reguł, nie w kodzie ekranu (CLAUDE.md, reguła 1).
   bool _niekompletny(WpisRejestru wpis) {
     final obowiazek = widget.uslugi.reguly.obowiazek(
-      KompletnoscEwidencji.idObowiazku(wpis.zabieg.rodzaj),
+      KompletnoscEwidencji.idObowiazku(wpis.zabieg.rodzaj) ?? '',
     );
     if (obowiazek == null) {
       return false;
@@ -179,9 +179,12 @@ class _Wiersz extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final teksty = Theme.of(context).textTheme;
+    // Przy pracy „inny" sam rodzaj nic nie mówi — w uwagach stoi nazwa
+    // pracy, którą rolnik wybrał (np. przycinanie żywopłotu).
     final co =
         wpis.oprysk?.srodekNazwa ??
         wpis.nawozenie?.nawozNazwa ??
+        wpis.zabieg.uwagi ??
         wpis.zabieg.rodzaj.dlaRolnika;
 
     return Row(

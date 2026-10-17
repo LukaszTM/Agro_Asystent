@@ -15,6 +15,7 @@ import pytest  # noqa: E402
 
 from normy_gaec import (  # noqa: E402
     FORMY_OKRYWY,
+    PRACE_KRAJOBRAZOWE,
     NORMY,
     ZWOLNIENIA,
     do_regul,
@@ -107,6 +108,32 @@ def test_obce_znaki_lapia_homoglif_z_cyrylicy():
     assert obce_znaki({"opis": "ozimin\u0430"}) == ["„\u0430” (U+0430)"]
     assert obce_znaki(["dobry opis", {"a": 1, "b": None}]) == []
     assert obce_znaki(do_regul()) == []
+
+
+def test_prace_krajobrazowe_wskazuja_istniejacy_termin_normy():
+    # Praca nie trzyma własnych dat — wskazuje termin normy, więc zmiana
+    # okresu w przepisie przechodzi do aplikacji bez zmiany kodu.
+    przycinanie = next(
+        p for p in PRACE_KRAJOBRAZOWE if p["id"] == "przycinanie_drzew"
+    )
+    gaec8 = next(n for n in NORMY if n["id"] == przycinanie["norma"])
+    terminy = [t["id"] for t in gaec8["terminy"]]
+    assert przycinanie["zakaz_w_okresie"] in terminy
+
+
+def test_prace_krajobrazowe_maja_wariant_wylaczony_i_zawsze_ostrzegany():
+    idki = {p["id"]: p for p in PRACE_KRAJOBRAZOWE}
+    # Wierzby i drzewa owocowe przepis wyłącza z zakazu okresowego.
+    assert idki["przycinanie_wylaczone"]["zakaz_w_okresie"] is None
+    # Niszczenie elementów krajobrazu jest zabronione cały rok.
+    assert idki["usuwanie_elementu"]["zawsze_ostrzegaj"] is True
+    assert idki["inna"]["norma"] is None
+
+
+def test_prace_krajobrazowe_ida_do_slownika_jako_podpowiedz():
+    blok = do_regul()["prace_krajobrazowe"]
+    assert blok["status_weryfikacji"] == "podpowiedz"
+    assert len(blok["prace"]) == len(PRACE_KRAJOBRAZOWE)
 
 
 @pytest.mark.skipif(not AKT.exists(), reason="brak tekstu jednolitego")

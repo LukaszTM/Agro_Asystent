@@ -259,4 +259,31 @@ void main() {
       expect(sady.obejmuje(DateTime(2026, 6, 1)), isFalse);
     });
   });
+
+  group('prace przy elementach krajobrazu (GAEC 8)', () {
+    test('praca wskazuje normę i jej termin, a nie własne daty', () {
+      final praca = warunkowosc.praceKrajobrazowe.praca('przycinanie_drzew')!;
+      expect(praca.idNormy, 'gaec_8');
+      expect(praca.maZakazOkresowy, isTrue);
+      final termin = warunkowosc
+          .norma(praca.idNormy!)!
+          .termin(praca.idTerminuZakazu!)!;
+      expect(termin.od, '04-15');
+      expect(termin.doDnia, '07-31');
+    });
+
+    test('usuwanie elementu ostrzega cały rok, wyłączone przycinanie nie', () {
+      final prace = warunkowosc.praceKrajobrazowe;
+      expect(prace.praca('usuwanie_elementu')!.zawszeOstrzegaj, isTrue);
+      expect(prace.praca('przycinanie_wylaczone')!.maZakazOkresowy, isFalse);
+      expect(prace.praca('inna')!.idNormy, isNull);
+      expect(prace.praca('praca_z_przyszlej_wersji'), isNull);
+    });
+
+    test('progi chronionych elementów są danymi', () {
+      final gaec8 = warunkowosc.norma('gaec_8')!;
+      expect(gaec8.prog('row_chroniony_m')?.wartosc, 2);
+      expect(gaec8.prog('oczko_wodne_m2')?.wartosc, 100);
+    });
+  });
 }
