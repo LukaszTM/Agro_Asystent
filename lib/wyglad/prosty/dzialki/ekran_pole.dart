@@ -115,6 +115,42 @@ class _EkranPoleState extends State<EkranPole> {
     if (wybrana == null || !mounted) {
       return;
     }
+
+    // Czwarty rok tej samej uprawy to złamanie normy GAEC 7. Mówimy to
+    // **przed** zapisem, bo wtedy rolnik może jeszcze zasiać co innego.
+    final ostrzezenie = await widget.uslugi.zmianowanie.ostrzezeniePrzedZapisem(
+      pole: _pole,
+      uprawa: wybrana.nazwa,
+    );
+    if (!mounted) {
+      return;
+    }
+    if (ostrzezenie != null) {
+      final zapisac = await showDialog<bool>(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Czwarty rok tej samej uprawy'),
+          content: Text(
+            '${ostrzezenie.tresc}\n\n${ostrzezenie.coZrobic}',
+            style: Theme.of(context).textTheme.bodyLarge,
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text('Wybiorę inną'),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: const Text('Zapisz mimo to'),
+            ),
+          ],
+        ),
+      );
+      if (!(zapisac ?? false) || !mounted) {
+        return;
+      }
+    }
+
     setState(() => _pracuje = true);
     await widget.uslugi.pola.zmienUprawe(
       poleId: _pole.id,

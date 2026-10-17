@@ -565,6 +565,206 @@ RODZAJE_UZYTKU = [
 ]
 
 
+#: Wyłączenia z warunku zmianowania (§ 5 ust. 3) — jako słowa w nazwie
+#: uprawy albo jako rodzaj użytku.
+#:
+#: Rozporządzenie wymienia kategorie („rośliny bobowate", „trawy lub inne
+#: zielne rośliny pastewne"), ale **nie podaje już wykazu gatunków**:
+#: załącznik nr 2 został uchylony nowelizacją z 26 czerwca 2024 r. Rodzaje
+#: roślin bobowatych bierzemy więc z aktu, który taki wykaz ma i obowiązuje
+#: — z tabeli 14 programu azotanowego (grupa „Bobowate" i wiersz
+#: „Bobowate na zielonkę"). To **wnioskowanie**, nie cytat, dlatego każde
+#: wyłączenie ma własne źródło i status; niepewne idą jako
+#: „do_weryfikacji" i aplikacja mówi o tym rolnikowi.
+WYLACZENIA_ZMIANOWANIA = [
+    {
+        "id": "grunty_ugorowane",
+        "nazwa": "Grunt ugorowany",
+        "slowa": ["ugor", "ugorowany", "ugorowane", "ugorowanie"],
+        "po_rodzaju_uzytku": None,
+        "zrodlo": "§ 5 ust. 3 — grunty ugorowane",
+        "status_weryfikacji": "potwierdzone",
+        "uwagi": "",
+    },
+    {
+        "id": "bobowate",
+        "nazwa": "Rośliny bobowate",
+        "slowa": [
+            "bobik",
+            "bob",
+            "groch",
+            "grochy",
+            "peluszka",
+            "ledzwian",
+            "lubin",
+            "lubiny",
+            "seradela",
+            "soczewica",
+            "soja",
+            "wyka",
+            "fasola",
+            "ciecierzyca",
+            "esparceta",
+            "komonica",
+            "koniczyna",
+            "lucerna",
+            "nostrzyk",
+            "sparceta",
+            "bobowate",
+        ],
+        "po_rodzaju_uzytku": None,
+        "zrodlo": (
+            "§ 5 ust. 3 pkt 1; wykaz rodzajów z tabeli 14 programu "
+            "azotanowego (Dz.U. 2023 poz. 244, grupa „Bobowate” i wiersz "
+            "„Bobowate na zielonkę”)"
+        ),
+        "status_weryfikacji": "do_weryfikacji",
+        "uwagi": (
+            "Rozporządzenie o normach nie ma już wykazu gatunków — "
+            "załącznik nr 2 uchylono 26 czerwca 2024 r. Lista rodzajów "
+            "pochodzi z innego aktu i wymaga potwierdzenia u doradcy."
+        ),
+    },
+    {
+        "id": "trawy_pastewne",
+        "nazwa": "Trawy lub inne zielne rośliny pastewne",
+        "slowa": [
+            "trawy",
+            "trawa",
+            "laka",
+            "laki",
+            "pastwisko",
+            "pastwiska",
+            "kosno-pastwiskowy",
+            "zielonka",
+            "zielona masa",
+        ],
+        "po_rodzaju_uzytku": None,
+        "zrodlo": "§ 5 ust. 3 pkt 2",
+        "status_weryfikacji": "do_weryfikacji",
+        "uwagi": (
+            "Przepis nie wymienia gatunków traw; dopasowanie idzie po "
+            "nazwie uprawy z wniosku."
+        ),
+    },
+    {
+        "id": "mieszanki_bobowatych_z_trawami",
+        "nazwa": "Mieszanki bobowatych drobnonasiennych z trawami",
+        "slowa": ["mieszanki bobowate z trawami", "mieszanka bobowata"],
+        "po_rodzaju_uzytku": None,
+        "zrodlo": "§ 5 ust. 3 pkt 3",
+        "status_weryfikacji": "do_weryfikacji",
+        "uwagi": "",
+    },
+    {
+        "id": "uprawy_wieloletnie",
+        "nazwa": "Uprawy wieloletnie",
+        "slowa": [],
+        # Tego nie poznajemy po nazwie uprawy, a po rodzaju użytku, który
+        # rolnik potwierdził przy polu.
+        "po_rodzaju_uzytku": "uprawy_trwale",
+        "zrodlo": "§ 5 ust. 3 pkt 4",
+        "status_weryfikacji": "potwierdzone",
+        "uwagi": "",
+    },
+    {
+        "id": "plantacje_nasienne_kukurydzy",
+        "nazwa": "Plantacje nasienne kukurydzy",
+        "slowa": [
+            "plantacja nasienna kukurydzy",
+            "kukurydza nasienna",
+            "kukurydza plantacja nasienna",
+        ],
+        "po_rodzaju_uzytku": None,
+        "zrodlo": "§ 5 ust. 3 pkt 5 (od 1 stycznia 2025 r.)",
+        "status_weryfikacji": "do_weryfikacji",
+        "uwagi": (
+            "Wniosek nie zawsze rozróżnia plantację nasienną od zwykłej "
+            "kukurydzy — przy wątpliwości aplikacja pisze „do sprawdzenia”."
+        ),
+    },
+]
+
+
+#: Co przepis uznaje za **jedną uprawę** przy liczeniu zmianowania
+#: i dywersyfikacji (§ 5 ust. 5).
+#:
+#: Przepis mówi: rodzaj roślin; forma jara i ozima tego samego rodzaju;
+#: gatunek roślin z rodzin kapustowatych, psiankowatych i dyniowatych;
+#: grunt ugorowany; trawy lub inne zielne rośliny pastewne. Z tego wynika
+#: klucz, po którym aplikacja porównuje uprawy:
+#:
+#: - podstawą jest **rodzaj**, czyli pierwsze słowo nazwy („pszenica"),
+#: - forma jara i ozima tego samego rodzaju to **osobne** uprawy, więc
+#:   do klucza wchodzi też forma („pszenica ozima" ≠ „pszenica jara"),
+#: - w trzech rodzinach liczy się **gatunek**, więc tam kluczem jest cała
+#:   nazwa („kapusta biała" ≠ „kapusta pekińska").
+#:
+#: Wykazu gatunków tych rodzin rozporządzenie nie podaje — lista słów
+#: pochodzi z klasyfikacji botanicznej, do której przepis odsyła
+#: (§ 5 ust. 6). Dlatego status jest „do_weryfikacji".
+KLUCZ_UPRAWY = {
+    "status_weryfikacji": "do_weryfikacji",
+    "opis": (
+        "Jak aplikacja porównuje uprawy: po rodzaju i formie, a w trzech "
+        "rodzinach po gatunku. Wynika z § 5 ust. 5 i 6; wykaz gatunków "
+        "rodzin pochodzi z klasyfikacji botanicznej, nie z przepisu."
+    ),
+    "zrodlo": "§ 5 ust. 5 i 6",
+    "formy": [
+        {"id": "ozima", "slowa": ["ozima", "ozimy", "ozime", "ozimina"]},
+        {"id": "jara", "slowa": ["jara", "jary", "jare", "jarzyna"]},
+    ],
+    "rodziny_po_gatunku": [
+        {
+            "id": "kapustowate",
+            "nazwa": "kapustowate (Brassicaceae)",
+            "slowa": [
+                "kapusta",
+                "brokul",
+                "kalafior",
+                "brukselka",
+                "jarmuz",
+                "kalarepa",
+                "brukiew",
+                "rzepak",
+                "rzepik",
+                "gorczyca",
+                "rzodkiew",
+                "rzodkiewka",
+                "rzepa",
+                "chrzan",
+                "perko",
+            ],
+        },
+        {
+            "id": "psiankowate",
+            "nazwa": "psiankowate (Solanaceae)",
+            "slowa": [
+                "ziemniak",
+                "pomidor",
+                "papryka",
+                "oberzyna",
+                "tyton",
+            ],
+        },
+        {
+            "id": "dyniowate",
+            "nazwa": "dyniowate (Cucurbitaceae)",
+            "slowa": [
+                "dynia",
+                "cukinia",
+                "kabaczek",
+                "ogorek",
+                "melon",
+                "arbuz",
+                "patison",
+            ],
+        },
+    ],
+}
+
+
 def sprawdz(tekst: str) -> list[str]:
     """Kontrole negatywne: każdy zwrot z `kontrola` musi stać w akcie."""
     bledy: list[str] = []
@@ -597,6 +797,64 @@ def sprawdz(tekst: str) -> list[str]:
                     f"podpowiedź „{slowo}” ma ogonki albo wielkie litery — "
                     "aplikacja porównuje nazwy znormalizowane"
                 )
+    for formy in KLUCZ_UPRAWY["formy"]:
+        for slowo in formy["slowa"]:
+            if slowo != slowo.lower() or any(
+                znak in slowo for znak in "ąćęłńóśźż"
+            ):
+                bledy.append(f"forma „{slowo}” ma ogonki albo wielkie litery")
+    for rodzina in KLUCZ_UPRAWY["rodziny_po_gatunku"]:
+        if not rodzina["slowa"]:
+            bledy.append(f"rodzina {rodzina['id']} bez słów")
+        for slowo in rodzina["slowa"]:
+            if slowo != slowo.lower() or any(
+                znak in slowo for znak in "ąćęłńóśźż"
+            ):
+                bledy.append(
+                    f"rodzina {rodzina['id']}: słowo „{slowo}” ma ogonki "
+                    "albo wielkie litery"
+                )
+    # Trzy rodziny wymienia § 5 ust. 5 pkt 3 — ani mniej, ani więcej.
+    if len(KLUCZ_UPRAWY["rodziny_po_gatunku"]) != 3:
+        bledy.append(
+            "przepis wymienia trzy rodziny liczone po gatunku, a w danych "
+            f"jest ich {len(KLUCZ_UPRAWY['rodziny_po_gatunku'])}"
+        )
+    for rodzina in ["kapustowatych", "psiankowatych", "dyniowatych"]:
+        if rodzina not in tekst:
+            bledy.append(
+                f"w akcie nie ma rodziny „{rodzina}” — sprawdź § 5 ust. 5"
+            )
+
+    rodzaje = {r["id"] for r in RODZAJE_UZYTKU}
+    for wylaczenie in WYLACZENIA_ZMIANOWANIA:
+        po_rodzaju = wylaczenie["po_rodzaju_uzytku"]
+        if po_rodzaju is not None and po_rodzaju not in rodzaje:
+            bledy.append(
+                f"wyłączenie {wylaczenie['id']} wskazuje nieznany rodzaj "
+                f"użytku: {po_rodzaju}"
+            )
+        if not wylaczenie["slowa"] and po_rodzaju is None:
+            bledy.append(
+                f"wyłączenie {wylaczenie['id']} nie ma ani słów, ani "
+                "rodzaju użytku — nic by nie dopasowało"
+            )
+        for slowo in wylaczenie["slowa"]:
+            if slowo != slowo.lower() or any(
+                znak in slowo for znak in "ąćęłńóśźż"
+            ):
+                bledy.append(
+                    f"wyłączenie {wylaczenie['id']}: słowo „{slowo}” ma "
+                    "ogonki albo wielkie litery"
+                )
+    # Wyłączenia z § 5 ust. 3 muszą zgadzać się z listą w normie GAEC 7.
+    gaec7 = next(n for n in NORMY if n["id"] == "gaec_7")
+    if len(gaec7["wylaczenia_upraw"]) != len(WYLACZENIA_ZMIANOWANIA):
+        bledy.append(
+            "liczba wyłączeń ze zmianowania "
+            f"({len(WYLACZENIA_ZMIANOWANIA)}) nie zgadza się z listą "
+            f"w normie GAEC 7 ({len(gaec7['wylaczenia_upraw'])})"
+        )
     idki = [n["id"] for n in NORMY]
     if len(set(idki)) != len(idki):
         bledy.append(f"powtórzone identyfikatory norm: {idki}")
@@ -633,6 +891,18 @@ def do_regul() -> dict:
             ),
             "rodzaje": RODZAJE_UZYTKU,
         },
+        "wylaczenia_zmianowania": {
+            "status_weryfikacji": "do_weryfikacji",
+            "opis": (
+                "Uprawy, do których nie stosuje się warunku zmianowania "
+                "(§ 5 ust. 3). Kategorie są z przepisu, a wykaz rodzajów "
+                "roślin bobowatych — z tabeli 14 programu azotanowego, bo "
+                "załącznik nr 2 do rozporządzenia o normach uchylono "
+                "w 2024 r. Dopasowanie po nazwie uprawy jest podpowiedzią."
+            ),
+            "wylaczenia": WYLACZENIA_ZMIANOWANIA,
+        },
+        "klucz_uprawy": KLUCZ_UPRAWY,
         "normy": [
             {k: v for k, v in norma.items() if k != "kontrola"}
             for norma in NORMY
@@ -665,6 +935,7 @@ def main(argv: list[str] | None = None) -> int:
     print(f"Aplikacja liczy: {', '.join(liczy)}")
     print(f"Zwolnień z kontroli: {len(ZWOLNIENIA)}")
     print(f"Rodzajów użytku: {len(RODZAJE_UZYTKU)}")
+    print(f"Wyłączeń ze zmianowania: {len(WYLACZENIA_ZMIANOWANIA)}")
     progi = sum(len(n.get("progi", [])) for n in NORMY)
     terminy = sum(len(n.get("terminy", [])) for n in NORMY)
     print(f"Progów: {progi}, terminów: {terminy}")

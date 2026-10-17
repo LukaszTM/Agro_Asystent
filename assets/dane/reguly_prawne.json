@@ -1,5 +1,5 @@
 {
-  "wersja": "2026.10.17.2",
+  "wersja": "2026.10.17.3",
   "obowiazuje_od": "2026-10-16",
   "opis": "Progi, limity i terminy obowiązków dokumentacyjnych. Dane, nie kod — aktualizowane bez przebudowy aplikacji. Zestawienie służy do planowania i nie jest poradą prawną.",
   "obowiazki": [
@@ -1939,6 +1939,182 @@
             "slazowiec",
             "wierzba energetyczna",
             "zagajnik"
+          ]
+        }
+      ]
+    },
+    "wylaczenia_zmianowania": {
+      "status_weryfikacji": "do_weryfikacji",
+      "opis": "Uprawy, do których nie stosuje się warunku zmianowania (§ 5 ust. 3). Kategorie są z przepisu, a wykaz rodzajów roślin bobowatych — z tabeli 14 programu azotanowego, bo załącznik nr 2 do rozporządzenia o normach uchylono w 2024 r. Dopasowanie po nazwie uprawy jest podpowiedzią.",
+      "wylaczenia": [
+        {
+          "id": "grunty_ugorowane",
+          "nazwa": "Grunt ugorowany",
+          "slowa": [
+            "ugor",
+            "ugorowany",
+            "ugorowane",
+            "ugorowanie"
+          ],
+          "po_rodzaju_uzytku": null,
+          "zrodlo": "§ 5 ust. 3 — grunty ugorowane",
+          "status_weryfikacji": "potwierdzone",
+          "uwagi": ""
+        },
+        {
+          "id": "bobowate",
+          "nazwa": "Rośliny bobowate",
+          "slowa": [
+            "bobik",
+            "bob",
+            "groch",
+            "grochy",
+            "peluszka",
+            "ledzwian",
+            "lubin",
+            "lubiny",
+            "seradela",
+            "soczewica",
+            "soja",
+            "wyka",
+            "fasola",
+            "ciecierzyca",
+            "esparceta",
+            "komonica",
+            "koniczyna",
+            "lucerna",
+            "nostrzyk",
+            "sparceta",
+            "bobowate"
+          ],
+          "po_rodzaju_uzytku": null,
+          "zrodlo": "§ 5 ust. 3 pkt 1; wykaz rodzajów z tabeli 14 programu azotanowego (Dz.U. 2023 poz. 244, grupa „Bobowate” i wiersz „Bobowate na zielonkę”)",
+          "status_weryfikacji": "do_weryfikacji",
+          "uwagi": "Rozporządzenie o normach nie ma już wykazu gatunków — załącznik nr 2 uchylono 26 czerwca 2024 r. Lista rodzajów pochodzi z innego aktu i wymaga potwierdzenia u doradcy."
+        },
+        {
+          "id": "trawy_pastewne",
+          "nazwa": "Trawy lub inne zielne rośliny pastewne",
+          "slowa": [
+            "trawy",
+            "trawa",
+            "laka",
+            "laki",
+            "pastwisko",
+            "pastwiska",
+            "kosno-pastwiskowy",
+            "zielonka",
+            "zielona masa"
+          ],
+          "po_rodzaju_uzytku": null,
+          "zrodlo": "§ 5 ust. 3 pkt 2",
+          "status_weryfikacji": "do_weryfikacji",
+          "uwagi": "Przepis nie wymienia gatunków traw; dopasowanie idzie po nazwie uprawy z wniosku."
+        },
+        {
+          "id": "mieszanki_bobowatych_z_trawami",
+          "nazwa": "Mieszanki bobowatych drobnonasiennych z trawami",
+          "slowa": [
+            "mieszanki bobowate z trawami",
+            "mieszanka bobowata"
+          ],
+          "po_rodzaju_uzytku": null,
+          "zrodlo": "§ 5 ust. 3 pkt 3",
+          "status_weryfikacji": "do_weryfikacji",
+          "uwagi": ""
+        },
+        {
+          "id": "uprawy_wieloletnie",
+          "nazwa": "Uprawy wieloletnie",
+          "slowa": [],
+          "po_rodzaju_uzytku": "uprawy_trwale",
+          "zrodlo": "§ 5 ust. 3 pkt 4",
+          "status_weryfikacji": "potwierdzone",
+          "uwagi": ""
+        },
+        {
+          "id": "plantacje_nasienne_kukurydzy",
+          "nazwa": "Plantacje nasienne kukurydzy",
+          "slowa": [
+            "plantacja nasienna kukurydzy",
+            "kukurydza nasienna",
+            "kukurydza plantacja nasienna"
+          ],
+          "po_rodzaju_uzytku": null,
+          "zrodlo": "§ 5 ust. 3 pkt 5 (od 1 stycznia 2025 r.)",
+          "status_weryfikacji": "do_weryfikacji",
+          "uwagi": "Wniosek nie zawsze rozróżnia plantację nasienną od zwykłej kukurydzy — przy wątpliwości aplikacja pisze „do sprawdzenia”."
+        }
+      ]
+    },
+    "klucz_uprawy": {
+      "status_weryfikacji": "do_weryfikacji",
+      "opis": "Jak aplikacja porównuje uprawy: po rodzaju i formie, a w trzech rodzinach po gatunku. Wynika z § 5 ust. 5 i 6; wykaz gatunków rodzin pochodzi z klasyfikacji botanicznej, nie z przepisu.",
+      "zrodlo": "§ 5 ust. 5 i 6",
+      "formy": [
+        {
+          "id": "ozima",
+          "slowa": [
+            "ozima",
+            "ozimy",
+            "ozime",
+            "ozimina"
+          ]
+        },
+        {
+          "id": "jara",
+          "slowa": [
+            "jara",
+            "jary",
+            "jare",
+            "jarzyna"
+          ]
+        }
+      ],
+      "rodziny_po_gatunku": [
+        {
+          "id": "kapustowate",
+          "nazwa": "kapustowate (Brassicaceae)",
+          "slowa": [
+            "kapusta",
+            "brokul",
+            "kalafior",
+            "brukselka",
+            "jarmuz",
+            "kalarepa",
+            "brukiew",
+            "rzepak",
+            "rzepik",
+            "gorczyca",
+            "rzodkiew",
+            "rzodkiewka",
+            "rzepa",
+            "chrzan",
+            "perko"
+          ]
+        },
+        {
+          "id": "psiankowate",
+          "nazwa": "psiankowate (Solanaceae)",
+          "slowa": [
+            "ziemniak",
+            "pomidor",
+            "papryka",
+            "oberzyna",
+            "tyton"
+          ]
+        },
+        {
+          "id": "dyniowate",
+          "nazwa": "dyniowate (Cucurbitaceae)",
+          "slowa": [
+            "dynia",
+            "cukinia",
+            "kabaczek",
+            "ogorek",
+            "melon",
+            "arbuz",
+            "patison"
           ]
         }
       ]

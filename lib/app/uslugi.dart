@@ -5,6 +5,7 @@ import '../funkcje/dzialki/repozytorium_dzialek.dart';
 import '../funkcje/dzialki/repozytorium_pol.dart';
 import '../funkcje/dzialki/historia_upraw.dart';
 import '../funkcje/dzialki/uprawy_pola.dart';
+import '../funkcje/warunkowosc/zmianowanie.dart';
 import '../funkcje/dzialki/slownik_upraw.dart';
 import '../funkcje/dzialki/zrodlo_pliku.dart';
 import '../funkcje/nawozenie/ewidencja_nawozenia.dart';
@@ -123,6 +124,10 @@ class Uslugi {
   /// Uprawy pola po sezonach — z nich liczy się zmianowanie (GAEC 7).
   /// Pracują na tej samej bazie co repozytorium pól, więc biorą ją stąd.
   RepozytoriumUprawPola get uprawyPola => RepozytoriumUprawPola(kopia.baza);
+
+  /// Norma GAEC 7: zmianowanie i dywersyfikacja upraw.
+  Zmianowanie get zmianowanie =>
+      Zmianowanie(pola: pola, uprawy: uprawyPola, reguly: reguly);
 
   /// Historia upraw pola razem z zakresem lat z przepisu.
   UslugaHistoriiUpraw get historiaUpraw =>

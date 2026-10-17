@@ -120,6 +120,42 @@ class _WidokPolaState extends State<WidokPola> {
     if (wybrana == null || !mounted) {
       return;
     }
+
+    // Czwarty rok tej samej uprawy łamie normę GAEC 7 — mówimy o tym
+    // przed zapisem, tymi samymi słowami co wygląd prosty.
+    final ostrzezenie = await widget.uslugi.zmianowanie.ostrzezeniePrzedZapisem(
+      pole: pole,
+      uprawa: wybrana.nazwa,
+    );
+    if (!mounted) {
+      return;
+    }
+    if (ostrzezenie != null) {
+      final zapisac = await showDialog<bool>(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Czwarty rok tej samej uprawy'),
+          content: Text(
+            '${ostrzezenie.tresc}\n\n${ostrzezenie.coZrobic}',
+            style: Theme.of(context).textTheme.bodyLarge,
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text('Wybiorę inną'),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: const Text('Zapisz mimo to'),
+            ),
+          ],
+        ),
+      );
+      if (!(zapisac ?? false) || !mounted) {
+        return;
+      }
+    }
+
     await widget.uslugi.pola.zmienUprawe(
       poleId: pole.id,
       uprawa: wybrana.nazwa,

@@ -1392,6 +1392,135 @@ class PodpowiedziRodzajuUzytku {
       rodzaje.where((r) => r.domyslny).firstOrNull;
 }
 
+/// Wyłączenie z warunku zmianowania (§ 5 ust. 3): po nazwie uprawy albo
+/// po rodzaju użytku, który rolnik potwierdził przy polu.
+class WylaczenieZeZmianowania {
+  const WylaczenieZeZmianowania({
+    required this.id,
+    required this.nazwa,
+    required this.statusWeryfikacji,
+    this.slowa = const [],
+    this.poRodzajuUzytku,
+    this.zrodlo = '',
+    this.uwagi = '',
+  });
+
+  factory WylaczenieZeZmianowania.zJson(Map<String, dynamic> json) =>
+      WylaczenieZeZmianowania(
+        id: json['id'] as String? ?? '',
+        nazwa: json['nazwa'] as String? ?? '',
+        statusWeryfikacji: json['status_weryfikacji'] as String? ?? 'nieznany',
+        slowa: [
+          for (final slowo in (json['slowa'] as List<dynamic>?) ?? const [])
+            '$slowo',
+        ],
+        poRodzajuUzytku: json['po_rodzaju_uzytku'] as String?,
+        zrodlo: json['zrodlo'] as String? ?? '',
+        uwagi: json['uwagi'] as String? ?? '',
+      );
+
+  final String id;
+  final String nazwa;
+  final String statusWeryfikacji;
+
+  /// Słowa w nazwie uprawy, które wskazują wyłączenie.
+  final List<String> slowa;
+
+  /// Rodzaj użytku, który sam z siebie wyłącza uprawę (uprawy trwałe).
+  final String? poRodzajuUzytku;
+
+  final String zrodlo;
+  final String uwagi;
+
+  bool get doWeryfikacji => statusWeryfikacji != 'potwierdzone';
+}
+
+/// Uprawy, do których nie stosuje się warunku zmianowania.
+class WylaczeniaZeZmianowania {
+  const WylaczeniaZeZmianowania({
+    required this.statusWeryfikacji,
+    required this.opis,
+    required this.wylaczenia,
+  });
+
+  static const WylaczeniaZeZmianowania puste = WylaczeniaZeZmianowania(
+    statusWeryfikacji: 'brak',
+    opis: '',
+    wylaczenia: [],
+  );
+
+  factory WylaczeniaZeZmianowania.zJson(Map<String, dynamic> json) =>
+      WylaczeniaZeZmianowania(
+        statusWeryfikacji: json['status_weryfikacji'] as String? ?? 'nieznany',
+        opis: json['opis'] as String? ?? '',
+        wylaczenia: ((json['wylaczenia'] as List<dynamic>?) ?? const [])
+            .map(
+              (w) => WylaczenieZeZmianowania.zJson(w as Map<String, dynamic>),
+            )
+            .toList(growable: false),
+      );
+
+  final String statusWeryfikacji;
+  final String opis;
+  final List<WylaczenieZeZmianowania> wylaczenia;
+
+  bool get pusta => wylaczenia.isEmpty;
+}
+
+/// Jak przepis każe porównywać uprawy przy zmianowaniu (§ 5 ust. 5 i 6).
+///
+/// Podstawą jest **rodzaj** rośliny (pierwsze słowo nazwy). Forma jara
+/// i ozima tego samego rodzaju to osobne uprawy, a w rodzinach
+/// kapustowatych, psiankowatych i dyniowatych liczy się **gatunek** — tam
+/// kluczem jest cała nazwa.
+class KluczUprawy {
+  const KluczUprawy({
+    required this.statusWeryfikacji,
+    required this.opis,
+    required this.zrodlo,
+    required this.formy,
+    required this.rodzinyPoGatunku,
+  });
+
+  static const KluczUprawy pusty = KluczUprawy(
+    statusWeryfikacji: 'brak',
+    opis: '',
+    zrodlo: '',
+    formy: {},
+    rodzinyPoGatunku: {},
+  );
+
+  factory KluczUprawy.zJson(Map<String, dynamic> json) => KluczUprawy(
+    statusWeryfikacji: json['status_weryfikacji'] as String? ?? 'nieznany',
+    opis: json['opis'] as String? ?? '',
+    zrodlo: json['zrodlo'] as String? ?? '',
+    formy: _grupy(json['formy']),
+    rodzinyPoGatunku: _grupy(json['rodziny_po_gatunku']),
+  );
+
+  final String statusWeryfikacji;
+  final String opis;
+  final String zrodlo;
+
+  /// Forma uprawy (`ozima`, `jara`) i słowa, po których ją poznajemy.
+  final Map<String, List<String>> formy;
+
+  /// Rodziny, w których liczy się gatunek, i słowa ich rozpoznania.
+  final Map<String, List<String>> rodzinyPoGatunku;
+
+  bool get bezReguly => formy.isEmpty && rodzinyPoGatunku.isEmpty;
+
+  bool get doWeryfikacji => statusWeryfikacji != 'potwierdzone';
+
+  static Map<String, List<String>> _grupy(Object? wartosc) => {
+    for (final grupa in (wartosc as List<dynamic>?) ?? const [])
+      (grupa as Map<String, dynamic>)['id'] as String: [
+        for (final slowo in (grupa['slowa'] as List<dynamic>?) ?? const [])
+          '$slowo',
+      ],
+  };
+}
+
 /// Normy GAEC razem ze zwolnieniami — dane z wersją, nie kod.
 class Warunkowosc {
   const Warunkowosc({
@@ -1401,6 +1530,8 @@ class Warunkowosc {
     required this.normy,
     required this.zwolnienia,
     this.rodzajeUzytku = PodpowiedziRodzajuUzytku.puste,
+    this.wylaczeniaZeZmianowania = WylaczeniaZeZmianowania.puste,
+    this.kluczUprawy = KluczUprawy.pusty,
   });
 
   static const Warunkowosc puste = Warunkowosc(
@@ -1426,6 +1557,14 @@ class Warunkowosc {
         : PodpowiedziRodzajuUzytku.zJson(
             json['rodzaje_uzytku'] as Map<String, dynamic>,
           ),
+    wylaczeniaZeZmianowania: json['wylaczenia_zmianowania'] == null
+        ? WylaczeniaZeZmianowania.puste
+        : WylaczeniaZeZmianowania.zJson(
+            json['wylaczenia_zmianowania'] as Map<String, dynamic>,
+          ),
+    kluczUprawy: json['klucz_uprawy'] == null
+        ? KluczUprawy.pusty
+        : KluczUprawy.zJson(json['klucz_uprawy'] as Map<String, dynamic>),
   );
 
   final String statusWeryfikacji;
@@ -1436,6 +1575,12 @@ class Warunkowosc {
 
   /// Podpowiedzi rodzaju użytku — pomoc przy wypełnianiu, nie przepis.
   final PodpowiedziRodzajuUzytku rodzajeUzytku;
+
+  /// Uprawy wyłączone z warunku zmianowania (§ 5 ust. 3).
+  final WylaczeniaZeZmianowania wylaczeniaZeZmianowania;
+
+  /// Jak porównywać uprawy przy zmianowaniu (§ 5 ust. 5 i 6).
+  final KluczUprawy kluczUprawy;
 
   bool get pusta => normy.isEmpty;
 

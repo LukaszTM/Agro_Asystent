@@ -501,6 +501,117 @@ void main() {
     expect(uprawy.last.zrodlo, 'rolnik');
   });
 
+  testWidgets('czwarty rok tej samej uprawy ostrzega przed zapisem', (
+    tester,
+  ) async {
+    await baza.insert('dzialka_rolna', {
+      'id': 'p1',
+      'gospodarstwo_id': 'g1',
+      'nazwa_wlasna': 'Za stodołą',
+      'sezon': 2026,
+      'uprawa': 'rzepak ozimy',
+      'powierzchnia_ar': 1500,
+      'rodzaj_uzytku': 'grunty_orne',
+      'utworzono': '2026-10-16T08:00:00',
+      'zmieniono': '2026-10-16T08:00:00',
+      'urzadzenie': 'telefon',
+    });
+    // Trzy lata kukurydzy z rzędu: czwarty łamie normę GAEC 7.
+    for (final rok in [2023, 2024, 2025]) {
+      await RepozytoriumUprawPola(baza).zapisz(
+        poleId: 'p1',
+        sezon: rok,
+        uprawa: 'kukurydza',
+        urzadzenie: 'telefon',
+      );
+    }
+
+    tester.view.physicalSize = const Size(420, 1400);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: MotywProsty.zbuduj(),
+        home: EkranPola(uslugi: zbudujUslugi()),
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Za stodołą'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Zmień uprawę'));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byType(TextField), 'kuku');
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('kukurydza'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Czwarty rok tej samej uprawy'), findsOneWidget);
+    expect(find.textContaining('4 rok z rzędu'), findsOneWidget);
+    expect(find.textContaining('najwyżej 3 lata'), findsOneWidget);
+
+    // „Wybiorę inną" nie zapisuje niczego.
+    await tester.tap(find.text('Wybiorę inną'));
+    await tester.pumpAndSettle();
+    expect((await RepozytoriumPol(baza).jedno('p1'))!.uprawa, 'rzepak ozimy');
+
+    // Zapis jest możliwy — dokumentacja ma być prawdziwa.
+    await tester.tap(find.text('Zmień uprawę'));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byType(TextField), 'kuku');
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('kukurydza'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Zapisz mimo to'));
+    await tester.pumpAndSettle();
+
+    expect((await RepozytoriumPol(baza).jedno('p1'))!.uprawa, 'kukurydza');
+  });
+
+  testWidgets('zmiana uprawy na inną niż rok wcześniej nie straszy', (
+    tester,
+  ) async {
+    await baza.insert('dzialka_rolna', {
+      'id': 'p1',
+      'gospodarstwo_id': 'g1',
+      'nazwa_wlasna': 'Za stodołą',
+      'sezon': 2026,
+      'uprawa': 'rzepak ozimy',
+      'powierzchnia_ar': 1500,
+      'rodzaj_uzytku': 'grunty_orne',
+      'utworzono': '2026-10-16T08:00:00',
+      'zmieniono': '2026-10-16T08:00:00',
+      'urzadzenie': 'telefon',
+    });
+    await RepozytoriumUprawPola(baza).zapisz(
+      poleId: 'p1',
+      sezon: 2025,
+      uprawa: 'pszenica ozima',
+      urzadzenie: 'telefon',
+    );
+
+    tester.view.physicalSize = const Size(420, 1400);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: MotywProsty.zbuduj(),
+        home: EkranPola(uslugi: zbudujUslugi()),
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Za stodołą'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Zmień uprawę'));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byType(TextField), 'kuku');
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('kukurydza'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Czwarty rok tej samej uprawy'), findsNothing);
+    expect((await RepozytoriumPol(baza).jedno('p1'))!.uprawa, 'kukurydza');
+  });
+
   testWidgets('bez wybranej uprawy pola nie da się zapisać', (tester) async {
     await otworzNowePole(tester);
     await przewinDo(tester, find.text('Zapisz pole'));
