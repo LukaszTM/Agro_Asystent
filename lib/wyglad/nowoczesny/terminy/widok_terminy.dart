@@ -4,6 +4,7 @@ import '../../../app/uslugi.dart';
 import '../../../funkcje/terminy/kalendarz_terminow.dart';
 import '../../../funkcje/terminy/przypomnienia.dart';
 import '../motyw.dart';
+import '../warunkowosc/ekran_warunkowosc.dart';
 import '../widgety/karta.dart';
 
 /// Zakładka „Terminy" wyglądu nowoczesnego.
@@ -120,6 +121,45 @@ class _WidokTerminyState extends State<WidokTerminy> {
         return ListView(
           padding: const EdgeInsets.all(MotywNowoczesny.odstep),
           children: [
+            // Warunkowość to obowiązki bez dat — stan norm GAEC zależy od
+            // upraw i wpisów, nie od kalendarza. Wejście stoi tam, gdzie
+            // rolnik szuka obowiązków.
+            Karta(
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (_) => EkranWarunkowoscNowoczesny(
+                    uslugi: widget.uslugi,
+                    teraz: widget.teraz,
+                  ),
+                ),
+              ),
+              child: Row(
+                children: [
+                  const Icon(
+                    Icons.rule_outlined,
+                    size: 20,
+                    color: MotywNowoczesny.tekstPomocniczy,
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Warunkowość',
+                          style: Theme.of(context).textTheme.titleLarge,
+                        ),
+                        Text(
+                          'Stan norm GAEC i wydruk na kontrolę.',
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 8),
             Karta(
               child: FutureBuilder<bool>(
                 future: _przypomnieniaWlaczone,

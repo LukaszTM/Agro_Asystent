@@ -64,6 +64,32 @@ class RepozytoriumZabiegow {
     return wiersze.map(Zabieg.zBazy).toList(growable: false);
   }
 
+  /// Zabiegi wybranych podrodzajów (prac przy elementach krajobrazu)
+  /// w danym roku — stąd przegląd warunkowości wie, czy w okresie zakazu
+  /// był wpis przycinania.
+  Future<List<Zabieg>> poPodrodzaju({
+    required String gospodarstwoId,
+    required List<String> podrodzaje,
+    int? rok,
+  }) async {
+    if (podrodzaje.isEmpty) {
+      return const [];
+    }
+    final znaki = List.filled(podrodzaje.length, '?').join(', ');
+    final wiersze = await _baza.query(
+      'zabieg',
+      where: [
+        'gospodarstwo_id = ?',
+        'usuniety = 0',
+        'podrodzaj IN ($znaki)',
+        if (rok != null) 'data LIKE ?',
+      ].join(' AND '),
+      whereArgs: [gospodarstwoId, ...podrodzaje, if (rok != null) '$rok-%'],
+      orderBy: 'data DESC',
+    );
+    return wiersze.map(Zabieg.zBazy).toList(growable: false);
+  }
+
   Future<SzczegolyOprysku?> szczegolyOprysku(String zabiegId) async {
     final wiersze = await _baza.query(
       'zabieg_oprysk',

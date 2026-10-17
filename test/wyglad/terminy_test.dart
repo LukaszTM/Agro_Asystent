@@ -240,6 +240,44 @@ void main() {
     expect(find.textContaining('Okrywa na 80% gruntów ornych'), findsNothing);
   });
 
+  testWidgets('z terminów wchodzi się w warunkowość i widać stan norm', (
+    tester,
+  ) async {
+    // Grunty orne 24 ha: GAEC 7 dotyczy, GAEC 6 czeka na deklarację okrywy.
+    await dodajPole(ar: 2400);
+    await baza.update(
+      'dzialka_rolna',
+      {'rodzaj_uzytku': 'grunty_orne', 'granica_z_woda': 'nie'},
+      where: 'gospodarstwo_id = ?',
+      whereArgs: ['g1'],
+    );
+    await pokaz(tester);
+
+    await tester.tap(find.text('Warunkowość'));
+    await tester.pumpAndSettle();
+
+    expect(find.textContaining('Normy GAEC w 2026 r.'), findsOneWidget);
+
+    // Normy, których aplikacja nie policzy, mówią o tym wprost (lista idzie
+    // od GAEC 1, więc najpierw mijamy je, a potem liczone).
+    await przewinDo(tester, find.textContaining('IUNG-PIB'));
+    expect(find.textContaining('IUNG-PIB'), findsOneWidget);
+
+    await przewinDo(tester, find.textContaining('GAEC 6:'));
+    expect(find.textContaining('GAEC 6:'), findsOneWidget);
+    expect(find.text('Do sprawdzenia'), findsWidgets);
+    expect(
+      find.textContaining('co zostaje po zbiorze'),
+      findsWidgets,
+      reason: 'ekran mówi, czego brakuje do policzenia okrywy',
+    );
+
+    // Wydruk na kontrolę jest na tym samym ekranie i jest darmowy.
+    await przewinDo(tester, find.text('Wydrukuj PDF'));
+    expect(find.text('Wydrukuj PDF'), findsOneWidget);
+    expect(find.textContaining('premium'), findsNothing);
+  });
+
   testWidgets('karencja po oprysku jest na liście z dniem zbioru', (
     tester,
   ) async {

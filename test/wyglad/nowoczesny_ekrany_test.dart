@@ -42,6 +42,7 @@ import 'package:agro_asystent/wyglad/nowoczesny/pola/ekran_import_wniosku.dart';
 import 'package:agro_asystent/funkcje/warunkowosc/okrywa_pola.dart';
 import 'package:agro_asystent/wyglad/nowoczesny/pola/ekran_pole.dart';
 import 'package:agro_asystent/wyglad/nowoczesny/ustawienia/ekran_dane_gospodarstwa.dart';
+import 'package:agro_asystent/wyglad/nowoczesny/warunkowosc/ekran_warunkowosc.dart';
 import 'package:agro_asystent/wyglad/nowoczesny/wpis/ekran_wpis.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -617,6 +618,40 @@ void main() {
 
       await przewinDo(tester, find.text('Wybierz z listy, co robisz.'));
       expect(find.text('Wybierz z listy, co robisz.'), findsOneWidget);
+    });
+  });
+
+  group('warunkowość', () {
+    testWidgets('każda norma ma stan, a nieliczona mówi o tym wprost', (
+      tester,
+    ) async {
+      await dodajPole(ar: 2400);
+      await baza.update(
+        'dzialka_rolna',
+        {'rodzaj_uzytku': 'grunty_orne', 'granica_z_woda': 'nie'},
+        where: 'gospodarstwo_id = ?',
+        whereArgs: ['g1'],
+      );
+      await pokaz(
+        tester,
+        EkranWarunkowoscNowoczesny(
+          uslugi: zbudujUslugi(),
+          teraz: DateTime(2026, 10, 1),
+        ),
+      );
+
+      expect(find.textContaining('Normy GAEC w 2026 r.'), findsOneWidget);
+      await przewinDo(tester, find.textContaining('IUNG-PIB'));
+      expect(find.textContaining('IUNG-PIB'), findsOneWidget);
+
+      await przewinDo(tester, find.textContaining('GAEC 7:'));
+      expect(find.textContaining('GAEC 7:'), findsOneWidget);
+      expect(find.textContaining('Grunty orne: 24,00 ha'), findsOneWidget);
+
+      // Wydruk na kontrolę jest darmowy — żadnej oferty premium.
+      await przewinDo(tester, find.text('Wydrukuj PDF'));
+      expect(find.text('Wydrukuj PDF'), findsOneWidget);
+      expect(find.textContaining('premium'), findsNothing);
     });
   });
 

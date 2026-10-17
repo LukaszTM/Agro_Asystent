@@ -4,6 +4,7 @@ import '../../../app/uslugi.dart';
 import '../../../funkcje/terminy/kalendarz_terminow.dart';
 import '../../../funkcje/terminy/przypomnienia.dart';
 import '../motyw.dart';
+import '../warunkowosc/ekran_warunkowosc.dart';
 import '../widgety/duzy_przycisk.dart';
 
 /// Kalendarz obowiązków: co trzeba zrobić i do kiedy (krok 5 etapu 1).
@@ -126,6 +127,23 @@ class _EkranTerminyState extends State<EkranTerminy> {
                 wlaczone: _przypomnieniaWlaczone,
                 pracuje: _przelaczam,
                 onZmiana: (wlacz) => _przelaczPrzypomnienia(wlacz: wlacz),
+              ),
+              const SizedBox(height: MotywProsty.odstep),
+              // Warunkowość to obowiązki bez dat — stan norm GAEC zależy od
+              // upraw i wpisów, nie od kalendarza. Stąd osobny ekran, ale
+              // wejście tam, gdzie rolnik szuka obowiązków.
+              DuzyPrzycisk(
+                etykieta: 'Warunkowość',
+                opis: 'stan norm GAEC i wydruk na kontrolę',
+                ikona: Icons.rule_outlined,
+                onTap: () => Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (_) => EkranWarunkowosc(
+                      uslugi: widget.uslugi,
+                      teraz: widget.teraz,
+                    ),
+                  ),
+                ),
               ),
               const SizedBox(height: MotywProsty.odstep),
               if (pozycje.isEmpty)

@@ -8,6 +8,7 @@ import '../funkcje/dzialki/uprawy_pola.dart';
 import '../funkcje/warunkowosc/okres_legowy.dart';
 import '../funkcje/warunkowosc/okrywa.dart';
 import '../funkcje/warunkowosc/pas_od_wody.dart';
+import '../funkcje/warunkowosc/przeglad.dart';
 import '../funkcje/warunkowosc/okrywa_pola.dart';
 import '../funkcje/warunkowosc/zmianowanie.dart';
 import '../funkcje/dzialki/slownik_upraw.dart';
@@ -142,6 +143,17 @@ class Uslugi {
     okrywy: okrywaPola,
     uprawy: uprawyPola,
     reguly: reguly,
+  );
+
+  /// Przegląd warunkowości: wszystkie normy GAEC ze stanem, jaki
+  /// aplikacja umie policzyć.
+  PrzegladWarunkowosci get przegladWarunkowosci => PrzegladWarunkowosci(
+    reguly: reguly,
+    zmianowanie: zmianowanie,
+    okrywa: okrywa,
+    pasOdWody: pasOdWody,
+    okresLegowy: okresLegowy,
+    zabiegi: zabiegi,
   );
 
   /// Norma GAEC 8: elementy krajobrazu i okres lęgowy ptaków.
