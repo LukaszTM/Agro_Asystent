@@ -70,7 +70,9 @@ Dodaj zabieg → pole A → Oprysk → środek z listy → dawka → karencja
 **14 dni** → Zapisz.
 → Data, godzina i powierzchnia (**3,40 ha**) uzupełniają się same.
 → **Przed zapisem musi stanąć ostrzeżenie o pasie od wody** — pole A
-graniczy z wodą. W treści ma być **3 m** (wartość ze słownika reguł).
+graniczy z wodą. Treść zaczyna się od „Pole Za stodołą graniczy z wodą,
+a norma GAEC 4 zabrania tu…" i podaje pas **3 m** od brzegu (3 m
+pochodzi ze słownika reguł, nie z kodu).
 → Zabieg zapisuje się **mimo ostrzeżenia**. Jeśli aplikacja zablokowała
 zapis — to błąd priorytetu A.
 
@@ -138,12 +140,15 @@ a norma obowiązuje **powyżej 10 ha**.
 → **GAEC 4** (pas od wody) odnosi się do pola A.
 
 ### A15. Okrywa — druga liczba do sprawdzenia
-Warunkowość → GAEC 6 → zadeklaruj okrywę **tylko na polu B (8,60 ha)**.
+Pola → **Przy drodze** → zjedź do pytania o okrywę po zbiorze → wybierz
+formę okrywy. **Pola A nie ruszaj** — ma zostać bez odpowiedzi.
+Wróć do Terminy → Warunkowość → GAEC 6.
 
-Rachunek: 80 % z 12,00 ha = 9,60 ha; masz 8,60 ha → **brakuje 1,00 ha**.
+Rachunek: 80 % z 12,00 ha = 9,60 ha; zadeklarowane 8,60 ha →
+**brakuje 1,00 ha**.
 
-→ Aplikacja ma napisać, że **brakuje 1,00 ha**, a nie samo „nie
-spełniono".
+→ Aplikacja ma napisać wprost: **Do normy brakuje okrywy na 1,00 ha.**
+Samo „nie spełniono", bez liczby, to znalezisko.
 
 ### A16. Tryb samolotowy
 Włącz tryb samolotowy i powtórz: dodanie pola, wpis oprysku, otwarcie
@@ -208,7 +213,7 @@ Ustawienia → **Bardzo duży** → przejdź wszystkie osiem zakładek.
 | A10 | **150,0 kg N/ha**, bez ostrzeżenia |
 | A11 | **172,7 kg N/ha**, **przekroczenie limitu** |
 | A14 | GAEC 7 liczone (12,00 ha > **10 ha**) |
-| A15 | **brakuje 1,00 ha** okrywy |
+| A15 | zdanie z liczbą: brakuje okrywy na **1,00 ha** |
 | B3 | **28 % / 72 %**, w środku **12,00 ha** |
 
 Jeśli którakolwiek liczba się nie zgadza — to **błąd priorytetu A**:
