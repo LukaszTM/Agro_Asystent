@@ -107,6 +107,14 @@ class KopiaDanych {
     'historia_zmian',
   ];
 
+  /// Tabele, które świadomie **nie** jadą w kopii: pamięć podręczna danych
+  /// z sieci. To nie są wpisy rolnika — na drugim urządzeniu pobiorą się
+  /// własne, a przeniesione tylko udawałyby świeże.
+  ///
+  /// Nowa tabela musi trafić do jednej z tych dwóch list; test kopii tego
+  /// pilnuje, żeby nic nie wypadło po cichu.
+  static const List<String> pozaKopia = ['pogoda_zapis'];
+
   /// Nazwa pliku kopii — z datą, żeby rolnik widział, która jest nowsza.
   static String nazwaPliku(DateTime kiedy) {
     String dwucyfrowo(int liczba) => liczba.toString().padLeft(2, '0');

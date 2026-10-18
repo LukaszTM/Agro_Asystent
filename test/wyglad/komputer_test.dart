@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
@@ -10,6 +11,7 @@ import 'package:agro_asystent/funkcje/dokumenty/wydruk_pdf.dart';
 import 'package:agro_asystent/funkcje/dokumenty/wyjscie_dokumentu.dart';
 import 'package:agro_asystent/funkcje/dzialki/granica_z_woda.dart';
 import 'package:agro_asystent/funkcje/dzialki/import_wniosku.dart';
+import 'package:agro_asystent/funkcje/dzialki/klient_uldk.dart';
 import 'package:agro_asystent/funkcje/dzialki/repozytorium_dzialek.dart';
 import 'package:agro_asystent/funkcje/dzialki/repozytorium_pol.dart';
 import 'package:agro_asystent/funkcje/dzialki/rodzaj_uzytku.dart';
@@ -21,6 +23,7 @@ import 'package:agro_asystent/funkcje/nawozenie/nawoz.dart';
 import 'package:agro_asystent/funkcje/nawozenie/plan_nawozenia.dart';
 import 'package:agro_asystent/funkcje/nawozenie/terminy_azotowe.dart';
 import 'package:agro_asystent/funkcje/odczyt/czytnik_zdjecia.dart';
+import 'package:agro_asystent/funkcje/pogoda/klient_pogody.dart';
 import 'package:agro_asystent/funkcje/odczyt/odczyt_etykiety.dart';
 import 'package:agro_asystent/funkcje/terminy/kalendarz_terminow.dart';
 import 'package:agro_asystent/funkcje/terminy/przypomnienia.dart';
@@ -44,6 +47,8 @@ import 'package:agro_asystent/wyglad/komputer/ekran_glowny.dart';
 import 'package:agro_asystent/wyglad/komputer/motyw.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:http/http.dart' as http;
+import 'package:http/testing.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 /// Program na komputer (plan, pkt 5: „Program na Windows ma jeden wygląd,
@@ -60,6 +65,32 @@ void main() {
   final biodynamika = SlownikBiodynamiczny.zTekstuJson(
     File('assets/dane/kalendarz_biodynamiczny.json').readAsStringSync(),
   );
+
+  /// Serwis pogodowy podstawiony na sztywno — test nie chodzi do sieci.
+  String odpowiedzPogody() {
+    final poczatek = DateTime.utc(2026, 10, 1, 6);
+    return jsonEncode({
+      'properties': {
+        'timeseries': [
+          for (var numer = 0; numer < 30; numer++)
+            {
+              'time': poczatek.add(Duration(hours: numer)).toIso8601String(),
+              'data': {
+                'instant': {
+                  'details': {
+                    'air_temperature': 9.0 + numer % 4,
+                    'wind_speed': 3.0,
+                  },
+                },
+                'next_1_hours': {
+                  'details': {'precipitation_amount': 0.0},
+                },
+              },
+            },
+        ],
+      },
+    });
+  }
 
   // Stały dzień: inaczej test pękałby, gdy dzisiejsza data minie termin
   // ze słownika.
@@ -159,6 +190,23 @@ void main() {
     ustawieniaPrzypomnien: UstawieniaPrzypomnien(baza),
     dostep: DostepFunkcji(maPremium: premium),
     biodynamika: biodynamika,
+    klientPogody: KlientPogody(
+      klient: MockClient((_) async => http.Response(odpowiedzPogody(), 200)),
+    ),
+  );
+
+  /// Działka z granicami — z niej program liczy położenie gospodarstwa.
+  Future<void> dodajDzialkeZGranicami() => RepozytoriumDzialek(baza).zapisz(
+    gospodarstwoId: 'g1',
+    zUldk: const DzialkaZUldk(
+      identyfikator: '141201_2.0012.123',
+      wkt:
+          'POLYGON((21.0 52.0, 21.002 52.0, 21.002 52.002, '
+          '21.0 52.002, 21.0 52.0))',
+      srid: 4326,
+      gmina: 'Przykładowa',
+    ),
+    urzadzenie: 'komputer',
   );
 
   Future<void> dodajPole({
@@ -781,6 +829,38 @@ void main() {
 
       expect(find.text('Pokaż tydzień'), findsOneWidget);
       expect(find.text('października 2026'), findsOneWidget);
+    });
+
+    testWidgets('bez działek pogoda mówi, czego jej brakuje', (tester) async {
+      await pokaz(tester, zakladka: ZakladkaKomputer.pulpit);
+      await tester.scrollUntilVisible(
+        find.text('Pogoda'),
+        300,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('Nie wiem, gdzie leży gospodarstwo.'), findsOneWidget);
+    });
+
+    testWidgets('z działką pogoda pokazuje godziny, dni i źródło', (
+      tester,
+    ) async {
+      await dodajPole();
+      await dodajDzialkeZGranicami();
+      await pokaz(tester, zakladka: ZakladkaKomputer.pulpit);
+      await tester.scrollUntilVisible(
+        find.text('Pogoda'),
+        300,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.textContaining('Źródło: MET Norway'), findsOneWidget);
+      expect(find.textContaining('wiatr do 3 m/s'), findsWidgets);
+      // Dopuszczalnej prędkości wiatru przy oprysku program nie wymyśla —
+      // odsyła do etykiety.
+      expect(find.textContaining('etykiecie środka'), findsOneWidget);
     });
 
     testWidgets('z pulpitu przechodzi się do pełnych terminów', (tester) async {

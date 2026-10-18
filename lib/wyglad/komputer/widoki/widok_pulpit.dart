@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../app/uslugi.dart';
 import '../../../funkcje/biodynamika/biodynamika.dart';
 import '../../../funkcje/dzialki/repozytorium_dzialek.dart';
+import '../../../funkcje/pogoda/usluga_pogody.dart';
 import '../../../funkcje/pulpit/zasiewy.dart';
 import '../../../funkcje/terminy/kalendarz_terminow.dart';
 import '../../../rdzen/wspolne/daty.dart';
@@ -10,6 +11,7 @@ import '../../../rdzen/wspolne/mapa_dzialek.dart';
 import '../motyw.dart';
 import '../widgety/kalendarz_biodynamiczny.dart';
 import '../widgety/karta.dart';
+import '../widgety/karta_pogody.dart';
 import '../widgety/wykres_kolowy.dart';
 
 /// Co pulpit pokazuje po otwarciu programu.
@@ -18,12 +20,15 @@ class _DanePulpitu {
     required this.zasiewy,
     required this.dzialki,
     required this.terminy,
+    required this.pogoda,
     this.biodynamika,
   });
 
   final StrukturaZasiewow zasiewy;
   final List<DzialkaEwidencyjna> dzialki;
   final List<PozycjaKalendarza> terminy;
+
+  final StanPogody pogoda;
 
   /// `null`, gdy słownika kalendarza nie udało się wczytać — pulpit działa
   /// dalej, tylko bez tej karty.
@@ -70,6 +75,10 @@ class WidokPulpitKomputer extends StatefulWidget {
 class _WidokPulpitKomputerState extends State<WidokPulpitKomputer> {
   late Future<_DanePulpitu> _dane;
 
+  /// Rolnik kliknął „Pobierz na nowo" — wtedy pytamy serwis, nawet jeśli
+  /// zapisana prognoza jest jeszcze świeża.
+  bool _wymusPogode = false;
+
   DateTime get _teraz => widget.teraz ?? DateTime.now();
 
   @override
@@ -92,6 +101,11 @@ class _WidokPulpitKomputerState extends State<WidokPulpitKomputer> {
       zasiewy: Zasiewy.policz(pola),
       dzialki: dzialki,
       terminy: terminy,
+      pogoda: await uslugi.pogoda.dla(
+        uslugi.gospodarstwoId,
+        teraz: widget.teraz,
+        wymusPobranie: _wymusPogode,
+      ),
       biodynamika: _biodynamika(),
     );
   }
@@ -160,6 +174,15 @@ class _WidokPulpitKomputerState extends State<WidokPulpitKomputer> {
                     onPelnyWidok: widget.onPelnyWidok,
                   ),
                 ],
+                const SizedBox(height: MotywKomputer.odstep),
+                KartaPogody(
+                  stan: dane.pogoda,
+                  teraz: _teraz,
+                  onOdswiez: () => setState(() {
+                    _wymusPogode = true;
+                    _dane = _wczytaj();
+                  }),
+                ),
                 if (dane.biodynamika case final _DaneBiodynamiki kalendarz) ...[
                   const SizedBox(height: MotywKomputer.odstep),
                   KalendarzBiodynamicznyKarta(

@@ -20,6 +20,9 @@ import '../funkcje/nawozenie/nawoz.dart';
 import '../funkcje/nawozenie/plan_nawozenia.dart';
 import '../funkcje/nawozenie/terminy_azotowe.dart';
 import '../funkcje/odczyt/czytnik_zdjecia.dart';
+import '../funkcje/pogoda/klient_pogody.dart';
+import '../funkcje/pogoda/pogoda.dart';
+import '../funkcje/pogoda/usluga_pogody.dart';
 import '../funkcje/odczyt/odczyt_etykiety.dart';
 import '../funkcje/terminy/kalendarz_terminow.dart';
 import '../funkcje/terminy/przypomnienia.dart';
@@ -71,6 +74,7 @@ class Uslugi {
     required this.przypomnienia,
     required this.ustawieniaPrzypomnien,
     this.uldk = const KlientUldk(),
+    this.klientPogody = const KlientPogody(),
     this.dostep = const DostepFunkcji.darmowa(),
     this.biodynamika,
   });
@@ -217,6 +221,17 @@ class Uslugi {
   /// działa bez internetu.
   final KlientUldk uldk;
 
+  /// Klient serwisu pogodowego — pogoda jest dodatkiem, więc program
+  /// działa w całości także wtedy, gdy nic z niego nie przychodzi.
+  final KlientPogody klientPogody;
+
+  /// Ostatnia prognoza zapisana na tym urządzeniu.
+  RepozytoriumPogody get zapisPogody => RepozytoriumPogody(kopia.baza);
+
+  /// Pogoda dla gospodarstwa: położenie liczone z granic działek.
+  UslugaPogody get pogoda =>
+      UslugaPogody(zapis: zapisPogody, dzialki: dzialki, klient: klientPogody);
+
   final DostepFunkcji dostep;
 
   /// Słownik kalendarza biodynamicznego — dodatek informacyjny, nie
@@ -273,6 +288,7 @@ class Uslugi {
     przypomnienia: przypomnienia,
     ustawieniaPrzypomnien: ustawieniaPrzypomnien,
     uldk: uldk,
+    klientPogody: klientPogody,
     dostep: dostep ?? this.dostep,
     biodynamika: biodynamika,
   );

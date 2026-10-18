@@ -39,12 +39,14 @@ programem (plan, pkt 4).
    **To tradycja, nie przepis** — zastrzeżenie stoi na karcie, nie
    w drobnym druku. Granice gwiazdozbiorów i przypisanie żywiołów są
    danymi (`assets/dane/kalendarz_biodynamiczny.json`), nie kodem.
-5. **Pogoda** — co najmniej trzy doby, godzinowo na dziś i jutro:
-   temperatura, opad, wiatr (ważny przy oprysku), wilgotność. Potrzebna
-   decyzja o źródle i **sprawdzenie licencji pod kątem użytku
-   komercyjnego** (budżet = 0): kandydaci to MET Norway, IMGW-PIB
-   i Open-Meteo. Wynik trafi do ADR. Bez sieci program pokazuje ostatni
-   odczyt z datą, a nie pustkę.
+5. **Pogoda** — ✅ zrobione. Najbliższe godziny i cztery doby:
+   temperatura, opad, wiatr. Źródłem jest MET Norway (CC BY 4.0,
+   użycie komercyjne dozwolone); Open-Meteo odpadło, bo darmowe API wolno
+   używać tylko niekomercyjnie — `docs/decyzje/ADR-0008-pogoda.md`.
+   Położenie liczymy z granic działek, więc rolnik nie podaje adresu.
+   Bez sieci karta pokazuje ostatni odczyt **z datą**, a nie pustkę.
+   Dopuszczalnej prędkości wiatru przy oprysku program nie podaje — to
+   dana z przepisu i z etykiety, nie z kodu pogody.
 6. **Wiadomości rolnicze** — kanały RSS branżowe, tytuł + zajawka +
    odnośnik do źródła. Pobierane rzadko i zapisywane lokalnie.
 7. **Ceny skupu** — zboża, rzepak, mleko, żywiec. Źródłem są notowania

@@ -336,7 +336,12 @@ void main() {
         "AND name NOT LIKE 'sqlite_%' AND name <> 'android_metadata'",
       );
       final wBazie = wiersze.map((w) => w['name'] as String).toSet();
-      expect(wBazie.difference(KopiaDanych.tabele.toSet()), isEmpty);
+      // Tabela albo jedzie w kopii, albo stoi na liście świadomych
+      // wyjątków — trzeciej drogi nie ma.
+      expect(
+        wBazie.difference({...KopiaDanych.tabele, ...KopiaDanych.pozaKopia}),
+        isEmpty,
+      );
     });
 
     test('każda tabela z kopii ma regułę scalania', () {

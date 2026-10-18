@@ -626,4 +626,22 @@ const List<Migracja> migracje = [
       ''',
     ],
   ),
+  Migracja(
+    wersja: 10,
+    opis: 'Pamięć podręczna pogody i wiadomości — dane z sieci, nie wpisy',
+    polecenia: [
+      // Pogoda nie jest dokumentacją gospodarstwa: to tylko ostatni odczyt
+      // z serwisu, żeby bez internetu było co pokazać. Dlatego jeden wiersz
+      // na gospodarstwo, bez dziennika zmian i bez kopii danych.
+      '''
+      CREATE TABLE pogoda_zapis (
+        gospodarstwo_id TEXT PRIMARY KEY REFERENCES gospodarstwo(id),
+        pobrano         TEXT NOT NULL,
+        szerokosc       REAL NOT NULL,
+        dlugosc         REAL NOT NULL,
+        dane_json       TEXT NOT NULL
+      )
+      ''',
+    ],
+  ),
 ];
