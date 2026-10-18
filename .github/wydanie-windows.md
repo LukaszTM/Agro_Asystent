@@ -2,7 +2,7 @@ Program na komputer z Windows — wersja do pobrania.
 
 **Jak uruchomić**
 
-1. Pobierz plik `agro-asystent-windows.zip` z listy poniżej.
+1. Pobierz plik `agro-asystent-windows-<wersja>.zip` z listy poniżej.
 2. Rozpakuj cały folder (nie uruchamiaj programu z wnętrza archiwum —
    obok `agro_asystent.exe` leżą biblioteki, bez nich program nie wstanie).
 3. Uruchom `agro_asystent.exe`.
