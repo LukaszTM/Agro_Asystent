@@ -5,19 +5,37 @@ Na końcu jest gotowa wiadomość do skopiowania.
 
 ## Jak zainstalować (5 minut)
 
-1. Otwórz na telefonie:
+> **Najważniejsze na początek: nie klikaj linku wewnątrz Messengera ani
+> Facebooka.** Otworzy się w ich własnej przeglądarce, pobieranie stanie
+> na 100 % i plik nigdzie nie trafi. Skopiuj adres i wklej go w **Chrome**
+> — albo w tym okienku naciśnij trzy kropki ⋮ → **Otwórz w Chrome**.
+
+1. Otwórz **w Chrome**:
    **https://github.com/LukaszTM/Agro_Asystent/releases/tag/apk-test**
-2. Naciśnij plik `agro-asystent-0.2.0+2.apk` — zacznie się pobieranie.
-   (Obok leży plik z dopiskiem `-arm64` — jest mniejszy, dla telefonów
-   z ostatnich lat. Jeśli nie wiesz, który wybrać, weź ten bez dopisku.)
+   (na telefonie pliki bywają schowane pod napisem **Assets** — trzeba go
+   rozwinąć).
+2. Naciśnij plik z dopiskiem **`-arm64`** — `agro-asystent-0.2.0+2-arm64.apk`.
+   Waży 39 MB i wchodzi na telefony z ostatnich kilku lat. Obok leży plik
+   bez dopiska: ten sam program, ale 101 MB; bierz go tylko wtedy, gdy
+   mniejszy nie chce się zainstalować.
 3. Android zapyta, czy zezwolić na instalację z tego miejsca
    („nieznane źródła"). Trzeba zezwolić — aplikacji nie ma jeszcze
    w sklepie Google Play.
-4. Otwórz pobrany plik i naciśnij **Zainstaluj**. Jeśli pojawi się
-   ostrzeżenie Play Protect, wybierz **Zainstaluj mimo to**.
+4. Otwórz pobrany plik (**Pliki → Pobrane**) i naciśnij **Zainstaluj**.
+   Jeśli pojawi się ostrzeżenie Play Protect, wybierz **Zainstaluj mimo
+   to**.
 5. Przy pierwszym uruchomieniu aplikacja zapyta o wygląd: **Prosty**
    (duże przyciski, dla osób, które nie przepadają za telefonem) albo
    **Nowoczesny**. Można to potem zmienić w ustawieniach.
+
+### Gdy pobieranie staje i nie chce się skończyć
+
+| Co widać | Co zrobić |
+| --- | --- |
+| Pasek doszedł do końca, ale okienko dalej pisze „Pobieram…" | To przeglądarka wbudowana w inną aplikację. Sprawdź **Pliki → Pobrane** — plik często już tam jest. Jeśli nie, pobierz jeszcze raz z Chrome. |
+| „Plik może być niebezpieczny", Chrome przekreśla pobieranie | Rozwiń pobieranie u dołu ekranu → **Zachowaj mimo to**. |
+| Pobieranie zrywa się w połowie | Weź mniejszy plik `-arm64` i pobieraj przy Wi-Fi. |
+| „Aplikacja nie została zainstalowana" | Pobierz plik **bez** dopiska `-arm64` — ten wchodzi na każdy telefon. |
 
 **Przy nowej wersji trzeba najpierw odinstalować starą.** Tak będzie do
 czasu, aż aplikacja dostanie stały podpis wydawniczy. Odinstalowanie
@@ -70,11 +88,13 @@ nie jest nigdzie wysyłane.
 > (zabiegi, nawożenie, terminy ARiMR) i szukam kilku osób do
 > wypróbowania jej na telefonie.
 >
-> Instalacja: wejdź na
+> Instalacja: skopiuj ten adres i otwórz go **w Chrome** (nie klikaj
+> wprost w Messengerze — tamtejsza przeglądarka nie dokańcza pobierania):
 > https://github.com/LukaszTM/Agro_Asystent/releases/tag/apk-test
-> i pobierz plik `agro-asystent-0.2.0+2.apk`. Android zapyta, czy
+> Pobierz plik z dopiskiem **-arm64** (39 MB). Android zapyta, czy
 > zezwolić na instalację spoza sklepu — trzeba zezwolić, bo aplikacji
-> nie ma jeszcze w Google Play.
+> nie ma jeszcze w Google Play. Gdyby napisał „aplikacja nie została
+> zainstalowana", weź ten drugi plik, bez dopiska.
 >
 > Wszystko działa bez internetu, nic nie trzeba zakładać ani podawać.
 > Dane zostają w telefonie.
