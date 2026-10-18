@@ -5,6 +5,7 @@ import '../../../funkcje/ustawienia/gospodarstwa.dart';
 import '../../../funkcje/ustawienia/wybor_wygladu.dart';
 import '../../../funkcje/ustawienia/zwierzeta_w_gospodarstwie.dart';
 import '../magazyn/ekran_magazyn.dart';
+import '../../../rdzen/wspolne/wersja_programu.dart';
 import '../motyw.dart';
 import '../widgety/duzy_przycisk.dart';
 import 'ekran_kopia.dart';
@@ -190,6 +191,10 @@ class _EkranGospodarstwaState extends State<EkranGospodarstwa> {
                 'i inspekcji. Poprawisz je zawsze, bez żadnej opłaty.',
                 style: Theme.of(context).textTheme.bodyMedium,
               ),
+              const SizedBox(height: MotywProsty.odstep),
+              // Numer wersji przyda się przy zgłaszaniu usterek w czasie
+              // testów — inaczej nie wiadomo, którego pliku dotyczy uwaga.
+              const WierszWersji(przed: 'Agro Asystent • '),
               if (dane.lista.length > 1) ...[
                 const SizedBox(height: MotywProsty.odstep),
                 Text(

@@ -102,3 +102,23 @@ zmieniać w kodzie.**
   w Play będzie gotowe.
 - Regulaminu i polityki prywatności — wymaga ich Google Play, a treść
   powinien zobaczyć prawnik (podsumowanie etapu 1, pkt 14).
+
+## Przed rozdaniem aplikacji testerom
+
+Lista do odhaczenia, zanim plik pójdzie do ludzi:
+
+1. **Zrób klucz wydawniczy i wpisz cztery sekrety** (opis wyżej). Bez
+   niego każdy build jest podpisany innym kluczem debugowym, więc przy
+   każdej nowej wersji tester musi odinstalować poprzednią — razem
+   z wpisami, które zdążył zrobić. To największa niewygoda testów i jedyna,
+   którą da się usunąć w pięć minut.
+2. Sprawdź, czy wydanie `apk-test` ma oba pliki: uniwersalny i `-arm64`.
+3. Przeczytaj `docs/instrukcja-dla-testerow.md` i zmień w niej numer
+   wersji, jeśli zdążył się zmienić. Na końcu jest gotowa wiadomość do
+   wysłania.
+4. Ustal, gdzie mają trafiać uwagi (telefon, e-mail, grupa) — i wpisz to
+   w wiadomości do testerów.
+
+Repozytorium jest publiczne, więc link do wydania działa bez konta na
+GitHubie. Jeśli kiedyś stanie się prywatne, testerzy przestaną móc
+pobierać plik i trzeba będzie rozdawać go inaczej.

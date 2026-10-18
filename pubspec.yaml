@@ -4,7 +4,7 @@ publish_to: 'none'
 
 # Wersja aplikacji. Wersja danych (słowniki środków, progi prawne) jest osobna
 # i trzymana w assets/dane/*.json — patrz CLAUDE.md.
-version: 0.1.0+1
+version: 0.2.0+2
 
 environment:
   sdk: ^3.13.5
@@ -43,6 +43,7 @@ dependencies:
   # Otwarcie artykułu u wydawcy w przeglądarce (licencja BSD-3, zespół
   # Fluttera). Program nie pokazuje cudzych treści u siebie.
   url_launcher: ^6.3.3
+  package_info_plus: ^10.2.2
 
 dev_dependencies:
   flutter_test:

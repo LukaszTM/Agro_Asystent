@@ -6,6 +6,7 @@ import '../../../funkcje/ustawienia/wybor_wygladu.dart';
 import '../../../funkcje/ustawienia/zwierzeta_w_gospodarstwie.dart';
 import '../../../rdzen/uslugi/kopia/kopia_danych.dart';
 import '../../../rdzen/uslugi/kopia/scalanie.dart';
+import '../../../rdzen/wspolne/wersja_programu.dart';
 import '../magazyn/ekran_magazyn.dart';
 import '../motyw.dart';
 import '../widgety/karta.dart';
@@ -543,6 +544,10 @@ class _EkranUstawieniaState extends State<EkranUstawienia> {
                   coZrobic: _bladKopii!.coZrobic,
                 ),
               ],
+              const SizedBox(height: MotywNowoczesny.odstep),
+              // Numer wersji przyda się przy zgłaszaniu usterek w czasie
+              // testów — inaczej nie wiadomo, którego pliku dotyczy uwaga.
+              const WierszWersji(przed: 'Agro Asystent • '),
             ],
           );
         },

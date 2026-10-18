@@ -85,20 +85,32 @@ jobs:
         run: flutter pub get
 
       - name: Budowanie APK
-        run: flutter build apk --release
+        # Dwa pliki: uniwersalny (wchodzi na każdy telefon) i mniejszy,
+        # tylko na arm64 — przy rozdawaniu testerom liczy się każdy
+        # megabajt pobierany z pakietu danych. Ten sam numer wersji
+        # w obu, żeby dało się je wymieniać bez odinstalowywania.
+        run: |
+          flutter build apk --release
+          flutter build apk --release --split-per-abi \
+            -Pforce-version-code-ignoring-abi=true
 
-      - name: Nazwa pliku z numerem wersji
+      - name: Nazwy plików z numerem wersji
         run: |
           wersja=$(grep '^version:' pubspec.yaml | cut -d' ' -f2)
           plik="agro-asystent-$wersja.apk"
           cp build/app/outputs/flutter-apk/app-release.apk "$plik"
-          ls -lh "$plik"
+          maly="agro-asystent-$wersja-arm64.apk"
+          cp build/app/outputs/flutter-apk/app-arm64-v8a-release.apk "$maly"
+          ls -lh "$plik" "$maly"
           echo "plik=$plik" >> "$GITHUB_ENV"
+          echo "maly=$maly" >> "$GITHUB_ENV"
 
       - uses: actions/upload-artifact@v4
         with:
           name: agro-asystent-apk
-          path: ${{ env.plik }}
+          path: |
+            ${{ env.plik }}
+            ${{ env.maly }}
           retention-days: 14
 
       - name: Wydanie do pobrania na telefon
@@ -123,4 +135,4 @@ jobs:
             --prerelease \
             --title "Agro Asystent — APK do testów" \
             --notes "$opis" || true
-          gh release upload apk-test "$plik" --clobber
+          gh release upload apk-test "$plik" "$maly" --clobber

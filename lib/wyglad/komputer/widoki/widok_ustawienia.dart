@@ -5,6 +5,7 @@ import '../../../funkcje/ustawienia/gospodarstwa.dart';
 import '../../../funkcje/ustawienia/rozmiar_tekstu.dart';
 import '../../../funkcje/ustawienia/zwierzeta_w_gospodarstwie.dart';
 import '../../../rdzen/uslugi/kopia/kopia_danych.dart';
+import '../../../rdzen/wspolne/wersja_programu.dart';
 import '../../../rdzen/uslugi/kopia/scalanie.dart';
 import '../motyw.dart';
 import '../widgety/karta.dart';
@@ -331,6 +332,7 @@ class _WidokUstawieniaKomputerState extends State<WidokUstawieniaKomputer> {
                 children: [
                   Text('O programie', style: teksty.titleLarge),
                   const SizedBox(height: 4),
+                  const WierszWersji(przed: 'Agro Asystent • '),
                   Text(
                     'Urządzenie: ${_uslugi.urzadzenie} • słownik reguł '
                     '${_uslugi.reguly.wersja} (obowiązuje od '
