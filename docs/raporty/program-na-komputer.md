@@ -104,6 +104,11 @@ Program nie jest podpisany, więc Windows pokaże ostrzeżenie SmartScreen
 maszyny z Windows liczą się w darmowym limicie GitHuba podwójnie,
 a budżet projektu to zero.
 
+**Pierwsze budowanie przeszło** (18 października 2026 r., 5 minut 38 sekund):
+`agro_asystent.exe`, jedenaście bibliotek i katalog `data` z czcionkami,
+słownikami i logo — razem 20,7 MB w paczce .zip. Plik powstaje z tego
+samego kodu, który sprawdza `flutter test`.
+
 Budowanie u siebie wymaga Visual Studio 2022 Build Tools z zestawem
 „Desktop development with C++" — bez niego `flutter run -d windows`
 kończy się zdaniem „Unable to find suitable Visual Studio toolchain".
