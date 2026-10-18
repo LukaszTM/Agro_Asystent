@@ -65,14 +65,45 @@ jobs:
           path: build/windows/x64/runner/Release/
           retention-days: 14
 
-      # Stały link do pobrania — artefakt znika po 14 dniach i wymaga
-      # zalogowania na GitHubie, wydanie zostaje i pobiera je każdy.
-      - name: Wydanie ze stałym linkiem
-        if: startsWith(github.ref, 'refs/tags/pc-')
+      # Stały link do pobrania. Artefakt z zakładki Actions wymaga
+      # zalogowania na GitHubie i znika po 14 dniach — wydanie pobiera
+      # każdy, bez konta, tak samo jak APK na telefon.
+      - name: Wydanie do pobrania bez logowania
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release create "$GITHUB_REF_NAME" wydanie/agro-asystent-windows.zip \
-            --title "Agro Asystent na Windows $GITHUB_REF_NAME" \
-            --notes-file .github/wydanie-windows.md
+          # Znacznik `pc-*` robi wydanie pod swoją nazwą; zwykłe budowanie
+          # odświeża jedno wspólne wydanie „pc-test".
+          if [[ "$GITHUB_REF" == refs/tags/pc-* ]]; then
+            nazwa="$GITHUB_REF_NAME"
+            tytul="Agro Asystent na Windows $GITHUB_REF_NAME"
+            przedwydanie=""
+          else
+            nazwa="pc-test"
+            tytul="Agro Asystent na Windows — wersja testowa"
+            przedwydanie="--prerelease"
+          fi
+
+          wersja=$(grep '^version:' pubspec.yaml | cut -d' ' -f2)
+          plik="agro-asystent-windows-$wersja.zip"
+          mv wydanie/agro-asystent-windows.zip "$plik"
+
+          gh release create "$nazwa" \
+            --target "$GITHUB_SHA" \
+            $przedwydanie \
+            --title "$tytul" \
+            --notes-file .github/wydanie-windows.md || true
+          gh release upload "$nazwa" "$plik" --clobber
+
+          # W wydaniu ma leżeć tylko bieżąca wersja.
+          gh release view "$nazwa" --json assets --jq '.assets[].name' \
+            | while read -r stary; do
+                case "$stary" in
+                  "$plik") ;;
+                  *.zip)
+                    echo "usuwam stary plik: $stary"
+                    gh release delete-asset "$nazwa" "$stary" -y
+                    ;;
+                esac
+              done

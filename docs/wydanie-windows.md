@@ -11,9 +11,13 @@ uruchomić.
 **Na próbę — zmiana pliku-wyzwalacza.** W `.github/zbuduj-windows` wpisuje
 się nową datę i wysyła commit na gałąź roboczą. Przepływ budzi tylko ten
 jeden plik, więc zwykła praca nad kodem nie pali darmowych minut.
-Wynik to artefakt `agro-asystent-windows` na stronie zakończonego
-budowania (Actions) — paczka .zip, 14 dni, do pobrania po zalogowaniu
-na GitHubie.
+
+Wynik trafia do wydania **`pc-test`** — stały link, który otwiera każdy,
+bez konta na GitHubie:
+<https://github.com/LukaszTM/Agro_Asystent/releases/tag/pc-test>.
+Ten sam plik leży też jako artefakt na stronie budowania (Actions), ale
+artefaktu **nie pobierze osoba niezalogowana** i znika po 14 dniach —
+dlatego do rozsyłania służy wydanie, nie artefakt.
 
 **Na wydanie — znacznik `pc-`.**
 
