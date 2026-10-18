@@ -84,16 +84,30 @@ w obu platformach oraz przewinięcie każdej zakładki do końca przy 1280×800,
 
 ## Jak zrobić plik .exe
 
-Program buduje się ręcznie w GitHub Actions: **Actions → „Zbuduj program na
-Windows" → Run workflow** (`.github/workflows/windows.yml`). Wynik to
-artefakt `agro-asystent-windows` z plikiem `agro_asystent.exe`
-i bibliotekami. Program nie jest podpisany, więc Windows pokaże ostrzeżenie
-SmartScreen („Więcej informacji" → „Uruchom mimo to"). Budowanie jest
-ręczne, bo maszyny z Windows liczą się w darmowym limicie GitHuba podwójnie,
+Program buduje darmowa maszyna GitHuba (`.github/workflows/windows.yml`).
+Uruchamia ją znacznik zaczynający się od `pc-`:
+
+```bash
+git tag pc-0.1.0 && git push origin pc-0.1.0
+```
+
+Wynik to wydanie (Releases) z plikiem `agro-asystent-windows.zip` —
+link stały, bez logowania, do wysłania dalej. Przy ręcznym uruchomieniu
+(Actions → Run workflow) powstaje tylko artefakt na 14 dni.
+
+Przycisku **Run workflow** nie było widać, bo pokazuje się dopiero dla
+przepływów leżących na gałęzi głównej, a cała praca stoi na gałęzi
+roboczej. Stąd wyzwalacz na znaczniku — działa z gałęzi roboczej od razu.
+
+Program nie jest podpisany, więc Windows pokaże ostrzeżenie SmartScreen
+(„Więcej informacji" → „Uruchom mimo to"). Budowanie jest ręczne, bo
+maszyny z Windows liczą się w darmowym limicie GitHuba podwójnie,
 a budżet projektu to zero.
 
-Workflow nie był jeszcze uruchomiony — potrzebuje gałęzi w repozytorium
-(jest) i jednego kliknięcia w zakładce Actions.
+Budowanie u siebie wymaga Visual Studio 2022 Build Tools z zestawem
+„Desktop development with C++" — bez niego `flutter run -d windows`
+kończy się zdaniem „Unable to find suitable Visual Studio toolchain".
+Cała procedura: `docs/wydanie-windows.md`.
 
 ## Co dalej na komputerze
 

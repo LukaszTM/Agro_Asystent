@@ -1,22 +1,31 @@
 # Program na komputer z Windows (plan, pkt 1: „potem Windows").
 #
-# Uruchamiany **tylko ręcznie** (Actions → „Zbuduj program na Windows" →
-# Run workflow). Nie wisi na każdym commicie, bo maszyny z Windows liczą
-# się w darmowym limicie GitHuba podwójnie, a budżet projektu to zero.
+# Uruchamiany **tylko ręcznie**: przez wysłanie znacznika `pc-*`
+# (np. `git tag pc-0.1.0 && git push origin pc-0.1.0`) albo przyciskiem
+# Run workflow, gdy ten plik trafi na gałąź główną. Nie wisi na każdym
+# commicie, bo maszyny z Windows liczą się w darmowym limicie GitHuba
+# podwójnie, a budżet projektu to zero.
 #
-# Wynik to katalog z plikiem agro_asystent.exe i bibliotekami — do
-# pobrania jako artefakt (plik .zip). Program nie jest podpisany, więc
-# Windows pokaże ostrzeżenie SmartScreen; „Więcej informacji" →
-# „Uruchom mimo to".
+# Wynik to katalog z plikiem agro_asystent.exe i bibliotekami. Przy
+# znaczniku `pc-*` powstaje z niego wydanie (Releases) ze stałym linkiem
+# do pobrania; przy ręcznym uruchomieniu — artefakt .zip na 14 dni.
+# Program nie jest podpisany, więc Windows pokaże ostrzeżenie SmartScreen;
+# „Więcej informacji" → „Uruchom mimo to".
 name: Zbuduj program na Windows
 
 on:
   workflow_dispatch:
+  push:
+    tags:
+      - 'pc-*'
 
 jobs:
   windows:
     name: Windows (release)
     runs-on: windows-latest
+    permissions:
+      # Potrzebne tylko do założenia wydania przy znaczniku `pc-*`.
+      contents: write
     steps:
       - uses: actions/checkout@v4
 
@@ -37,8 +46,26 @@ jobs:
         shell: bash
         run: ls -R build/windows/x64/runner/Release | head -40
 
+      - name: Paczka do pobrania
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force wydanie | Out-Null
+          Compress-Archive -Path build/windows/x64/runner/Release/* -DestinationPath wydanie/agro-asystent-windows.zip
+
       - uses: actions/upload-artifact@v4
         with:
           name: agro-asystent-windows
           path: build/windows/x64/runner/Release/
           retention-days: 14
+
+      # Stały link do pobrania — artefakt znika po 14 dniach i wymaga
+      # zalogowania na GitHubie, wydanie zostaje i pobiera je każdy.
+      - name: Wydanie ze stałym linkiem
+        if: startsWith(github.ref, 'refs/tags/pc-')
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" wydanie/agro-asystent-windows.zip \
+            --title "Agro Asystent na Windows $GITHUB_REF_NAME" \
+            --notes-file .github/wydanie-windows.md
