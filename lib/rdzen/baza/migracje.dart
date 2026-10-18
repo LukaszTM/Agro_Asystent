@@ -642,6 +642,15 @@ const List<Migracja> migracje = [
         dane_json       TEXT NOT NULL
       )
       ''',
+      // Nagłówki wiadomości z kanałów RSS — tytuł, zajawka i odnośnik.
+      // Treści artykułów nie trzymamy: to cudzy tekst.
+      '''
+      CREATE TABLE wiadomosci_zapis (
+        klucz     TEXT PRIMARY KEY,
+        pobrano   TEXT NOT NULL,
+        dane_json TEXT NOT NULL
+      )
+      ''',
     ],
   ),
 ];

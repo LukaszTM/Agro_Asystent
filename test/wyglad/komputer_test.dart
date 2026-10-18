@@ -24,6 +24,8 @@ import 'package:agro_asystent/funkcje/nawozenie/plan_nawozenia.dart';
 import 'package:agro_asystent/funkcje/nawozenie/terminy_azotowe.dart';
 import 'package:agro_asystent/funkcje/odczyt/czytnik_zdjecia.dart';
 import 'package:agro_asystent/funkcje/pogoda/klient_pogody.dart';
+import 'package:agro_asystent/funkcje/wiadomosci/klient_wiadomosci.dart';
+import 'package:agro_asystent/funkcje/wiadomosci/wiadomosci.dart';
 import 'package:agro_asystent/funkcje/odczyt/odczyt_etykiety.dart';
 import 'package:agro_asystent/funkcje/terminy/kalendarz_terminow.dart';
 import 'package:agro_asystent/funkcje/terminy/przypomnienia.dart';
@@ -65,6 +67,31 @@ void main() {
   final biodynamika = SlownikBiodynamiczny.zTekstuJson(
     File('assets/dane/kalendarz_biodynamiczny.json').readAsStringSync(),
   );
+
+  /// Kanał RSS podstawiony na sztywno — test nie chodzi do sieci.
+  const kanalyTestowe = SlownikKanalow(
+    wersja: 'test',
+    kanaly: [
+      KanalWiadomosci(
+        nazwa: 'Portal rolniczy',
+        adres: 'https://przyklad.test/rss',
+        strona: 'https://przyklad.test',
+        status: 'do_weryfikacji',
+      ),
+    ],
+  );
+
+  const rssTestowy = '''
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0"><channel>
+  <item>
+    <title>Doplaty: nowy termin</title>
+    <link>https://przyklad.test/doplaty</link>
+    <description>Agencja wydluzyla termin skladania wnioskow.</description>
+    <pubDate>Mon, 28 Sep 2026 07:30:00 +0200</pubDate>
+  </item>
+</channel></rss>
+''';
 
   /// Serwis pogodowy podstawiony na sztywno — test nie chodzi do sieci.
   String odpowiedzPogody() {
@@ -192,6 +219,12 @@ void main() {
     biodynamika: biodynamika,
     klientPogody: KlientPogody(
       klient: MockClient((_) async => http.Response(odpowiedzPogody(), 200)),
+    ),
+    kanalyWiadomosci: kanalyTestowe,
+    klientWiadomosci: KlientWiadomosci(
+      klient: MockClient(
+        (_) async => http.Response.bytes(utf8.encode(rssTestowy), 200),
+      ),
     ),
   );
 
@@ -861,6 +894,23 @@ void main() {
       // Dopuszczalnej prędkości wiatru przy oprysku program nie wymyśla —
       // odsyła do etykiety.
       expect(find.textContaining('etykiecie środka'), findsOneWidget);
+    });
+
+    testWidgets('wiadomości pokazują nagłówek, źródło i odsyłają do wydawcy', (
+      tester,
+    ) async {
+      await pokaz(tester, zakladka: ZakladkaKomputer.pulpit);
+      await tester.scrollUntilVisible(
+        find.text('Wiadomości z branży'),
+        300,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('Doplaty: nowy termin'), findsOneWidget);
+      expect(find.textContaining('Portal rolniczy'), findsWidgets);
+      // Program nie pokazuje cudzej treści u siebie.
+      expect(find.textContaining('otwiera się u wydawcy'), findsOneWidget);
     });
 
     testWidgets('z pulpitu przechodzi się do pełnych terminów', (tester) async {

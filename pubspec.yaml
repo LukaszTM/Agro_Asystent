@@ -38,6 +38,11 @@ dependencies:
   flutter_timezone: ^5.1.1
   google_mlkit_text_recognition: ^0.17.1
   image_picker: ^1.2.4
+  # Odczyt kanałów RSS z wiadomościami rolniczymi (licencja MIT).
+  xml: ^7.1.0
+  # Otwarcie artykułu u wydawcy w przeglądarce (licencja BSD-3, zespół
+  # Fluttera). Program nie pokazuje cudzych treści u siebie.
+  url_launcher: ^6.3.3
 
 dev_dependencies:
   flutter_test:

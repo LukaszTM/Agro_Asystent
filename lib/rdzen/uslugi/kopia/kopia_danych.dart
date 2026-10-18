@@ -113,7 +113,7 @@ class KopiaDanych {
   ///
   /// Nowa tabela musi trafić do jednej z tych dwóch list; test kopii tego
   /// pilnuje, żeby nic nie wypadło po cichu.
-  static const List<String> pozaKopia = ['pogoda_zapis'];
+  static const List<String> pozaKopia = ['pogoda_zapis', 'wiadomosci_zapis'];
 
   /// Nazwa pliku kopii — z datą, żeby rolnik widział, która jest nowsza.
   static String nazwaPliku(DateTime kiedy) {

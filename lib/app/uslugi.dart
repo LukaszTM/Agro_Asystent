@@ -23,6 +23,9 @@ import '../funkcje/odczyt/czytnik_zdjecia.dart';
 import '../funkcje/pogoda/klient_pogody.dart';
 import '../funkcje/pogoda/pogoda.dart';
 import '../funkcje/pogoda/usluga_pogody.dart';
+import '../funkcje/wiadomosci/klient_wiadomosci.dart';
+import '../funkcje/wiadomosci/usluga_wiadomosci.dart';
+import '../funkcje/wiadomosci/wiadomosci.dart';
 import '../funkcje/odczyt/odczyt_etykiety.dart';
 import '../funkcje/terminy/kalendarz_terminow.dart';
 import '../funkcje/terminy/przypomnienia.dart';
@@ -75,6 +78,8 @@ class Uslugi {
     required this.ustawieniaPrzypomnien,
     this.uldk = const KlientUldk(),
     this.klientPogody = const KlientPogody(),
+    this.klientWiadomosci = const KlientWiadomosci(),
+    this.kanalyWiadomosci,
     this.dostep = const DostepFunkcji.darmowa(),
     this.biodynamika,
   });
@@ -228,6 +233,20 @@ class Uslugi {
   /// Ostatnia prognoza zapisana na tym urządzeniu.
   RepozytoriumPogody get zapisPogody => RepozytoriumPogody(kopia.baza);
 
+  /// Klient kanałów RSS z wiadomościami rolniczymi.
+  final KlientWiadomosci klientWiadomosci;
+
+  /// Lista kanałów ze słownika. `null`, gdy pliku nie wczytano — wtedy
+  /// karta wiadomości mówi, że nie ma źródeł.
+  final SlownikKanalow? kanalyWiadomosci;
+
+  /// Wiadomości rolnicze — dodatek informacyjny, nigdy dokumentacja.
+  UslugaWiadomosci get wiadomosci => UslugaWiadomosci(
+    zapis: RepozytoriumWiadomosci(kopia.baza),
+    kanaly: kanalyWiadomosci,
+    klient: klientWiadomosci,
+  );
+
   /// Pogoda dla gospodarstwa: położenie liczone z granic działek.
   UslugaPogody get pogoda =>
       UslugaPogody(zapis: zapisPogody, dzialki: dzialki, klient: klientPogody);
@@ -289,6 +308,8 @@ class Uslugi {
     ustawieniaPrzypomnien: ustawieniaPrzypomnien,
     uldk: uldk,
     klientPogody: klientPogody,
+    klientWiadomosci: klientWiadomosci,
+    kanalyWiadomosci: kanalyWiadomosci,
     dostep: dostep ?? this.dostep,
     biodynamika: biodynamika,
   );

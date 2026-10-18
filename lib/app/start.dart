@@ -4,6 +4,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:sqflite_common/sqlite_api.dart';
 
 import '../funkcje/biodynamika/biodynamika.dart';
+import '../funkcje/wiadomosci/wiadomosci.dart';
 import '../funkcje/dokumenty/usluga_dokumentow.dart';
 import '../funkcje/dokumenty/wydruk_pdf.dart';
 import '../funkcje/dzialki/import_wniosku.dart';
@@ -84,11 +85,18 @@ Future<Uslugi> uruchom({
   } on Object {
     biodynamika = null;
   }
+  SlownikKanalow? kanalyWiadomosci;
+  try {
+    kanalyWiadomosci = await ZrodloKanalow().wczytaj();
+  } on Object {
+    kanalyWiadomosci = null;
+  }
   final gminyTerminow = await ZrodloGminTerminow().wczytaj();
   final stado = RepozytoriumStada(baza: baza, reguly: reguly);
 
   return Uslugi(
     biodynamika: biodynamika,
+    kanalyWiadomosci: kanalyWiadomosci,
     gospodarstwoId: gospodarstwo.id,
     nazwaGospodarstwa: gospodarstwo.nazwa,
     urzadzenie: nazwaUrzadzenia,

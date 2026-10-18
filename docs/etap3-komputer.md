@@ -47,8 +47,16 @@ programem (plan, pkt 4).
    Bez sieci karta pokazuje ostatni odczyt **z datą**, a nie pustkę.
    Dopuszczalnej prędkości wiatru przy oprysku program nie podaje — to
    dana z przepisu i z etykiety, nie z kodu pogody.
-6. **Wiadomości rolnicze** — kanały RSS branżowe, tytuł + zajawka +
-   odnośnik do źródła. Pobierane rzadko i zapisywane lokalnie.
+6. **Wiadomości rolnicze** — ✅ zrobione. Kanały RSS i Atom: tytuł,
+   zajawka bez znaczników, nazwa źródła i odnośnik do wydawcy. Całego
+   artykułu nie pobieramy i nie pokazujemy — to cudzy tekst. Kanał, który
+   nie odpowiada, jest pomijany; bez internetu zostają ostatnie nagłówki
+   z datą. Adresy kanałów są danymi
+   (`assets/dane/kanaly_wiadomosci.json`) ze statusem weryfikacji,
+   a sprawdza je `tools/wiadomosci/sprawdz_kanaly.py` **na komputerze
+   dewelopera** — nie z urządzenia rolnika (CLAUDE.md, reguła 3).
+   Dziś wszystkie cztery kanały mają status `do_weryfikacji`: adresów nie
+   dało się potwierdzić ze środowiska, w którym powstawał kod.
 7. **Ceny skupu** — zboża, rzepak, mleko, żywiec. Źródłem są notowania
    Zintegrowanego Systemu Rolniczej Informacji Rynkowej (ministerstwo).
    Tych stron **nie wolno pobierać z urządzenia rolnika**, więc dane

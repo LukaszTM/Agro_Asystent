@@ -1,0 +1,31 @@
+{
+  "wersja": "2026.10.18.1",
+  "uwaga": "Lista kanałów RSS z wiadomościami rolniczymi. Program pokazuje wyłącznie tytuł, krótką zajawkę i odnośnik do źródła — nigdy całej treści artykułu (prawo autorskie). Kanał, którego nie da się pobrać albo odczytać, jest po cichu pomijany.",
+  "weryfikacja": "Adresy sprawdza skrypt tools/wiadomosci/sprawdz_kanaly.py uruchamiany na komputerze dewelopera. Dopóki kanał ma status 'do_weryfikacji', nie wiadomo, czy adres jest aktualny — program i tak sobie z tym radzi, bo pomija kanały, które nie odpowiadają.",
+  "kanaly": [
+    {
+      "nazwa": "Farmer.pl",
+      "adres": "https://www.farmer.pl/rss/",
+      "strona": "https://www.farmer.pl",
+      "status": "do_weryfikacji"
+    },
+    {
+      "nazwa": "Top Agrar Polska",
+      "adres": "https://www.topagrar.pl/rss",
+      "strona": "https://www.topagrar.pl",
+      "status": "do_weryfikacji"
+    },
+    {
+      "nazwa": "Agropolska",
+      "adres": "https://www.agropolska.pl/rss.xml",
+      "strona": "https://www.agropolska.pl",
+      "status": "do_weryfikacji"
+    },
+    {
+      "nazwa": "Wiadomości Rolnicze Polska",
+      "adres": "https://wrp.pl/feed/",
+      "strona": "https://wrp.pl",
+      "status": "do_weryfikacji"
+    }
+  ]
+}

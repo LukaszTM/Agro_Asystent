@@ -4,6 +4,7 @@ import '../../../app/uslugi.dart';
 import '../../../funkcje/biodynamika/biodynamika.dart';
 import '../../../funkcje/dzialki/repozytorium_dzialek.dart';
 import '../../../funkcje/pogoda/usluga_pogody.dart';
+import '../../../funkcje/wiadomosci/usluga_wiadomosci.dart';
 import '../../../funkcje/pulpit/zasiewy.dart';
 import '../../../funkcje/terminy/kalendarz_terminow.dart';
 import '../../../rdzen/wspolne/daty.dart';
@@ -12,6 +13,7 @@ import '../motyw.dart';
 import '../widgety/kalendarz_biodynamiczny.dart';
 import '../widgety/karta.dart';
 import '../widgety/karta_pogody.dart';
+import '../widgety/karta_wiadomosci.dart';
 import '../widgety/wykres_kolowy.dart';
 
 /// Co pulpit pokazuje po otwarciu programu.
@@ -21,6 +23,7 @@ class _DanePulpitu {
     required this.dzialki,
     required this.terminy,
     required this.pogoda,
+    required this.wiadomosci,
     this.biodynamika,
   });
 
@@ -29,6 +32,8 @@ class _DanePulpitu {
   final List<PozycjaKalendarza> terminy;
 
   final StanPogody pogoda;
+
+  final StanWiadomosci wiadomosci;
 
   /// `null`, gdy słownika kalendarza nie udało się wczytać — pulpit działa
   /// dalej, tylko bez tej karty.
@@ -79,6 +84,9 @@ class _WidokPulpitKomputerState extends State<WidokPulpitKomputer> {
   /// zapisana prognoza jest jeszcze świeża.
   bool _wymusPogode = false;
 
+  /// To samo dla wiadomości — rolnik może poprosić o świeże nagłówki.
+  bool _wymusWiadomosci = false;
+
   DateTime get _teraz => widget.teraz ?? DateTime.now();
 
   @override
@@ -105,6 +113,10 @@ class _WidokPulpitKomputerState extends State<WidokPulpitKomputer> {
         uslugi.gospodarstwoId,
         teraz: widget.teraz,
         wymusPobranie: _wymusPogode,
+      ),
+      wiadomosci: await uslugi.wiadomosci.najnowsze(
+        teraz: widget.teraz,
+        wymusPobranie: _wymusWiadomosci,
       ),
       biodynamika: _biodynamika(),
     );
@@ -180,6 +192,15 @@ class _WidokPulpitKomputerState extends State<WidokPulpitKomputer> {
                   teraz: _teraz,
                   onOdswiez: () => setState(() {
                     _wymusPogode = true;
+                    _dane = _wczytaj();
+                  }),
+                ),
+                const SizedBox(height: MotywKomputer.odstep),
+                KartaWiadomosci(
+                  stan: dane.wiadomosci,
+                  teraz: _teraz,
+                  onOdswiez: () => setState(() {
+                    _wymusWiadomosci = true;
                     _dane = _wczytaj();
                   }),
                 ),
