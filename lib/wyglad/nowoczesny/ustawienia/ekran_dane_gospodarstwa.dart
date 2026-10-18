@@ -35,6 +35,9 @@ class _EkranDaneGospodarstwaNowoczesnyState
   late final TextEditingController _numer = TextEditingController(
     text: widget.gospodarstwo?.numerProducenta ?? '',
   );
+  late final TextEditingController _wlasciciel = TextEditingController(
+    text: widget.gospodarstwo?.wlasciciel ?? '',
+  );
   ({String tresc, String coZrobic})? _blad;
   bool _zapisuje = false;
 
@@ -47,6 +50,7 @@ class _EkranDaneGospodarstwaNowoczesnyState
   void dispose() {
     _nazwa.dispose();
     _numer.dispose();
+    _wlasciciel.dispose();
     super.dispose();
   }
 
@@ -108,11 +112,13 @@ class _EkranDaneGospodarstwaNowoczesnyState
 
     final nazwa = _nazwa.text.trim();
     final numer = _numer.text.trim();
+    final osoba = _wlasciciel.text.trim();
 
     if (_nowe) {
       final wynik = await widget.uslugi.gospodarstwa.dodaj(
         nazwa: nazwa,
         numerProducenta: numer,
+        wlasciciel: osoba,
         urzadzenie: widget.uslugi.urzadzenie,
       );
       if (!mounted) {
@@ -125,6 +131,7 @@ class _EkranDaneGospodarstwaNowoczesnyState
               id: wynik.id!,
               nazwa: nazwa,
               numerProducenta: numer.isEmpty ? null : numer,
+              wlasciciel: osoba.isEmpty ? null : osoba,
             ),
           );
         case WynikDodania.brakNazwy:
@@ -164,6 +171,7 @@ class _EkranDaneGospodarstwaNowoczesnyState
       gospodarstwoId: widget.gospodarstwo!.id,
       nazwa: nazwa,
       numerProducenta: numer,
+      wlasciciel: osoba,
     );
     if (mounted) {
       Navigator.of(context).pop(
@@ -171,6 +179,7 @@ class _EkranDaneGospodarstwaNowoczesnyState
           id: widget.gospodarstwo!.id,
           nazwa: nazwa,
           numerProducenta: numer.isEmpty ? null : numer,
+          wlasciciel: osoba.isEmpty ? null : osoba,
           powierzchniaUrHa: widget.gospodarstwo!.powierzchniaUrHa,
         ),
       );
@@ -197,6 +206,24 @@ class _EkranDaneGospodarstwaNowoczesnyState
               border: OutlineInputBorder(),
               isDense: true,
             ),
+          ),
+          const SizedBox(height: MotywNowoczesny.odstep),
+          Text('Właściciel', style: teksty.titleLarge),
+          const SizedBox(height: 8),
+          TextField(
+            controller: _wlasciciel,
+            style: teksty.bodyLarge,
+            decoration: const InputDecoration(
+              hintText: 'imię i nazwisko posiadacza gruntów',
+              border: OutlineInputBorder(),
+              isDense: true,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'Ewidencję prowadzi posiadacz gruntów — to jego dane widzi '
+            'inspekcja.',
+            style: teksty.bodyMedium,
           ),
           const SizedBox(height: MotywNowoczesny.odstep),
           Text('Numer producenta', style: teksty.titleLarge),

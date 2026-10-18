@@ -653,4 +653,14 @@ const List<Migracja> migracje = [
       ''',
     ],
   ),
+  Migracja(
+    wersja: 12,
+    opis: 'Właściciel gospodarstwa — imię i nazwisko na dokumenty',
+    polecenia: [
+      // Ewidencję prowadzi posiadacz gruntów i to jego dane stoją na
+      // dokumencie dla inspekcji. Nazwa gospodarstwa bywa potoczna
+      // („Gospodarstwo w Dąbrowie"), więc nie zastępuje nazwiska.
+      'ALTER TABLE gospodarstwo ADD COLUMN wlasciciel TEXT',
+    ],
+  ),
 ];

@@ -779,9 +779,18 @@ void main() {
         'Gospodarstwo Kowalski',
       );
       await tester.enterText(
+        find.widgetWithText(TextField, 'imię i nazwisko posiadacza gruntów'),
+        'Jan Kowalski',
+      );
+      await tester.enterText(
         find.widgetWithText(TextField, 'np. 18,40'),
         '18,40',
       );
+      // Okno urosło o pole właściciela — przycisk bywa pod spodem.
+      await tester.ensureVisible(
+        find.widgetWithText(OutlinedButton, 'Nie mam zwierząt'),
+      );
+      await tester.pumpAndSettle();
       await tester.tap(find.widgetWithText(OutlinedButton, 'Nie mam zwierząt'));
       await tester.pumpAndSettle();
       await tester.tap(find.widgetWithText(FilledButton, 'Zapisz dane'));
@@ -790,6 +799,7 @@ void main() {
       expect(find.text('Gospodarstwo Kowalski'), findsWidgets);
       expect(find.textContaining('18,40 ha'), findsOneWidget);
       expect(find.textContaining('zwierzęta: nie ma'), findsOneWidget);
+      expect(find.textContaining('Właściciel: Jan Kowalski'), findsOneWidget);
     });
 
     testWidgets('bez nazwy gospodarstwo się nie zapisze', (tester) async {

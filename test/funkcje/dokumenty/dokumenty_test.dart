@@ -136,11 +136,16 @@ void main() {
 
   tearDown(() => baza.close());
 
-  Future<DokumentEwidencji> zbuduj({int? rok, String? numerProducenta}) async {
+  Future<DokumentEwidencji> zbuduj({
+    int? rok,
+    String? numerProducenta,
+    String? wlasciciel,
+  }) async {
     final dokument = await dokumenty.zbuduj(
       gospodarstwoId: 'g1',
       gospodarstwo: 'Gospodarstwo Łąki Górne',
       numerProducenta: numerProducenta,
+      wlasciciel: wlasciciel,
       rejestrDokumentu: RodzajRejestru.ewidencjaSor,
       rok: rok,
       sporzadzono: DateTime(2026, 10, 15),
@@ -258,6 +263,35 @@ void main() {
             wiersz.map((s) => s.tekst).join(' '),
       ].join('\n');
       expect(tekst, contains('012345678'));
+    });
+
+    test('właściciel stoi na wydruku i w eksportach', () async {
+      await dodajPole(id: 'p1', nazwa: 'Za stodołą');
+      await dodajOprysk(id: 'z1', poleId: 'p1', kiedy: DateTime(2026, 5, 10));
+
+      // Ewidencję prowadzi posiadacz gruntów — nazwa gospodarstwa bywa
+      // potoczna i nie zastępuje nazwiska.
+      final dokument = await zbuduj(rok: 2026, wlasciciel: 'Jan Kowalski');
+
+      expect(EksportCsv.tekst(dokument), contains('Właściciel;Jan Kowalski'));
+
+      final bajty = await WydrukPdf.bajty(dokument, czcionki: await czcionki());
+      final tekst = [
+        for (final strona in OdczytTekstuPdf.strony(bajty))
+          for (final wiersz in strona.wiersze())
+            wiersz.map((s) => s.tekst).join(' '),
+      ].join('\n');
+      expect(tekst, contains('Jan Kowalski'));
+    });
+
+    test('brak właściciela to „brak", nie puste miejsce', () async {
+      await dodajPole(id: 'p1', nazwa: 'Za stodołą');
+      await dodajOprysk(id: 'z1', poleId: 'p1', kiedy: DateTime(2026, 5, 10));
+
+      final dokument = await zbuduj(rok: 2026);
+
+      expect(dokument.wlasciciel, isNull);
+      expect(EksportCsv.tekst(dokument), contains('Właściciel;brak'));
     });
 
     test('brak numeru to „brak", nie puste miejsce', () async {

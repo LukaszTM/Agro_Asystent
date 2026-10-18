@@ -179,9 +179,13 @@ class _EkranGospodarstwaState extends State<EkranGospodarstwa> {
               if (biezace != null)
                 DuzyPrzycisk(
                   etykieta: biezace.nazwa,
-                  opis: biezace.numerProducenta == null
-                      ? 'numer producenta: brak • naciśnij, aby poprawić'
-                      : 'numer producenta: ${biezace.numerProducenta}',
+                  opis: [
+                    if (biezace.wlasciciel case final String osoba) osoba,
+                    'numer producenta: ${biezace.numerProducenta ?? 'brak'}',
+                    if (biezace.wlasciciel == null ||
+                        biezace.numerProducenta == null)
+                      'naciśnij, aby poprawić',
+                  ].join(' • '),
                   ikona: Icons.agriculture_outlined,
                   onTap: () => _popraw(biezace),
                 ),
@@ -421,6 +425,9 @@ class _EkranDaneGospodarstwaState extends State<EkranDaneGospodarstwa> {
   late final TextEditingController _numer = TextEditingController(
     text: widget.gospodarstwo?.numerProducenta ?? '',
   );
+  late final TextEditingController _wlasciciel = TextEditingController(
+    text: widget.gospodarstwo?.wlasciciel ?? '',
+  );
   ({String tresc, String coZrobic})? _blad;
   bool _zapisuje = false;
 
@@ -483,6 +490,7 @@ class _EkranDaneGospodarstwaState extends State<EkranDaneGospodarstwa> {
   void dispose() {
     _nazwa.dispose();
     _numer.dispose();
+    _wlasciciel.dispose();
     super.dispose();
   }
 
@@ -497,11 +505,13 @@ class _EkranDaneGospodarstwaState extends State<EkranDaneGospodarstwa> {
 
     final nazwa = _nazwa.text.trim();
     final numer = _numer.text.trim();
+    final osoba = _wlasciciel.text.trim();
 
     if (_nowe) {
       final wynik = await widget.uslugi.gospodarstwa.dodaj(
         nazwa: nazwa,
         numerProducenta: numer,
+        wlasciciel: osoba,
         urzadzenie: widget.uslugi.urzadzenie,
       );
       if (!mounted) {
@@ -514,6 +524,7 @@ class _EkranDaneGospodarstwaState extends State<EkranDaneGospodarstwa> {
               id: wynik.id!,
               nazwa: nazwa,
               numerProducenta: numer.isEmpty ? null : numer,
+              wlasciciel: osoba.isEmpty ? null : osoba,
             ),
           );
         case WynikDodania.brakNazwy:
@@ -553,6 +564,7 @@ class _EkranDaneGospodarstwaState extends State<EkranDaneGospodarstwa> {
       gospodarstwoId: widget.gospodarstwo!.id,
       nazwa: nazwa,
       numerProducenta: numer,
+      wlasciciel: osoba,
     );
     if (mounted) {
       Navigator.of(context).pop(
@@ -560,6 +572,7 @@ class _EkranDaneGospodarstwaState extends State<EkranDaneGospodarstwa> {
           id: widget.gospodarstwo!.id,
           nazwa: nazwa,
           numerProducenta: numer.isEmpty ? null : numer,
+          wlasciciel: osoba.isEmpty ? null : osoba,
           powierzchniaUrHa: widget.gospodarstwo!.powierzchniaUrHa,
         ),
       );
@@ -584,6 +597,24 @@ class _EkranDaneGospodarstwaState extends State<EkranDaneGospodarstwa> {
               hintText: 'np. Gospodarstwo w Dąbrowie',
               border: OutlineInputBorder(),
             ),
+          ),
+          const SizedBox(height: MotywProsty.odstep),
+          Text('Właściciel', style: Theme.of(context).textTheme.titleLarge),
+          const SizedBox(height: 8),
+          TextField(
+            controller: _wlasciciel,
+            style: Theme.of(context).textTheme.bodyLarge,
+            decoration: const InputDecoration(
+              hintText: 'imię i nazwisko',
+              border: OutlineInputBorder(),
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'Ewidencję prowadzi posiadacz gruntów — to jego dane widzi '
+            'inspekcja. Nazwa gospodarstwa bywa potoczna, więc nie '
+            'zastępuje nazwiska.',
+            style: Theme.of(context).textTheme.bodyMedium,
           ),
           const SizedBox(height: MotywProsty.odstep),
           Text(

@@ -243,7 +243,9 @@ class _WidokUstawieniaKomputerState extends State<WidokUstawieniaKomputer> {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    'Numer producenta: '
+                    'Właściciel: '
+                    '${dane.gospodarstwo?.wlasciciel ?? 'nie podano'} • '
+                    'numer producenta: '
                     '${dane.gospodarstwo?.numerProducenta ?? 'brak'} • '
                     'użytki rolne: ${_powierzchnia(dane.gospodarstwo)} • '
                     'zwierzęta: ${_zwierzeta(dane.zwierzeta)}',

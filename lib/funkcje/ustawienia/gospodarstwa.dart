@@ -11,6 +11,7 @@ class Gospodarstwo {
     required this.id,
     required this.nazwa,
     this.numerProducenta,
+    this.wlasciciel,
     this.powierzchniaUrHa = 0,
   });
 
@@ -20,12 +21,18 @@ class Gospodarstwo {
   /// Numer producenta z ARiMR — rolnik wpisuje go sam, nie zgadujemy.
   final String? numerProducenta;
 
+  /// Kto prowadzi gospodarstwo: imię i nazwisko posiadacza gruntów.
+  /// Nazwa gospodarstwa bywa potoczna, a na dokumencie dla inspekcji
+  /// liczy się osoba. `null` znaczy „nie podano" — nie zgadujemy.
+  final String? wlasciciel;
+
   final double powierzchniaUrHa;
 
   static Gospodarstwo zBazy(Map<String, Object?> w) => Gospodarstwo(
     id: w['id']! as String,
     nazwa: (w['nazwa'] as String?) ?? 'Moje gospodarstwo',
     numerProducenta: w['numer_producenta'] as String?,
+    wlasciciel: w['wlasciciel'] as String?,
     powierzchniaUrHa: (w['powierzchnia_ur_ha'] as num?)?.toDouble() ?? 0,
   );
 }
@@ -135,6 +142,7 @@ class RepozytoriumGospodarstw {
     required String nazwa,
     required String urzadzenie,
     String? numerProducenta,
+    String? wlasciciel,
     DateTime? teraz,
   }) async {
     final nazwaBezSpacji = nazwa.trim();
@@ -153,6 +161,9 @@ class RepozytoriumGospodarstw {
       'numer_producenta': numerProducenta?.trim().isEmpty ?? true
           ? null
           : numerProducenta!.trim(),
+      'wlasciciel': wlasciciel?.trim().isEmpty ?? true
+          ? null
+          : wlasciciel!.trim(),
       'utworzono': czas.toIso8601String(),
       'zmieniono': czas.toIso8601String(),
       'urzadzenie': urzadzenie,
@@ -168,6 +179,7 @@ class RepozytoriumGospodarstw {
     required String gospodarstwoId,
     String? nazwa,
     String? numerProducenta,
+    String? wlasciciel,
     double? powierzchniaUrHa,
     DateTime? teraz,
   }) async {
@@ -180,6 +192,10 @@ class RepozytoriumGospodarstw {
     if (numerProducenta != null) {
       final numer = numerProducenta.trim();
       zmiany['numer_producenta'] = numer.isEmpty ? null : numer;
+    }
+    if (wlasciciel != null) {
+      final osoba = wlasciciel.trim();
+      zmiany['wlasciciel'] = osoba.isEmpty ? null : osoba;
     }
     if (powierzchniaUrHa != null) {
       zmiany['powierzchnia_ur_ha'] = powierzchniaUrHa;

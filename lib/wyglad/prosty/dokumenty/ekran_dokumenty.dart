@@ -50,6 +50,7 @@ class _EkranDokumentyState extends State<EkranDokumenty> {
       gospodarstwoId: widget.uslugi.gospodarstwoId,
       gospodarstwo: widget.uslugi.nazwaGospodarstwa,
       numerProducenta: gospodarstwo?.numerProducenta,
+      wlasciciel: gospodarstwo?.wlasciciel,
       rejestrDokumentu: _rejestr,
       rok: _rok,
     );

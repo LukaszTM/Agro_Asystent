@@ -49,6 +49,7 @@ class _WidokDokumentyKomputerState extends State<WidokDokumentyKomputer> {
       gospodarstwoId: widget.uslugi.gospodarstwoId,
       gospodarstwo: widget.uslugi.nazwaGospodarstwa,
       numerProducenta: gospodarstwo?.numerProducenta,
+      wlasciciel: gospodarstwo?.wlasciciel,
       rejestrDokumentu: _rejestr,
       rok: _rok,
     );

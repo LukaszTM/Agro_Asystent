@@ -49,6 +49,7 @@ class UslugaDokumentow {
     required String gospodarstwo,
     required RodzajRejestru rejestrDokumentu,
     String? numerProducenta,
+    String? wlasciciel,
     int? rok,
     DateTime? sporzadzono,
   }) async {
@@ -66,6 +67,7 @@ class UslugaDokumentow {
       wpisy: wpisy.reversed.toList(growable: false),
       gospodarstwo: gospodarstwo,
       numerProducenta: numerProducenta,
+      wlasciciel: wlasciciel,
       wersjaRegul: reguly.wersja,
       rok: rok,
       sporzadzono: sporzadzono,

@@ -47,6 +47,9 @@ class _OknoGospodarstwaState extends State<OknoGospodarstwa> {
   late final TextEditingController _numer = TextEditingController(
     text: widget.gospodarstwo?.numerProducenta ?? '',
   );
+  late final TextEditingController _wlasciciel = TextEditingController(
+    text: widget.gospodarstwo?.wlasciciel ?? '',
+  );
   late final TextEditingController _powierzchnia = TextEditingController(
     text: widget.nowe || (widget.gospodarstwo?.powierzchniaUrHa ?? 0) <= 0
         ? ''
@@ -84,6 +87,7 @@ class _OknoGospodarstwaState extends State<OknoGospodarstwa> {
   void dispose() {
     _nazwa.dispose();
     _numer.dispose();
+    _wlasciciel.dispose();
     _powierzchnia.dispose();
     super.dispose();
   }
@@ -146,6 +150,7 @@ class _OknoGospodarstwaState extends State<OknoGospodarstwa> {
       gospodarstwoId: gospodarstwoId,
       nazwa: nazwa,
       numerProducenta: _numer.text,
+      wlasciciel: _wlasciciel.text,
       powierzchniaUrHa: _hektary,
     );
     await uslugi.zwierzetaWGospodarstwie.zapisz(_zwierzeta);
@@ -185,6 +190,22 @@ class _OknoGospodarstwaState extends State<OknoGospodarstwa> {
                 decoration: const InputDecoration(
                   hintText: 'z wniosku ARiMR; zostaw puste, jeśli nie masz',
                 ),
+              ),
+              const SizedBox(height: MotywKomputer.odstep),
+              Text('Właściciel', style: teksty.titleLarge),
+              const SizedBox(height: 6),
+              TextField(
+                controller: _wlasciciel,
+                decoration: const InputDecoration(
+                  hintText: 'imię i nazwisko posiadacza gruntów',
+                ),
+              ),
+              const SizedBox(height: 6),
+              Text(
+                'Ewidencję prowadzi posiadacz gruntów i to jego dane widzi '
+                'inspekcja. Nazwa gospodarstwa bywa potoczna, więc nie '
+                'zastępuje nazwiska.',
+                style: teksty.bodyMedium,
               ),
               const SizedBox(height: MotywKomputer.odstep),
               Text(

@@ -64,6 +64,7 @@ abstract final class WydrukPdf {
       pw.SizedBox(height: 4),
       pw.Text(
         'Gospodarstwo: ${dokument.gospodarstwo}'
+        '   •   Właściciel: ${dokument.wlasciciel ?? 'brak'}'
         '   •   Numer producenta: ${dokument.numerProducenta ?? 'brak'}'
         '   •   Okres: ${dokument.okres}'
         '   •   Wpisów: ${dokument.liczbaWpisow}',
