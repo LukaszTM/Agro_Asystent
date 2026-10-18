@@ -48,7 +48,6 @@ sprawdzony testami także przy 1000×700 i przy bardzo dużym tekście.
 | Przypomnienia | powiadomienia wysyła telefon; komputer pokazuje te same terminy, ale nie dzwoni |
 | Poprawianie i cofanie wpisów | wpisy poprawia się tam, gdzie powstały; na komputerze to dojdzie razem z wpisem zabiegu na PC |
 | Wpis zabiegu | pierwszy wpis nadal robi się w telefonie — na komputerze dojdzie w następnym kroku |
-| Zmiana nazwy gospodarstwa i numeru producenta | stoją na każdym wydruku, więc zmienia je jedno miejsce: telefon |
 
 Dane z telefonu dołącza się w Ustawieniach plikiem kopii — to samo scalanie
 co na telefonie („nowszy wpis wygrywa, starszy zostaje w dzienniku zmian").

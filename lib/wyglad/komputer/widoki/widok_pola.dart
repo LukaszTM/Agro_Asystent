@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
 
 import '../../../app/uslugi.dart';
+import '../../../rdzen/dostep/dostep_funkcji.dart';
 import '../../../funkcje/dzialki/granica_z_woda.dart';
 import '../../../funkcje/dzialki/repozytorium_pol.dart';
 import '../../../funkcje/dzialki/rodzaj_uzytku.dart';
+import '../../../funkcje/pulpit/zasiewy.dart';
+import '../../../rdzen/dostep/funkcja.dart';
+import '../../../rdzen/dostep/opis_premium.dart';
 import '../motyw.dart';
 import '../widgety/karta.dart';
 import '../widgety/tabela.dart';
+import 'okna_pola.dart';
 
 /// Pola gospodarstwa w tabeli: co rośnie, ile ma hektarów i czego jeszcze
 /// brakuje do policzenia warunkowości.
@@ -14,9 +19,12 @@ import '../widgety/tabela.dart';
 /// Rodzaj użytku i odpowiedź o wodzie ustawia się tu wprost — na komputerze
 /// rolnik zwykle siada do uzupełniania danych całego gospodarstwa naraz.
 class WidokPolaKomputer extends StatefulWidget {
-  const WidokPolaKomputer({super.key, required this.uslugi});
+  const WidokPolaKomputer({super.key, required this.uslugi, this.teraz});
 
   final Uslugi uslugi;
+
+  /// Dzień, z którego bierzemy sezon dla nowego pola.
+  final DateTime? teraz;
 
   @override
   State<WidokPolaKomputer> createState() => _WidokPolaKomputerState();
@@ -52,6 +60,44 @@ class _WidokPolaKomputerState extends State<WidokPolaKomputer> {
       urzadzenie: widget.uslugi.urzadzenie,
     );
     await _poZmianie(pole.id);
+  }
+
+  /// Sezon nowego pola: ten, w którym gospodarstwo już coś ma, a gdy nie
+  /// ma nic — bieżący rok.
+  int _sezon(List<Pole> pola) =>
+      Zasiewy.ostatniSezon(pola) ?? (widget.teraz ?? DateTime.now()).year;
+
+  Future<void> _dodajPole(List<Pole> pola) async {
+    final dodane = await showDialog<bool>(
+      context: context,
+      builder: (_) => OknoNowePole(uslugi: widget.uslugi, sezon: _sezon(pola)),
+    );
+    if (dodane ?? false) {
+      setState(_odswiez);
+    }
+  }
+
+  Future<void> _dodajDzialke() async {
+    final dodana = await showDialog<bool>(
+      context: context,
+      builder: (_) => OknoDzialkaPoNumerze(uslugi: widget.uslugi),
+    );
+    if (dodana ?? false) {
+      setState(_odswiez);
+    }
+  }
+
+  Future<void> _wczytajWniosek() async {
+    final zapisane = await showDialog<bool>(
+      context: context,
+      builder: (_) => OknoWniosek(uslugi: widget.uslugi),
+    );
+    if (zapisane ?? false) {
+      setState(() {
+        _wybrane = null;
+        _odswiez();
+      });
+    }
   }
 
   Future<void> _poZmianie(String poleId) async {
@@ -95,6 +141,13 @@ class _WidokPolaKomputerState extends State<WidokPolaKomputer> {
                         'Kliknij pole, żeby uzupełnić dane.',
                   ),
                   const SizedBox(height: MotywKomputer.odstep),
+                  _Przyciski(
+                    dostep: widget.uslugi.dostep,
+                    onNowePole: () => _dodajPole(pola),
+                    onDzialka: _dodajDzialke,
+                    onWniosek: _wczytajWniosek,
+                  ),
+                  const SizedBox(height: MotywKomputer.odstep),
                   Tabela(
                     kolumny: const [
                       KolumnaTabeli('Pole', udzial: 2),
@@ -104,8 +157,8 @@ class _WidokPolaKomputerState extends State<WidokPolaKomputer> {
                       KolumnaTabeli('Woda'),
                     ],
                     gdyPusta:
-                        'Nie masz jeszcze żadnego pola. Dodaj je w telefonie '
-                        'albo wczytaj wniosek z PDF.',
+                        'Nie masz jeszcze żadnego pola. Dodaj je przyciskiem '
+                        'wyżej albo wczytaj wniosek z eWniosekPlus.',
                     wiersze: [
                       for (final pole in pola)
                         WierszTabeli(
@@ -241,6 +294,63 @@ class _SzczegolyPola extends StatelessWidget {
             coZrobic:
                 'Wybierz wyżej. Bez tego warunkowość zostaje „do '
                 'sprawdzenia", a nie „spełniona".',
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+/// Trzy drogi do pola: z klawiatury, z rejestru gruntów i z wniosku.
+class _Przyciski extends StatelessWidget {
+  const _Przyciski({
+    required this.dostep,
+    required this.onNowePole,
+    required this.onDzialka,
+    required this.onWniosek,
+  });
+
+  final DostepFunkcji dostep;
+  final VoidCallback onNowePole;
+  final VoidCallback onDzialka;
+  final VoidCallback onWniosek;
+
+  @override
+  Widget build(BuildContext context) {
+    // Wczytanie wniosku to dodatek płatny (plan, pkt 8). Bez premium nie ma
+    // przycisku, ale jest zdanie, jak zrobić to samo bez opłaty — funkcji
+    // nie chowamy bez wyjaśnienia.
+    final zWnioskiem = dostep.czyDostepna(Funkcja.importDzialekZWnioskuPdf);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: [
+            FilledButton.icon(
+              onPressed: onNowePole,
+              icon: const Icon(Icons.add),
+              label: const Text('Dodaj pole'),
+            ),
+            OutlinedButton.icon(
+              onPressed: onDzialka,
+              icon: const Icon(Icons.pin_drop_outlined),
+              label: const Text('Działka po numerze'),
+            ),
+            if (zWnioskiem)
+              OutlinedButton.icon(
+                onPressed: onWniosek,
+                icon: const Icon(Icons.upload_file_outlined),
+                label: const Text('Wczytaj wniosek z PDF'),
+              ),
+          ],
+        ),
+        if (!zWnioskiem) ...[
+          const SizedBox(height: MotywKomputer.odstep),
+          OstrzezenieKomputer(
+            tresc: OpisPremium.tresc(Funkcja.importDzialekZWnioskuPdf),
+            coZrobic: OpisPremium.coZrobic(Funkcja.importDzialekZWnioskuPdf),
           ),
         ],
       ],

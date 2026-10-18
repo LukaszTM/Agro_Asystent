@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 import '../../../app/uslugi.dart';
 import '../../../funkcje/ustawienia/gospodarstwa.dart';
 import '../../../funkcje/ustawienia/rozmiar_tekstu.dart';
+import '../../../funkcje/ustawienia/zwierzeta_w_gospodarstwie.dart';
 import '../../../rdzen/uslugi/kopia/kopia_danych.dart';
 import '../../../rdzen/uslugi/kopia/scalanie.dart';
 import '../motyw.dart';
 import '../widgety/karta.dart';
+import 'okno_gospodarstwa.dart';
 
 /// Ustawienia programu na komputer: wielkość tekstu, dane gospodarstwa
 /// i kopia danych.
@@ -51,7 +53,33 @@ class _WidokUstawieniaKomputerState extends State<WidokUstawieniaKomputer> {
   Future<_Dane> _wczytaj() async => _Dane(
     gospodarstwo: await _uslugi.gospodarstwa.jedno(_uslugi.gospodarstwoId),
     rozmiar: await _uslugi.rozmiarTekstu.odczytaj(),
+    zwierzeta: await _uslugi.zwierzetaWGospodarstwie.odczytaj(),
+    moznaDodac: await _uslugi.gospodarstwa.czyMoznaDodac(),
   );
+
+  /// Poprawa danych gospodarstwa albo założenie kolejnego.
+  Future<void> _daneGospodarstwa(
+    Gospodarstwo? gospodarstwo, {
+    bool nowe = false,
+  }) async {
+    final zapisane = await showDialog<ZapisaneGospodarstwo>(
+      context: context,
+      builder: (_) => OknoGospodarstwa(
+        uslugi: _uslugi,
+        gospodarstwo: gospodarstwo,
+        nowe: nowe,
+      ),
+    );
+    if (zapisane == null || !mounted) {
+      return;
+    }
+    setState(_odswiez);
+    // Nazwa stoi w nagłówku programu i na każdym wydruku, więc reszta
+    // programu musi zobaczyć ją od razu.
+    widget.onZmianaGospodarstwa?.call(
+      _uslugi.dlaGospodarstwa(id: zapisane.id, nazwa: zapisane.nazwa),
+    );
+  }
 
   Future<void> _ustawRozmiar(RozmiarTekstu rozmiar) async {
     await _uslugi.rozmiarTekstu.zapisz(rozmiar);
@@ -209,17 +237,40 @@ class _WidokUstawieniaKomputerState extends State<WidokUstawieniaKomputer> {
                   Text('Gospodarstwo', style: teksty.titleLarge),
                   const SizedBox(height: 4),
                   Text(
-                    '${dane.gospodarstwo?.nazwa ?? _uslugi.nazwaGospodarstwa}'
-                    ' • numer producenta: '
-                    '${dane.gospodarstwo?.numerProducenta ?? 'brak'}',
+                    dane.gospodarstwo?.nazwa ?? _uslugi.nazwaGospodarstwa,
                     style: teksty.bodyLarge,
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 4),
                   Text(
-                    'Nazwę i numer producenta poprawia się w telefonie — '
-                    'stoją na każdym wydruku, więc zmienia je jedna osoba '
-                    'w jednym miejscu.',
+                    'Numer producenta: '
+                    '${dane.gospodarstwo?.numerProducenta ?? 'brak'} • '
+                    'użytki rolne: ${_powierzchnia(dane.gospodarstwo)} • '
+                    'zwierzęta: ${_zwierzeta(dane.zwierzeta)}',
                     style: teksty.bodyMedium,
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    'Te dane stoją na każdym wydruku i od nich zależy, '
+                    'które obowiązki aplikacja włącza.',
+                    style: teksty.bodyMedium,
+                  ),
+                  const SizedBox(height: MotywKomputer.odstep),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: [
+                      FilledButton.icon(
+                        onPressed: () => _daneGospodarstwa(dane.gospodarstwo),
+                        icon: const Icon(Icons.edit_outlined, size: 20),
+                        label: const Text('Popraw dane gospodarstwa'),
+                      ),
+                      if (dane.moznaDodac)
+                        OutlinedButton.icon(
+                          onPressed: () => _daneGospodarstwa(null, nowe: true),
+                          icon: const Icon(Icons.add_home_outlined, size: 20),
+                          label: const Text('Dodaj gospodarstwo'),
+                        ),
+                    ],
                   ),
                 ],
               ),
@@ -303,6 +354,19 @@ class _WidokUstawieniaKomputerState extends State<WidokUstawieniaKomputer> {
     );
   }
 
+  static String _powierzchnia(Gospodarstwo? gospodarstwo) {
+    final hektary = gospodarstwo?.powierzchniaUrHa ?? 0;
+    return hektary <= 0
+        ? 'nie podano'
+        : '${hektary.toStringAsFixed(2).replaceAll('.', ',')} ha';
+  }
+
+  static String _zwierzeta(OdpowiedzZwierzeta odpowiedz) => switch (odpowiedz) {
+    OdpowiedzZwierzeta.tak => 'są',
+    OdpowiedzZwierzeta.nie => 'nie ma',
+    OdpowiedzZwierzeta.nieWiem => 'bez odpowiedzi',
+  };
+
   static String _opisScalenia(RaportScalenia raport) {
     if (!raport.cokolwiekSieZmienilo) {
       return 'Plik nie wnosi nic nowego — wszystko z niego już tu jest.';
@@ -326,8 +390,17 @@ class _WidokUstawieniaKomputerState extends State<WidokUstawieniaKomputer> {
 }
 
 class _Dane {
-  const _Dane({required this.gospodarstwo, required this.rozmiar});
+  const _Dane({
+    required this.gospodarstwo,
+    required this.rozmiar,
+    required this.zwierzeta,
+    required this.moznaDodac,
+  });
 
   final Gospodarstwo? gospodarstwo;
   final RozmiarTekstu rozmiar;
+  final OdpowiedzZwierzeta zwierzeta;
+
+  /// Czy wolno założyć kolejne gospodarstwo (drugie to dodatek płatny).
+  final bool moznaDodac;
 }

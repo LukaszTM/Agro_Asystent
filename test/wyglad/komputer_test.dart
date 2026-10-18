@@ -543,6 +543,153 @@ void main() {
     });
   });
 
+  group('pola na komputerze', () {
+    testWidgets('nowe pole wpisuje się z klawiatury i staje w tabeli', (
+      tester,
+    ) async {
+      await pokaz(tester, zakladka: ZakladkaKomputer.pola);
+
+      await tester.tap(find.widgetWithText(FilledButton, 'Dodaj pole'));
+      await tester.pumpAndSettle();
+
+      await tester.enterText(
+        find.widgetWithText(TextField, 'Za stodołą, Przy drodze…'),
+        'Pod lasem',
+      );
+      await tester.enterText(
+        find.widgetWithText(TextField, 'Zacznij pisać: pszenica, rzepak…'),
+        'żyto ozime',
+      );
+      await tester.pumpAndSettle();
+      await tester.enterText(
+        find.widgetWithText(TextField, 'np. 2,35'),
+        '3,40',
+      );
+      await tester.tap(find.widgetWithText(FilledButton, 'Zapisz pole'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Pod lasem'), findsOneWidget);
+      expect(find.text('3,40 ha'), findsOneWidget);
+      expect(find.text('żyto ozime'), findsOneWidget);
+    });
+
+    testWidgets('bez powierzchni pole się nie zapisuje', (tester) async {
+      await pokaz(tester, zakladka: ZakladkaKomputer.pola);
+
+      await tester.tap(find.widgetWithText(FilledButton, 'Dodaj pole'));
+      await tester.pumpAndSettle();
+      await tester.enterText(
+        find.widgetWithText(TextField, 'Za stodołą, Przy drodze…'),
+        'Pod lasem',
+      );
+      await tester.tap(find.widgetWithText(FilledButton, 'Zapisz pole'));
+      await tester.pumpAndSettle();
+
+      expect(
+        find.text('Wpisz powierzchnię w hektarach, na przykład 2,35.'),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('działkę po numerze dodaje się bez premium', (tester) async {
+      await pokaz(tester, zakladka: ZakladkaKomputer.pola);
+
+      // Dodawanie działek po numerze jest wymagane przepisami, więc nigdy
+      // nie chowa się za opłatą (plan, pkt 8).
+      expect(
+        find.widgetWithText(OutlinedButton, 'Działka po numerze'),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('bez premium nie ma przycisku wniosku, ale jest wyjaśnienie', (
+      tester,
+    ) async {
+      await pokaz(tester, zakladka: ZakladkaKomputer.pola);
+
+      expect(
+        find.widgetWithText(OutlinedButton, 'Wczytaj wniosek z PDF'),
+        findsNothing,
+      );
+      expect(find.textContaining('po numerze ewidencyjnym'), findsOneWidget);
+    });
+
+    testWidgets('z premium wniosek wczytuje się na komputerze', (tester) async {
+      await pokaz(
+        tester,
+        uslugi: zbudujUslugi(premium: true),
+        zakladka: ZakladkaKomputer.pola,
+      );
+
+      await tester.tap(
+        find.widgetWithText(OutlinedButton, 'Wczytaj wniosek z PDF'),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('Wniosek z PDF'), findsOneWidget);
+      expect(find.textContaining('nic nie wychodzi do sieci'), findsOneWidget);
+    });
+  });
+
+  group('profil gospodarstwa', () {
+    testWidgets('dane gospodarstwa poprawia się na komputerze', (tester) async {
+      await pokaz(tester, zakladka: ZakladkaKomputer.ustawienia);
+
+      await tester.tap(
+        find.widgetWithText(FilledButton, 'Popraw dane gospodarstwa'),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.enterText(
+        find.widgetWithText(TextField, 'Tak, jak ma stać na wydruku'),
+        'Gospodarstwo Kowalski',
+      );
+      await tester.enterText(
+        find.widgetWithText(TextField, 'np. 18,40'),
+        '18,40',
+      );
+      await tester.tap(find.widgetWithText(OutlinedButton, 'Nie mam zwierząt'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.widgetWithText(FilledButton, 'Zapisz dane'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Gospodarstwo Kowalski'), findsWidgets);
+      expect(find.textContaining('18,40 ha'), findsOneWidget);
+      expect(find.textContaining('zwierzęta: nie ma'), findsOneWidget);
+    });
+
+    testWidgets('bez nazwy gospodarstwo się nie zapisze', (tester) async {
+      await pokaz(tester, zakladka: ZakladkaKomputer.ustawienia);
+
+      await tester.tap(
+        find.widgetWithText(FilledButton, 'Popraw dane gospodarstwa'),
+      );
+      await tester.pumpAndSettle();
+      await tester.enterText(
+        find.widgetWithText(TextField, 'Tak, jak ma stać na wydruku'),
+        '   ',
+      );
+      await tester.tap(find.widgetWithText(FilledButton, 'Zapisz dane'));
+      await tester.pumpAndSettle();
+
+      expect(
+        find.text('Wpisz nazwę gospodarstwa — stoi na wydrukach.'),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('bez premium nie ma przycisku drugiego gospodarstwa', (
+      tester,
+    ) async {
+      await pokaz(tester, zakladka: ZakladkaKomputer.ustawienia);
+
+      expect(
+        find.widgetWithText(OutlinedButton, 'Dodaj gospodarstwo'),
+        findsNothing,
+      );
+    });
+  });
+
   group('pulpit', () {
     testWidgets('program otwiera się na pulpicie', (tester) async {
       await dodajPole();

@@ -26,11 +26,12 @@ programem (plan, pkt 4).
 1. **Pulpit** — ✅ zrobione. Wykres kołowy zasiewów (udział upraw
    w powierzchni, pola bez uprawy osobno, nie doliczane do żadnej),
    mapka działek z granicami, skrót najbliższych terminów.
-2. **Pola na komputerze** — dodanie pola z klawiatury, wczytanie wniosku
-   PDF, dodanie działki po numerze (ULDK), poprawianie pola.
-3. **Profil gospodarstwa** — nazwa, numer producenta, powierzchnia UR,
-   zwierzęta i DJP, konto, drugie gospodarstwo. Dziś na PC tylko do
-   odczytu, bo te dane stoją na każdym wydruku.
+2. **Pola na komputerze** — ✅ zrobione. Dodanie pola z klawiatury
+   (uprawa podpowiada się ze słownika, kod EPPO tylko z wyboru),
+   działka po numerze z ULDK i wczytanie wniosku PDF.
+3. **Profil gospodarstwa** — ✅ zrobione. Nazwa, numer producenta,
+   powierzchnia użytków rolnych i odpowiedź o zwierzętach — w jednym
+   oknie, z klawiatury. Drugie gospodarstwo zostaje dodatkiem płatnym.
 4. **Kalendarz biodynamiczny** — faza Księżyca i znak zodiaku liczone na
    miejscu, dzień korzenia / liścia / kwiatu / owocu, widok tygodnia
    z rozwinięciem na miesiąc. **To tradycja, nie przepis** — program

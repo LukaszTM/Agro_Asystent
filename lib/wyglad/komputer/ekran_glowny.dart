@@ -153,6 +153,7 @@ class _EkranGlownyKomputerState extends State<EkranGlownyKomputer> {
     ZakladkaKomputer.pola => WidokPolaKomputer(
       key: ValueKey('pola-$_odswiezenie'),
       uslugi: _uslugi,
+      teraz: widget.teraz,
     ),
     ZakladkaKomputer.rejestr => WidokRejestrKomputer(
       key: ValueKey('rejestr-$_odswiezenie'),
