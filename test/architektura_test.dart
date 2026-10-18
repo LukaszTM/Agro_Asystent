@@ -28,23 +28,25 @@ void main() {
       );
     });
 
-    test('wyglad nowoczesny nie importuje wygladu prostego i odwrotnie', () {
+    test('żaden wygląd nie importuje innego wyglądu', () {
+      // Trzy warstwy ekranów: dwa wyglądy telefonu i program na komputer.
+      // Każda z nich ma własne ekrany; wspólny kod idzie do rdzenia,
+      // inaczej zmiana w jednym wyglądzie psułaby drugi.
       final winowajcy = <String>[];
-      final pary = {
-        'lib/wyglad/prosty': 'nowoczesny',
-        'lib/wyglad/nowoczesny': 'prosty',
-      };
-      pary.forEach((katalog, obcyWyglad) {
-        for (final plik in _plikiDart(katalog)) {
-          final wzor = RegExp(
-            '''^\\s*import\\s+['"][^'"]*wyglad/$obcyWyglad/''',
-            multiLine: true,
-          );
-          if (wzor.hasMatch(plik.readAsStringSync())) {
-            winowajcy.add(plik.path);
+      const wyglady = ['prosty', 'nowoczesny', 'komputer'];
+      for (final swoj in wyglady) {
+        for (final obcy in wyglady.where((w) => w != swoj)) {
+          for (final plik in _plikiDart('lib/wyglad/$swoj')) {
+            final wzor = RegExp(
+              '''^\\s*import\\s+['"][^'"]*wyglad/$obcy/''',
+              multiLine: true,
+            );
+            if (wzor.hasMatch(plik.readAsStringSync())) {
+              winowajcy.add('${plik.path} → $obcy');
+            }
           }
         }
-      });
+      }
       expect(
         winowajcy,
         isEmpty,

@@ -36,8 +36,10 @@ operacyjnym dla pracy w kodzie. **Przy rozbieżności obowiązuje `docs/PLAN.md`
 - **Offline-first.** Każda funkcja musi działać bez internetu. Sieć jest wyłącznie
   opcjonalnym dodatkiem (ULDK, synchronizacja przez dysk użytkownika). Brak własnego serwera.
 - **Logika nie zależy od wyglądu.** Baza, reguły prawne, dokumenty i eksport są wspólne
-  (`lib/rdzen/`, `lib/funkcje/`). Dwa wyglądy telefonu („Prosty", „Nowoczesny") to tylko
-  warstwa ekranów w `lib/wyglad/prosty/` i `lib/wyglad/nowoczesny/`.
+  (`lib/rdzen/`, `lib/funkcje/`). Trzy warstwy ekranów — dwa wyglądy telefonu („Prosty",
+  „Nowoczesny") i program na komputer — leżą w `lib/wyglad/prosty/`,
+  `lib/wyglad/nowoczesny/` i `lib/wyglad/komputer/`. Żadna z nich nie importuje innej;
+  wspólne widgety idą do `lib/rdzen/wspolne/`.
   Kod w `lib/rdzen/` i `lib/funkcje/` **nie może importować niczego z `lib/wyglad/`**.
 - **Jedno miejsce decydujące o premium**: `lib/rdzen/dostep/`. Nigdzie w kodzie nie ma
   warunku „czy użytkownik kupił" poza tym katalogiem.
@@ -88,8 +90,9 @@ lib/
   funkcje/             dane + logika modułów (bez ekranów)
     dzialki/ zabiegi/ dokumenty/ terminy/ nawozenie/ zwierzeta/ ustawienia/
   wyglad/
-    prosty/            wygląd dla osób starszych (pierwszy w etapie 1)
-    nowoczesny/        wygląd dla osób obytych ze smartfonem (po prostym)
+    prosty/            wygląd telefonu dla osób starszych (pierwszy w etapie 1)
+    nowoczesny/        wygląd telefonu dla osób obytych ze smartfonem
+    komputer/          program na Windows: jeden wygląd, wielkość tekstu z ustawień
 test/
   dane/                zanonimizowane wzorce do testów
 tools/                 skrypty Python przygotowujące dane (P1–P5)

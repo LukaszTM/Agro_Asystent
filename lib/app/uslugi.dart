@@ -24,6 +24,7 @@ import '../funkcje/terminy/kalendarz_terminow.dart';
 import '../funkcje/terminy/przypomnienia.dart';
 import '../funkcje/terminy/ustawienia_przypomnien.dart';
 import '../funkcje/ustawienia/gospodarstwa.dart';
+import '../funkcje/ustawienia/rozmiar_tekstu.dart';
 import '../funkcje/ustawienia/wybor_wygladu.dart';
 import '../funkcje/ustawienia/zwierzeta_w_gospodarstwie.dart';
 import '../funkcje/zwierzeta/stado.dart';
@@ -145,6 +146,10 @@ class Uslugi {
     uprawy: uprawyPola,
     reguly: reguly,
   );
+
+  /// Wielkość tekstu w programie na komputer. Na telefonie wynika
+  /// z wybranego wyglądu, więc ustawienie czyta tylko program na PC.
+  WyborRozmiaruTekstu get rozmiarTekstu => WyborRozmiaruTekstu(kopia.baza);
 
   /// Magazyn środków i nawozów (premium, plan pkt 8). Pracuje na tej
   /// samej bazie co pozostałe repozytoria.
