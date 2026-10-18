@@ -7,6 +7,8 @@ import '../../../funkcje/dzialki/import_wniosku.dart';
 import '../../../funkcje/dzialki/klient_uldk.dart';
 import '../../../funkcje/dzialki/repozytorium_pol.dart';
 import '../../../funkcje/dzialki/slownik_upraw.dart';
+import '../../../funkcje/dzialki/wybor_jednostek.dart';
+import '../../../rdzen/wspolne/wybor_obrebu.dart';
 import '../motyw.dart';
 import '../widgety/karta.dart';
 
@@ -237,6 +239,15 @@ class OknoDzialkaPoNumerze extends StatefulWidget {
 
 class _OknoDzialkaPoNumerzeState extends State<OknoDzialkaPoNumerze> {
   final _numer = TextEditingController();
+
+  /// Wybór obrębu z list — dla działek spoza wniosku, których pełnego
+  /// numeru nikt nie pamięta.
+  late final WyborJednostek _wybor = WyborJednostek(klient: widget.uslugi.uldk);
+
+  /// `true` — prowadzimy listami, `false` — rolnik wpisuje pełny numer
+  /// z wypisu.
+  bool _zList = true;
+
   bool _pobieranie = false;
   DzialkaZUldk? _pobrana;
   bool _jestJuz = false;
@@ -249,10 +260,18 @@ class _OknoDzialkaPoNumerzeState extends State<OknoDzialkaPoNumerze> {
     super.dispose();
   }
 
+  /// Numer do zapytania: z wyboru list albo wpisany wprost.
+  String get _pelnyNumer =>
+      (_zList ? _wybor.numerDzialki(_numer.text) : _numer.text.trim()) ?? '';
+
   Future<void> _pobierz() async {
-    final numer = _numer.text.trim();
+    final numer = _pelnyNumer;
     if (numer.isEmpty) {
-      setState(() => _blad = 'Wpisz numer działki z wypisu albo z wniosku.');
+      setState(
+        () => _blad = _zList
+            ? 'Wybierz obręb z list i wpisz numer działki z umowy.'
+            : 'Wpisz numer działki z wypisu albo z wniosku.',
+      );
       return;
     }
     setState(() {
@@ -321,15 +340,62 @@ class _OknoDzialkaPoNumerzeState extends State<OknoDzialkaPoNumerze> {
               style: teksty.bodyMedium,
             ),
             const SizedBox(height: MotywKomputer.odstep),
-            TextField(
-              controller: _numer,
-              autofocus: true,
-              decoration: const InputDecoration(
-                labelText: 'Numer działki',
-                hintText: 'np. 141201_2.0012.123/4',
-              ),
-              onSubmitted: (_) => _pobierz(),
+            // Działka z wniosku ma pełny numer w dokumencie; dzierżawiona
+            // zwykle nie — wtedy prowadzimy listami.
+            SegmentedButton<bool>(
+              segments: const [
+                ButtonSegment(
+                  value: true,
+                  icon: Icon(Icons.list_alt_outlined, size: 20),
+                  label: Text('Wybierz z listy'),
+                ),
+                ButtonSegment(
+                  value: false,
+                  icon: Icon(Icons.keyboard_outlined, size: 20),
+                  label: Text('Wpisz pełny numer'),
+                ),
+              ],
+              selected: {_zList},
+              onSelectionChanged: (wybrane) => setState(() {
+                _zList = wybrane.first;
+                _blad = null;
+                _pobrana = null;
+              }),
             ),
+            const SizedBox(height: MotywKomputer.odstep),
+            if (_zList) ...[
+              WyborObrebu(
+                wybor: _wybor,
+                onZmiana: () => setState(() => _blad = null),
+              ),
+              if (_wybor.gotowy) ...[
+                const SizedBox(height: MotywKomputer.odstep),
+                TextField(
+                  controller: _numer,
+                  autofocus: true,
+                  decoration: const InputDecoration(
+                    labelText: 'Numer działki',
+                    hintText: 'np. 138 albo 138/4 — z umowy dzierżawy',
+                  ),
+                  onChanged: (_) => setState(() {}),
+                  onSubmitted: (_) => _pobierz(),
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  'Pełny numer złożymy sami: ${_pelnyNumer.isEmpty ? '…' : _pelnyNumer}',
+                  style: teksty.bodyMedium,
+                ),
+              ],
+            ] else
+              TextField(
+                controller: _numer,
+                autofocus: true,
+                decoration: const InputDecoration(
+                  labelText: 'Numer działki',
+                  hintText: 'np. 141201_2.0012.123/4',
+                ),
+                onSubmitted: (_) => _pobierz(),
+              ),
             if (_blad case final String wiadomosc) ...[
               const SizedBox(height: MotywKomputer.odstep),
               OstrzezenieKomputer(tresc: wiadomosc, coZrobic: _coZrobic),

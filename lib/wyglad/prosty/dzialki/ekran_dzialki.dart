@@ -63,7 +63,8 @@ class _EkranDzialkiState extends State<EkranDzialki> {
                 const Ostrzezenie(
                   tresc: 'Nie masz jeszcze żadnej działki.',
                   coZrobic:
-                      'Naciśnij „Dodaj działkę po numerze" i przepisz '
+                      'Naciśnij „Dodaj działkę" i wskaż ją na listach '
+                      'albo przepisz '
                       'numer z wniosku.',
                 )
               else ...[
@@ -95,7 +96,7 @@ class _EkranDzialkiState extends State<EkranDzialki> {
               const SizedBox(height: MotywProsty.odstep),
               FilledButton(
                 onPressed: _dodaj,
-                child: const Text('Dodaj działkę po numerze'),
+                child: const Text('Dodaj działkę'),
               ),
             ],
           );

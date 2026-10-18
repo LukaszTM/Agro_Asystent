@@ -714,6 +714,28 @@ void main() {
       );
     });
 
+    testWidgets('działkę spoza wniosku dodaje się z list', (tester) async {
+      await pokaz(tester, zakladka: ZakladkaKomputer.pola);
+
+      await tester.tap(
+        find.widgetWithText(OutlinedButton, 'Działka po numerze'),
+      );
+      await tester.pumpAndSettle();
+
+      // Okno otwiera się na wyborze z list — dla dzierżaw, których nie ma
+      // we wniosku.
+      expect(find.text('Wybierz z listy'), findsOneWidget);
+      expect(find.text('Wybierz województwo'), findsOneWidget);
+
+      // Druga droga zostaje dla tych, którzy mają pełny numer pod ręką.
+      await tester.tap(find.text('Wpisz pełny numer'));
+      await tester.pumpAndSettle();
+      expect(
+        find.widgetWithText(TextField, 'np. 141201_2.0012.123/4'),
+        findsOneWidget,
+      );
+    });
+
     testWidgets('bez premium nie ma przycisku wniosku, ale jest wyjaśnienie', (
       tester,
     ) async {

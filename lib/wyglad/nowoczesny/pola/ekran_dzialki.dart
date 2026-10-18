@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../../app/uslugi.dart';
 import '../../../funkcje/dzialki/klient_uldk.dart';
+import '../../../funkcje/dzialki/wybor_jednostek.dart';
+import '../../../rdzen/wspolne/wybor_obrebu.dart';
 import '../../../funkcje/dzialki/repozytorium_dzialek.dart';
 import '../../../rdzen/wspolne/mapa_dzialek.dart';
 import '../motyw.dart';
@@ -24,6 +26,12 @@ class EkranDzialkiNowoczesny extends StatefulWidget {
 
 class _EkranDzialkiNowoczesnyState extends State<EkranDzialkiNowoczesny> {
   final TextEditingController _numer = TextEditingController();
+
+  /// Działki spoza wniosku (dzierżawa, zakup po jego złożeniu) dodaje się
+  /// przez wybór: województwo → powiat → gmina → obręb.
+  late final WyborJednostek _wybor = WyborJednostek(klient: widget.uslugi.uldk);
+
+  bool _zList = true;
 
   late Future<List<DzialkaEwidencyjna>> _dzialki;
   String? _wyrozniona;
@@ -50,8 +58,12 @@ class _EkranDzialkiNowoczesnyState extends State<EkranDzialkiNowoczesny> {
     super.dispose();
   }
 
+  /// Numer do zapytania: złożony z wybranego obrębu albo wpisany wprost.
+  String get _pelnyNumer =>
+      (_zList ? _wybor.numerDzialki(_numer.text) : _numer.text.trim()) ?? '';
+
   Future<void> _szukaj() async {
-    final numer = _numer.text.trim();
+    final numer = _pelnyNumer;
     if (numer.isEmpty || _szukanie) {
       return;
     }
@@ -174,6 +186,15 @@ class _EkranDzialkiNowoczesnyState extends State<EkranDzialkiNowoczesny> {
                   szukanie: _szukanie,
                   blad: _blad,
                   onSzukaj: _szukaj,
+                  wybor: _wybor,
+                  zList: _zList,
+                  pelnyNumer: _pelnyNumer,
+                  onSposob: (zList) => setState(() {
+                    _zList = zList;
+                    _numer.clear();
+                    _blad = null;
+                  }),
+                  onWyborJednostki: () => setState(() => _blad = null),
                 ),
               const SizedBox(height: MotywNowoczesny.odstep),
               Text('Twoje działki', style: teksty.titleLarge),
@@ -253,6 +274,11 @@ class _Dodawanie extends StatelessWidget {
     required this.szukanie,
     required this.blad,
     required this.onSzukaj,
+    required this.wybor,
+    required this.zList,
+    required this.onSposob,
+    required this.onWyborJednostki,
+    required this.pelnyNumer,
   });
 
   final TextEditingController numer;
@@ -260,27 +286,57 @@ class _Dodawanie extends StatelessWidget {
   final BladUldk? blad;
   final VoidCallback onSzukaj;
 
+  final WyborJednostek wybor;
+  final bool zList;
+  final void Function(bool zList) onSposob;
+  final VoidCallback onWyborJednostki;
+  final String pelnyNumer;
+
   @override
   Widget build(BuildContext context) {
     final teksty = Theme.of(context).textTheme;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Dodaj działkę po numerze', style: teksty.titleLarge),
+        Text('Dodaj działkę', style: teksty.titleLarge),
         const SizedBox(height: 8),
-        TextField(
-          controller: numer,
-          style: teksty.bodyLarge,
-          // Klawiatura wychodzi po dotknięciu okienka, nie sama.
-          keyboardType: TextInputType.text,
-          decoration: const InputDecoration(
-            labelText: 'Numer działki z wniosku',
-            hintText: '061506_2.0007.138',
-            border: OutlineInputBorder(),
-            isDense: true,
-          ),
-          onSubmitted: (_) => onSzukaj(),
+        SegmentedButton<bool>(
+          segments: const [
+            ButtonSegment(value: true, label: Text('Z listy')),
+            ButtonSegment(value: false, label: Text('Numer z wniosku')),
+          ],
+          selected: {zList},
+          onSelectionChanged: (wybrane) => onSposob(wybrane.first),
         ),
+        const SizedBox(height: MotywNowoczesny.odstep),
+        if (zList) ...[
+          WyborObrebu(wybor: wybor, onZmiana: onWyborJednostki),
+          const SizedBox(height: MotywNowoczesny.odstep),
+        ],
+        if (!zList || wybor.gotowy)
+          TextField(
+            controller: numer,
+            style: teksty.bodyLarge,
+            // Klawiatura wychodzi po dotknięciu okienka, nie sama.
+            keyboardType: TextInputType.text,
+            decoration: InputDecoration(
+              labelText: zList
+                  ? 'Numer działki (z umowy albo wypisu)'
+                  : 'Numer działki z wniosku',
+              hintText: zList ? '138 albo 138/4' : '061506_2.0007.138',
+              border: const OutlineInputBorder(),
+              isDense: true,
+            ),
+            onChanged: (_) => onWyborJednostki(),
+            onSubmitted: (_) => onSzukaj(),
+          ),
+        if (zList && wybor.gotowy) ...[
+          const SizedBox(height: 6),
+          Text(
+            'Pełny numer złożymy sami: ${pelnyNumer.isEmpty ? '…' : pelnyNumer}',
+            style: teksty.bodyMedium,
+          ),
+        ],
         const SizedBox(height: 8),
         Text(
           'Granice pobieramy raz, z państwowej usługi ULDK. Potem mapa '

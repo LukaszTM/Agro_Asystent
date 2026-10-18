@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
@@ -166,10 +167,33 @@ void main() {
     await tester.pumpAndSettle();
   }
 
-  /// Wpisuje numer dużą klawiaturą — bez klawiatury systemowej.
-  Future<void> wpiszNumer(WidgetTester tester, String numer) async {
+  /// Wpisuje pełny numer dużą klawiaturą — bez klawiatury systemowej.
+  ///
+  /// Ekran otwiera się na wyborze z list (działki spoza wniosku), więc
+  /// najpierw przechodzimy na drogę „numer z wniosku".
+  Future<void> wpiszNumer(
+    WidgetTester tester,
+    String numer, {
+    bool zWniosku = true,
+  }) async {
+    final przelacznik = find.text('Mam pełny numer z wniosku');
+    if (zWniosku && przelacznik.evaluate().isNotEmpty) {
+      await tester.tap(przelacznik);
+      await tester.pumpAndSettle();
+    }
+    // Lista buduje tylko to, co widać, więc najpierw przewijamy do
+    // klawiatury — inaczej klawiszy po prostu nie ma w drzewie.
+    await tester.scrollUntilVisible(
+      find.widgetWithText(InkWell, numer.split('').first),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pumpAndSettle();
     for (final znak in numer.split('')) {
-      await tester.tap(find.widgetWithText(InkWell, znak).first);
+      final klawisz = find.widgetWithText(InkWell, znak).first;
+      await tester.ensureVisible(klawisz);
+      await tester.pump();
+      await tester.tap(klawisz);
       await tester.pump();
     }
   }
@@ -182,7 +206,7 @@ void main() {
 
     expect(find.text('Nie masz jeszcze żadnej działki.'), findsOneWidget);
 
-    await tester.tap(find.text('Dodaj działkę po numerze'));
+    await tester.tap(find.text('Dodaj działkę'));
     await tester.pumpAndSettle();
 
     await wpiszNumer(tester, '061506_2.0007.138');
@@ -237,7 +261,7 @@ void main() {
     );
     await pokaz(tester, uslugi);
 
-    await tester.tap(find.text('Dodaj działkę po numerze'));
+    await tester.tap(find.text('Dodaj działkę'));
     await tester.pumpAndSettle();
     await wpiszNumer(tester, '061506_2.0007.999');
     await tester.tap(find.text('Znajdź działkę'));
@@ -258,7 +282,7 @@ void main() {
     final uslugi = await zbudujUslugi(uldk: udawanaUsluga(odpowiedzUldk));
     await pokaz(tester, uslugi);
 
-    await tester.tap(find.text('Dodaj działkę po numerze'));
+    await tester.tap(find.text('Dodaj działkę'));
     await tester.pumpAndSettle();
     await wpiszNumer(tester, '061506_2.0007.138');
     await tester.tap(find.text('Znajdź działkę'));
@@ -285,7 +309,7 @@ void main() {
     );
     await pokaz(tester, uslugi);
 
-    await tester.tap(find.text('Dodaj działkę po numerze'));
+    await tester.tap(find.text('Dodaj działkę'));
     await tester.pumpAndSettle();
     await wpiszNumer(tester, '061506_2.0007.138');
     await tester.tap(find.text('Znajdź działkę'));
@@ -293,6 +317,67 @@ void main() {
 
     expect(find.textContaining('Nie udało się połączyć'), findsOneWidget);
     expect(find.textContaining('bez internetu'), findsOneWidget);
+  });
+
+  testWidgets('działkę spoza wniosku dodaje się z list: województwo → '
+      'powiat → gmina → obręb', (tester) async {
+    // Dzierżawy nie ma we wniosku, a pełnego numeru rolnik nie zna.
+    final uslugi = await zbudujUslugi(
+      uldk: KlientUldk(
+        klient: MockClient((zadanie) async {
+          final request = zadanie.url.queryParameters['request'];
+          final tresc = switch (request) {
+            'GetVoivodeships' => '0\nlubelskie|06\n',
+            'GetCounties' => '0\nlubartowski|0615\n',
+            'GetCommunes' => '0\nLubartów|061506_2\n',
+            'GetRegions' => '0\nBrzeziny|061506_2.0007\n',
+            _ => odpowiedzUldk,
+          };
+          return http.Response.bytes(utf8.encode(tresc), 200);
+        }),
+      ),
+    );
+    await pokaz(tester, uslugi);
+
+    await tester.tap(find.text('Dodaj działkę'));
+    await tester.pumpAndSettle();
+
+    for (final nazwa in ['lubelskie', 'lubartowski', 'Lubartów', 'Brzeziny']) {
+      await tester.tap(find.text(nazwa).last);
+      await tester.pumpAndSettle();
+    }
+
+    // Wybór widać w ścieżce, a program sam składa pełny numer.
+    expect(find.textContaining('obręb: Brzeziny'), findsOneWidget);
+
+    await wpiszNumer(tester, '138', zWniosku: false);
+    expect(find.textContaining('061506_2.0007.138'), findsWidgets);
+
+    await tester.tap(find.text('Znajdź działkę'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Czy to ta działka?'), findsOneWidget);
+    expect(find.byType(MapaDzialek), findsOneWidget);
+  });
+
+  testWidgets('bez internetu wybór z list mówi, co zrobić zamiast tego', (
+    tester,
+  ) async {
+    final uslugi = await zbudujUslugi(
+      uldk: KlientUldk(
+        klient: MockClient(
+          (_) async => throw http.ClientException('brak sieci'),
+        ),
+      ),
+    );
+    await pokaz(tester, uslugi);
+
+    await tester.tap(find.text('Dodaj działkę'));
+    await tester.pumpAndSettle();
+
+    expect(find.textContaining('Nie udało się pobrać listy'), findsOneWidget);
+    // Droga awaryjna zostaje: pełny numer z wypisu działa bez list.
+    expect(find.textContaining('pełny numer'), findsWidgets);
   });
 }
 

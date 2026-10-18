@@ -214,6 +214,10 @@ void main() {
 
       expect(find.text('Nie masz jeszcze żadnej działki.'), findsOneWidget);
 
+      // Ekran otwiera się na wyborze z list (działki spoza wniosku);
+      // tu sprawdzamy drogę z pełnym numerem.
+      await tester.tap(find.text('Numer z wniosku'));
+      await tester.pumpAndSettle();
       await tester.enterText(find.byType(TextField), '061506_2.0007.138');
       await tester.tap(find.text('Znajdź działkę'));
       await tester.pumpAndSettle();
@@ -246,6 +250,10 @@ void main() {
         ),
       );
 
+      // Ekran otwiera się na wyborze z list (działki spoza wniosku);
+      // tu sprawdzamy drogę z pełnym numerem.
+      await tester.tap(find.text('Numer z wniosku'));
+      await tester.pumpAndSettle();
       await tester.enterText(find.byType(TextField), '061506_2.0007.138');
       await tester.tap(find.text('Znajdź działkę'));
       await tester.pumpAndSettle();

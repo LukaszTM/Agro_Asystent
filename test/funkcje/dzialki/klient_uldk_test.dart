@@ -168,4 +168,120 @@ void main() {
       expect(proby, 0);
     });
   });
+
+  group('wybór z listy: województwo → powiat → gmina → obręb', () {
+    // Rolnik zna swoją gminę i obręb, ale nie zna zapisu „141201_2.0012".
+    // Działkę dzierżawioną, której nie ma we wniosku, dodaje się właśnie
+    // przez wybór z listy.
+    test('czyta listę jednostek i układa ją alfabetycznie', () {
+      final gminy = KlientUldk.odczytajJednostki(
+        '0\nŻyrzyn|061506_2\nLubartów|061505_1\nKamionka|061504_5\n',
+        PoziomPodzialu.gmina,
+      );
+
+      expect(
+        [for (final g in gminy) g.nazwa],
+        ['Kamionka', 'Lubartów', 'Żyrzyn'],
+      );
+      expect(gminy.first.teryt, '061504_5');
+    });
+
+    test('wiersza, którego nie rozumiemy, nie zgadujemy', () {
+      final obreby = KlientUldk.odczytajJednostki(
+        '0\nBrzeziny|061506_2.0007\nśmieć bez kreski\n|061506_2.0008\n',
+        PoziomPodzialu.obreb,
+      );
+
+      expect(obreby, hasLength(1));
+      expect(obreby.single.nazwa, 'Brzeziny');
+    });
+
+    test('zła odpowiedź usługi to zdanie dla rolnika', () {
+      expect(
+        () => KlientUldk.odczytajJednostki('-1\nbłąd', PoziomPodzialu.powiat),
+        throwsA(
+          isA<BladUldk>().having(
+            (b) => b.coZrobic,
+            'coZrobic',
+            contains('pełny numer'),
+          ),
+        ),
+      );
+    });
+
+    test('pyta usługę o właściwy szczebel i jednostkę nadrzędną', () async {
+      late Uri zapytanie;
+      final klient = KlientUldk(
+        klient: MockClient((zadanie) async {
+          zapytanie = zadanie.url;
+          return http.Response('0\nBrzeziny|061506_2.0007\n', 200);
+        }),
+      );
+
+      final obreby = await klient.jednostki(
+        poziom: PoziomPodzialu.obreb,
+        terytNadrzednej: '061506_2',
+      );
+
+      expect(zapytanie.queryParameters['request'], 'GetRegions');
+      expect(zapytanie.queryParameters['result'], 'region,teryt');
+      expect(zapytanie.queryParameters['commune'], '061506_2');
+      expect(obreby.single.nazwa, 'Brzeziny');
+    });
+
+    test('województw nic nie poprzedza', () async {
+      late Uri zapytanie;
+      final klient = KlientUldk(
+        klient: MockClient((zadanie) async {
+          zapytanie = zadanie.url;
+          return http.Response('0\nlubelskie|06\n', 200);
+        }),
+      );
+
+      await klient.jednostki(poziom: PoziomPodzialu.wojewodztwo);
+
+      expect(zapytanie.queryParameters['request'], 'GetVoivodeships');
+      expect(zapytanie.queryParameters.containsKey('voivodeship'), isFalse);
+    });
+
+    test('bez jednostki nadrzędnej nie pytamy usługi', () async {
+      var pytano = false;
+      final klient = KlientUldk(
+        klient: MockClient((_) async {
+          pytano = true;
+          return http.Response('0\n', 200);
+        }),
+      );
+
+      await expectLater(
+        klient.jednostki(poziom: PoziomPodzialu.gmina),
+        throwsA(isA<BladUldk>()),
+      );
+      expect(pytano, isFalse);
+    });
+
+    test('obręb i numer składają się w pełny identyfikator działki', () {
+      const obreb = JednostkaTerytorialna(
+        nazwa: 'Brzeziny',
+        teryt: '061506_2.0007',
+      );
+
+      final numer = KlientUldk.pelnyNumer(obreb, ' 138 ');
+
+      expect(numer, '061506_2.0007.138');
+      // Taki zapis usługa rozpoznaje jako pełny identyfikator.
+      expect(KlientUldk.wzorzecIdentyfikatora.hasMatch(numer), isTrue);
+    });
+
+    test('numer z ułamkiem też jest pełnym identyfikatorem', () {
+      const obreb = JednostkaTerytorialna(
+        nazwa: 'Brzeziny',
+        teryt: '061506_2.0007',
+      );
+
+      final numer = KlientUldk.pelnyNumer(obreb, '138/4');
+
+      expect(KlientUldk.wzorzecIdentyfikatora.hasMatch(numer), isTrue);
+    });
+  });
 }
