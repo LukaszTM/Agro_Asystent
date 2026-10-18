@@ -31,6 +31,27 @@ class DaneWpisu {
   double? dawka;
   String? przyczyna;
 
+  /// Jednostka dawki odczytanej z etykiety — ustawiana tylko wtedy, gdy
+  /// rejestr nie podał dawki w jednoznacznej postaci. Wtedy liczbę wpisuje
+  /// rolnik i musi powiedzieć, w czym ją podaje.
+  JednostkaDawkiSrodka? jednostkaZEtykiety;
+
+  /// Czy dawkę trzeba odczytać z etykiety, bo rejestr jej nie podaje.
+  bool get dawkaZEtykiety {
+    final wybrany = srodek;
+    return wybrany != null && !wybrany.dawkaZnana;
+  }
+
+  /// Jednostka, która pójdzie do ewidencji: z rejestru, a gdy rejestr jej
+  /// nie podaje — ta, którą wskazał rolnik przy etykiecie.
+  String? get dawkaJednostka =>
+      srodek?.dawkaJednostka ?? jednostkaZEtykiety?.jednostka;
+
+  /// Na co ta dawka wypada („ha", „stezenie"). Tak samo jak jednostka:
+  /// z rejestru albo od rolnika.
+  String? get dawkaOdniesienie =>
+      srodek?.dawkaOdniesienie ?? jednostkaZEtykiety?.odniesienie;
+
   /// Powierzchnia liczona z wybranych pól — rolnik jej nie wpisuje.
   int get powierzchniaAr =>
       pola.fold(0, (suma, pole) => suma + pole.powierzchniaAr);
@@ -68,7 +89,7 @@ class DaneWpisu {
   /// Ile razem środka trzeba na wybrane pola — rolnik pyta o to przy nalewaniu.
   double? get iloscSrodkaRazem {
     final wartosc = dawka;
-    if (wartosc == null || srodek?.dawkaOdniesienie != 'ha') {
+    if (wartosc == null || srodek == null || dawkaOdniesienie != 'ha') {
       return null;
     }
     return wartosc * powierzchniaAr / 100;

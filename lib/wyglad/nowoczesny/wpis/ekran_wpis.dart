@@ -50,6 +50,10 @@ class _EkranWpisuState extends State<EkranWpisu> {
   Future<List<DopuszczonySrodek>>? _srodki;
   Future<List<Nawoz>>? _nawozy;
 
+  /// Jednostki, którymi posługuje się rejestr — do wyboru tam, gdzie
+  /// dawkę trzeba przepisać z etykiety.
+  Future<List<JednostkaDawkiSrodka>>? _jednostkiDawki;
+
   /// Azot już zapisany na wybranych polach i limity z tabeli 14 programu
   /// azotanowego. Przeliczamy po zmianie pól, nie po zmianie dawki.
   Future<List<SkutekDlaMaksymalnejDawki>>? _stanPol;
@@ -219,8 +223,16 @@ class _EkranWpisuState extends State<EkranWpisu> {
     setState(() {
       _dane
         ..srodek = srodek
-        ..dawka = srodek.dawka
+        // Dawkę podpowiadamy tylko wtedy, gdy rejestr podaje ją
+        // jednoznacznie. Inaczej pole zostaje puste i rolnik przepisuje
+        // ją z etykiety (CLAUDE.md, reguła 5).
+        ..dawka = srodek.dawkaZnana ? srodek.dawka : null
+        ..jednostkaZEtykiety = null
         ..przyczyna = srodek.agrofag;
+      // Jednostki czytamy z rejestru dopiero wtedy, gdy są potrzebne.
+      if (!srodek.dawkaZnana) {
+        _jednostkiDawki ??= widget.uslugi.srodki.jednostkiDawki();
+      }
     });
   }
 
@@ -291,8 +303,9 @@ class _EkranWpisuState extends State<EkranWpisu> {
         srodekNazwa: srodek.nazwa,
         nrZezwolenia: srodek.nrZezwolenia,
         dawka: _dane.dawka,
-        dawkaJednostka: srodek.dawkaJednostka,
-        dawkaOdniesienie: srodek.dawkaOdniesienie,
+        // Przy środku bez dawki w rejestrze jednostkę wskazał rolnik.
+        dawkaJednostka: _dane.dawkaJednostka,
+        dawkaOdniesienie: _dane.dawkaOdniesienie,
         przyczyna: _dane.przyczyna,
         agrofag: srodek.agrofag,
         bbchOd: srodek.bbchOd,
@@ -671,12 +684,20 @@ class _EkranWpisuState extends State<EkranWpisu> {
         const SizedBox(height: MotywNowoczesny.odstep),
         Text('Dawka', style: teksty.titleLarge),
         const SizedBox(height: 8),
-        if (!srodek.dawkaZnana)
+        if (!srodek.dawkaZnana) ...[
           OstrzezenieNowoczesne(
             tresc: 'Rejestr nie podaje tu dawki w jednoznacznej postaci.',
-            coZrobic: srodek.dawkaTekst ?? 'Sprawdź dawkę na etykiecie środka.',
-          )
-        else ...[
+            coZrobic:
+                srodek.dawkaTekst ??
+                'Odczytaj dawkę z etykiety i wpisz ją niżej.',
+          ),
+          const SizedBox(height: 8),
+          _DawkaZEtykiety(
+            dane: _dane,
+            jednostki: _jednostkiDawki,
+            onZmiana: () => setState(() {}),
+          ),
+        ] else ...[
           WyborLiczbyNowoczesny(
             wartosc: _dane.dawka ?? srodek.dawka ?? 0,
             jednostka: '${srodek.dawkaJednostka}/${srodek.dawkaOdniesienie}',
@@ -999,6 +1020,106 @@ class _Potwierdzenie extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+/// Dawka przepisana z etykiety — dla środków, których dawki rejestr nie
+/// podaje w jednoznacznej postaci. Ewidencja wymaga dawki zastosowanej,
+/// a rolnik ma ją na etykiecie; aplikacja niczego nie podpowiada
+/// (CLAUDE.md, reguła 5).
+class _DawkaZEtykiety extends StatelessWidget {
+  const _DawkaZEtykiety({
+    required this.dane,
+    required this.jednostki,
+    required this.onZmiana,
+  });
+
+  final DaneWpisu dane;
+  final Future<List<JednostkaDawkiSrodka>>? jednostki;
+  final VoidCallback onZmiana;
+
+  @override
+  Widget build(BuildContext context) {
+    final teksty = Theme.of(context).textTheme;
+    final wybrana = dane.jednostkaZEtykiety;
+    final dawka = dane.dawka ?? 0;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'W ewidencji musi stać dawka, którą naprawdę zastosowałeś. '
+          'Zero znaczy „bez dawki" — dopiszesz ją później.',
+          style: teksty.bodyMedium,
+        ),
+        const SizedBox(height: 8),
+        WyborLiczbyNowoczesny(
+          wartosc: dawka,
+          jednostka: wybrana?.opis ?? '',
+          krok: 0.05,
+          onZmiana: (nowa) {
+            dane.dawka = nowa <= 0 ? null : nowa;
+            onZmiana();
+          },
+        ),
+        const SizedBox(height: 8),
+        Text('W czym podana jest dawka?', style: teksty.bodyLarge),
+        const SizedBox(height: 8),
+        FutureBuilder<List<JednostkaDawkiSrodka>>(
+          future: jednostki,
+          builder: (context, stan) {
+            if (!stan.hasData) {
+              return Text(
+                'Czytam jednostki z rejestru…',
+                style: teksty.bodyMedium,
+              );
+            }
+            final lista = stan.data!;
+            if (lista.isEmpty) {
+              return Text(
+                'Rejestr nie podaje tu żadnej jednostki, więc nie mamy jej '
+                'skąd wziąć. Zapisz zabieg bez dawki i dopisz ją na '
+                'wydruku.',
+                style: teksty.bodyMedium,
+              );
+            }
+            return Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                for (final jednostka in lista)
+                  Wybor(
+                    etykieta: jednostka.opis,
+                    wybrany: jednostka == wybrana,
+                    onTap: () {
+                      dane.jednostkaZEtykiety = jednostka;
+                      onZmiana();
+                    },
+                  ),
+              ],
+            );
+          },
+        ),
+        if (dawka > 0 && wybrana == null) ...[
+          const SizedBox(height: 8),
+          const OstrzezenieNowoczesne(
+            tresc: 'Nie wiadomo, w czym podana jest ta dawka.',
+            coZrobic:
+                'Wybierz jednostkę powyżej — bez niej liczba w '
+                'ewidencji nic nie znaczy.',
+          ),
+        ],
+        if (dane.iloscSrodkaRazem case final double razem) ...[
+          const SizedBox(height: 8),
+          Text(
+            'Na ${dane.powierzchniaOpis} potrzeba '
+            '${razem.toStringAsFixed(2).replaceAll('.', ',')} '
+            '${wybrana?.jednostka ?? ''}',
+            style: teksty.bodyLarge,
+          ),
+        ],
+      ],
     );
   }
 }

@@ -103,6 +103,30 @@ class RepozytoriumPol {
     // imporcie wniosku i scalaniu danych.
   }
 
+  /// Własna nazwa pola. Pola z wniosku dostają na początku „Pole A",
+  /// „Pole B1" — oznaczenia, których rolnik nie używa w rozmowie o swoim
+  /// gospodarstwie. Nazwę zmienia więc na swoją („Za stodołą"), a wpisy
+  /// zabiegów zostają przy tym samym polu.
+  ///
+  /// Oznaczenie z wniosku zostaje nietknięte — po nim kontrola odnajdzie
+  /// pole w dokumentach ARiMR. Poprzednia nazwa trafia do dziennika zmian
+  /// (wyzwalacz `historia_dzialka_rolna_zmiana`).
+  Future<void> ustawNazwe({
+    required String poleId,
+    required String nazwa,
+    required String urzadzenie,
+    DateTime? teraz,
+  }) => _baza.update(
+    'dzialka_rolna',
+    {
+      'nazwa_wlasna': nazwa,
+      'zmieniono': (teraz ?? DateTime.now()).toIso8601String(),
+      'urzadzenie': urzadzenie,
+    },
+    where: 'id = ?',
+    whereArgs: [poleId],
+  );
+
   /// Rodzaj użytku ustawia **rolnik** — aplikacja go tylko podpowiada.
   Future<void> ustawRodzajUzytku({
     required String poleId,

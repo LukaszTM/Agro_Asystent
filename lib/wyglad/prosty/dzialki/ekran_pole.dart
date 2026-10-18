@@ -9,6 +9,7 @@ import '../../../funkcje/dzialki/slownik_upraw.dart';
 import '../../../funkcje/dzialki/uprawy_pola.dart';
 import '../../../funkcje/warunkowosc/okrywa.dart';
 import '../../../rdzen/reguly/regula_prawna.dart';
+import '../../../rdzen/wspolne/nazwa_pola.dart';
 import '../motyw.dart';
 import '../widgety/duzy_przycisk.dart';
 import 'ekran_wybor_uprawy.dart';
@@ -82,6 +83,36 @@ class _EkranPoleState extends State<EkranPole> {
     await widget.uslugi.pola.ustawGranicaZWoda(
       poleId: _pole.id,
       granica: granica,
+      urzadzenie: widget.uslugi.urzadzenie,
+    );
+    final swieze = await widget.uslugi.pola.jedno(_pole.id);
+    if (!mounted) {
+      return;
+    }
+    setState(() {
+      _pole = swieze ?? _pole;
+      _zmienione = true;
+      _odswiezHistorie();
+    });
+  }
+
+  /// Zmiana własnej nazwy pola. Pola z wniosku nazywają się „Pole A" —
+  /// rolnik woli „Za stodołą" i to on ma rację, bo to on szuka pola
+  /// na liście.
+  Future<void> _zmienNazwe() async {
+    final nowa = await showDialog<String>(
+      context: context,
+      builder: (_) => OknoNazwyPola(
+        nazwa: _pole.nazwa,
+        oznaczenieZWniosku: _pole.oznaczenieZWniosku,
+      ),
+    );
+    if (nowa == null || nowa == _pole.nazwa) {
+      return;
+    }
+    await widget.uslugi.pola.ustawNazwe(
+      poleId: _pole.id,
+      nazwa: nowa,
       urzadzenie: widget.uslugi.urzadzenie,
     );
     final swieze = await widget.uslugi.pola.jedno(_pole.id);
@@ -276,9 +307,18 @@ class _EkranPoleState extends State<EkranPole> {
                 onTap: _zmienUprawe,
               ),
             const SizedBox(height: MotywProsty.odstep),
+            DuzyPrzycisk(
+              etykieta: 'Zmień nazwę pola',
+              opis: _pole.oznaczenieZWniosku == null
+                  ? 'nazwij je tak, jak o nim mówisz'
+                  : 'we wniosku: ${_pole.oznaczenieZWniosku}',
+              ikona: Icons.drive_file_rename_outline,
+              onTap: _zmienNazwe,
+            ),
+            const SizedBox(height: MotywProsty.odstep),
             Text(
               'Zabiegi zapisane na tym polu zostają bez zmian. Zmiana '
-              'uprawy nie wpływa na to, co już wpisałeś.',
+              'uprawy ani nazwy nie wpływa na to, co już wpisałeś.',
               style: Theme.of(context).textTheme.bodyMedium,
             ),
             const SizedBox(height: MotywProsty.odstep * 2),

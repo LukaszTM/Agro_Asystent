@@ -9,6 +9,7 @@ import '../../../funkcje/dzialki/slownik_upraw.dart';
 import '../../../funkcje/dzialki/uprawy_pola.dart';
 import '../../../funkcje/warunkowosc/okrywa.dart';
 import '../../../rdzen/reguly/regula_prawna.dart';
+import '../../../rdzen/wspolne/nazwa_pola.dart';
 import '../motyw.dart';
 import '../widgety/karta.dart';
 import '../widgety/wybor.dart';
@@ -44,6 +45,27 @@ class _EkranPoleNowoczesnyState extends State<EkranPoleNowoczesny> {
     super.initState();
     _historia = widget.uslugi.historiaUpraw.dla(_pole);
     _okrywa = widget.uslugi.okrywa.dlaPola(pole: _pole);
+  }
+
+  /// Zmiana własnej nazwy pola — pola z wniosku nazywają się „Pole A",
+  /// a rolnik szuka na liście „Za stodołą".
+  Future<void> _zmienNazwe() async {
+    final nowa = await showDialog<String>(
+      context: context,
+      builder: (_) => OknoNazwyPola(
+        nazwa: _pole.nazwa,
+        oznaczenieZWniosku: _pole.oznaczenieZWniosku,
+      ),
+    );
+    if (nowa == null || nowa == _pole.nazwa) {
+      return;
+    }
+    await widget.uslugi.pola.ustawNazwe(
+      poleId: _pole.id,
+      nazwa: nowa,
+      urzadzenie: widget.uslugi.urzadzenie,
+    );
+    await _odswiez();
   }
 
   Future<void> _odswiez() async {
@@ -145,7 +167,16 @@ class _EkranPoleNowoczesnyState extends State<EkranPoleNowoczesny> {
         }
       },
       child: Scaffold(
-        appBar: AppBar(title: Text(_pole.nazwa)),
+        appBar: AppBar(
+          title: Text(_pole.nazwa),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.drive_file_rename_outline),
+              tooltip: 'Zmień nazwę pola',
+              onPressed: _zmienNazwe,
+            ),
+          ],
+        ),
         body: FutureBuilder<HistoriaUprawPola>(
           future: _historia,
           builder: (context, stan) {

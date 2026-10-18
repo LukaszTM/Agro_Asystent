@@ -133,6 +133,25 @@ void main() {
       'uprawa': 'pszenica ozima',
     });
 
+    // Trzeci środek: rejestr nie podaje dawki w jednoznacznej postaci —
+    // rolnik musi przepisać ją z etykiety.
+    await baza.insert('srodek', {
+      'id': 3,
+      'nazwa': 'Bez Dawki 200 SL',
+      'nr_zezwolenia': 'R-77/2023',
+    });
+    await baza.insert('zastosowanie', {
+      'id': 12,
+      'srodek_id': 3,
+      'agrofag': 'chwasty jednoroczne',
+      'dawka_tekst': 'Dawkę ustala się wedle fazy rozwojowej chwastów',
+      'dawka_pewnosc': 'do_sprawdzenia',
+    });
+    await baza.insert('zastosowanie_uprawa', {
+      'zastosowanie_id': 12,
+      'uprawa': 'pszenica ozima',
+    });
+
     await baza.insert('uprawa', {
       'nazwa': 'pszenica ozima',
       'kod_eppo': 'TRZAW',
@@ -346,6 +365,94 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.textContaining('przekracza dopuszczalną'), findsOneWidget);
+  });
+
+  group('środek bez dawki w rejestrze', () {
+    Future<void> doDawki(WidgetTester tester) async {
+      await otworz(tester);
+      for (final cel in [
+        'Dodaj zabieg',
+        'Za stodołą',
+        'Oprysk',
+        'Bez Dawki 200 SL',
+      ]) {
+        await tester.tap(find.text(cel));
+        await tester.pumpAndSettle();
+      }
+    }
+
+    testWidgets('rolnik może wpisać dawkę z etykiety', (tester) async {
+      await doDawki(tester);
+
+      // Najpierw prawda: rejestr dawki nie podaje i mówi to wprost.
+      expect(find.textContaining('nie podaje tu dawki'), findsOneWidget);
+      expect(find.textContaining('Wpisz dawkę z etykiety'), findsOneWidget);
+      // Nic nie jest podpowiedziane — liczba startuje od zera.
+      expect(find.textContaining('0,00'), findsWidgets);
+
+      await przewin(tester, find.text('l/ha'));
+      await tester.tap(find.text('l/ha'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('+'));
+      await tester.pumpAndSettle();
+
+      expect(find.textContaining('0,05 l/ha'), findsWidgets);
+    });
+
+    testWidgets('dawka bez jednostki to ostrzeżenie, nie zapis na ślepo', (
+      tester,
+    ) async {
+      await doDawki(tester);
+
+      await tester.tap(find.text('+'));
+      await tester.pumpAndSettle();
+
+      expect(
+        find.textContaining('Nie wiadomo, w czym podana jest ta dawka'),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('wpisana dawka i jednostka trafiają do ewidencji', (
+      tester,
+    ) async {
+      await doDawki(tester);
+
+      await przewin(tester, find.text('l/ha'));
+      await tester.tap(find.text('l/ha'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('+'));
+      await tester.pumpAndSettle();
+      await przewin(tester, find.text('Zapisz'));
+      await tester.ensureVisible(find.text('Zapisz'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Zapisz'));
+      await tester.pumpAndSettle();
+
+      final zabiegi = await uslugi.zabiegi.wszystkie('g1');
+      final oprysk = await uslugi.zabiegi.szczegolyOprysku(zabiegi.single.id);
+      expect(oprysk!.srodekNazwa, 'Bez Dawki 200 SL');
+      expect(oprysk.dawka, closeTo(0.05, 1e-9));
+      expect(oprysk.dawkaJednostka, 'l');
+      expect(oprysk.dawkaOdniesienie, 'ha');
+    });
+
+    testWidgets('zapis bez dawki jest możliwy — dokumentacji nie blokujemy', (
+      tester,
+    ) async {
+      await doDawki(tester);
+
+      await przewin(tester, find.text('Zapisz'));
+      await tester.ensureVisible(find.text('Zapisz'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Zapisz'));
+      await tester.pumpAndSettle();
+
+      final zabiegi = await uslugi.zabiegi.wszystkie('g1');
+      final oprysk = await uslugi.zabiegi.szczegolyOprysku(zabiegi.single.id);
+      expect(oprysk!.dawka, isNull);
+      expect(find.text('Zabieg zapisany'), findsOneWidget);
+    });
   });
 
   testWidgets('lista środków pokazuje tylko dopuszczone w tej uprawie', (

@@ -94,7 +94,11 @@ class _EkranWyborSrodkaState extends State<EkranWyborSrodka> {
   void _wybierz(DopuszczonySrodek srodek) {
     widget.dane
       ..srodek = srodek
-      ..dawka = srodek.dawka
+      // Dawkę podpowiadamy tylko wtedy, gdy rejestr podaje ją
+      // jednoznacznie. Inaczej pole zostaje puste i rolnik przepisuje ją
+      // z etykiety (CLAUDE.md, reguła 5).
+      ..dawka = srodek.dawkaZnana ? srodek.dawka : null
+      ..jednostkaZEtykiety = null
       ..przyczyna = srodek.agrofag;
 
     Navigator.of(context).push(

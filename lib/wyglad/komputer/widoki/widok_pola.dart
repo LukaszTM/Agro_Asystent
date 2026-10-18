@@ -8,6 +8,7 @@ import '../../../funkcje/dzialki/rodzaj_uzytku.dart';
 import '../../../funkcje/pulpit/zasiewy.dart';
 import '../../../rdzen/dostep/funkcja.dart';
 import '../../../rdzen/dostep/opis_premium.dart';
+import '../../../rdzen/wspolne/nazwa_pola.dart';
 import '../motyw.dart';
 import '../widgety/karta.dart';
 import '../widgety/tabela.dart';
@@ -48,6 +49,27 @@ class _WidokPolaKomputerState extends State<WidokPolaKomputer> {
     await widget.uslugi.pola.ustawRodzajUzytku(
       poleId: pole.id,
       rodzaj: rodzaj,
+      urzadzenie: widget.uslugi.urzadzenie,
+    );
+    await _poZmianie(pole.id);
+  }
+
+  /// Własna nazwa pola. Pola z wniosku nazywają się „Pole A" — rolnik
+  /// nazywa je po swojemu, a oznaczenie z wniosku zostaje w danych.
+  Future<void> _zmienNazwe(Pole pole) async {
+    final nowa = await showDialog<String>(
+      context: context,
+      builder: (_) => OknoNazwyPola(
+        nazwa: pole.nazwa,
+        oznaczenieZWniosku: pole.oznaczenieZWniosku,
+      ),
+    );
+    if (nowa == null || nowa == pole.nazwa) {
+      return;
+    }
+    await widget.uslugi.pola.ustawNazwe(
+      poleId: pole.id,
+      nazwa: nowa,
       urzadzenie: widget.uslugi.urzadzenie,
     );
     await _poZmianie(pole.id);
@@ -199,6 +221,7 @@ class _WidokPolaKomputerState extends State<WidokPolaKomputer> {
                       pytanieOWode: widget.uslugi.pasOdWody.pytanie,
                       onRodzaj: (rodzaj) => _ustawRodzaj(_wybrane!, rodzaj),
                       onWoda: (granica) => _ustawWode(_wybrane!, granica),
+                      onNazwa: () => _zmienNazwe(_wybrane!),
                     ),
             ),
           ],
@@ -216,12 +239,14 @@ class _SzczegolyPola extends StatelessWidget {
     required this.pytanieOWode,
     required this.onRodzaj,
     required this.onWoda,
+    required this.onNazwa,
   });
 
   final Pole pole;
   final String pytanieOWode;
   final void Function(RodzajUzytku rodzaj) onRodzaj;
   final void Function(GranicaZWoda granica) onWoda;
+  final VoidCallback onNazwa;
 
   @override
   Widget build(BuildContext context) {
@@ -232,10 +257,20 @@ class _SzczegolyPola extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(pole.nazwa, style: teksty.titleLarge),
+              Row(
+                children: [
+                  Expanded(child: Text(pole.nazwa, style: teksty.titleLarge)),
+                  IconButton(
+                    icon: const Icon(Icons.drive_file_rename_outline),
+                    tooltip: 'Zmień nazwę pola',
+                    onPressed: onNazwa,
+                  ),
+                ],
+              ),
               Text(
                 '${pole.uprawa.isEmpty ? 'bez uprawy' : pole.uprawa} • '
                 '${pole.powierzchniaOpis}'
+                '${pole.oznaczenieZWniosku == null ? '' : ' • we wniosku: ${pole.oznaczenieZWniosku}'}'
                 '${pole.sezon == null ? '' : ' • sezon ${pole.sezon}'}',
                 style: teksty.bodyMedium,
               ),

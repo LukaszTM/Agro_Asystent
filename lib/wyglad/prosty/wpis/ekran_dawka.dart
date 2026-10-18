@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../app/uslugi.dart';
 import '../../../funkcje/magazyn/zuzycie_z_zabiegu.dart';
 import '../../../funkcje/zabiegi/dane_wpisu.dart';
+import '../../../funkcje/zabiegi/slownik_srodkow.dart';
 import '../../../rdzen/modele/zabieg.dart';
 import '../motyw.dart';
 import '../widgety/duzy_przycisk.dart';
@@ -23,6 +24,18 @@ class EkranDawka extends StatefulWidget {
 
 class _EkranDawkaState extends State<EkranDawka> {
   bool _zapisuje = false;
+
+  /// Jednostki z rejestru — potrzebne tylko wtedy, gdy rejestr nie podał
+  /// dawki i rolnik przepisuje ją z etykiety.
+  Future<List<JednostkaDawkiSrodka>>? _jednostki;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.dane.dawkaZEtykiety) {
+      _jednostki = widget.uslugi.srodki.jednostkiDawki();
+    }
+  }
 
   Future<void> _zapisz() async {
     if (_zapisuje) {
@@ -60,8 +73,10 @@ class _EkranDawkaState extends State<EkranDawka> {
         srodekNazwa: srodek.nazwa,
         nrZezwolenia: srodek.nrZezwolenia,
         dawka: dane.dawka,
-        dawkaJednostka: srodek.dawkaJednostka,
-        dawkaOdniesienie: srodek.dawkaOdniesienie,
+        // Przy środku bez dawki w rejestrze jednostkę wskazał rolnik —
+        // bierzemy ją stąd, a nie z pustego wiersza rejestru.
+        dawkaJednostka: dane.dawkaJednostka,
+        dawkaOdniesienie: dane.dawkaOdniesienie,
         przyczyna: dane.przyczyna,
         agrofag: srodek.agrofag,
         bbchOd: srodek.bbchOd,
@@ -111,13 +126,20 @@ class _EkranDawkaState extends State<EkranDawka> {
         padding: const EdgeInsets.all(MotywProsty.odstep),
         children: [
           _PasOdWody(uslugi: widget.uslugi, dane: dane),
-          if (!srodek.dawkaZnana)
+          if (!srodek.dawkaZnana) ...[
             Ostrzezenie(
               tresc: 'Rejestr nie podaje tu dawki w jednoznacznej postaci.',
               coZrobic:
-                  srodek.dawkaTekst ?? 'Sprawdź dawkę na etykiecie środka.',
-            )
-          else ...[
+                  srodek.dawkaTekst ??
+                  'Odczytaj dawkę z etykiety i wpisz ją niżej.',
+            ),
+            const SizedBox(height: MotywProsty.odstep),
+            _DawkaZEtykiety(
+              dane: dane,
+              jednostki: _jednostki,
+              onZmiana: () => setState(() {}),
+            ),
+          ] else ...[
             Text('Dawka', style: Theme.of(context).textTheme.titleLarge),
             const SizedBox(height: MotywProsty.odstep),
             WyborLiczby(
@@ -160,6 +182,116 @@ class _EkranDawkaState extends State<EkranDawka> {
           ),
         ],
       ),
+    );
+  }
+}
+
+/// Dawka przepisana z etykiety — dla środków, których dawki rejestr nie
+/// podaje w jednoznacznej postaci.
+///
+/// Ewidencja wymaga dawki **zastosowanej**, a rolnik ma ją na etykiecie.
+/// Niczego tu nie podpowiadamy (CLAUDE.md, reguła 5): liczba zaczyna się
+/// od zera, a jednostkę rolnik wybiera z tych, którymi posługuje się
+/// rejestr.
+class _DawkaZEtykiety extends StatelessWidget {
+  const _DawkaZEtykiety({
+    required this.dane,
+    required this.jednostki,
+    required this.onZmiana,
+  });
+
+  final DaneWpisu dane;
+  final Future<List<JednostkaDawkiSrodka>>? jednostki;
+  final VoidCallback onZmiana;
+
+  @override
+  Widget build(BuildContext context) {
+    final teksty = Theme.of(context).textTheme;
+    final wybrana = dane.jednostkaZEtykiety;
+    final dawka = dane.dawka ?? 0;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('Wpisz dawkę z etykiety', style: teksty.titleLarge),
+        const SizedBox(height: 8),
+        Text(
+          'W ewidencji musi stać dawka, którą naprawdę zastosowałeś. '
+          'Jeśli nie wiesz, zostaw zero — wpis zapisze się bez dawki, '
+          'a dopiszesz ją później.',
+          style: teksty.bodyMedium,
+        ),
+        const SizedBox(height: MotywProsty.odstep),
+        WyborLiczby(
+          wartosc: dawka,
+          jednostka: wybrana?.opis ?? '',
+          krok: 0.05,
+          onZmiana: (nowa) {
+            dane.dawka = nowa <= 0 ? null : nowa;
+            onZmiana();
+          },
+        ),
+        const SizedBox(height: MotywProsty.odstep),
+        Text('W czym podana jest dawka?', style: teksty.titleLarge),
+        const SizedBox(height: 8),
+        FutureBuilder<List<JednostkaDawkiSrodka>>(
+          future: jednostki,
+          builder: (context, stan) {
+            if (!stan.hasData) {
+              return Text(
+                'Czytam jednostki z rejestru…',
+                style: teksty.bodyMedium,
+              );
+            }
+            final lista = stan.data!;
+            if (lista.isEmpty) {
+              return Text(
+                'Rejestr nie podaje tu żadnej jednostki, więc nie mamy jej '
+                'skąd wziąć. Zapisz zabieg bez dawki i dopisz ją na '
+                'wydruku — nie wstawimy wartości, której nie znamy.',
+                style: teksty.bodyMedium,
+              );
+            }
+            return Wrap(
+              spacing: 10,
+              runSpacing: 10,
+              children: [
+                for (final jednostka in lista)
+                  ChoiceChip(
+                    label: Text(jednostka.opis, style: teksty.labelLarge),
+                    selected: jednostka == wybrana,
+                    onSelected: (_) {
+                      dane.jednostkaZEtykiety = jednostka;
+                      onZmiana();
+                    },
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 14,
+                      vertical: 12,
+                    ),
+                  ),
+              ],
+            );
+          },
+        ),
+        if (dawka > 0 && wybrana == null) ...[
+          const SizedBox(height: MotywProsty.odstep),
+          const Ostrzezenie(
+            tresc: 'Nie wiadomo, w czym podana jest ta dawka.',
+            coZrobic:
+                'Wybierz jednostkę powyżej — bez niej liczba w '
+                'ewidencji nic nie znaczy.',
+          ),
+        ],
+        if (dane.iloscSrodkaRazem case final double razem) ...[
+          const SizedBox(height: MotywProsty.odstep),
+          Text(
+            'Na ${dane.powierzchniaOpis} potrzeba '
+            '${razem.toStringAsFixed(2).replaceAll('.', ',')} '
+            '${wybrana?.jednostka ?? ''}',
+            style: teksty.bodyLarge,
+          ),
+        ],
+      ],
     );
   }
 }

@@ -66,6 +66,36 @@ class DopuszczonySrodek {
   }
 }
 
+/// Jednostka dawki tak, jak zapisuje ją rejestr MRiRW: „l" na „ha",
+/// „kg" na „ha", „%" na „stezenie".
+///
+/// Listy jednostek nie wpisujemy w kod — bierzemy ją z rejestru, bo to
+/// rejestr decyduje, w czym podaje się dawki (CLAUDE.md, reguła 1).
+class JednostkaDawkiSrodka {
+  const JednostkaDawkiSrodka({
+    required this.jednostka,
+    required this.odniesienie,
+  });
+
+  /// „l", „kg", „g", „ml", „%".
+  final String jednostka;
+
+  /// Na co ta dawka wypada: „ha", „stezenie", „100 kg ziarna".
+  final String odniesienie;
+
+  /// To, co staje na przycisku i w ewidencji.
+  String get opis => '$jednostka/$odniesienie';
+
+  @override
+  bool operator ==(Object other) =>
+      other is JednostkaDawkiSrodka &&
+      other.jednostka == jednostka &&
+      other.odniesienie == odniesienie;
+
+  @override
+  int get hashCode => Object.hash(jednostka, odniesienie);
+}
+
 /// Czyta słowniki dołączone do aplikacji: które środki wolno zastosować
 /// na danej uprawie, w jakiej dawce i z jaką karencją.
 class SlownikSrodkow {
@@ -111,6 +141,33 @@ class SlownikSrodkow {
       [uprawa, '%$fragment%', limit],
     );
     return wiersze.map(_zWiersza).toList(growable: false);
+  }
+
+  /// Jednostki dawki używane w rejestrze — od najczęstszej.
+  ///
+  /// Potrzebne tam, gdzie rejestr nie podał dawki w jednoznacznej postaci:
+  /// rolnik odczytuje ją z etykiety i musi mieć w czym ją wpisać. Niczego
+  /// nie zgadujemy — podajemy do wyboru to, czym rejestr się posługuje.
+  Future<List<JednostkaDawkiSrodka>> jednostkiDawki({int limit = 6}) async {
+    final wiersze = await _baza.rawQuery(
+      '''
+      SELECT dawka_jednostka AS jednostka, dawka_odniesienie AS odniesienie,
+             COUNT(*) AS ile
+      FROM zastosowanie
+      WHERE dawka_jednostka IS NOT NULL AND dawka_odniesienie IS NOT NULL
+      GROUP BY dawka_jednostka, dawka_odniesienie
+      ORDER BY ile DESC, dawka_jednostka
+      LIMIT ?
+      ''',
+      [limit],
+    );
+    return [
+      for (final wiersz in wiersze)
+        JednostkaDawkiSrodka(
+          jednostka: wiersz['jednostka']! as String,
+          odniesienie: wiersz['odniesienie']! as String,
+        ),
+    ];
   }
 
   /// Do kiedy wolno stosować ten środek — z rejestru MRiRW.

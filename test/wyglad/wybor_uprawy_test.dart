@@ -406,6 +406,62 @@ void main() {
     expect(uprawy.single.uprawa, 'kukurydza');
   });
 
+  testWidgets('pole z wniosku rolnik nazywa po swojemu', (tester) async {
+    // Pole wczytane z wniosku nazywa się „Pole A" — rolnik nie szuka go
+    // na liście po oznaczeniu z wniosku, tylko po swojej nazwie.
+    await baza.insert('dzialka_rolna', {
+      'id': 'p1',
+      'gospodarstwo_id': 'g1',
+      'nazwa_wlasna': 'Pole A',
+      'oznaczenie_z_wniosku': 'A',
+      'sezon': 2026,
+      'uprawa': 'pszenica ozima',
+      'kod_eppo': 'TRZAW',
+      'powierzchnia_ar': 320,
+      'utworzono': '2026-10-16T08:00:00',
+      'zmieniono': '2026-10-16T08:00:00',
+      'urzadzenie': 'telefon',
+    });
+
+    tester.view.physicalSize = const Size(420, 1400);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: MotywProsty.zbuduj(),
+        home: EkranPola(uslugi: zbudujUslugi()),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Pole A'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Zmień nazwę pola'));
+    await tester.pumpAndSettle();
+
+    // Oznaczenie z wniosku widać, żeby było wiadomo, które pole to jest.
+    expect(find.textContaining('We wniosku: A'), findsOneWidget);
+
+    await tester.enterText(find.byType(TextField).last, 'Za stodołą');
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Zapisz nazwę'));
+    await tester.pumpAndSettle();
+
+    final pole = await RepozytoriumPol(baza).jedno('p1');
+    expect(pole!.nazwa, 'Za stodołą');
+    // Oznaczenie z wniosku zostaje — po nim kontrola odnajdzie pole
+    // w dokumentach ARiMR.
+    expect(pole.oznaczenieZWniosku, 'A');
+
+    // Poprzednia nazwa zostaje w dzienniku zmian.
+    final historia = await baza.query(
+      'historia_zmian',
+      where: 'tabela = ? AND wiersz_id = ?',
+      whereArgs: ['dzialka_rolna', 'p1'],
+    );
+    expect(historia.single['dane_json'], contains('Pole A'));
+  });
+
   testWidgets('rodzaj użytku pola ustawia rolnik, nie aplikacja', (
     tester,
   ) async {
