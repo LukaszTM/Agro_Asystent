@@ -136,3 +136,16 @@ jobs:
             --title "Agro Asystent — APK do testów" \
             --notes "$opis" || true
           gh release upload apk-test "$plik" "$maly" --clobber
+
+          # W wydaniu ma leżeć tylko bieżąca wersja. Po podniesieniu numeru
+          # stary plik zostawałby obok nowego i tester mógłby pobrać nie ten.
+          gh release view apk-test --json assets --jq '.assets[].name' \
+            | while read -r stary; do
+                case "$stary" in
+                  "$plik" | "$maly") ;;
+                  *.apk)
+                    echo "usuwam stary plik: $stary"
+                    gh release delete-asset apk-test "$stary" -y
+                    ;;
+                esac
+              done
