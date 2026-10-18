@@ -57,6 +57,11 @@ danych (Ustawienia → Zrób kopię).
 Wszystko działa **bez internetu**. Zasięg jest potrzebny tylko przy
 pobieraniu granic działki, pogody i wiadomości.
 
+> Testujesz „po kolei", a nie z głowy? Pełna lista przypadków jest
+> w `docs/przypadki-testowe.md`, a zasady rundy w
+> `docs/plan-testow-manualnych.md`. Rolnikowi nie są potrzebne — ta
+> tabelka wyżej w zupełności wystarczy.
+
 ## O co prosimy w zgłoszeniu
 
 1. Co robiłeś (np. „dodawałem oprysk na polu Za stodołą").
