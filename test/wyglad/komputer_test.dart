@@ -292,7 +292,8 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Rejestr zabiegów'), findsWidgets);
-      expect(find.textContaining('Pola w gospodarstwie'), findsOneWidget);
+      // Program otwiera się na pulpicie — gospodarstwo na jednym ekranie.
+      expect(find.text('Co rośnie'), findsOneWidget);
       // Kafelków wyglądu prostego ani dolnego paska nowoczesnego tu nie ma.
       expect(find.text('Dodaj zabieg'), findsNothing);
       expect(find.text('Start'), findsNothing);
@@ -539,6 +540,84 @@ void main() {
       await pokaz(tester, rozmiar: RozmiarTekstu.bardzoDuzy);
       await przewinDoKonca(tester);
       expect(find.text('Za stodołą'), findsOneWidget);
+    });
+  });
+
+  group('pulpit', () {
+    testWidgets('program otwiera się na pulpicie', (tester) async {
+      await dodajPole();
+      tester.view.physicalSize = const Size(1280, 800);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.reset);
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: MotywKomputer.zbuduj(),
+          home: EkranGlownyKomputer(uslugi: zbudujUslugi(), teraz: teraz),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('Co rośnie'), findsOneWidget);
+      expect(find.text('Gdzie to leży'), findsOneWidget);
+      expect(find.text('Co mnie goni'), findsOneWidget);
+    });
+
+    testWidgets('wykres pokazuje uprawy, hektary i udziały', (tester) async {
+      await dodajPole(uprawa: 'pszenica ozima', ar: 1200);
+      await dodajPole(
+        id: 'p2',
+        nazwa: 'Przy drodze',
+        uprawa: 'kukurydza',
+        ar: 800,
+      );
+      await pokaz(tester, zakladka: ZakladkaKomputer.pulpit);
+
+      expect(find.text('pszenica ozima'), findsOneWidget);
+      expect(find.text('kukurydza'), findsOneWidget);
+      expect(find.text('12,00 ha • 60 %'), findsOneWidget);
+      expect(find.text('8,00 ha • 40 %'), findsOneWidget);
+      // Liczba w środku pierścienia: cała powierzchnia gospodarstwa.
+      expect(find.text('20,00 ha'), findsOneWidget);
+    });
+
+    testWidgets('pole bez uprawy liczy się osobno, a nie jako uprawa', (
+      tester,
+    ) async {
+      await dodajPole(uprawa: 'owies', ar: 100);
+      await dodajPole(id: 'p2', nazwa: 'Nowe', uprawa: '', ar: 400);
+      await pokaz(tester, zakladka: ZakladkaKomputer.pulpit);
+
+      expect(find.text('Bez wpisanej uprawy'), findsOneWidget);
+      expect(
+        find.textContaining('czeka'),
+        findsWidgets,
+        reason: 'pulpit ma powiedzieć, że brakuje uprawy',
+      );
+    });
+
+    testWidgets('bez pól pulpit mówi, od czego zacząć', (tester) async {
+      await pokaz(tester, zakladka: ZakladkaKomputer.pulpit);
+
+      expect(
+        find.text('Nie wiem jeszcze, co rośnie w gospodarstwie.'),
+        findsOneWidget,
+      );
+      expect(
+        find.text('Nie ma jeszcze żadnej działki z granicami.'),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('z pulpitu przechodzi się do pełnych terminów', (tester) async {
+      await dodajPole();
+      await pokaz(tester, zakladka: ZakladkaKomputer.pulpit);
+
+      await tester.ensureVisible(find.text('Zobacz wszystkie terminy'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Zobacz wszystkie terminy'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Co trzeba zrobić i do kiedy'), findsOneWidget);
     });
   });
 }

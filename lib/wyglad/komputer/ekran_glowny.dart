@@ -7,6 +7,7 @@ import 'motyw.dart';
 import 'widoki/widok_dokumenty.dart';
 import 'widoki/widok_magazyn.dart';
 import 'widoki/widok_pola.dart';
+import 'widoki/widok_pulpit.dart';
 import 'widoki/widok_rejestr.dart';
 import 'widoki/widok_terminy.dart';
 import 'widoki/widok_ustawienia.dart';
@@ -14,6 +15,7 @@ import 'widoki/widok_warunkowosc.dart';
 
 /// Zakładka programu na komputer.
 enum ZakladkaKomputer {
+  pulpit('Pulpit', Icons.dashboard_outlined),
   pola('Pola', Icons.map_outlined),
   rejestr('Rejestr zabiegów', Icons.list_alt_outlined),
   terminy('Terminy', Icons.event_outlined),
@@ -42,7 +44,7 @@ class EkranGlownyKomputer extends StatefulWidget {
     this.teraz,
     this.onZmianaGospodarstwa,
     this.onZmianaRozmiaruTekstu,
-    this.zakladkaNaStart = ZakladkaKomputer.pola,
+    this.zakladkaNaStart = ZakladkaKomputer.pulpit,
   });
 
   final Uslugi uslugi;
@@ -128,10 +130,26 @@ class _EkranGlownyKomputerState extends State<EkranGlownyKomputer> {
     );
   }
 
+  /// Przejście z pulpitu do pełnej zakładki.
+  void _przelaczPoNazwie(String nazwa) {
+    for (final zakladka in ZakladkaKomputer.values) {
+      if (zakladka.name == nazwa) {
+        _przelacz(zakladka);
+        return;
+      }
+    }
+  }
+
   Widget _widok() => switch (_zakladka) {
     // Klucz z licznikiem przebudowuje widok po powrocie na zakładkę —
     // dane czyta wtedy od nowa. Widok, który sam coś zapisał, odświeża się
     // u siebie; przebudowa z zewnątrz zgubiłaby mu wybrane pole.
+    ZakladkaKomputer.pulpit => WidokPulpitKomputer(
+      key: ValueKey('pulpit-$_odswiezenie'),
+      uslugi: _uslugi,
+      teraz: widget.teraz,
+      onPelnyWidok: _przelaczPoNazwie,
+    ),
     ZakladkaKomputer.pola => WidokPolaKomputer(
       key: ValueKey('pola-$_odswiezenie'),
       uslugi: _uslugi,

@@ -54,6 +54,31 @@ abstract final class MotywKomputer {
     zaokraglenie: zaokraglenieKarty,
   );
 
+  /// Barwy kawałków wykresu zasiewów.
+  ///
+  /// Zieleń gospodarstwa na początku, dalej barwy ziemi i zboża — mają się
+  /// od siebie różnić także przy wydruku w szarości i przy najczęstszej
+  /// wadzie wzroku (nierozróżnianie czerwieni i zieleni), dlatego idą
+  /// naprzemiennie od ciemnych do jasnych.
+  static const List<Color> barwyWykresu = [
+    Color(0xFF1E5B2E),
+    Color(0xFFC7922B),
+    Color(0xFF4F8F4A),
+    Color(0xFF8A4B00),
+    Color(0xFF7FB069),
+    Color(0xFF3D5A80),
+    Color(0xFFB7C68B),
+    Color(0xFF6B4E71),
+  ];
+
+  /// Barwa kawałka wykresu o numerze [numer] — z nawrotem, gdy upraw jest
+  /// więcej niż barw.
+  static Color barwaWykresu(int numer) =>
+      barwyWykresu[numer % barwyWykresu.length];
+
+  /// Kawałek „bez wpisanej uprawy" — szary, bo to brak danych, nie uprawa.
+  static const Color barwaBezDanych = Color(0xFFB9C2B6);
+
   /// Motyw programu w wybranej wielkości tekstu.
   static ThemeData zbuduj([RozmiarTekstu rozmiar = RozmiarTekstu.normalny]) {
     final skala = rozmiar.skala;
