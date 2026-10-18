@@ -24,7 +24,7 @@ import 'uslugi.dart';
 class AplikacjaAgroAsystent extends StatefulWidget {
   const AplikacjaAgroAsystent({
     super.key,
-    this.dostep = const DostepFunkcji.darmowa(),
+    this.dostep = const DostepFunkcji.zBudowy(),
     this.uslugi,
     this.wlasneUruchomienie,
     this.platforma = Platforma.telefon,

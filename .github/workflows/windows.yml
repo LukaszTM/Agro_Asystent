@@ -46,8 +46,10 @@ jobs:
         run: flutter pub get
 
       # Katalogu `windows/` nie tworzymy tu od nowa — jest w repozytorium.
+      # Program dla testerów pokazuje całość; decyzja o tym, co jest
+      # dodatkiem, zostaje w `lib/rdzen/dostep/`.
       - name: Budowanie
-        run: flutter build windows --release
+        run: flutter build windows --release --dart-define=AGRO_WYDANIE_TESTOWE=true
 
       - name: Spis plików wyniku
         shell: bash

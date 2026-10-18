@@ -82,7 +82,7 @@ class Uslugi {
     this.klientWiadomosci = const KlientWiadomosci(),
     this.kanalyWiadomosci,
     this.cenySkupu,
-    this.dostep = const DostepFunkcji.darmowa(),
+    this.dostep = const DostepFunkcji.zBudowy(),
     this.biodynamika,
   });
 

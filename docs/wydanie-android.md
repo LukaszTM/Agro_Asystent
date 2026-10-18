@@ -122,3 +122,22 @@ Lista do odhaczenia, zanim plik pójdzie do ludzi:
 Repozytorium jest publiczne, więc link do wydania działa bez konta na
 GitHubie. Jeśli kiedyś stanie się prywatne, testerzy przestaną móc
 pobierać plik i trzeba będzie rozdawać go inaczej.
+
+## Wydanie testowe a wydanie dla rolnika
+
+Pliki rozdawane testerom budują się z flagą
+`--dart-define=AGRO_WYDANIE_TESTOWE=true`. Włącza ona **tylko dodatki**:
+wczytanie wniosku z PDF, odczyt zdjęcia, magazyn, plan nawożenia, kilka
+gospodarstw. Decyzję, co jest dodatkiem, podejmuje nadal jedno miejsce
+w kodzie — `lib/rdzen/dostep/` — a flaga mówi jej, że to wydanie
+testowe.
+
+Bez flagi (czyli przy budowaniu lokalnym, w testach i w wydaniu dla
+rolnika) program zachowuje się tak jak u rolnika. Pilnuje tego test
+`test/rdzen/dostep/dostep_funkcji_test.dart`: gdyby ktoś przestawił to
+na stałe, test padnie.
+
+Plik zachowujący się jak u rolnika zbudujesz tak: Actions → „Zbuduj
+APK" → Run workflow → odznacz **„Wydanie testowe — wszystkie dodatki
+odblokowane"**. Przyda się do sprawdzenia, czy wersja darmowa nadal
+wystarcza do prowadzenia dokumentacji.

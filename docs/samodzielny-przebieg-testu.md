@@ -18,10 +18,13 @@ to znalezisko, nawet jeśli ekran wygląda ładnie.
 
 1. Zainstaluj plik `agro-asystent-0.2.0+2-arm64.apk` (39 MB) na swoim
    telefonie.
-2. **Nie wpisuj prawdziwego numeru producenta ani prawdziwych numerów
+2. **Plik testowy ma odblokowane wszystkie dodatki** — wczytanie
+   wniosku, magazyn, odczyt zdjęcia, plan nawożenia. Pod numerem wersji
+   w Ustawieniach stoi o tym zdanie.
+3. **Nie wpisuj prawdziwego numeru producenta ani prawdziwych numerów
    działek.** Zrzuty ekranu z testu będą krążyć; dane gospodarstwa
    testowego są niżej i są zmyślone.
-3. Przygotuj kartkę i długopis — do zapisania numeru kroku, przy którym
+4. Przygotuj kartkę i długopis — do zapisania numeru kroku, przy którym
    coś nie zagrało.
 
 **Czego ja sam nie mogę sprawdzić:** w moim środowisku nie ma Androida
@@ -128,6 +131,10 @@ w historii zmian**, a nie skasowana.
 ### A13. Trzy rejestry i wydruk
 Dokumenty → kolejno **Opryski**, **Nawożenie azotem**, **Ekoschematy**.
 → Wszystkie trzy otwierają się **bez jednego okna o płatności**.
+  (W pliku testowym wszystkie dodatki są odblokowane, więc ten krok
+  sprawdza tu tylko, czy rejestry działają. Czy są darmowe **bez**
+  premium, pilnują testy automatyczne i osobny plik zbudowany bez
+  odblokowania — patrz `docs/przypadki-testowe.md`, grupa PRE.)
 → Opryski → **Wydrukuj**: otwiera się podgląd systemowy, polskie znaki
 są poprawne, w nagłówku stoi „Gospodarstwo testowe".
 → **Plik CSV** → zapisz i otwórz w arkuszu: liczba wierszy zgadza się

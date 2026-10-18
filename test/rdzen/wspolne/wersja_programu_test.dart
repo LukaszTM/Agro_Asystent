@@ -35,4 +35,20 @@ void main() {
 
     expect(wersja.opis, 'Wersja 0.2.0');
   });
+
+  group('wydanie testowe', () {
+    test('mówi testerowi, że ogląda wszystko', () {
+      final opis = WersjaProgramu.opisWydania(testowe: true);
+
+      expect(opis, contains('wszystkie dodatki odblokowane'));
+      // I od razu prostuje, żeby nikt nie uznał, że magazyn będzie
+      // darmowy także potem.
+      expect(opis, contains('część z nich będzie płatna'));
+      expect(opis, contains('dokumentacja'));
+    });
+
+    test('w wydaniu dla rolnika nie ma żadnego dopisku', () {
+      expect(WersjaProgramu.opisWydania(testowe: false), isEmpty);
+    });
+  });
 }

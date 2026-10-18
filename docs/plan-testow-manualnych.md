@@ -34,6 +34,13 @@ terminy, warunkowość, dokumenty (wydruk i eksport), magazyn, kopię
 i scalanie, tryb offline, program na Windows, ergonomię obu wyglądów
 telefonu.
 
+**Wydanie dla testerów ma odblokowane wszystkie dodatki** (flaga
+budowania `AGRO_WYDANIE_TESTOWE`). Dzięki temu tester ogląda całość —
+ale przypadki z grupy **PRE** (co darmowe, co płatne) wymagają osobnego
+pliku, zbudowanego bez odblokowania: Actions → „Zbuduj APK" → Run
+workflow → odznaczyć „Wydanie testowe". Tę samą granicę pilnują testy
+automatyczne w `test/rdzen/dostep/`.
+
 **Nie testujemy** (jeszcze nie istnieje — zgłoszenia na ten temat
 odrzucamy jako „poza zakresem", nie jako błąd):
 

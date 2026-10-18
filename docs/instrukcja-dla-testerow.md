@@ -42,6 +42,19 @@ czasu, aż aplikacja dostanie stały podpis wydawniczy. Odinstalowanie
 kasuje też wpisy — w czasie testów warto więc najpierw zrobić kopię
 danych (Ustawienia → Zrób kopię).
 
+## W tej wersji masz odblokowane wszystko
+
+Plik do testów jest zbudowany tak, że **wszystkie dodatki są włączone** —
+wczytanie wniosku z PDF, odczyt zdjęcia etykiety, magazyn, plan
+nawożenia, kilka gospodarstw. Chodzi o to, żebyś obejrzał całość
+i powiedział, co jest warte pieniędzy, a co nie.
+
+W wersji, którą dostanie rolnik, część z tych rzeczy będzie płatna.
+**Nigdy płatna nie będzie dokumentacja**: wpisy, trzy rejestry, wydruk
+PDF, eksport CSV/XLSX, kopia danych i dodawanie działek po numerze
+zostają darmowe zawsze. Na ekranie Ustawień, pod numerem wersji, stoi
+o tym jedno zdanie.
+
 ## Co warto sprawdzić
 
 | Rzecz | Na co patrzeć |

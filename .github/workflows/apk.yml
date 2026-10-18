@@ -18,6 +18,12 @@ on:
         description: Dołączyć APK do wydania „apk-test" (łatwy link na telefon)
         type: boolean
         default: true
+      odblokuj_dodatki:
+        description: >-
+          Wydanie testowe — wszystkie dodatki odblokowane. Odznacz, żeby
+          zbudować plik zachowujący się tak jak u rolnika.
+        type: boolean
+        default: true
   push:
     branches: [main, 'claude/**']
     tags: ['apk-*']
@@ -84,15 +90,28 @@ jobs:
       - name: Zależności
         run: flutter pub get
 
+      # Wydanie testowe ma mieć odblokowane dodatki — tester ogląda
+      # całość. Decyzję, co jest dodatkiem, podejmuje `lib/rdzen/dostep/`;
+      # tu tylko ją włączamy flagą budowania. Bez flagi plik zachowuje
+      # się tak jak u rolnika.
+      - name: Czy odblokować dodatki
+        run: |
+          odblokuj="${{ github.event.inputs.odblokuj_dodatki }}"
+          [ -z "$odblokuj" ] && odblokuj=true
+          echo "AGRO_DODATKI=$odblokuj" >> "$GITHUB_ENV"
+          echo "Wydanie testowe z odblokowanymi dodatkami: $odblokuj"
+
       - name: Budowanie APK
         # Dwa pliki: uniwersalny (wchodzi na każdy telefon) i mniejszy,
         # tylko na arm64 — przy rozdawaniu testerom liczy się każdy
         # megabajt pobierany z pakietu danych. Ten sam numer wersji
         # w obu, żeby dało się je wymieniać bez odinstalowywania.
         run: |
-          flutter build apk --release
+          flutter build apk --release \
+            --dart-define=AGRO_WYDANIE_TESTOWE=$AGRO_DODATKI
           flutter build apk --release --split-per-abi \
-            -Pforce-version-code-ignoring-abi=true
+            -Pforce-version-code-ignoring-abi=true \
+            --dart-define=AGRO_WYDANIE_TESTOWE=$AGRO_DODATKI
 
       - name: Nazwy plików z numerem wersji
         run: |
@@ -128,7 +147,7 @@ jobs:
           debugowym, więc: w telefonie trzeba zezwolić na instalację z
           nieznanych źródeł, a przed wgraniem nowszego pliku odinstalować
           poprzedni (każdy build ma inny podpis). Nie nadaje się do Google
-          Play — jak dodać własny klucz, mówi docs/wydanie-android.md."
+          Play — jak dodać własny klucz, mówi docs/wydanie-android.md." 
           fi
           gh release create apk-test \
             --target "$GITHUB_SHA" \

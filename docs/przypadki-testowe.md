@@ -340,6 +340,13 @@ zdanie, że żadne źródło nie odpowiedziało.
 
 ## PRE — co darmowe, co płatne
 
+> **Uwaga: plik rozdawany testerom ma odblokowane wszystkie dodatki**,
+> więc tych przypadków **nie da się na nim sprawdzić**. Potrzebny jest
+> plik zbudowany bez odblokowania: Actions → „Zbuduj APK" → Run workflow
+> → odznaczyć **„Wydanie testowe — wszystkie dodatki odblokowane"**.
+> Zachowanie wersji darmowej pilnują też testy automatyczne
+> (`test/rdzen/dostep/`), ale wygląd ekranów trzeba obejrzeć okiem.
+
 ### PRE-01 — Dokumentacja nigdy za opłatą (A)
 **Warunki:** wersja bez premium.
 **Oczekiwane:** wpisy, trzy rejestry, wydruk PDF, eksport CSV/XLSX,

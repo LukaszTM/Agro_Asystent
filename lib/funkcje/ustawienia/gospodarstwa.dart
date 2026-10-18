@@ -62,7 +62,7 @@ enum WynikDodania {
 class RepozytoriumGospodarstw {
   const RepozytoriumGospodarstw({
     required this.baza,
-    this.dostep = const DostepFunkcji.darmowa(),
+    this.dostep = const DostepFunkcji.zBudowy(),
   });
 
   final DatabaseExecutor baza;

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
+import '../dostep/dostep_funkcji.dart';
+
 /// Która wersja programu stoi na urządzeniu.
 ///
 /// Przy testach z rolnikami to nie ozdoba: bez numeru nie wiadomo, czy
@@ -15,6 +17,16 @@ class WersjaProgramu {
   String get opis => numerBudowy.isEmpty
       ? 'Wersja $wersja'
       : 'Wersja $wersja (budowa $numerBudowy)';
+
+  /// Zdanie o wydaniu testowym — albo pusty napis w wydaniu dla rolnika.
+  ///
+  /// Tester musi wiedzieć, że ogląda wszystko: inaczej uzna, że magazyn
+  /// i wczytanie wniosku będą darmowe także później.
+  static String opisWydania({required bool testowe}) => testowe
+      ? 'Wydanie testowe: wszystkie dodatki odblokowane. W wersji dla '
+            'rolnika część z nich będzie płatna — dokumentacja (wpisy, '
+            'rejestry, wydruk, eksport, kopia) zostaje darmowa zawsze.'
+      : '';
 
   /// Odczyt z paczki aplikacji. `null`, gdy się nie udał — na przykład
   /// w testach widgetów albo gdy wtyczka nie odpowiada. Brak numeru nie
@@ -58,9 +70,20 @@ class _WierszWersjiState extends State<WierszWersji> {
         if (wersja == null) {
           return const SizedBox.shrink();
         }
-        return Text(
-          '${widget.przed}${wersja.opis}',
-          style: widget.styl ?? Theme.of(context).textTheme.bodyMedium,
+        final styl = widget.styl ?? Theme.of(context).textTheme.bodyMedium;
+        final oWydaniu = WersjaProgramu.opisWydania(
+          testowe: DostepFunkcji.wydanieTestowe,
+        );
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text('${widget.przed}${wersja.opis}', style: styl),
+            if (oWydaniu.isNotEmpty) ...[
+              const SizedBox(height: 4),
+              Text(oWydaniu, style: styl),
+            ],
+          ],
         );
       },
     );

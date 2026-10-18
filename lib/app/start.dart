@@ -48,7 +48,7 @@ Future<Uslugi> uruchom({
   String? katalogDanych,
   String? urzadzenie,
   Platforma? platforma,
-  DostepFunkcji dostep = const DostepFunkcji.darmowa(),
+  DostepFunkcji dostep = const DostepFunkcji.zBudowy(),
 }) async {
   // Telefon i komputer dostają się do SQLite inaczej (patrz `platforma.dart`);
   // dalszy kod widzi już tę samą bazę.

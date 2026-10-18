@@ -131,4 +131,34 @@ void main() {
       }
     });
   });
+
+  group('wydanie testowe', () {
+    // Wydanie dla rolnika buduje się **bez** flagi i wtedy ma zachowywać
+    // się jak wersja darmowa. Gdyby ktoś kiedyś przestawił to na stałe,
+    // rolnik dostałby za darmo dodatki, których sprzedaż jest w planie —
+    // a przy wygaśnięciu wszystko zniknęłoby mu z dnia na dzień.
+    test('bez flagi budowania program zachowuje się jak darmowy', () {
+      const zBudowy = DostepFunkcji.zBudowy();
+
+      expect(DostepFunkcji.wydanieTestowe, isFalse);
+      expect(zBudowy.czyDostepna(Funkcja.magazyn), isFalse);
+      expect(zBudowy.czyDostepna(Funkcja.importDzialekZWnioskuPdf), isFalse);
+    });
+
+    test('funkcje wymagane przepisami działają w każdym wydaniu', () {
+      const zBudowy = DostepFunkcji.zBudowy();
+
+      for (final funkcja in DostepFunkcji.wymaganePrzepisami) {
+        expect(zBudowy.czyDostepna(funkcja), isTrue, reason: '$funkcja');
+      }
+    });
+
+    test('odblokowanie dodatków nie rusza listy funkcji darmowych', () {
+      // Premium dokłada dodatki, nigdy nie zabiera tego, co wymagane
+      // przepisami.
+      for (final funkcja in DostepFunkcji.wymaganePrzepisami) {
+        expect(premium.czyDostepna(funkcja), isTrue, reason: '$funkcja');
+      }
+    });
+  });
 }
