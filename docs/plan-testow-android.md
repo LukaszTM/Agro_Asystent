@@ -1,6 +1,6 @@
 # Plan testów – Agro Asystent (Android)
 
-Plan i 36 przypadków testowych dla aplikacji Agro Asystent (dokumentacja
+Plan i 37 przypadków testowych dla aplikacji Agro Asystent (dokumentacja
 gospodarstwa wymagana przez ARiMR i inspekcje: pola, zabiegi, nawożenie,
 trzy rejestry, wydruk i eksport — wszystko bez internetu). Oczekiwane wyniki
 wynikają z planu projektu i `CLAUDE.md`; tam, gdzie dokumentacja nie precyzuje
@@ -14,8 +14,8 @@ Wersja rozbudowana, z warunkami wstępnymi i pełnym opisem kroków:
 
 - **Przedmiot testów:** aplikacja Agro Asystent na Androida, repozytorium
   github.com/LukaszTM/Agro_Asystent, plik APK z wydania `apk-test`
-- **W zakresie:** pola i działki (w tym działka spoza wniosku z list
-  województwo → powiat → gmina → obręb, własna nazwa pola), wpis zabiegu
+- **W zakresie:** pola i działki (w tym działka spoza wniosku szukana po
+  województwie, miejscowości i numerze, własna nazwa pola), wpis zabiegu
   (oprysk, nawożenie, siew, zbiór), karencje, nawożenie azotem, terminy,
   warunkowość (normy GAEC), trzy rejestry, wydruk PDF i eksport CSV/XLSX,
   magazyn, kopia danych i scalanie z drugiego urządzenia, słowniczek pojęć,
@@ -55,8 +55,9 @@ dopisz numer Issue, np. F #4) · **B** – Blocked (zablokowany, dopisz powód) 
 | TC-06 | Pola | Dodaj pole i wpisz uprawę, której nie ma w słowniku (np. „mieszanka na zielonkę") | Aplikacja przyjmuje własną nazwę i mówi wprost, że kodu EPPO nie ma; na wydruku wyjdzie „brak", nic nie jest zgadywane | Średni |  |
 | TC-07 | Pola | Dodaj pole i wybierz uprawę „Trawy" (szukaj „traw") | „Trawy" są na liście mimo braku w rejestrze środków; widać, że są bez kodu EPPO | Średni |  |
 | TC-08 | Pola | Pola → Działki i mapa → Dodaj działkę → „Mam pełny numer z wniosku": wpisz numer działki z wniosku | Działka dodana, granica rysuje się na mapie; numer zostaje taki, jaki wpisałeś | Wysoki |  |
-| TC-09 | Pola | Dodaj działkę → „Wybierz z listy": województwo → powiat → gmina → obręb, potem numer działki z umowy dzierżawy | Listy wypełniają się po kolei, aplikacja sama składa pełny numer; działka dodana i widoczna na mapie | Wysoki |  |
+| TC-09 | Pola | Dodaj działkę → „Znajdź działkę po miejscowości": dotknij swojego województwa, wpisz nazwę wsi (obrębu) z umowy dzierżawy i numer działki, naciśnij „Znajdź działkę" | Gdy w województwie jest jedna taka działka — od razu mapa do potwierdzenia; gdy kilka (ta sama nazwa wsi w kilku gminach) — lista gmin do wyboru, aplikacja nie wybiera sama; po potwierdzeniu działka widoczna na mapie | Wysoki |  |
 | TC-10 | Pola | Powtórz TC-09 z włączonym trybem samolotowym | Jedno zdanie o braku internetu i rada, co zrobić (wpisać pełny numer z wniosku); aplikacja nie zawiesza się i nie gubi wpisanych danych | Średni |  |
+| TC-10a | Pola | W TC-09 wpisz nazwę wsi, której w wybranym województwie nie ma (np. wieś z sąsiedniego województwa) | Komunikat, że w tym województwie takiej działki nie ma, z liczbą znalezionych w kraju; aplikacja nie podstawia działki z innego województwa | Średni |  |
 | TC-11 | Pola | Wpisz numer działki, której nie ma (np. z błędną cyfrą) | Jedno zdanie, że takiej działki nie znaleziono, i podpowiedź, co sprawdzić; nic nie zapisuje się „na próbę" | Średni |  |
 | TC-12 | Pola | Otwórz pole wczytane z wniosku („Pole A") → Zmień nazwę pola → wpisz „Za stodołą" → Zapisz nazwę | Nazwa zmieniona na liście i w nagłówku; oznaczenie z wniosku („We wniosku: A") zostaje widoczne, wpisy zabiegów zostają przy tym polu | Wysoki |  |
 | TC-13 | Pola | Przy włączonym trybie samolotowym otwórz Pola → Działki i mapa | Mapa rysuje się z danych w telefonie, bez ani jednego zapytania do sieci | Wysoki |  |

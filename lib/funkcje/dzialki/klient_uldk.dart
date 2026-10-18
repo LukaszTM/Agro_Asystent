@@ -37,49 +37,43 @@ class DzialkaZUldk {
   ].whereType<String>().where((c) => c.isNotEmpty).join(', ');
 }
 
-/// Błąd, który trzeba pokazać rolnikowi w jednym zdaniu.
-/// Jednostka podziału administracyjnego: województwo, powiat, gmina
-/// albo obręb ewidencyjny.
-class JednostkaTerytorialna {
-  const JednostkaTerytorialna({required this.nazwa, required this.teryt});
+/// Działka znaleziona po nazwie obrębu i numerze — bez granic, tylko
+/// to, po czym rolnik pozna, czy to jego.
+///
+/// Nazwy obrębów się powtarzają (w kraju są dziesiątki „Dąbrów"), więc
+/// usługa oddaje wszystkie pasujące działki, a rolnik wybiera swoją po
+/// gminie i powiecie. Granice pobiera się dopiero dla wybranej.
+class DzialkaZnaleziona {
+  const DzialkaZnaleziona({
+    required this.teryt,
+    required this.wojewodztwo,
+    required this.powiat,
+    required this.gmina,
+    required this.obreb,
+    required this.numer,
+  });
 
-  final String nazwa;
-
-  /// Identyfikator TERYT. Dla obrębu ma postać `WWPPGG_R.OOOO` — razem
-  /// z numerem działki tworzy pełny identyfikator działki.
+  /// Pełny identyfikator działki — nim pytamy potem o granice.
   final String teryt;
 
+  final String wojewodztwo;
+  final String powiat;
+  final String gmina;
+  final String obreb;
+  final String numer;
+
+  /// Pierwsze dwie cyfry identyfikatora to kod województwa w TERYT.
+  String get kodWojewodztwa => teryt.length >= 2 ? teryt.substring(0, 2) : '';
+
+  /// Jak odróżnić tę działkę od innych o tej samej nazwie obrębu.
+  String get polozenie =>
+      [gmina, powiat, wojewodztwo].where((c) => c.isNotEmpty).join(', ');
+
   @override
-  String toString() => '$nazwa ($teryt)';
+  String toString() => '$teryt ($polozenie)';
 }
 
-/// Który szczebel podziału wybieramy.
-enum PoziomPodzialu {
-  wojewodztwo('GetVoivodeships', 'voivodeship', null),
-  powiat('GetCounties', 'county', 'voivodeship'),
-  gmina('GetCommunes', 'commune', 'county'),
-  obreb('GetRegions', 'region', 'commune');
-
-  const PoziomPodzialu(this.zadanie, this.pole, this.parametrNadrzednej);
-
-  /// Nazwa żądania w usłudze ULDK.
-  final String zadanie;
-
-  /// Nazwa kolumny z nazwą jednostki.
-  final String pole;
-
-  /// Pod jakim parametrem usługa chce identyfikatora jednostki wyżej.
-  /// `null` dla województw — tych nic nie poprzedza.
-  final String? parametrNadrzednej;
-
-  String get dlaRolnika => switch (this) {
-    PoziomPodzialu.wojewodztwo => 'województwo',
-    PoziomPodzialu.powiat => 'powiat',
-    PoziomPodzialu.gmina => 'gmina',
-    PoziomPodzialu.obreb => 'obręb',
-  };
-}
-
+/// Błąd, który trzeba pokazać rolnikowi w jednym zdaniu.
 class BladUldk implements Exception {
   const BladUldk(this.wiadomosc, {this.coZrobic});
 
@@ -119,8 +113,9 @@ class KlientUldk {
     r'^\d{6}_\d\.\d{4}(?:\.AR_\d+)?\.\d+(?:/\d+)?$',
   );
 
-  /// Pobiera działkę po pełnym identyfikatorze albo po zapisie
-  /// „nazwa obrębu numer" — usługa przyjmuje oba.
+  /// Pobiera działkę z granicami po pełnym identyfikatorze. Zapis
+  /// „nazwa obrębu numer" też przyjmuje, ale tylko gdy w kraju jest
+  /// dokładnie jedna taka działka — inaczej mówi, że trzeba wybrać.
   ///
   /// Nazwy obrębów się powtarzają w kraju, więc wynik **musi** potwierdzić
   /// rolnik na mapie (plan, pkt 6.1).
@@ -133,10 +128,31 @@ class KlientUldk {
       );
     }
 
-    final poIdentyfikatorze = wzorzecIdentyfikatora.hasMatch(zapytanie);
+    if (!wzorzecIdentyfikatora.hasMatch(zapytanie)) {
+      // „Brzeziny 138" to nie identyfikator. Usługa oddałaby na to listę
+      // (pierwszy wiersz to liczba wyników, nie status), a wśród
+      // dziesiątek obrębów o tej nazwie pierwszy z brzegu nie musi być
+      // tym właściwym — wybór zostawiamy rolnikowi.
+      final czesci = zapytanie.split(RegExp(r'\s+'));
+      final znalezione = await szukajPoNazwie(
+        obreb: czesci.take(czesci.length - 1).join(' '),
+        numer: czesci.last,
+      );
+      if (znalezione.length > 1) {
+        throw BladUldk(
+          'Jest ${znalezione.length} działek nr ${czesci.last} w obrębach '
+          'o nazwie „${czesci.take(czesci.length - 1).join(' ')}".',
+          coZrobic:
+              'Wybierz województwo i swoją gminę z listy albo wpisz pełny '
+              'numer z wypisu.',
+        );
+      }
+      return pobierz(znalezione.single.teryt, srid: srid);
+    }
+
     final adresZapytania = Uri.parse(adres).replace(
       queryParameters: {
-        'request': poIdentyfikatorze ? 'GetParcelById' : 'GetParcelByIdOrNr',
+        'request': 'GetParcelById',
         'id': zapytanie,
         'result': _pola.join(','),
         'srid': '$srid',
@@ -175,45 +191,45 @@ class KlientUldk {
     );
   }
 
-  /// Lista jednostek jednego szczebla — do wyboru z listy zamiast
-  /// wpisywania identyfikatora TERYT.
+  /// Działki o danym numerze w obrębach o danej nazwie — bez granic.
   ///
-  /// Rolnik zna swoją gminę i obręb, ale nie zna zapisu
-  /// `141201_2.0012`. Działkę dzierżawioną, której nie ma we wniosku,
-  /// dodaje się więc tak: województwo → powiat → gmina → obręb → numer.
-  Future<List<JednostkaTerytorialna>> jednostki({
-    required PoziomPodzialu poziom,
-    String? terytNadrzednej,
+  /// Rolnik dodaje działkę spoza wniosku (dzierżawa, zakup po jego
+  /// złożeniu): nie zna zapisu `141201_2.0012.138`, ale zna miejscowość
+  /// i ma numer na umowie. Usługa przyjmuje „nazwa obrębu numer" i oddaje
+  /// wszystkie pasujące działki w kraju, każdą z gminą i powiatem.
+  Future<List<DzialkaZnaleziona>> szukajPoNazwie({
+    required String obreb,
+    required String numer,
   }) async {
-    final parametrNadrzednej = poziom.parametrNadrzednej;
-    if (parametrNadrzednej != null &&
-        (terytNadrzednej == null || terytNadrzednej.isEmpty)) {
-      throw BladUldk(
-        'Najpierw wybierz jednostkę wyżej (${poziom.dlaRolnika}).',
+    final nazwa = obreb.trim();
+    final nr = numer.trim();
+    if (nazwa.isEmpty || nr.isEmpty) {
+      throw const BladUldk(
+        'Podaj nazwę miejscowości (obrębu) i numer działki.',
+        coZrobic: 'Nazwę znajdziesz na umowie albo w wypisie z ewidencji.',
       );
     }
-
-    final parametry = <String, String>{
-      'request': poziom.zadanie,
-      'result': '${poziom.pole},teryt',
-    };
-    if (parametrNadrzednej != null) {
-      parametry[parametrNadrzednej] = terytNadrzednej!;
-    }
-    final adresZapytania = Uri.parse(adres).replace(queryParameters: parametry);
+    final adresZapytania = Uri.parse(adres).replace(
+      queryParameters: {
+        'request': 'GetParcelByIdOrNr',
+        'id': '$nazwa $nr',
+        'result': _polaZnalezionej.join(','),
+      },
+    );
 
     final klient = _klient ?? http.Client();
     final http.Response odpowiedz;
     try {
       odpowiedz = await klient
           .get(adresZapytania)
-          .timeout(const Duration(seconds: 30));
+          .timeout(const Duration(seconds: 60));
     } on Exception {
       throw const BladUldk(
-        'Nie udało się pobrać listy z usługi granic działek.',
+        'Nie udało się połączyć z usługą granic działek.',
         coZrobic:
-            'Lista pobiera się raz, przez internet. Bez zasięgu dodaj '
-            'działkę, wpisując jej pełny numer z wypisu.',
+            'Szukanie po nazwie wymaga internetu. Bez zasięgu dodaj '
+            'działkę, wpisując jej pełny numer z wypisu. Działki już '
+            'dodane działają bez internetu.',
       );
     } finally {
       if (_klient == null) {
@@ -223,56 +239,77 @@ class KlientUldk {
 
     if (odpowiedz.statusCode != 200) {
       throw BladUldk(
-        'Usługa odpowiedziała błędem (${odpowiedz.statusCode}).',
+        'Usługa granic działek odpowiedziała błędem (${odpowiedz.statusCode}).',
         coZrobic: 'Spróbuj ponownie za chwilę.',
       );
     }
     // Usługa oddaje polskie nazwy w UTF-8. `odpowiedz.body` bez nagłówka
     // z kodowaniem rozłożyłby „Żyrzyn" na krzaki — a nazwa obrębu trafia
     // potem do bazy i na wydruk.
-    return odczytajJednostki(
+    return odczytajZnalezione(
       utf8.decode(odpowiedz.bodyBytes, allowMalformed: true),
-      poziom,
+      obreb: nazwa,
+      numer: nr,
     );
   }
 
-  /// Odpowiedź usługi: pierwszy wiersz to status, dalej po jednym wierszu
-  /// na jednostkę — „nazwa|TERYT".
-  static List<JednostkaTerytorialna> odczytajJednostki(
-    String tresc,
-    PoziomPodzialu poziom,
-  ) {
+  static const List<String> _polaZnalezionej = [
+    'teryt',
+    'voivodeship',
+    'county',
+    'commune',
+    'region',
+    'parcel',
+  ];
+
+  /// Odpowiedź na „nazwa numer": w pierwszym wierszu **liczba** znalezionych
+  /// działek (nie status), dalej po jednym wierszu na działkę. Brak wyników
+  /// to „-1 brak wyników".
+  static List<DzialkaZnaleziona> odczytajZnalezione(
+    String tresc, {
+    required String obreb,
+    required String numer,
+  }) {
     final wiersze = tresc
         .split('\n')
         .map((w) => w.trim())
         .where((w) => w.isNotEmpty)
-        .toList();
-    if (wiersze.isEmpty || !wiersze.first.startsWith('0')) {
+        .toList(growable: false);
+    if (wiersze.isEmpty) {
+      throw const BladUldk('Usługa nie zwróciła żadnych danych.');
+    }
+    final ile = int.tryParse(wiersze.first.split(' ').first) ?? -1;
+    if (ile <= 0) {
       throw BladUldk(
-        'Usługa nie podała listy (${poziom.dlaRolnika}).',
-        coZrobic: 'Spróbuj ponownie albo wpisz pełny numer działki.',
+        'Nie znaleziono działki nr $numer w obrębie „$obreb".',
+        coZrobic:
+            'Sprawdź pisownię nazwy — ma być taka jak na umowie albo '
+            'w wypisie (nazwa obrębu to zwykle nazwa wsi). Gdy masz pełny '
+            'numer z wypisu, wpisz go zamiast nazwy.',
       );
     }
 
-    final jednostki = <JednostkaTerytorialna>[];
+    final znalezione = <DzialkaZnaleziona>[];
     for (final wiersz in wiersze.skip(1)) {
       final czesci = wiersz.split('|').map((c) => c.trim()).toList();
-      if (czesci.length < 2 || czesci[0].isEmpty || czesci[1].isEmpty) {
+      if (czesci.length < _polaZnalezionej.length || czesci[0].isEmpty) {
         // Wiersza, którego nie rozumiemy, nie zgadujemy — pomijamy go.
         continue;
       }
-      jednostki.add(JednostkaTerytorialna(nazwa: czesci[0], teryt: czesci[1]));
+      znalezione.add(
+        DzialkaZnaleziona(
+          teryt: czesci[0],
+          wojewodztwo: czesci[1],
+          powiat: czesci[2],
+          gmina: czesci[3],
+          obreb: czesci[4],
+          numer: czesci[5],
+        ),
+      );
     }
-    jednostki.sort(
-      (a, b) => a.nazwa.toLowerCase().compareTo(b.nazwa.toLowerCase()),
-    );
-    return jednostki;
+    znalezione.sort((a, b) => a.polozenie.compareTo(b.polozenie));
+    return znalezione;
   }
-
-  /// Pełny identyfikator działki z obrębu i numeru — w takiej postaci
-  /// pyta o nią usługa i w takiej stoi na wypisie.
-  static String pelnyNumer(JednostkaTerytorialna obreb, String numerDzialki) =>
-      '${obreb.teryt}.${numerDzialki.trim()}';
 
   /// Odpowiedź: w pierwszym wierszu status (0 = w porządku), w drugim dane
   /// rozdzielone znakiem „|", w kolejności, w jakiej je zamówiono.

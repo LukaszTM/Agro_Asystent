@@ -1,0 +1,71 @@
+{
+  "wersja": "2026.10.18.1",
+  "zrodlo": "ULDK (GUGiK), zapytanie GetVoivodeshipById dla kodów 02–32",
+  "po_co": "Pierwszy krok dodawania działki spoza wniosku: rolnik wybiera województwo z tej listy, a dalej podaje nazwę miejscowości (obrębu) i numer działki. Usługa ULDK nie umie sama podać listy województw, więc jedzie ona z aplikacją jako dane.",
+  "wojewodztwa": [
+    {
+      "teryt": "02",
+      "nazwa": "dolnośląskie"
+    },
+    {
+      "teryt": "04",
+      "nazwa": "kujawsko-pomorskie"
+    },
+    {
+      "teryt": "06",
+      "nazwa": "lubelskie"
+    },
+    {
+      "teryt": "08",
+      "nazwa": "lubuskie"
+    },
+    {
+      "teryt": "10",
+      "nazwa": "łódzkie"
+    },
+    {
+      "teryt": "12",
+      "nazwa": "małopolskie"
+    },
+    {
+      "teryt": "14",
+      "nazwa": "mazowieckie"
+    },
+    {
+      "teryt": "16",
+      "nazwa": "opolskie"
+    },
+    {
+      "teryt": "18",
+      "nazwa": "podkarpackie"
+    },
+    {
+      "teryt": "20",
+      "nazwa": "podlaskie"
+    },
+    {
+      "teryt": "22",
+      "nazwa": "pomorskie"
+    },
+    {
+      "teryt": "24",
+      "nazwa": "śląskie"
+    },
+    {
+      "teryt": "26",
+      "nazwa": "świętokrzyskie"
+    },
+    {
+      "teryt": "28",
+      "nazwa": "warmińsko-mazurskie"
+    },
+    {
+      "teryt": "30",
+      "nazwa": "wielkopolskie"
+    },
+    {
+      "teryt": "32",
+      "nazwa": "zachodniopomorskie"
+    }
+  ]
+}

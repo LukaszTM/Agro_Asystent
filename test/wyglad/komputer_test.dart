@@ -714,7 +714,9 @@ void main() {
       );
     });
 
-    testWidgets('działkę spoza wniosku dodaje się z list', (tester) async {
+    testWidgets('działkę spoza wniosku szuka się po miejscowości', (
+      tester,
+    ) async {
       await pokaz(tester, zakladka: ZakladkaKomputer.pola);
 
       await tester.tap(
@@ -722,10 +724,11 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      // Okno otwiera się na wyborze z list — dla dzierżaw, których nie ma
-      // we wniosku.
-      expect(find.text('Wybierz z listy'), findsOneWidget);
-      expect(find.text('Wybierz województwo'), findsOneWidget);
+      // Okno otwiera się na szukaniu po miejscowości — dla dzierżaw,
+      // których nie ma we wniosku.
+      expect(find.text('Po miejscowości'), findsOneWidget);
+      expect(find.text('Miejscowość (obręb)'), findsOneWidget);
+      expect(find.text('Numer działki'), findsOneWidget);
 
       // Druga droga zostaje dla tych, którzy mają pełny numer pod ręką.
       await tester.tap(find.text('Wpisz pełny numer'));

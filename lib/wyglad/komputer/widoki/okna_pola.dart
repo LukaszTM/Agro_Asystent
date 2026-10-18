@@ -7,8 +7,8 @@ import '../../../funkcje/dzialki/import_wniosku.dart';
 import '../../../funkcje/dzialki/klient_uldk.dart';
 import '../../../funkcje/dzialki/repozytorium_pol.dart';
 import '../../../funkcje/dzialki/slownik_upraw.dart';
-import '../../../funkcje/dzialki/wybor_jednostek.dart';
-import '../../../rdzen/wspolne/wybor_obrebu.dart';
+import '../../../funkcje/dzialki/szukanie_dzialki.dart';
+import '../../../rdzen/wspolne/szukanie_dzialki.dart';
 import '../motyw.dart';
 import '../widgety/karta.dart';
 
@@ -240,12 +240,15 @@ class OknoDzialkaPoNumerze extends StatefulWidget {
 class _OknoDzialkaPoNumerzeState extends State<OknoDzialkaPoNumerze> {
   final _numer = TextEditingController();
 
-  /// Wybór obrębu z list — dla działek spoza wniosku, których pełnego
-  /// numeru nikt nie pamięta.
-  late final WyborJednostek _wybor = WyborJednostek(klient: widget.uslugi.uldk);
+  /// Szukanie po województwie, miejscowości i numerze — dla działek spoza
+  /// wniosku, których pełnego numeru nikt nie pamięta.
+  late final SzukanieDzialkiPoNazwie _poNazwie = SzukanieDzialkiPoNazwie(
+    klient: widget.uslugi.uldk,
+    wojewodztwa: widget.uslugi.wojewodztwa,
+  );
 
-  /// `true` — prowadzimy listami, `false` — rolnik wpisuje pełny numer
-  /// z wypisu.
+  /// `true` — szukamy po miejscowości, `false` — rolnik wpisuje pełny
+  /// numer z wypisu.
   bool _zList = true;
 
   bool _pobieranie = false;
@@ -260,20 +263,53 @@ class _OknoDzialkaPoNumerzeState extends State<OknoDzialkaPoNumerze> {
     super.dispose();
   }
 
-  /// Numer do zapytania: z wyboru list albo wpisany wprost.
-  String get _pelnyNumer =>
-      (_zList ? _wybor.numerDzialki(_numer.text) : _numer.text.trim()) ?? '';
+  bool get _moznaSzukac =>
+      _zList ? _poNazwie.moznaSzukac : _numer.text.trim().isNotEmpty;
 
-  Future<void> _pobierz() async {
-    final numer = _pelnyNumer;
-    if (numer.isEmpty) {
+  /// Szukanie po nazwie: jedna znaleziona działka — od razu granice;
+  /// kilka — rolnik wybiera z listy, bo obręby o tej nazwie są w wielu
+  /// gminach.
+  Future<void> _szukaj() async {
+    if (!_moznaSzukac) {
       setState(
         () => _blad = _zList
-            ? 'Wybierz obręb z list i wpisz numer działki z umowy.'
+            ? 'Wpisz nazwę miejscowości (obrębu) i numer działki z umowy.'
             : 'Wpisz numer działki z wypisu albo z wniosku.',
       );
       return;
     }
+    if (!_zList) {
+      return _pobierz(_numer.text.trim());
+    }
+    setState(() {
+      _pobieranie = true;
+      _blad = null;
+      _coZrobic = null;
+      _pobrana = null;
+    });
+    try {
+      final znalezione = await _poNazwie.szukaj();
+      if (!mounted) {
+        return;
+      }
+      if (znalezione.length == 1) {
+        await _pobierz(znalezione.single.teryt);
+        return;
+      }
+      setState(() => _pobieranie = false);
+    } on BladUldk catch (blad) {
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _blad = blad.wiadomosc;
+        _coZrobic = blad.coZrobic;
+        _pobieranie = false;
+      });
+    }
+  }
+
+  Future<void> _pobierz(String numer) async {
     setState(() {
       _pobieranie = true;
       _blad = null;
@@ -341,13 +377,13 @@ class _OknoDzialkaPoNumerzeState extends State<OknoDzialkaPoNumerze> {
             ),
             const SizedBox(height: MotywKomputer.odstep),
             // Działka z wniosku ma pełny numer w dokumencie; dzierżawiona
-            // zwykle nie — wtedy prowadzimy listami.
+            // zwykle nie — wtedy szukamy po miejscowości i numerze z umowy.
             SegmentedButton<bool>(
               segments: const [
                 ButtonSegment(
                   value: true,
                   icon: Icon(Icons.list_alt_outlined, size: 20),
-                  label: Text('Wybierz z listy'),
+                  label: Text('Po miejscowości'),
                 ),
                 ButtonSegment(
                   value: false,
@@ -363,30 +399,14 @@ class _OknoDzialkaPoNumerzeState extends State<OknoDzialkaPoNumerze> {
               }),
             ),
             const SizedBox(height: MotywKomputer.odstep),
-            if (_zList) ...[
-              WyborObrebu(
-                wybor: _wybor,
+            if (_zList)
+              SzukanieDzialki(
+                szukanie: _poNazwie,
                 onZmiana: () => setState(() => _blad = null),
-              ),
-              if (_wybor.gotowy) ...[
-                const SizedBox(height: MotywKomputer.odstep),
-                TextField(
-                  controller: _numer,
-                  autofocus: true,
-                  decoration: const InputDecoration(
-                    labelText: 'Numer działki',
-                    hintText: 'np. 138 albo 138/4 — z umowy dzierżawy',
-                  ),
-                  onChanged: (_) => setState(() {}),
-                  onSubmitted: (_) => _pobierz(),
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  'Pełny numer złożymy sami: ${_pelnyNumer.isEmpty ? '…' : _pelnyNumer}',
-                  style: teksty.bodyMedium,
-                ),
-              ],
-            ] else
+                onWybor: (dzialka) => _pobierz(dzialka.teryt),
+                onSzukaj: _szukaj,
+              )
+            else
               TextField(
                 controller: _numer,
                 autofocus: true,
@@ -394,7 +414,8 @@ class _OknoDzialkaPoNumerzeState extends State<OknoDzialkaPoNumerze> {
                   labelText: 'Numer działki',
                   hintText: 'np. 141201_2.0012.123/4',
                 ),
-                onSubmitted: (_) => _pobierz(),
+                onChanged: (_) => setState(() {}),
+                onSubmitted: (_) => _szukaj(),
               ),
             if (_blad case final String wiadomosc) ...[
               const SizedBox(height: MotywKomputer.odstep),
@@ -437,7 +458,7 @@ class _OknoDzialkaPoNumerzeState extends State<OknoDzialkaPoNumerze> {
         ),
         if (pobrana == null)
           FilledButton(
-            onPressed: _pobieranie ? null : _pobierz,
+            onPressed: _pobieranie ? null : _szukaj,
             child: Text(_pobieranie ? 'Szukam…' : 'Znajdź działkę'),
           )
         else

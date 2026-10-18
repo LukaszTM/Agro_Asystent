@@ -77,3 +77,26 @@ wyboru pola wystarczy obrys, numer działki i własna nazwa pola.
 Wszystkie cztery źródła danych są już rozpoznane: rejestr środków (P1),
 etykiety i karencja (P2), słownik upraw i kody EPPO (P3), wniosek (P4),
 granice działek (P5). Teraz trzeba je złożyć w jedną bazę aplikacji.
+
+## Uzupełnienie (2026-10-18): czego ULDK nie umie
+
+Specyfikacja (`https://uldk.gugik.gov.pl/opis.html`) nie przewiduje żadnego
+zapytania o **listę** jednostek. Są tylko `Get…ById` / `Get…ByXY` dla działki,
+budynku, obrębu, gminy, powiatu i województwa oraz `GetParcelByIdOrNr`.
+Pierwsza wersja wyboru działki „z list" (`GetVoivodeships`, `GetCounties`,
+`GetCommunes`, `GetRegions`) zakładała zapytania, których usługa nie ma —
+wyszło to w teście na telefonie i zostało zastąpione:
+
+- lista 16 województw jedzie z aplikacją jako dane
+  (`assets/dane/wojewodztwa.json`, buduje `tools/dzialki/wojewodztwa.py`
+  z `GetVoivodeshipById` dla kodów 02–32);
+- działkę spoza wniosku szuka się przez `GetParcelByIdOrNr` zapisem
+  „nazwa obrębu numer"; usługa oddaje **wszystkie** pasujące działki w kraju
+  (pierwszy wiersz to liczba wyników, nie status; brak wyników to
+  `-1 brak wyników`), każdą z województwem, powiatem i gminą. Wybór
+  województwa zawęża listę po pierwszych dwóch cyfrach identyfikatora,
+  a gminę wskazuje rolnik.
+
+Sprawdzone na żywo 2026-10-18: „Krzewina 134" → 1 działka, „Dąbrowa 12" →
+61 działek, „Stara Wieś 756" → 8, „Krzewina 134/2" → 2; brak numeru daje
+`-1 brak wyników - nie podano numeru działki`.

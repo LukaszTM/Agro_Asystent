@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:agro_asystent/funkcje/dzialki/klient_uldk.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
@@ -109,20 +111,56 @@ void main() {
       expect(zapytanie!.queryParameters['result'], contains('geom_wkt'));
     });
 
-    test('po nazwie obrębu pyta o GetParcelByIdOrNr', () async {
-      Uri? zapytanie;
+    test('po nazwie obrębu najpierw szuka, potem bierze granice po '
+        'identyfikatorze', () async {
+      // Usługa na „nazwa numer" oddaje listę (pierwszy wiersz to liczba
+      // wyników), a granice daje dopiero GetParcelById.
+      final zapytania = <String>[];
       final klient = KlientUldk(
         klient: MockClient((zadanie) async {
-          zapytanie = zadanie.url;
-          return http.Response(
-            '0\n$obrys|061506_2.0007.138|lubelskie|lubartowski|Lubartów|Brzeziny|138',
+          final request = zadanie.url.queryParameters['request']!;
+          zapytania.add(request);
+          return http.Response.bytes(
+            utf8.encode(switch (request) {
+              'GetParcelByIdOrNr' => '1\n061506_2.0007.138|lubelskie|lubartowski|Lubartów|Brzeziny|138',
+              _ =>
+                '0\n$obrys|061506_2.0007.138|lubelskie|lubartowski|Lubartów|Brzeziny|138',
+            }),
             200,
           );
         }),
       );
 
-      await klient.pobierz('Brzeziny 138');
-      expect(zapytanie!.queryParameters['request'], 'GetParcelByIdOrNr');
+      final dzialka = await klient.pobierz('Brzeziny 138');
+
+      expect(zapytania, ['GetParcelByIdOrNr', 'GetParcelById']);
+      expect(dzialka.identyfikator, '061506_2.0007.138');
+    });
+
+    test('kilka działek o tej nazwie to wybór rolnika, nie pierwsza z brzegu', () async {
+      final klient = KlientUldk(
+        klient: MockClient(
+          (_) async => http.Response.bytes(
+            utf8.encode(
+              '2\n'
+              '061506_2.0007.138|lubelskie|lubartowski|Lubartów|Brzeziny|138\n'
+              '101106_2.0002.138|łódzkie|łowicki|Łowicz|Brzeziny|138\n',
+            ),
+            200,
+          ),
+        ),
+      );
+
+      await expectLater(
+        klient.pobierz('Brzeziny 138'),
+        throwsA(
+          isA<BladUldk>().having(
+            (b) => b.wiadomosc,
+            'wiadomosc',
+            contains('2 działek'),
+          ),
+        ),
+      );
     });
 
     test(
@@ -169,36 +207,105 @@ void main() {
     });
   });
 
-  group('wybór z listy: województwo → powiat → gmina → obręb', () {
-    // Rolnik zna swoją gminę i obręb, ale nie zna zapisu „141201_2.0012".
-    // Działkę dzierżawioną, której nie ma we wniosku, dodaje się właśnie
-    // przez wybór z listy.
-    test('czyta listę jednostek i układa ją alfabetycznie', () {
-      final gminy = KlientUldk.odczytajJednostki(
-        '0\nŻyrzyn|061506_2\nLubartów|061505_1\nKamionka|061504_5\n',
-        PoziomPodzialu.gmina,
+  group('szukanie po nazwie miejscowości i numerze', () {
+    // Rolnik zna wieś i numer z umowy, ale nie zna zapisu „141201_2.0012".
+    // Usługa nie ma list województw ani gmin — umie za to oddać wszystkie
+    // działki o danym numerze w obrębach o danej nazwie.
+    test('czyta listę znalezionych działek z gminą i powiatem', () {
+      final znalezione = KlientUldk.odczytajZnalezione(
+        '2\n'
+        '101106_2.0002.138|łódzkie|łowicki|Łowicz|Brzeziny|138\n'
+        '061506_2.0007.138|lubelskie|lubartowski|Lubartów|Brzeziny|138\n',
+        obreb: 'Brzeziny',
+        numer: '138',
       );
 
+      expect(znalezione, hasLength(2));
+      // Ułożone po położeniu, żeby rolnik szukał gminy jak w spisie.
+      expect(znalezione.first.gmina, 'Lubartów');
+      expect(znalezione.first.teryt, '061506_2.0007.138');
+      expect(znalezione.first.kodWojewodztwa, '06');
+      expect(znalezione.first.polozenie, 'Lubartów, lubartowski, lubelskie');
+    });
+
+    test('brak wyników to zdanie dla rolnika, nie pusta lista', () {
       expect(
-        [for (final g in gminy) g.nazwa],
-        ['Kamionka', 'Lubartów', 'Żyrzyn'],
+        () => KlientUldk.odczytajZnalezione(
+          '-1 brak wyników',
+          obreb: 'Brzeziny',
+          numer: '999',
+        ),
+        throwsA(
+          isA<BladUldk>()
+              .having((b) => b.wiadomosc, 'wiadomosc', contains('nr 999'))
+              .having((b) => b.coZrobic, 'coZrobic', contains('pełny numer')),
+        ),
       );
-      expect(gminy.first.teryt, '061504_5');
     });
 
     test('wiersza, którego nie rozumiemy, nie zgadujemy', () {
-      final obreby = KlientUldk.odczytajJednostki(
-        '0\nBrzeziny|061506_2.0007\nśmieć bez kreski\n|061506_2.0008\n',
-        PoziomPodzialu.obreb,
+      final znalezione = KlientUldk.odczytajZnalezione(
+        '3\n'
+        '061506_2.0007.138|lubelskie|lubartowski|Lubartów|Brzeziny|138\n'
+        'śmieć bez kresek\n'
+        '|a|b\n',
+        obreb: 'Brzeziny',
+        numer: '138',
       );
 
-      expect(obreby, hasLength(1));
-      expect(obreby.single.nazwa, 'Brzeziny');
+      expect(znalezione, hasLength(1));
     });
 
-    test('zła odpowiedź usługi to zdanie dla rolnika', () {
-      expect(
-        () => KlientUldk.odczytajJednostki('-1\nbłąd', PoziomPodzialu.powiat),
+    test('pyta usługę o „nazwa numer" i czyta polskie znaki', () async {
+      late Uri zapytanie;
+      final klient = KlientUldk(
+        klient: MockClient((zadanie) async {
+          zapytanie = zadanie.url;
+          return http.Response.bytes(
+            utf8.encode(
+              '1\n061506_2.0010.5|lubelskie|lubartowski|Żyrzyn|Żerdź|5\n',
+            ),
+            200,
+          );
+        }),
+      );
+
+      final znalezione = await klient.szukajPoNazwie(
+        obreb: ' Żerdź ',
+        numer: ' 5 ',
+      );
+
+      expect(zapytanie.queryParameters['request'], 'GetParcelByIdOrNr');
+      expect(zapytanie.queryParameters['id'], 'Żerdź 5');
+      expect(zapytanie.queryParameters['result'], isNot(contains('geom')));
+      expect(znalezione.single.gmina, 'Żyrzyn');
+    });
+
+    test('bez nazwy albo numeru nie pytamy usługi', () async {
+      var pytano = false;
+      final klient = KlientUldk(
+        klient: MockClient((_) async {
+          pytano = true;
+          return http.Response('1\n', 200);
+        }),
+      );
+
+      await expectLater(
+        klient.szukajPoNazwie(obreb: 'Brzeziny', numer: '  '),
+        throwsA(isA<BladUldk>()),
+      );
+      expect(pytano, isFalse);
+    });
+
+    test('brak sieci mówi, że szukanie wymaga internetu', () async {
+      final klient = KlientUldk(
+        klient: MockClient(
+          (_) async => throw http.ClientException('brak sieci'),
+        ),
+      );
+
+      await expectLater(
+        klient.szukajPoNazwie(obreb: 'Brzeziny', numer: '138'),
         throwsA(
           isA<BladUldk>().having(
             (b) => b.coZrobic,
@@ -207,81 +314,6 @@ void main() {
           ),
         ),
       );
-    });
-
-    test('pyta usługę o właściwy szczebel i jednostkę nadrzędną', () async {
-      late Uri zapytanie;
-      final klient = KlientUldk(
-        klient: MockClient((zadanie) async {
-          zapytanie = zadanie.url;
-          return http.Response('0\nBrzeziny|061506_2.0007\n', 200);
-        }),
-      );
-
-      final obreby = await klient.jednostki(
-        poziom: PoziomPodzialu.obreb,
-        terytNadrzednej: '061506_2',
-      );
-
-      expect(zapytanie.queryParameters['request'], 'GetRegions');
-      expect(zapytanie.queryParameters['result'], 'region,teryt');
-      expect(zapytanie.queryParameters['commune'], '061506_2');
-      expect(obreby.single.nazwa, 'Brzeziny');
-    });
-
-    test('województw nic nie poprzedza', () async {
-      late Uri zapytanie;
-      final klient = KlientUldk(
-        klient: MockClient((zadanie) async {
-          zapytanie = zadanie.url;
-          return http.Response('0\nlubelskie|06\n', 200);
-        }),
-      );
-
-      await klient.jednostki(poziom: PoziomPodzialu.wojewodztwo);
-
-      expect(zapytanie.queryParameters['request'], 'GetVoivodeships');
-      expect(zapytanie.queryParameters.containsKey('voivodeship'), isFalse);
-    });
-
-    test('bez jednostki nadrzędnej nie pytamy usługi', () async {
-      var pytano = false;
-      final klient = KlientUldk(
-        klient: MockClient((_) async {
-          pytano = true;
-          return http.Response('0\n', 200);
-        }),
-      );
-
-      await expectLater(
-        klient.jednostki(poziom: PoziomPodzialu.gmina),
-        throwsA(isA<BladUldk>()),
-      );
-      expect(pytano, isFalse);
-    });
-
-    test('obręb i numer składają się w pełny identyfikator działki', () {
-      const obreb = JednostkaTerytorialna(
-        nazwa: 'Brzeziny',
-        teryt: '061506_2.0007',
-      );
-
-      final numer = KlientUldk.pelnyNumer(obreb, ' 138 ');
-
-      expect(numer, '061506_2.0007.138');
-      // Taki zapis usługa rozpoznaje jako pełny identyfikator.
-      expect(KlientUldk.wzorzecIdentyfikatora.hasMatch(numer), isTrue);
-    });
-
-    test('numer z ułamkiem też jest pełnym identyfikatorem', () {
-      const obreb = JednostkaTerytorialna(
-        nazwa: 'Brzeziny',
-        teryt: '061506_2.0007',
-      );
-
-      final numer = KlientUldk.pelnyNumer(obreb, '138/4');
-
-      expect(KlientUldk.wzorzecIdentyfikatora.hasMatch(numer), isTrue);
     });
   });
 }

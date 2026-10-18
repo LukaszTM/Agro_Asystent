@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import '../../../app/uslugi.dart';
 import '../../../funkcje/dzialki/klient_uldk.dart';
 import '../../../funkcje/dzialki/repozytorium_dzialek.dart';
-import '../../../funkcje/dzialki/wybor_jednostek.dart';
-import '../../../rdzen/wspolne/wybor_obrebu.dart';
+import '../../../funkcje/dzialki/szukanie_dzialki.dart';
+import '../../../rdzen/wspolne/szukanie_dzialki.dart';
 import '../motyw.dart';
 import '../widgety/duzy_przycisk.dart';
 import '../widgety/klawiatura_numeru.dart';
@@ -26,9 +26,12 @@ class EkranDodajDzialke extends StatefulWidget {
 
 class _EkranDodajDzialkeState extends State<EkranDodajDzialke> {
   /// Działkę z wniosku dodaje się po pełnym numerze. Dzierżawionej we
-  /// wniosku nie ma, a jej pełnego numeru rolnik nie zna — wtedy
-  /// prowadzimy listami: województwo, powiat, gmina, obręb.
-  late final WyborJednostek _wybor = WyborJednostek(klient: widget.uslugi.uldk);
+  /// wniosku nie ma, a jej pełnego numeru rolnik nie zna — wtedy szuka
+  /// po województwie, nazwie miejscowości (obrębu) i numerze z umowy.
+  late final SzukanieDzialkiPoNazwie _poNazwie = SzukanieDzialkiPoNazwie(
+    klient: widget.uslugi.uldk,
+    wojewodztwa: widget.uslugi.wojewodztwa,
+  );
 
   bool _zList = true;
 
@@ -56,11 +59,43 @@ class _EkranDodajDzialkeState extends State<EkranDodajDzialke> {
     });
   }
 
-  /// Numer do zapytania: złożony z wybranego obrębu albo wpisany wprost.
-  String get _pelnyNumer =>
-      (_zList ? _wybor.numerDzialki(_numer) : _numer.trim()) ?? '';
+  /// Czy jest już co wysłać do usługi.
+  bool get _moznaSzukac =>
+      _zList ? _poNazwie.moznaSzukac : _numer.trim().isNotEmpty;
 
+  /// Szukanie po nazwie: gdy usługa zna dokładnie jedną taką działkę,
+  /// od razu pobieramy jej granice; gdy kilka — rolnik wybiera z listy
+  /// (obręby o tej samej nazwie są w wielu gminach).
   Future<void> _szukaj() async {
+    if (!_zList) {
+      return _pobierz(_numer.trim());
+    }
+    setState(() {
+      _szukanie = true;
+      _blad = null;
+    });
+    try {
+      final znalezione = await _poNazwie.szukaj();
+      if (!mounted) {
+        return;
+      }
+      if (znalezione.length == 1) {
+        await _pobierz(znalezione.single.teryt);
+        return;
+      }
+      setState(() => _szukanie = false);
+    } on BladUldk catch (blad) {
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _blad = blad;
+        _szukanie = false;
+      });
+    }
+  }
+
+  Future<void> _pobierz(String pelnyNumer) async {
     setState(() {
       _szukanie = true;
       _blad = null;
@@ -68,7 +103,7 @@ class _EkranDodajDzialkeState extends State<EkranDodajDzialke> {
       _jestJuzDodana = false;
     });
     try {
-      final dzialka = await widget.uslugi.uldk.pobierz(_pelnyNumer);
+      final dzialka = await widget.uslugi.uldk.pobierz(pelnyNumer);
       final jestJuz = await widget.uslugi.dzialki.czyJuzJest(
         widget.uslugi.gospodarstwoId,
         dzialka.identyfikator,
@@ -165,20 +200,26 @@ class _EkranDodajDzialkeState extends State<EkranDodajDzialke> {
               ),
               const SizedBox(height: MotywProsty.odstep),
               if (_zList) ...[
-                WyborObrebu(
-                  wybor: _wybor,
+                SzukanieDzialki(
+                  szukanie: _poNazwie,
                   onZmiana: () => setState(() => _blad = null),
+                  onWybor: (dzialka) => _pobierz(dzialka.teryt),
+                  onSzukaj: () {
+                    if (_moznaSzukac && !_szukanie) {
+                      _szukaj();
+                    }
+                  },
                 ),
                 const SizedBox(height: MotywProsty.odstep),
               ],
-              if (!_zList || _wybor.gotowy) ...[
+              if (!_zList) ...[
                 Text(
                   'Numer działki',
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
                 const SizedBox(height: 8),
               ],
-              if (!_zList || _wybor.gotowy)
+              if (!_zList)
                 Container(
                   width: double.infinity,
                   padding: const EdgeInsets.symmetric(
@@ -204,22 +245,18 @@ class _EkranDodajDzialkeState extends State<EkranDodajDzialke> {
                     ),
                   ),
                 ),
-              if (!_zList || _wybor.gotowy) ...[
+              if (!_zList) ...[
                 const SizedBox(height: 8),
                 Text(
-                  _zList
-                      ? 'Numer działki weź z umowy dzierżawy albo z wypisu. '
-                            'Resztę numeru złożymy sami: '
-                            '${_pelnyNumer.isEmpty ? '…' : _pelnyNumer}'
-                      : 'Numer przepisz z wniosku — wygląda tak: '
-                            '061506_2.0007.138.',
+                  'Numer przepisz z wniosku — wygląda tak: '
+                  '061506_2.0007.138.',
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
                 const SizedBox(height: MotywProsty.odstep),
                 KlawiaturaNumeru(
                   onZnak: _dopisz,
                   onUsun: _usunZnak,
-                  dodatkoweZnaki: _zList ? const ['/'] : const ['.', '_', '/'],
+                  dodatkoweZnaki: const ['.', '_', '/'],
                 ),
               ],
               const SizedBox(height: MotywProsty.odstep),
@@ -246,7 +283,7 @@ class _EkranDodajDzialkeState extends State<EkranDodajDzialke> {
                 SizedBox(
                   width: double.infinity,
                   child: FilledButton(
-                    onPressed: _pelnyNumer.isEmpty ? null : _szukaj,
+                    onPressed: _moznaSzukac ? _szukaj : null,
                     child: const Text('Znajdź działkę'),
                   ),
                 ),
@@ -330,8 +367,8 @@ class _EkranDodajDzialkeState extends State<EkranDodajDzialke> {
   }
 }
 
-/// Dwie drogi do działki: wybór z list (dzierżawa, zakup po wniosku)
-/// albo pełny numer z wniosku.
+/// Dwie drogi do działki: po miejscowości i numerze (dzierżawa, zakup po
+/// wniosku) albo pełny numer z wniosku.
 ///
 /// Na ekranie stoi ta, którą rolnik właśnie idzie; druga zajmuje jedną
 /// linijkę. Dwa duże kafelki zabierałyby pół ekranu na pytanie, które
@@ -349,14 +386,17 @@ class _WyborSposobu extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          zList ? 'Wybierz działkę z list' : 'Wpisz pełny numer działki',
+          zList
+              ? 'Znajdź działkę po miejscowości'
+              : 'Wpisz pełny numer działki',
           style: teksty.titleLarge,
         ),
         const SizedBox(height: 4),
         Text(
           zList
               ? 'Tak dodasz działkę, której nie ma we wniosku — '
-                    'dzierżawioną albo kupioną później.'
+                    'dzierżawioną albo kupioną później. Wystarczy '
+                    'nazwa wsi z umowy i numer działki.'
               : 'Numer masz we wniosku z eWniosekPlus.',
           style: teksty.bodyMedium,
         ),
@@ -364,7 +404,7 @@ class _WyborSposobu extends StatelessWidget {
         TextButton(
           onPressed: () => onZmiana(!zList),
           child: Text(
-            zList ? 'Mam pełny numer z wniosku' : 'Wolę wybrać z listy',
+            zList ? 'Mam pełny numer z wniosku' : 'Wolę szukać po miejscowości',
           ),
         ),
       ],

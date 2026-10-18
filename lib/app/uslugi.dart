@@ -14,6 +14,7 @@ import '../funkcje/warunkowosc/przeglad.dart';
 import '../funkcje/warunkowosc/okrywa_pola.dart';
 import '../funkcje/warunkowosc/zmianowanie.dart';
 import '../funkcje/dzialki/slownik_upraw.dart';
+import '../funkcje/dzialki/szukanie_dzialki.dart';
 import '../funkcje/dzialki/zrodlo_pliku.dart';
 import '../funkcje/magazyn/magazyn.dart';
 import '../funkcje/nawozenie/ewidencja_nawozenia.dart';
@@ -79,6 +80,7 @@ class Uslugi {
     required this.przypomnienia,
     required this.ustawieniaPrzypomnien,
     this.uldk = const KlientUldk(),
+    this.wojewodztwa = SlownikWojewodztw.pusty,
     this.klientPogody = const KlientPogody(),
     this.klientWiadomosci = const KlientWiadomosci(),
     this.kanalyWiadomosci,
@@ -230,6 +232,11 @@ class Uslugi {
   /// działa bez internetu.
   final KlientUldk uldk;
 
+  /// Województwa do wyboru przy szukaniu działki po nazwie miejscowości.
+  /// Pusta lista znaczy, że pliku nie wczytano — szukanie działa wtedy bez
+  /// zawężenia do województwa.
+  final SlownikWojewodztw wojewodztwa;
+
   /// Klient serwisu pogodowego — pogoda jest dodatkiem, więc program
   /// działa w całości także wtedy, gdy nic z niego nie przychodzi.
   final KlientPogody klientPogody;
@@ -319,6 +326,7 @@ class Uslugi {
     przypomnienia: przypomnienia,
     ustawieniaPrzypomnien: ustawieniaPrzypomnien,
     uldk: uldk,
+    wojewodztwa: wojewodztwa,
     klientPogody: klientPogody,
     klientWiadomosci: klientWiadomosci,
     kanalyWiadomosci: kanalyWiadomosci,

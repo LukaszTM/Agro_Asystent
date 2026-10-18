@@ -12,6 +12,7 @@ import '../funkcje/dzialki/import_wniosku.dart';
 import '../funkcje/dzialki/repozytorium_dzialek.dart';
 import '../funkcje/dzialki/repozytorium_pol.dart';
 import '../funkcje/dzialki/slownik_upraw.dart';
+import '../funkcje/dzialki/szukanie_dzialki.dart';
 import '../funkcje/dzialki/uprawy_dopisane.dart';
 import '../funkcje/nawozenie/ewidencja_nawozenia.dart';
 import '../funkcje/nawozenie/nawoz.dart';
@@ -108,6 +109,14 @@ Future<Uslugi> uruchom({
   } on Object {
     uprawyDopisane = SlownikUprawDopisanych.pusty;
   }
+  // Lista województw do szukania działki po nazwie. Bez pliku szukanie
+  // działa, tylko bez zawężenia do województwa.
+  var wojewodztwa = SlownikWojewodztw.pusty;
+  try {
+    wojewodztwa = await ZrodloWojewodztw().wczytaj();
+  } on Object {
+    wojewodztwa = SlownikWojewodztw.pusty;
+  }
   SlownikPojec? slowniczek;
   try {
     slowniczek = await ZrodloSlowniczka().wczytaj();
@@ -122,6 +131,7 @@ Future<Uslugi> uruchom({
     kanalyWiadomosci: kanalyWiadomosci,
     cenySkupu: cenySkupu,
     slowniczek: slowniczek,
+    wojewodztwa: wojewodztwa,
     gospodarstwoId: gospodarstwo.id,
     nazwaGospodarstwa: gospodarstwo.nazwa,
     urzadzenie: nazwaUrzadzenia,

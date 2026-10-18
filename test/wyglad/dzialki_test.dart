@@ -10,6 +10,7 @@ import 'package:agro_asystent/funkcje/dokumenty/wyjscie_dokumentu.dart';
 import 'package:agro_asystent/funkcje/dzialki/import_wniosku.dart';
 import 'package:agro_asystent/funkcje/dzialki/repozytorium_dzialek.dart';
 import 'package:agro_asystent/funkcje/dzialki/repozytorium_pol.dart';
+import 'package:agro_asystent/funkcje/dzialki/szukanie_dzialki.dart';
 import 'package:agro_asystent/funkcje/dzialki/slownik_upraw.dart';
 import 'package:agro_asystent/funkcje/dzialki/zrodlo_pliku.dart';
 import 'package:agro_asystent/funkcje/nawozenie/ewidencja_nawozenia.dart';
@@ -133,6 +134,9 @@ void main() {
       przypomnienia: const _BrakPrzypomnien(),
       ustawieniaPrzypomnien: UstawieniaPrzypomnien(baza),
       uldk: uldk,
+      wojewodztwa: SlownikWojewodztw.zTekstuJson(
+        File('assets/dane/wojewodztwa.json').readAsStringSync(),
+      ),
     );
   }
 
@@ -169,8 +173,8 @@ void main() {
 
   /// Wpisuje pełny numer dużą klawiaturą — bez klawiatury systemowej.
   ///
-  /// Ekran otwiera się na wyborze z list (działki spoza wniosku), więc
-  /// najpierw przechodzimy na drogę „numer z wniosku".
+  /// Ekran otwiera się na szukaniu po miejscowości (działki spoza
+  /// wniosku), więc najpierw przechodzimy na drogę „numer z wniosku".
   Future<void> wpiszNumer(
     WidgetTester tester,
     String numer, {
@@ -319,22 +323,30 @@ void main() {
     expect(find.textContaining('bez internetu'), findsOneWidget);
   });
 
-  testWidgets('działkę spoza wniosku dodaje się z list: województwo → '
-      'powiat → gmina → obręb', (tester) async {
+  /// Usługa na „nazwa numer" oddaje listę (pierwszy wiersz to liczba
+  /// wyników); granice daje dopiero zapytanie po identyfikatorze.
+  KlientUldk uslugaZNazwa(String lista) => KlientUldk(
+    klient: MockClient((zadanie) async {
+      final request = zadanie.url.queryParameters['request'];
+      final tresc = request == 'GetParcelByIdOrNr' ? lista : odpowiedzUldk;
+      return http.Response.bytes(utf8.encode(tresc), 200);
+    }),
+  );
+
+  Future<void> wpiszMiejscowosc(WidgetTester tester) async {
+    await tester.tap(find.text('lubelskie'));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byType(TextField).at(0), 'Brzeziny');
+    await tester.enterText(find.byType(TextField).at(1), '138');
+    await tester.pumpAndSettle();
+  }
+
+  testWidgets('działkę spoza wniosku znajduje się po województwie, '
+      'miejscowości i numerze', (tester) async {
     // Dzierżawy nie ma we wniosku, a pełnego numeru rolnik nie zna.
     final uslugi = await zbudujUslugi(
-      uldk: KlientUldk(
-        klient: MockClient((zadanie) async {
-          final request = zadanie.url.queryParameters['request'];
-          final tresc = switch (request) {
-            'GetVoivodeships' => '0\nlubelskie|06\n',
-            'GetCounties' => '0\nlubartowski|0615\n',
-            'GetCommunes' => '0\nLubartów|061506_2\n',
-            'GetRegions' => '0\nBrzeziny|061506_2.0007\n',
-            _ => odpowiedzUldk,
-          };
-          return http.Response.bytes(utf8.encode(tresc), 200);
-        }),
+      uldk: uslugaZNazwa(
+        '1\n061506_2.0007.138|lubelskie|lubartowski|Lubartów|Brzeziny|138\n',
       ),
     );
     await pokaz(tester, uslugi);
@@ -342,25 +354,59 @@ void main() {
     await tester.tap(find.text('Dodaj działkę'));
     await tester.pumpAndSettle();
 
-    for (final nazwa in ['lubelskie', 'lubartowski', 'Lubartów', 'Brzeziny']) {
-      await tester.tap(find.text(nazwa).last);
-      await tester.pumpAndSettle();
-    }
+    expect(find.text('Znajdź działkę po miejscowości'), findsOneWidget);
+    // Bez nazwy i numeru przycisk śpi.
+    expect(
+      tester.widget<FilledButton>(find.byType(FilledButton)).onPressed,
+      isNull,
+    );
 
-    // Wybór widać w ścieżce, a program sam składa pełny numer.
-    expect(find.textContaining('obręb: Brzeziny'), findsOneWidget);
-
-    await wpiszNumer(tester, '138', zWniosku: false);
-    expect(find.textContaining('061506_2.0007.138'), findsWidgets);
-
+    await wpiszMiejscowosc(tester);
     await tester.tap(find.text('Znajdź działkę'));
+    await tester.pumpAndSettle();
+
+    // Jedna taka działka w kraju — od razu mapa do potwierdzenia.
+    expect(find.text('Czy to ta działka?'), findsOneWidget);
+    expect(find.byType(MapaDzialek), findsOneWidget);
+  });
+
+  testWidgets('obręb o tej samej nazwie w kilku gminach daje wybór', (
+    tester,
+  ) async {
+    final uslugi = await zbudujUslugi(
+      uldk: uslugaZNazwa(
+        '3\n'
+        '061506_2.0007.138|lubelskie|lubartowski|Lubartów|Brzeziny|138\n'
+        '061602_2.0004.138|lubelskie|łukowski|Adamów|Brzeziny|138\n'
+        '101106_2.0002.138|łódzkie|łowicki|Łowicz|Brzeziny|138\n',
+      ),
+    );
+    await pokaz(tester, uslugi);
+
+    await tester.tap(find.text('Dodaj działkę'));
+    await tester.pumpAndSettle();
+    await wpiszMiejscowosc(tester);
+    await tester.tap(find.text('Znajdź działkę'));
+    await tester.pumpAndSettle();
+
+    // Województwo zawęża: z trzech w kraju zostają dwie lubelskie,
+    // a program nie wybiera za rolnika.
+    expect(find.text('Czy to ta działka?'), findsNothing);
+    expect(find.textContaining('Jest 2 takich działek'), findsOneWidget);
+    expect(find.textContaining('w kraju 3 razy'), findsOneWidget);
+    expect(find.text('gmina Łowicz'), findsNothing);
+
+    // Lista stoi pod polami — na ekranie testowym bywa poza widokiem.
+    await tester.ensureVisible(find.text('gmina Lubartów'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('gmina Lubartów'));
     await tester.pumpAndSettle();
 
     expect(find.text('Czy to ta działka?'), findsOneWidget);
     expect(find.byType(MapaDzialek), findsOneWidget);
   });
 
-  testWidgets('bez internetu wybór z list mówi, co zrobić zamiast tego', (
+  testWidgets('bez internetu szukanie mówi, co zrobić zamiast tego', (
     tester,
   ) async {
     final uslugi = await zbudujUslugi(
@@ -374,9 +420,12 @@ void main() {
 
     await tester.tap(find.text('Dodaj działkę'));
     await tester.pumpAndSettle();
+    await wpiszMiejscowosc(tester);
+    await tester.tap(find.text('Znajdź działkę'));
+    await tester.pumpAndSettle();
 
-    expect(find.textContaining('Nie udało się pobrać listy'), findsOneWidget);
-    // Droga awaryjna zostaje: pełny numer z wypisu działa bez list.
+    expect(find.textContaining('Nie udało się połączyć'), findsOneWidget);
+    // Droga awaryjna zostaje: pełny numer z wypisu działa bez szukania.
     expect(find.textContaining('pełny numer'), findsWidgets);
   });
 }
