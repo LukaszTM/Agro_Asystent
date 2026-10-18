@@ -5,6 +5,7 @@ import '../../../funkcje/ustawienia/gospodarstwa.dart';
 import '../../../funkcje/ustawienia/rozmiar_tekstu.dart';
 import '../../../funkcje/ustawienia/zwierzeta_w_gospodarstwie.dart';
 import '../../../rdzen/uslugi/kopia/kopia_danych.dart';
+import '../../../rdzen/wspolne/slowniczek_pojec.dart';
 import '../../../rdzen/wspolne/wersja_programu.dart';
 import '../../../rdzen/uslugi/kopia/scalanie.dart';
 import '../motyw.dart';
@@ -324,6 +325,17 @@ class _WidokUstawieniaKomputerState extends State<WidokUstawieniaKomputer> {
                       coZrobic: blad.coZrobic,
                     ),
                   ],
+                ],
+              ),
+            ),
+            const SizedBox(height: MotywKomputer.odstep),
+            KartaKomputer(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Słowniczek pojęć', style: teksty.titleLarge),
+                  const SizedBox(height: 4),
+                  ListaSlowniczka(slownik: _uslugi.slowniczek),
                 ],
               ),
             ),

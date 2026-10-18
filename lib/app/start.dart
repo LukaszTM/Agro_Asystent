@@ -17,6 +17,7 @@ import '../funkcje/nawozenie/nawoz.dart';
 import '../funkcje/nawozenie/plan_nawozenia.dart';
 import '../funkcje/nawozenie/terminy_azotowe.dart';
 import '../funkcje/odczyt/odczyt_etykiety.dart';
+import '../funkcje/slowniczek/slowniczek.dart';
 import '../funkcje/terminy/kalendarz_terminow.dart';
 import '../funkcje/terminy/ustawienia_przypomnien.dart';
 import '../funkcje/ustawienia/gospodarstwa.dart';
@@ -98,6 +99,12 @@ Future<Uslugi> uruchom({
   } on Object {
     cenySkupu = null;
   }
+  SlownikPojec? slowniczek;
+  try {
+    slowniczek = await ZrodloSlowniczka().wczytaj();
+  } on Object {
+    slowniczek = null;
+  }
   final gminyTerminow = await ZrodloGminTerminow().wczytaj();
   final stado = RepozytoriumStada(baza: baza, reguly: reguly);
 
@@ -105,6 +112,7 @@ Future<Uslugi> uruchom({
     biodynamika: biodynamika,
     kanalyWiadomosci: kanalyWiadomosci,
     cenySkupu: cenySkupu,
+    slowniczek: slowniczek,
     gospodarstwoId: gospodarstwo.id,
     nazwaGospodarstwa: gospodarstwo.nazwa,
     urzadzenie: nazwaUrzadzenia,

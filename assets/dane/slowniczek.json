@@ -1,0 +1,42 @@
+{
+  "wersja": "2026.10.18.1",
+  "po_co": "Skróty i nazwy urzędowe, które rolnik spotyka we wnioskach, pismach z ARiMR i na wydrukach z tej aplikacji. Hasła są danymi z numerem wersji — nowe dopisuje się do tego pliku, bez zmiany kodu.",
+  "zastrzezenie": "Słowniczek tłumaczy pojęcia, nie zastępuje przepisu. Progi, terminy i obowiązki stoją w słowniku reguł i to one decydują.",
+  "hasla": [
+    {
+      "skrot": "TUZ",
+      "nazwa": "trwałe użytki zielone",
+      "wyjasnienie": "Łąki i pastwiska — grunt pod trawą, nie pod uprawą orną. W aplikacji wybierasz go przy polu jako „Łąka lub pastwisko”.",
+      "gdzie": "wniosek o dopłaty, pisma z ARiMR, normy GAEC 1 i GAEC 9, wydruk ewidencji",
+      "status": "potwierdzone"
+    },
+    {
+      "skrot": "GAEC",
+      "nazwa": "normy dobrej kultury rolnej zgodnej z ochroną środowiska",
+      "wyjasnienie": "Warunki, których trzeba dotrzymać, żeby dostać dopłaty — na przykład okrywa gleby zimą albo pas bez oprysku od wody. W aplikacji liczy je zakładka „Warunkowość”.",
+      "gdzie": "warunkowość, kontrola ARiMR",
+      "status": "potwierdzone"
+    },
+    {
+      "skrot": "DJP",
+      "nazwa": "duża jednostka przeliczeniowa inwentarza",
+      "wyjasnienie": "Miara liczby zwierząt sprowadzona do wspólnej jednostki — po niej liczy się część obowiązków, na przykład przy nawozach naturalnych.",
+      "gdzie": "program azotanowy, obowiązki od liczby zwierząt",
+      "status": "potwierdzone"
+    },
+    {
+      "skrot": "EPPO",
+      "nazwa": "kod rośliny w międzynarodowym wykazie EPPO",
+      "wyjasnienie": "Kod uprawy, którego wymaga unijna ewidencja zabiegów. Aplikacja bierze go ze słownika upraw; przy własnej nazwie zostaje pusty i na wydruku wychodzi „brak”.",
+      "gdzie": "ewidencja zabiegów środkami ochrony roślin",
+      "status": "potwierdzone"
+    },
+    {
+      "skrot": "ULDK",
+      "nazwa": "Usługa Lokalizacji Działek Katastralnych",
+      "wyjasnienie": "Państwowa usługa, z której aplikacja pobiera granice działki po jej numerze. Pobiera się je raz — potem mapa działa bez internetu.",
+      "gdzie": "dodawanie działki, mapa pól",
+      "status": "potwierdzone"
+    }
+  ]
+}

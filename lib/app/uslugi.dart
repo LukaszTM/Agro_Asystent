@@ -28,6 +28,7 @@ import '../funkcje/wiadomosci/klient_wiadomosci.dart';
 import '../funkcje/wiadomosci/usluga_wiadomosci.dart';
 import '../funkcje/wiadomosci/wiadomosci.dart';
 import '../funkcje/odczyt/odczyt_etykiety.dart';
+import '../funkcje/slowniczek/slowniczek.dart';
 import '../funkcje/terminy/kalendarz_terminow.dart';
 import '../funkcje/terminy/przypomnienia.dart';
 import '../funkcje/terminy/ustawienia_przypomnien.dart';
@@ -84,6 +85,7 @@ class Uslugi {
     this.cenySkupu,
     this.dostep = const DostepFunkcji.zBudowy(),
     this.biodynamika,
+    this.slowniczek,
   });
 
   final String gospodarstwoId;
@@ -263,6 +265,11 @@ class Uslugi {
   /// tylko bez tej karty na pulpicie.
   final SlownikBiodynamiczny? biodynamika;
 
+  /// Słowniczek pojęć: skróty z wniosku i pism z ARiMR wyjaśnione
+  /// językiem rolnika. `null`, gdy pliku nie wczytano — wtedy ekran mówi,
+  /// że słowniczka nie ma, i nic nie zgaduje.
+  final SlownikPojec? slowniczek;
+
   /// Te same usługi z innym dostępem do funkcji płatnych.
   ///
   /// Po zakupie premium (albo po jego wygaśnięciu) nie otwieramy bazy od
@@ -318,5 +325,6 @@ class Uslugi {
     cenySkupu: cenySkupu,
     dostep: dostep ?? this.dostep,
     biodynamika: biodynamika,
+    slowniczek: slowniczek,
   );
 }

@@ -12,6 +12,7 @@ import '../motyw.dart';
 import '../widgety/karta.dart';
 import '../widgety/wybor.dart';
 import 'ekran_dane_gospodarstwa.dart';
+import 'ekran_slowniczek.dart';
 
 /// Ustawienia wyglądu nowoczesnego: wygląd, gospodarstwo, zwierzęta i kopia
 /// danych.
@@ -544,6 +545,34 @@ class _EkranUstawieniaState extends State<EkranUstawienia> {
                   coZrobic: _bladKopii!.coZrobic,
                 ),
               ],
+              const SizedBox(height: MotywNowoczesny.odstep),
+              Text('Słowniczek', style: teksty.titleLarge),
+              const SizedBox(height: 4),
+              Text(
+                'Co znaczą skróty z wniosku i pism z ARiMR: TUZ, GAEC, DJP.',
+                style: teksty.bodyMedium,
+              ),
+              const SizedBox(height: 8),
+              Karta(
+                onTap: () => Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (_) => EkranSlowniczekNowoczesny(uslugi: _uslugi),
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    const Icon(
+                      Icons.menu_book_outlined,
+                      size: 20,
+                      color: MotywNowoczesny.tekstPomocniczy,
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text('Otwórz słowniczek', style: teksty.bodyLarge),
+                    ),
+                  ],
+                ),
+              ),
               const SizedBox(height: MotywNowoczesny.odstep),
               // Numer wersji przyda się przy zgłaszaniu usterek w czasie
               // testów — inaczej nie wiadomo, którego pliku dotyczy uwaga.

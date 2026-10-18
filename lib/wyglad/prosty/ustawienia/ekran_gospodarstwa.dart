@@ -9,6 +9,7 @@ import '../../../rdzen/wspolne/wersja_programu.dart';
 import '../motyw.dart';
 import '../widgety/duzy_przycisk.dart';
 import 'ekran_kopia.dart';
+import 'ekran_slowniczek.dart';
 
 /// Gospodarstwo i konto (krok 10 etapu 1): dane na wydruki, przełączanie
 /// między gospodarstwami i nazwa konta.
@@ -274,6 +275,17 @@ class _EkranGospodarstwaState extends State<EkranGospodarstwa> {
                         }
                       },
                     ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: MotywProsty.odstep),
+              DuzyPrzycisk(
+                etykieta: 'Słowniczek',
+                opis: 'co znaczy TUZ, GAEC, DJP',
+                ikona: Icons.menu_book_outlined,
+                onTap: () => Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (_) => EkranSlowniczek(uslugi: _uslugi),
                   ),
                 ),
               ),
