@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../app/uslugi.dart';
 import '../../../funkcje/biodynamika/biodynamika.dart';
 import '../../../funkcje/dzialki/repozytorium_dzialek.dart';
+import '../../../funkcje/ceny/ceny_skupu.dart';
 import '../../../funkcje/pogoda/usluga_pogody.dart';
 import '../../../funkcje/wiadomosci/usluga_wiadomosci.dart';
 import '../../../funkcje/pulpit/zasiewy.dart';
@@ -12,6 +13,7 @@ import '../../../rdzen/wspolne/mapa_dzialek.dart';
 import '../motyw.dart';
 import '../widgety/kalendarz_biodynamiczny.dart';
 import '../widgety/karta.dart';
+import '../widgety/karta_cen.dart';
 import '../widgety/karta_pogody.dart';
 import '../widgety/karta_wiadomosci.dart';
 import '../widgety/wykres_kolowy.dart';
@@ -24,6 +26,7 @@ class _DanePulpitu {
     required this.terminy,
     required this.pogoda,
     required this.wiadomosci,
+    required this.wojewodztwo,
     this.biodynamika,
   });
 
@@ -34,6 +37,9 @@ class _DanePulpitu {
   final StanPogody pogoda;
 
   final StanWiadomosci wiadomosci;
+
+  /// Województwo gospodarstwa policzone z działek — stąd region notowań.
+  final String? wojewodztwo;
 
   /// `null`, gdy słownika kalendarza nie udało się wczytać — pulpit działa
   /// dalej, tylko bez tej karty.
@@ -114,6 +120,7 @@ class _WidokPulpitKomputerState extends State<WidokPulpitKomputer> {
         teraz: widget.teraz,
         wymusPobranie: _wymusPogode,
       ),
+      wojewodztwo: CenySkupu.wojewodztwo(dzialki),
       wiadomosci: await uslugi.wiadomosci.najnowsze(
         teraz: widget.teraz,
         wymusPobranie: _wymusWiadomosci,
@@ -194,6 +201,11 @@ class _WidokPulpitKomputerState extends State<WidokPulpitKomputer> {
                     _wymusPogode = true;
                     _dane = _wczytaj();
                   }),
+                ),
+                const SizedBox(height: MotywKomputer.odstep),
+                KartaCen(
+                  slownik: widget.uslugi.cenySkupu,
+                  wojewodztwo: dane.wojewodztwo,
                 ),
                 const SizedBox(height: MotywKomputer.odstep),
                 KartaWiadomosci(

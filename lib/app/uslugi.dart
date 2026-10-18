@@ -1,4 +1,5 @@
 import '../funkcje/biodynamika/biodynamika.dart';
+import '../funkcje/ceny/ceny_skupu.dart';
 import '../funkcje/dokumenty/usluga_dokumentow.dart';
 import '../funkcje/dzialki/import_wniosku.dart';
 import '../funkcje/dzialki/klient_uldk.dart';
@@ -80,6 +81,7 @@ class Uslugi {
     this.klientPogody = const KlientPogody(),
     this.klientWiadomosci = const KlientWiadomosci(),
     this.kanalyWiadomosci,
+    this.cenySkupu,
     this.dostep = const DostepFunkcji.darmowa(),
     this.biodynamika,
   });
@@ -240,6 +242,9 @@ class Uslugi {
   /// karta wiadomości mówi, że nie ma źródeł.
   final SlownikKanalow? kanalyWiadomosci;
 
+  /// Notowania cen skupu z pliku danych. `null`, gdy pliku nie wczytano.
+  final SlownikCen? cenySkupu;
+
   /// Wiadomości rolnicze — dodatek informacyjny, nigdy dokumentacja.
   UslugaWiadomosci get wiadomosci => UslugaWiadomosci(
     zapis: RepozytoriumWiadomosci(kopia.baza),
@@ -310,6 +315,7 @@ class Uslugi {
     klientPogody: klientPogody,
     klientWiadomosci: klientWiadomosci,
     kanalyWiadomosci: kanalyWiadomosci,
+    cenySkupu: cenySkupu,
     dostep: dostep ?? this.dostep,
     biodynamika: biodynamika,
   );

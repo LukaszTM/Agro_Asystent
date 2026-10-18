@@ -11,6 +11,7 @@ import 'package:agro_asystent/funkcje/dokumenty/wydruk_pdf.dart';
 import 'package:agro_asystent/funkcje/dokumenty/wyjscie_dokumentu.dart';
 import 'package:agro_asystent/funkcje/dzialki/granica_z_woda.dart';
 import 'package:agro_asystent/funkcje/dzialki/import_wniosku.dart';
+import 'package:agro_asystent/funkcje/ceny/ceny_skupu.dart';
 import 'package:agro_asystent/funkcje/dzialki/klient_uldk.dart';
 import 'package:agro_asystent/funkcje/dzialki/repozytorium_dzialek.dart';
 import 'package:agro_asystent/funkcje/dzialki/repozytorium_pol.dart';
@@ -66,6 +67,29 @@ void main() {
   );
   final biodynamika = SlownikBiodynamiczny.zTekstuJson(
     File('assets/dane/kalendarz_biodynamiczny.json').readAsStringSync(),
+  );
+
+  /// Notowania podstawione na sztywno — plik w repozytorium jest pusty,
+  /// bo cen nie wolno zmyślić.
+  final cenyTestowe = SlownikCen(
+    tydzienOd: DateTime(2026, 10, 6),
+    tydzienDo: DateTime(2026, 10, 12),
+    wersja: '2026.10.12.1',
+    zrodlo: 'ZSRIR',
+    zastrzezenie: 'To notowanie regionu, nie oferta konkretnego skupu.',
+    produkty: const [
+      ProduktCenowy(
+        nazwa: 'Pszenica konsumpcyjna',
+        jednostka: 'zł/t',
+        ceny: [
+          CenaRegionu(
+            region: 'mazowieckie',
+            cena: 920.5,
+            status: 'potwierdzone',
+          ),
+        ],
+      ),
+    ],
   );
 
   /// Kanał RSS podstawiony na sztywno — test nie chodzi do sieci.
@@ -221,6 +245,7 @@ void main() {
       klient: MockClient((_) async => http.Response(odpowiedzPogody(), 200)),
     ),
     kanalyWiadomosci: kanalyTestowe,
+    cenySkupu: cenyTestowe,
     klientWiadomosci: KlientWiadomosci(
       klient: MockClient(
         (_) async => http.Response.bytes(utf8.encode(rssTestowy), 200),
@@ -237,6 +262,7 @@ void main() {
           'POLYGON((21.0 52.0, 21.002 52.0, 21.002 52.002, '
           '21.0 52.002, 21.0 52.0))',
       srid: 4326,
+      wojewodztwo: 'mazowieckie',
       gmina: 'Przykładowa',
     ),
     urzadzenie: 'komputer',
@@ -911,6 +937,23 @@ void main() {
       expect(find.textContaining('Portal rolniczy'), findsWidgets);
       // Program nie pokazuje cudzej treści u siebie.
       expect(find.textContaining('otwiera się u wydawcy'), findsOneWidget);
+    });
+
+    testWidgets('ceny skupu pokazują tydzień notowań i region', (tester) async {
+      await dodajDzialkeZGranicami();
+      await pokaz(tester, zakladka: ZakladkaKomputer.pulpit);
+      await tester.scrollUntilVisible(
+        find.text('Ceny skupu'),
+        300,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('Pszenica konsumpcyjna'), findsOneWidget);
+      expect(find.text('920,50 zł/t'), findsOneWidget);
+      expect(find.textContaining('Notowania z tygodnia'), findsOneWidget);
+      // Program nie udaje, że to oferta skupu za miedzą.
+      expect(find.textContaining('nie oferta'), findsOneWidget);
     });
 
     testWidgets('z pulpitu przechodzi się do pełnych terminów', (tester) async {

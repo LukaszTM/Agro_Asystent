@@ -57,14 +57,16 @@ programem (plan, pkt 4).
    dewelopera** — nie z urządzenia rolnika (CLAUDE.md, reguła 3).
    Dziś wszystkie cztery kanały mają status `do_weryfikacji`: adresów nie
    dało się potwierdzić ze środowiska, w którym powstawał kod.
-7. **Ceny skupu** — zboża, rzepak, mleko, żywiec. Źródłem są notowania
-   Zintegrowanego Systemu Rolniczej Informacji Rynkowej (ministerstwo).
-   Tych stron **nie wolno pobierać z urządzenia rolnika**, więc dane
-   przygotowuje skrypt w `tools/` i jadą do programu jako paczka
-   z datą i numerem wersji. Program pokazuje, z którego tygodnia są
-   notowania — nigdy nie udaje, że cena jest dzisiejsza.
-   „Lokalne" znaczy tu: makroregion / województwo gospodarstwa, bo
-   notowania krajowe publikuje się w takim podziale.
+7. **Ceny skupu** — ✅ mechanizm zrobiony, **notowań brak**. Program
+   dobiera cenę do województwa gospodarstwa (liczonego z działek),
+   a gdy dla niego notowania nie ma — pokazuje krajowe i mówi o tym
+   wprost. Ceny z obcego województwa nie podstawiamy.
+   Notowania przygotowuje `tools/ceny/ceny_skupu.py` na komputerze
+   dewelopera (CLAUDE.md, reguła 3), z pliku ZSRIR albo z prostego CSV
+   przepisanego z biuletynu. **Plik w repozytorium jest pusty i taki
+   zostanie, dopóki ktoś nie uruchomi skryptu na prawdziwych
+   notowaniach** — zmyślona cena to liczba, na podstawie której rolnik
+   mógłby sprzedać zboże (reguła 5).
 
 ## Czego program nie zrobi i powie o tym wprost
 

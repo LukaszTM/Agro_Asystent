@@ -1,0 +1,8 @@
+{
+  "wersja": "2026.10.18.1",
+  "zrodlo": "Zintegrowany System Rolniczej Informacji Rynkowej (ZSRIR), Ministerstwo Rolnictwa i Rozwoju Wsi",
+  "uwaga": "Notowania przygotowuje skrypt tools/ceny/ceny_skupu.py uruchamiany na komputerze dewelopera — aplikacja nigdy nie pobiera stron ministerstwa z urządzenia rolnika. Plik jedzie do programu jako dane z numerem wersji i tygodniem notowań.",
+  "zastrzezenie": "To są notowania urzędowe dla regionu, a nie cena konkretnego skupu za miedzą. Program pokazuje, z którego tygodnia pochodzą, i nigdy nie udaje, że są dzisiejsze.",
+  "tydzien": null,
+  "produkty": []
+}
