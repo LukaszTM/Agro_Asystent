@@ -12,6 +12,7 @@ import '../funkcje/dzialki/import_wniosku.dart';
 import '../funkcje/dzialki/repozytorium_dzialek.dart';
 import '../funkcje/dzialki/repozytorium_pol.dart';
 import '../funkcje/dzialki/slownik_upraw.dart';
+import '../funkcje/dzialki/uprawy_dopisane.dart';
 import '../funkcje/nawozenie/ewidencja_nawozenia.dart';
 import '../funkcje/nawozenie/nawoz.dart';
 import '../funkcje/nawozenie/plan_nawozenia.dart';
@@ -99,6 +100,14 @@ Future<Uslugi> uruchom({
   } on Object {
     cenySkupu = null;
   }
+  // Uprawy dopisane poza rejestrem (łąki, pastwiska). Gdy pliku brakuje,
+  // zostaje sam rejestr — rolnik nadal może wpisać nazwę ręcznie.
+  var uprawyDopisane = SlownikUprawDopisanych.pusty;
+  try {
+    uprawyDopisane = await ZrodloUprawDopisanych().wczytaj();
+  } on Object {
+    uprawyDopisane = SlownikUprawDopisanych.pusty;
+  }
   SlownikPojec? slowniczek;
   try {
     slowniczek = await ZrodloSlowniczka().wczytaj();
@@ -121,7 +130,7 @@ Future<Uslugi> uruchom({
     zabiegi: RepozytoriumZabiegow(baza),
     rejestr: RejestrZabiegow(baza),
     srodki: SlownikSrodkow(slowniki),
-    uprawy: SlownikUpraw(slowniki),
+    uprawy: SlownikUpraw(slowniki, dopisane: uprawyDopisane),
     reguly: reguly,
     importWniosku: ImportWniosku(baza: baza, srodki: SlownikSrodkow(slowniki)),
     zrodloPliku: const ZrodloPlikuUrzadzenia(),

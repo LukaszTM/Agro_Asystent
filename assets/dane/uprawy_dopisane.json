@@ -1,0 +1,13 @@
+{
+  "wersja": "2026.10.18.1",
+  "po_co": "Uprawy, których rejestr środków ochrony roślin nie wymienia, a rolnik ma je na polu. Rejestr mówi, czym wolno opryskiwać — trwałe użytki zielone prawie w nim nie występują, więc nie ma skąd wziąć ich nazw. Nowe uprawy dopisuje się do tego pliku, bez zmiany kodu.",
+  "zastrzezenie": "Kodu EPPO nie zgadujemy. Uprawa bez kodu wychodzi w ewidencji jako „brak” — tak samo jak nazwa wpisana ręcznie. Lista środków dopuszczonych dla takiej uprawy bierze się dalej z rejestru i może być pusta.",
+  "uprawy": [
+    {
+      "nazwa": "Trawy",
+      "kod_eppo": null,
+      "gdzie": "łąki i pastwiska — trwałe użytki zielone (TUZ)",
+      "status": "potwierdzone"
+    }
+  ]
+}

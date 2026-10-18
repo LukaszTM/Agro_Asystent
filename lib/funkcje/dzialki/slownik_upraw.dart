@@ -1,6 +1,7 @@
 import 'package:sqflite_common/sqlite_api.dart';
 
 import '../../rdzen/wspolne/tekst.dart';
+import 'uprawy_dopisane.dart';
 
 /// Co aplikacja wie o nazwie uprawy ze słownika.
 enum StanUprawy {
@@ -114,9 +115,17 @@ class WynikSzukaniaUpraw {
 /// pisania). Nazwy zbiorcze, miejsca stosowania i rośliny spoza zakresu
 /// aplikacji na listę nie wchodzą.
 class SlownikUpraw {
-  const SlownikUpraw(this._baza);
+  const SlownikUpraw(
+    this._baza, {
+    this.dopisane = SlownikUprawDopisanych.pusty,
+  });
 
   final DatabaseExecutor _baza;
+
+  /// Uprawy dopisane poza rejestrem — przede wszystkim trwałe użytki
+  /// zielone. Stoją na początku listy, bo rolnik, który ich szuka, nie
+  /// znajdzie ich w rejestrze.
+  final SlownikUprawDopisanych dopisane;
 
   /// Stany, które wolno wybrać jako uprawę pola.
   static const List<StanUprawy> _doWyboru = [
@@ -163,14 +172,21 @@ class SlownikUpraw {
               )).first['ile']
               as int);
 
+    final zPliku = dopisane.pasujace(szukane);
     return WynikSzukaniaUpraw(
-      uprawy: wiersze.map(UprawaDoWyboru.zBazy).toList(growable: false),
-      razem: razem,
+      uprawy: [
+        ...zPliku,
+        ...wiersze.map(UprawaDoWyboru.zBazy),
+      ].take(limit).toList(growable: false),
+      razem: razem + zPliku.length,
     );
   }
 
   /// Jedna uprawa ze słownika — albo `null`, gdy słownik jej nie zna.
   Future<UprawaDoWyboru?> jedna(String nazwa) async {
+    if (dopisane.jedna(nazwa) case final UprawaDoWyboru zPliku) {
+      return zPliku;
+    }
     final wiersze = await _baza.rawQuery(
       '''
       SELECT nazwa, kod_eppo, stan, gatunki, pytanie, zastosowan
