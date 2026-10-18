@@ -5,8 +5,17 @@ właściwa dla rolnika. Druga jest dla pracy nad kodem.
 
 ## 1. Gotowy plik do pobrania (zalecane)
 
-Plik `.exe` buduje darmowa maszyna GitHuba. Uruchamia ją **znacznik**
-zaczynający się od `pc-`:
+Plik `.exe` buduje darmowa maszyna GitHuba. Są dwa sposoby, żeby ją
+uruchomić.
+
+**Na próbę — zmiana pliku-wyzwalacza.** W `.github/zbuduj-windows` wpisuje
+się nową datę i wysyła commit na gałąź roboczą. Przepływ budzi tylko ten
+jeden plik, więc zwykła praca nad kodem nie pali darmowych minut.
+Wynik to artefakt `agro-asystent-windows` na stronie zakończonego
+budowania (Actions) — paczka .zip, 14 dni, do pobrania po zalogowaniu
+na GitHubie.
+
+**Na wydanie — znacznik `pc-`.**
 
 ```bash
 git tag pc-0.1.0
@@ -14,8 +23,8 @@ git push origin pc-0.1.0
 ```
 
 Po kilkunastu minutach w zakładce **Releases** repozytorium staje
-wydanie `pc-0.1.0` z plikiem `agro-asystent-windows.zip`. Link do niego
-jest stały — można go wysłać dalej, nie wygasa i nie wymaga logowania.
+wydanie `pc-0.1.0` z plikiem `agro-asystent-windows.zip`. Ten link jest
+stały — można go wysłać dalej i nie wygasa.
 
 Dalej: rozpakować **cały** folder (obok `agro_asystent.exe` leżą
 biblioteki, bez nich program nie wstanie) i uruchomić `agro_asystent.exe`.

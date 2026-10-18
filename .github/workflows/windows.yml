@@ -16,6 +16,13 @@ name: Zbuduj program na Windows
 on:
   workflow_dispatch:
   push:
+    # Budowanie na żądanie z gałęzi roboczej: wystarczy zmienić plik
+    # `.github/zbuduj-windows` (wpisać nową datę) i wysłać commit.
+    # Żadna inna zmiana w kodzie Windowsa nie budzi tego przepływu.
+    branches:
+      - 'claude/**'
+    paths:
+      - '.github/zbuduj-windows'
     tags:
       - 'pc-*'
 
