@@ -19,6 +19,35 @@ abstract final class Daty {
     'grudnia',
   ];
 
+  static const List<String> dniTygodnia = [
+    'poniedziałek',
+    'wtorek',
+    'środa',
+    'czwartek',
+    'piątek',
+    'sobota',
+    'niedziela',
+  ];
+
+  static const List<String> dniTygodniaKrotko = [
+    'pon',
+    'wt',
+    'śr',
+    'czw',
+    'pt',
+    'sob',
+    'niedz',
+  ];
+
+  static String dzienTygodnia(DateTime dzien) => dniTygodnia[dzien.weekday - 1];
+
+  static String dzienTygodniaKrotko(DateTime dzien) =>
+      dniTygodniaKrotko[dzien.weekday - 1];
+
+  /// Czy to ten sam dzień kalendarzowy.
+  static bool tenSamDzien(DateTime a, DateTime b) =>
+      a.year == b.year && a.month == b.month && a.day == b.day;
+
   /// `10-15` → „15 października". Przy niezrozumiałym zapisie zwraca to,
   /// co dostała — lepiej pokazać surową daną niż wymyśloną datę.
   static String dzienIMiesiac(String dataRoczna) {

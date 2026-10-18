@@ -3,6 +3,7 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite_common/sqlite_api.dart';
 
+import '../funkcje/biodynamika/biodynamika.dart';
 import '../funkcje/dokumenty/usluga_dokumentow.dart';
 import '../funkcje/dokumenty/wydruk_pdf.dart';
 import '../funkcje/dzialki/import_wniosku.dart';
@@ -75,10 +76,19 @@ Future<Uslugi> uruchom({
   );
 
   final reguly = await ZrodloRegul().wczytaj();
+  // Kalendarz biodynamiczny jest dodatkiem — gdy pliku brakuje, program
+  // wstaje bez niego zamiast nie wstać wcale.
+  SlownikBiodynamiczny? biodynamika;
+  try {
+    biodynamika = await ZrodloBiodynamiki().wczytaj();
+  } on Object {
+    biodynamika = null;
+  }
   final gminyTerminow = await ZrodloGminTerminow().wczytaj();
   final stado = RepozytoriumStada(baza: baza, reguly: reguly);
 
   return Uslugi(
+    biodynamika: biodynamika,
     gospodarstwoId: gospodarstwo.id,
     nazwaGospodarstwa: gospodarstwo.nazwa,
     urzadzenie: nazwaUrzadzenia,

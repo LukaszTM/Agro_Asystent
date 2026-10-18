@@ -79,6 +79,18 @@ abstract final class MotywKomputer {
   /// Kawałek „bez wpisanej uprawy" — szary, bo to brak danych, nie uprawa.
   static const Color barwaBezDanych = Color(0xFFB9C2B6);
 
+  /// Barwy dni kalendarza biodynamicznego — po rodzaju pracy. Nazwy prac
+  /// pochodzą ze słownika (`assets/dane/kalendarz_biodynamiczny.json`),
+  /// nie z kodu.
+  static const Map<String, Color> barwyPracy = {
+    'korzeń': Color(0xFF8A5A2B),
+    'liść': Color(0xFF3F7D3F),
+    'kwiat': Color(0xFF6B4E71),
+    'owoc': Color(0xFFC0532B),
+  };
+
+  static Color barwaPracy(String praca) => barwyPracy[praca] ?? tekstPomocniczy;
+
   /// Motyw programu w wybranej wielkości tekstu.
   static ThemeData zbuduj([RozmiarTekstu rozmiar = RozmiarTekstu.normalny]) {
     final skala = rozmiar.skala;

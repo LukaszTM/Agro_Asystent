@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 
 import '../../../app/uslugi.dart';
+import '../../../funkcje/biodynamika/biodynamika.dart';
 import '../../../funkcje/dzialki/repozytorium_dzialek.dart';
 import '../../../funkcje/pulpit/zasiewy.dart';
 import '../../../funkcje/terminy/kalendarz_terminow.dart';
 import '../../../rdzen/wspolne/daty.dart';
 import '../../../rdzen/wspolne/mapa_dzialek.dart';
 import '../motyw.dart';
+import '../widgety/kalendarz_biodynamiczny.dart';
 import '../widgety/karta.dart';
 import '../widgety/wykres_kolowy.dart';
 
@@ -16,11 +18,28 @@ class _DanePulpitu {
     required this.zasiewy,
     required this.dzialki,
     required this.terminy,
+    this.biodynamika,
   });
 
   final StrukturaZasiewow zasiewy;
   final List<DzialkaEwidencyjna> dzialki;
   final List<PozycjaKalendarza> terminy;
+
+  /// `null`, gdy słownika kalendarza nie udało się wczytać — pulpit działa
+  /// dalej, tylko bez tej karty.
+  final _DaneBiodynamiki? biodynamika;
+}
+
+class _DaneBiodynamiki {
+  const _DaneBiodynamiki({
+    required this.tydzien,
+    required this.miesiac,
+    required this.zastrzezenie,
+  });
+
+  final List<DzienBiodynamiczny> tydzien;
+  final List<DzienBiodynamiczny> miesiac;
+  final String zastrzezenie;
 }
 
 /// Pierwszy widok programu na komputer: gospodarstwo na jednym ekranie.
@@ -73,6 +92,23 @@ class _WidokPulpitKomputerState extends State<WidokPulpitKomputer> {
       zasiewy: Zasiewy.policz(pola),
       dzialki: dzialki,
       terminy: terminy,
+      biodynamika: _biodynamika(),
+    );
+  }
+
+  /// Kalendarz jest dodatkiem: gdy słownika nie wczytano przy starcie,
+  /// pulpit pokazuje resztę i niczego nie udaje.
+  _DaneBiodynamiki? _biodynamika() {
+    final slownik = widget.uslugi.biodynamika;
+    if (slownik == null) {
+      return null;
+    }
+    final kalendarz = KalendarzBiodynamiczny(slownik);
+    final teraz = _teraz;
+    return _DaneBiodynamiki(
+      tydzien: kalendarz.tydzien(teraz),
+      miesiac: kalendarz.miesiac(teraz.year, teraz.month),
+      zastrzezenie: slownik.zastrzezenie,
     );
   }
 
@@ -122,6 +158,15 @@ class _WidokPulpitKomputerState extends State<WidokPulpitKomputer> {
                     terminy: dane.terminy,
                     teraz: _teraz,
                     onPelnyWidok: widget.onPelnyWidok,
+                  ),
+                ],
+                if (dane.biodynamika case final _DaneBiodynamiki kalendarz) ...[
+                  const SizedBox(height: MotywKomputer.odstep),
+                  KalendarzBiodynamicznyKarta(
+                    tydzien: kalendarz.tydzien,
+                    miesiac: kalendarz.miesiac,
+                    dzis: _teraz,
+                    zastrzezenie: kalendarz.zastrzezenie,
                   ),
                 ],
               ],

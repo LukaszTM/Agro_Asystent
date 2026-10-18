@@ -32,11 +32,13 @@ programem (plan, pkt 4).
 3. **Profil gospodarstwa** — ✅ zrobione. Nazwa, numer producenta,
    powierzchnia użytków rolnych i odpowiedź o zwierzętach — w jednym
    oknie, z klawiatury. Drugie gospodarstwo zostaje dodatkiem płatnym.
-4. **Kalendarz biodynamiczny** — faza Księżyca i znak zodiaku liczone na
-   miejscu, dzień korzenia / liścia / kwiatu / owocu, widok tygodnia
-   z rozwinięciem na miesiąc. **To tradycja, nie przepis** — program
-   mówi to wprost i nigdy nie miesza tego z obowiązkami prawnymi ani
-   z terminami z rozporządzeń.
+4. **Kalendarz biodynamiczny** — ✅ zrobione. Położenie Księżyca liczone
+   na miejscu (szeregi Meeusa, dokładność ~0,1 stopnia), dzień korzenia /
+   liścia / kwiatu / owocu, faza i oświetlenie tarczy, godzina zmiany
+   gwiazdozbioru. Tydzień na pulpicie, rozwijany na cały miesiąc.
+   **To tradycja, nie przepis** — zastrzeżenie stoi na karcie, nie
+   w drobnym druku. Granice gwiazdozbiorów i przypisanie żywiołów są
+   danymi (`assets/dane/kalendarz_biodynamiczny.json`), nie kodem.
 5. **Pogoda** — co najmniej trzy doby, godzinowo na dziś i jutro:
    temperatura, opad, wiatr (ważny przy oprysku), wilgotność. Potrzebna
    decyzja o źródle i **sprawdzenie licencji pod kątem użytku

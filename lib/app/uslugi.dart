@@ -1,3 +1,4 @@
+import '../funkcje/biodynamika/biodynamika.dart';
 import '../funkcje/dokumenty/usluga_dokumentow.dart';
 import '../funkcje/dzialki/import_wniosku.dart';
 import '../funkcje/dzialki/klient_uldk.dart';
@@ -71,6 +72,7 @@ class Uslugi {
     required this.ustawieniaPrzypomnien,
     this.uldk = const KlientUldk(),
     this.dostep = const DostepFunkcji.darmowa(),
+    this.biodynamika,
   });
 
   final String gospodarstwoId;
@@ -217,6 +219,11 @@ class Uslugi {
 
   final DostepFunkcji dostep;
 
+  /// Słownik kalendarza biodynamicznego — dodatek informacyjny, nie
+  /// przepis. `null` znaczy, że pliku nie wczytano; program działa dalej,
+  /// tylko bez tej karty na pulpicie.
+  final SlownikBiodynamiczny? biodynamika;
+
   /// Te same usługi z innym dostępem do funkcji płatnych.
   ///
   /// Po zakupie premium (albo po jego wygaśnięciu) nie otwieramy bazy od
@@ -267,5 +274,6 @@ class Uslugi {
     ustawieniaPrzypomnien: ustawieniaPrzypomnien,
     uldk: uldk,
     dostep: dostep ?? this.dostep,
+    biodynamika: biodynamika,
   );
 }

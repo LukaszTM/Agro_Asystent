@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:agro_asystent/app/aplikacja.dart';
 import 'package:agro_asystent/app/platforma.dart';
 import 'package:agro_asystent/app/uslugi.dart';
+import 'package:agro_asystent/funkcje/biodynamika/biodynamika.dart';
 import 'package:agro_asystent/funkcje/dokumenty/usluga_dokumentow.dart';
 import 'package:agro_asystent/funkcje/dokumenty/wydruk_pdf.dart';
 import 'package:agro_asystent/funkcje/dokumenty/wyjscie_dokumentu.dart';
@@ -55,6 +56,9 @@ void main() {
   final fabryka = databaseFactoryFfiNoIsolate;
   final reguly = SlownikRegul.zTekstuJson(
     File('assets/dane/reguly_prawne.json').readAsStringSync(),
+  );
+  final biodynamika = SlownikBiodynamiczny.zTekstuJson(
+    File('assets/dane/kalendarz_biodynamiczny.json').readAsStringSync(),
   );
 
   // Stały dzień: inaczej test pękałby, gdy dzisiejsza data minie termin
@@ -154,6 +158,7 @@ void main() {
     przypomnienia: const _BrakPrzypomnien(),
     ustawieniaPrzypomnien: UstawieniaPrzypomnien(baza),
     dostep: DostepFunkcji(maPremium: premium),
+    biodynamika: biodynamika,
   );
 
   Future<void> dodajPole({
@@ -753,6 +758,29 @@ void main() {
         find.text('Nie ma jeszcze żadnej działki z granicami.'),
         findsOneWidget,
       );
+    });
+
+    testWidgets('kalendarz biodynamiczny stoi z zastrzeżeniem i rozwija się '
+        'na miesiąc', (tester) async {
+      await pokaz(tester, zakladka: ZakladkaKomputer.pulpit);
+      await tester.scrollUntilVisible(
+        find.text('Kalendarz biodynamiczny'),
+        300,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('Kalendarz biodynamiczny'), findsOneWidget);
+      // Zastrzeżenie stoi na ekranie, nie w drobnym druku: to tradycja,
+      // a terminy biorą się z przepisów.
+      expect(find.textContaining('tradycja, nie przepis'), findsOneWidget);
+      expect(find.textContaining('dzień'), findsWidgets);
+
+      await tester.tap(find.text('Pokaż miesiąc'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Pokaż tydzień'), findsOneWidget);
+      expect(find.text('października 2026'), findsOneWidget);
     });
 
     testWidgets('z pulpitu przechodzi się do pełnych terminów', (tester) async {
