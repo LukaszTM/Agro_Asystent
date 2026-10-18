@@ -29,7 +29,8 @@ Wersja rozbudowana, z warunkami wstępnymi i pełnym opisem kroków:
   wszystkie dodatki są odblokowane), testy wydajnościowe na dużej bazie
 - **Środowisko:** model telefonu: ……, wersja Androida: ……, wersja aplikacji:
   przepisz z Ustawień („Agro Asystent • Wersja 0.2.0 (budowa 2)"), plik APK:
-  `agro-asystent-0.2.0-arm64.apk` / `agro-asystent-0.2.0.apk`
+  `agro-asystent-0.2.0+2-arm64.apk` (40 MB, na telefony z ostatnich lat) albo
+  `agro-asystent-0.2.0+2.apk` (106 MB, na każdy telefon)
 - **Gdzie są ustawienia:** w wyglądzie Nowoczesnym zakładka „Ustawienia"; w wyglądzie
   Prostym ikona ciągnika w prawym górnym rogu ekranu głównego → ekran
   „Gospodarstwo". W krokach piszemy krótko „Ustawienia"
