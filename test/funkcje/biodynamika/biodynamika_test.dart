@@ -150,4 +150,82 @@ void main() {
       },
     );
   });
+
+  group('oznaczenia siewne jak w kalendarzu rolników', () {
+    // Daty i godziny faz głównych z drukowanego Kalendarza Rolników na
+    // grudzień 2026 (czas środkowoeuropejski). Nasz rachunek ma dokładność
+    // około 0,2 stopnia, czyli kilkudziesięciu minut.
+    //
+    // Druk podaje ostatnią kwadrę 31 XII o 19:59 — to pomyłka wydawnictwa:
+    // od ostatniej kwadry 1 XII (7:08) do następnej mija jeden miesiąc
+    // synodyczny, 29,53 doby, czyli wypada ona 30 XII wieczorem. Tak też
+    // liczy nasz rachunek (i tak podają tablice astronomiczne).
+    final kalendarz = KalendarzBiodynamiczny(slownik);
+
+    test('nów, kwadry i pełnia wypadają w dni z kalendarza', () {
+      final oczekiwane = {
+        DateTime(2026, 12, 1): 'ostatnia kwadra',
+        DateTime(2026, 12, 9): 'nów',
+        DateTime(2026, 12, 17): 'pierwsza kwadra',
+        DateTime(2026, 12, 24): 'pełnia',
+        DateTime(2026, 12, 30): 'ostatnia kwadra',
+      };
+      for (final wpis in oczekiwane.entries) {
+        final dzien = kalendarz.dzien(wpis.key);
+        expect(dzien.zmianaFazy?.faza.nazwa, wpis.value, reason: '${wpis.key}');
+        expect(dzien.ocenaSiewu, OcenaSiewu.zly, reason: '${wpis.key}');
+      }
+      // Dzień obok fazy jest zwykłym dniem.
+      expect(kalendarz.dzien(DateTime(2026, 12, 10)).zmianaFazy, isNull);
+    });
+
+    test('godzina nowiu zgadza się z kalendarzem do kilkudziesięciu minut', () {
+      // Kalendarz: 9 XII 2026, 1:50 CET = 0:50 UTC. Test liczy w czasie
+      // lokalnym maszyny, więc porównujemy w UTC.
+      final now = kalendarz.dzien(DateTime(2026, 12, 9)).zmianaFazy!;
+      final roznica = now.okolo.toUtc().difference(
+        DateTime.utc(2026, 12, 9, 0, 50),
+      );
+      expect(roznica.inMinutes.abs(), lessThan(90));
+    });
+
+    test('kwadry idą po kolei: liść, owoc, korzeń, gleba', () {
+      expect(kalendarz.dzien(DateTime(2026, 12, 12)).kwadra.praca, 'liść');
+      expect(kalendarz.dzien(DateTime(2026, 12, 20)).kwadra.praca, 'owoc');
+      expect(kalendarz.dzien(DateTime(2026, 12, 27)).kwadra.praca, 'korzeń');
+      final gleba = kalendarz.dzien(DateTime(2026, 12, 4));
+      expect(gleba.kwadra.praca, isNull);
+      expect(gleba.ocenaSiewu, OcenaSiewu.bezSiewu);
+    });
+
+    test('dwie rączki tylko wtedy, gdy znak mówi to samo, co kwadra', () {
+      final dni = kalendarz.miesiac(2026, 12);
+      final bardzoDobre = dni.where(
+        (d) => d.ocenaSiewu == OcenaSiewu.bardzoDobry,
+      );
+      expect(bardzoDobre, isNotEmpty);
+      for (final dzien in bardzoDobre) {
+        expect(dzien.kwadra.praca, dzien.praca, reason: '${dzien.data}');
+      }
+      final dobre = dni.where((d) => d.ocenaSiewu == OcenaSiewu.dobry);
+      for (final dzien in dobre) {
+        expect(dzien.kwadra.praca, isNotNull);
+        expect(dzien.kwadra.praca, isNot(dzien.praca), reason: '${dzien.data}');
+      }
+    });
+
+    test('w miesiącu są cztery albo pięć dni faz głównych', () {
+      final ile = kalendarz
+          .miesiac(2026, 12)
+          .where((d) => d.zmianaFazy != null)
+          .length;
+      expect(ile, inInclusiveRange(4, 5));
+    });
+
+    test('plik danych opisuje kwadry i fazy główne', () {
+      expect(slownik.siew.kwadry, hasLength(4));
+      expect(slownik.siew.fazyGlowne.map((f) => f.stopnie), [0, 90, 180, 270]);
+      expect(slownik.siew.opis, contains('rączka'));
+    });
+  });
 }

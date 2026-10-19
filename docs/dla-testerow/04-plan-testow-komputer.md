@@ -45,7 +45,7 @@ Punkty z gwiazdką ★ są najważniejsze.
 | D2 | Z internetem — karta pogody | Prognoza na co najmniej 3 dni dla położenia gospodarstwa (z działek); bez działek — zdanie, że nie wiadomo, gdzie jest gospodarstwo | TAK / NIE | |
 | D3 | Bez internetu — karty pogody i wiadomości | Każda mówi jednym zdaniem o braku sieci; ostatnia pobrana prognoza zostaje | TAK / NIE | |
 | D4 | Karta cen skupu | Mówi wprost, że notowań nie ma w tej wersji — nie pokazuje żadnej ceny | TAK / NIE | |
-| D5 | Kalendarz biodynamiczny → rozwiń tydzień do miesiąca | Dni z fazą Księżyca i rodzajem pracy; widoczne zastrzeżenie, że to tradycja, nie przepis | TAK / NIE | |
+| D5 | Kalendarz biodynamiczny → rozwiń tydzień do miesiąca | Przy każdym dniu rączka siewna (jedna — dobry dzień, dwie — bardzo dobry, przekreślona — zły, w dzień nowiu, kwadry albo pełni) i ikona: liść, owoc, korzeń albo szpadel (prace w glebie); widoczne zastrzeżenie, że to tradycja, nie przepis | TAK / NIE | |
 
 ## E. Dane z telefonu, rejestr, wydruk
 

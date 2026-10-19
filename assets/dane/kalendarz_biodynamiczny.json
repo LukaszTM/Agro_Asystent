@@ -1,5 +1,5 @@
 {
-  "wersja": "2026.10.18.1",
+  "wersja": "2026.10.19.1",
   "zrodlo": "Tradycja kalendarza biodynamicznego (Maria Thun) — podział dni na korzeniowe, liściowe, kwiatowe i owocowe według gwiazdozbioru, w którym stoi Księżyc.",
   "zastrzezenie": "Kalendarz biodynamiczny to tradycja, nie przepis. Terminów zabiegów, karencji i obowiązków aplikacja nigdy nie liczy z Księżyca — te biorą się z rozporządzeń i etykiet.",
   "dokladnosc": "Położenie Księżyca liczymy na miejscu, z dokładnością do około 0,1 stopnia. Granice gwiazdozbiorów są umowne (dwanaście równych odcinków po 30 stopni), więc wydawnictwa papierowe mogą podawać dzień inaczej, zwykle o dobę.",
@@ -36,27 +36,158 @@
     }
   ],
   "znaki": [
-    { "nazwa": "Baran", "odStopni": 0, "zywiol": "ogien" },
-    { "nazwa": "Byk", "odStopni": 30, "zywiol": "ziemia" },
-    { "nazwa": "Bliźnięta", "odStopni": 60, "zywiol": "powietrze" },
-    { "nazwa": "Rak", "odStopni": 90, "zywiol": "woda" },
-    { "nazwa": "Lew", "odStopni": 120, "zywiol": "ogien" },
-    { "nazwa": "Panna", "odStopni": 150, "zywiol": "ziemia" },
-    { "nazwa": "Waga", "odStopni": 180, "zywiol": "powietrze" },
-    { "nazwa": "Skorpion", "odStopni": 210, "zywiol": "woda" },
-    { "nazwa": "Strzelec", "odStopni": 240, "zywiol": "ogien" },
-    { "nazwa": "Koziorożec", "odStopni": 270, "zywiol": "ziemia" },
-    { "nazwa": "Wodnik", "odStopni": 300, "zywiol": "powietrze" },
-    { "nazwa": "Ryby", "odStopni": 330, "zywiol": "woda" }
+    {
+      "nazwa": "Baran",
+      "odStopni": 0,
+      "zywiol": "ogien"
+    },
+    {
+      "nazwa": "Byk",
+      "odStopni": 30,
+      "zywiol": "ziemia"
+    },
+    {
+      "nazwa": "Bliźnięta",
+      "odStopni": 60,
+      "zywiol": "powietrze"
+    },
+    {
+      "nazwa": "Rak",
+      "odStopni": 90,
+      "zywiol": "woda"
+    },
+    {
+      "nazwa": "Lew",
+      "odStopni": 120,
+      "zywiol": "ogien"
+    },
+    {
+      "nazwa": "Panna",
+      "odStopni": 150,
+      "zywiol": "ziemia"
+    },
+    {
+      "nazwa": "Waga",
+      "odStopni": 180,
+      "zywiol": "powietrze"
+    },
+    {
+      "nazwa": "Skorpion",
+      "odStopni": 210,
+      "zywiol": "woda"
+    },
+    {
+      "nazwa": "Strzelec",
+      "odStopni": 240,
+      "zywiol": "ogien"
+    },
+    {
+      "nazwa": "Koziorożec",
+      "odStopni": 270,
+      "zywiol": "ziemia"
+    },
+    {
+      "nazwa": "Wodnik",
+      "odStopni": 300,
+      "zywiol": "powietrze"
+    },
+    {
+      "nazwa": "Ryby",
+      "odStopni": 330,
+      "zywiol": "woda"
+    }
   ],
   "fazy": [
-    { "nazwa": "nów", "odStopni": 337.5, "rosnie": true },
-    { "nazwa": "sierp przybywający", "odStopni": 22.5, "rosnie": true },
-    { "nazwa": "pierwsza kwadra", "odStopni": 67.5, "rosnie": true },
-    { "nazwa": "przed pełnią", "odStopni": 112.5, "rosnie": true },
-    { "nazwa": "pełnia", "odStopni": 157.5, "rosnie": false },
-    { "nazwa": "po pełni", "odStopni": 202.5, "rosnie": false },
-    { "nazwa": "ostatnia kwadra", "odStopni": 247.5, "rosnie": false },
-    { "nazwa": "sierp ubywający", "odStopni": 292.5, "rosnie": false }
-  ]
+    {
+      "nazwa": "nów",
+      "odStopni": 337.5,
+      "rosnie": true
+    },
+    {
+      "nazwa": "sierp przybywający",
+      "odStopni": 22.5,
+      "rosnie": true
+    },
+    {
+      "nazwa": "pierwsza kwadra",
+      "odStopni": 67.5,
+      "rosnie": true
+    },
+    {
+      "nazwa": "przed pełnią",
+      "odStopni": 112.5,
+      "rosnie": true
+    },
+    {
+      "nazwa": "pełnia",
+      "odStopni": 157.5,
+      "rosnie": false
+    },
+    {
+      "nazwa": "po pełni",
+      "odStopni": 202.5,
+      "rosnie": false
+    },
+    {
+      "nazwa": "ostatnia kwadra",
+      "odStopni": 247.5,
+      "rosnie": false
+    },
+    {
+      "nazwa": "sierp ubywający",
+      "odStopni": 292.5,
+      "rosnie": false
+    }
+  ],
+  "siew": {
+    "opis": "Oznaczenia siewne jak w drukowanych kalendarzach rolników: rączka siewna. Dzień zmiany fazy (nów, kwadra, pełnia) to dzień zły do siewu — przekreślona rączka. Między fazami rodzaj siewu zależy od kwadry Księżyca; gdy gwiazdozbiór mówi to samo, co kwadra, dzień jest bardzo dobry — dwie rączki.",
+    "kwadry": [
+      {
+        "nr": 1,
+        "od": "nów",
+        "do": "pierwsza kwadra",
+        "praca": "liść",
+        "opis": "Księżyca przybywa: siew tego, co rośnie nad ziemią i daje liście — trawy, kapustne, sałaty."
+      },
+      {
+        "nr": 2,
+        "od": "pierwsza kwadra",
+        "do": "pełnia",
+        "praca": "owoc",
+        "opis": "Księżyca przybywa ku pełni: siew na nasiona i owoc — zboża, strączkowe, rzepak."
+      },
+      {
+        "nr": 3,
+        "od": "pełnia",
+        "do": "ostatnia kwadra",
+        "praca": "korzeń",
+        "opis": "Księżyca ubywa: siew i sadzenie tego, co rośnie pod ziemią — ziemniaki, buraki, marchew, cebula."
+      },
+      {
+        "nr": 4,
+        "od": "ostatnia kwadra",
+        "do": "nów",
+        "praca": null,
+        "opis": "Czas na pracę w glebie: orka, bronowanie, odchwaszczanie, obornik. Siewu tradycja w tej kwadrze nie zaleca."
+      }
+    ],
+    "fazy_glowne": [
+      {
+        "nazwa": "nów",
+        "stopnie": 0
+      },
+      {
+        "nazwa": "pierwsza kwadra",
+        "stopnie": 90
+      },
+      {
+        "nazwa": "pełnia",
+        "stopnie": 180
+      },
+      {
+        "nazwa": "ostatnia kwadra",
+        "stopnie": 270
+      }
+    ]
+  }
 }

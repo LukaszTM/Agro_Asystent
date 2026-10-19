@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../funkcje/biodynamika/biodynamika.dart';
 import '../../../rdzen/wspolne/daty.dart';
+import '../../../rdzen/wspolne/ikony_siewu.dart';
 import '../motyw.dart';
 import 'karta.dart';
 
@@ -86,14 +87,14 @@ class _Tydzien extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(bottom: 8),
             child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Container(
                   width: 6,
-                  height: 38,
+                  height: 40,
                   margin: const EdgeInsets.only(right: 10),
                   decoration: BoxDecoration(
-                    color: MotywKomputer.barwaPracy(dzien.praca),
+                    color: _barwaKwadry(dzien),
                     borderRadius: BorderRadius.circular(3),
                   ),
                 ),
@@ -109,18 +110,22 @@ class _Tydzien extends StatelessWidget {
                         : teksty.bodyLarge,
                   ),
                 ),
+                // Oznaczenia jak w kalendarzu na ścianie: rączka siewna
+                // i rodzaj pracy; w dzień fazy głównej — tarcza Księżyca.
+                SizedBox(width: 56, child: _Raczki(dzien: dzien, rozmiar: 28)),
+                const SizedBox(width: 8),
+                SizedBox(width: 36, child: _Praca(dzien: dzien, rozmiar: 28)),
+                const SizedBox(width: 10),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        'dzień ${dzien.praca} • ${dzien.znak.nazwa}',
-                        style: teksty.bodyLarge,
-                      ),
+                      Text(_glowneZdanie(dzien), style: teksty.bodyLarge),
                       Text(
                         [
-                          '${dzien.faza.nazwa}, '
-                              '${dzien.oswietlenieOpis} tarczy',
+                          'Księżyc w znaku ${dzien.znak.nazwa} '
+                              '(dzień ${dzien.praca})',
+                          '${dzien.faza.nazwa}, ${dzien.oswietlenieOpis} tarczy',
                           if (dzien.zmiana case final ZmianaZnaku zmiana)
                             'od ${zmiana.godzinaOpis} '
                                 'dzień ${zmiana.na.zywiol.praca}',
@@ -134,6 +139,82 @@ class _Tydzien extends StatelessWidget {
             ),
           ),
       ],
+    );
+  }
+
+  static String _glowneZdanie(DzienBiodynamiczny dzien) {
+    if (dzien.zmianaFazy case final ZmianaFazy zmiana) {
+      return '${zmiana.faza.nazwa} o ${zmiana.godzinaOpis} — '
+          '${dzien.ocenaSiewu.dlaRolnika}';
+    }
+    final praca = dzien.kwadra.praca;
+    return praca == null
+        ? dzien.ocenaSiewu.dlaRolnika
+        : '${dzien.ocenaSiewu.dlaRolnika}: $praca';
+  }
+}
+
+Color _barwaKwadry(DzienBiodynamiczny dzien) {
+  final praca = dzien.kwadra.praca;
+  return praca == null
+      ? MotywKomputer.tekstPomocniczy
+      : MotywKomputer.barwaPracy(praca);
+}
+
+/// Rączka siewna albo tarcza Księżyca (w dzień fazy głównej rączka jest
+/// przekreślona, więc tarcza stoi obok).
+class _Raczki extends StatelessWidget {
+  const _Raczki({required this.dzien, this.rozmiar = 22});
+
+  final DzienBiodynamiczny dzien;
+  final double rozmiar;
+
+  @override
+  Widget build(BuildContext context) {
+    return switch (dzien.ocenaSiewu) {
+      OcenaSiewu.zly => IkonaRaczki(
+        ile: 1,
+        przekreslona: true,
+        kolor: MotywKomputer.tekstPomocniczy,
+        kolorKreski: MotywKomputer.ostrzezenieObramowanie,
+        rozmiar: rozmiar,
+      ),
+      OcenaSiewu.dobry => IkonaRaczki(
+        ile: 1,
+        kolor: MotywKomputer.zielen,
+        rozmiar: rozmiar,
+      ),
+      OcenaSiewu.bardzoDobry => IkonaRaczki(
+        ile: 2,
+        kolor: MotywKomputer.zielen,
+        rozmiar: rozmiar,
+      ),
+      OcenaSiewu.bezSiewu => const SizedBox.shrink(),
+    };
+  }
+}
+
+/// Rodzaj pracy w kwadrze; w dzień fazy głównej — tarcza Księżyca.
+class _Praca extends StatelessWidget {
+  const _Praca({required this.dzien, this.rozmiar = 24});
+
+  final DzienBiodynamiczny dzien;
+  final double rozmiar;
+
+  @override
+  Widget build(BuildContext context) {
+    if (dzien.zmianaFazy case final ZmianaFazy zmiana) {
+      return IkonaFazy(
+        stopnie: zmiana.faza.stopnie,
+        kolorCiemny: MotywKomputer.tekst,
+        kolorJasny: MotywKomputer.karta,
+        rozmiar: rozmiar,
+      );
+    }
+    return IkonaPracy(
+      praca: dzien.kwadra.praca,
+      kolor: _barwaKwadry(dzien),
+      rozmiar: rozmiar,
     );
   }
 }
@@ -202,19 +283,21 @@ class _Kratka extends StatelessWidget {
   Widget build(BuildContext context) {
     final teksty = Theme.of(context).textTheme;
     final dzisiaj = Daty.tenSamDzien(dzien.data, dzis);
+    final barwa = _barwaKwadry(dzien);
     return Semantics(
       label:
           '${dzien.data.day} ${Daty.miesiaceWDopelniaczu[dzien.data.month - 1]}'
-          ', dzień ${dzien.praca}, ${dzien.znak.nazwa}',
+          ', ${dzien.ocenaSiewu.dlaRolnika}'
+          '${dzien.kwadra.praca == null ? '' : ': ${dzien.kwadra.praca}'}',
       excludeSemantics: true,
       child: Container(
         padding: const EdgeInsets.all(4),
         decoration: BoxDecoration(
-          color: MotywKomputer.barwaPracy(dzien.praca).withValues(alpha: 0.12),
+          color: barwa.withValues(alpha: 0.12),
           border: Border.all(
             color: dzisiaj
                 ? MotywKomputer.zielen
-                : MotywKomputer.barwaPracy(dzien.praca).withValues(alpha: 0.5),
+                : barwa.withValues(alpha: 0.5),
             width: dzisiaj ? 2 : 1,
           ),
           borderRadius: BorderRadius.circular(MotywKomputer.zaokraglenieMale),
@@ -223,13 +306,15 @@ class _Kratka extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text('${dzien.data.day}', style: teksty.labelLarge),
-            Text(
-              dzien.praca,
-              textAlign: TextAlign.center,
-              overflow: TextOverflow.ellipsis,
-              style: teksty.bodyMedium?.copyWith(
-                color: MotywKomputer.barwaPracy(dzien.praca),
-              ),
+            const SizedBox(height: 2),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                _Raczki(dzien: dzien, rozmiar: 16),
+                if (dzien.ocenaSiewu != OcenaSiewu.bezSiewu)
+                  const SizedBox(width: 4),
+                _Praca(dzien: dzien, rozmiar: 18),
+              ],
             ),
           ],
         ),
@@ -244,26 +329,54 @@ class _Legenda extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final teksty = Theme.of(context).textTheme;
+    Widget pozycja(Widget ikona, String opis) => Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        ikona,
+        const SizedBox(width: 6),
+        Text(opis, style: teksty.bodyMedium),
+      ],
+    );
     return Wrap(
       spacing: 14,
       runSpacing: 6,
+      crossAxisAlignment: WrapCrossAlignment.center,
       children: [
-        for (final praca in MotywKomputer.barwyPracy.keys)
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: 12,
-                height: 12,
-                margin: const EdgeInsets.only(right: 6),
-                decoration: BoxDecoration(
-                  color: MotywKomputer.barwaPracy(praca),
-                  borderRadius: BorderRadius.circular(3),
-                ),
-              ),
-              Text(praca, style: teksty.bodyMedium),
-            ],
+        pozycja(
+          const IkonaRaczki(ile: 1, kolor: MotywKomputer.zielen, rozmiar: 18),
+          'dobry dzień do siewu',
+        ),
+        pozycja(
+          const IkonaRaczki(ile: 2, kolor: MotywKomputer.zielen, rozmiar: 18),
+          'bardzo dobry',
+        ),
+        pozycja(
+          const IkonaRaczki(
+            ile: 1,
+            przekreslona: true,
+            kolor: MotywKomputer.tekstPomocniczy,
+            kolorKreski: MotywKomputer.ostrzezenieObramowanie,
+            rozmiar: 18,
           ),
+          'zły (zmiana fazy)',
+        ),
+        for (final praca in MotywKomputer.barwyPracy.keys)
+          pozycja(
+            IkonaPracy(
+              praca: praca,
+              kolor: MotywKomputer.barwaPracy(praca),
+              rozmiar: 18,
+            ),
+            praca,
+          ),
+        pozycja(
+          const IkonaPracy(
+            praca: null,
+            kolor: MotywKomputer.tekstPomocniczy,
+            rozmiar: 18,
+          ),
+          'prace w glebie',
+        ),
       ],
     );
   }

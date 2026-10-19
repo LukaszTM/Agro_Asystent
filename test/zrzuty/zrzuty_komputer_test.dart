@@ -557,6 +557,17 @@ void main() {
       await zrzut(tester, '01b-pulpit-caly');
     }, skip: !robZrzuty);
 
+    testWidgets('12-kalendarz miesiac', (tester) async {
+      await pokaz(
+        tester,
+        uslugi: zbudujUslugi(premium: true),
+        zakladka: ZakladkaKomputer.pulpit,
+        okno: const Size(1280, 2300),
+      );
+      await tester.tap(find.text('Pokaż miesiąc'));
+      await zrzut(tester, '12-kalendarz-miesiac');
+    }, skip: !robZrzuty);
+
     testWidgets('02-pola z wybranym polem', (tester) async {
       await pokaz(
         tester,

@@ -61,6 +61,124 @@ class FazaKsiezyca {
   final bool rosnie;
 }
 
+/// Jedna z czterech faz głównych: nów, pierwsza kwadra, pełnia, ostatnia
+/// kwadra — elongacja, przy której wypada.
+class FazaGlowna {
+  const FazaGlowna({required this.nazwa, required this.stopnie});
+
+  final String nazwa;
+  final double stopnie;
+}
+
+/// Ćwiartka obiegu Księżyca między dwiema fazami głównymi i to, co tradycja
+/// radzi w niej siać. `praca == null` znaczy: czas na pracę w glebie,
+/// nie na siew.
+class KwadraSiewu {
+  const KwadraSiewu({
+    required this.nr,
+    required this.od,
+    required this.do_,
+    required this.praca,
+    required this.opis,
+  });
+
+  final int nr;
+  final String od;
+  final String do_;
+
+  /// „liść", „owoc", „korzeń" — albo `null`, gdy kwadra jest bez siewu.
+  final String? praca;
+
+  final String opis;
+
+  bool get bezSiewu => praca == null;
+}
+
+/// Zasady oznaczeń siewnych — dane z pliku, tak jak reszta kalendarza.
+///
+/// Oznaczenia są takie, jak w drukowanych kalendarzach rolników: rączka
+/// siewna (dobry dzień), dwie rączki (bardzo dobry), przekreślona rączka
+/// (zły). To umowa tradycji, nie przepis.
+class SiewBiodynamiczny {
+  const SiewBiodynamiczny({
+    required this.opis,
+    required this.kwadry,
+    required this.fazyGlowne,
+  });
+
+  factory SiewBiodynamiczny.zJson(Map<String, dynamic> json) =>
+      SiewBiodynamiczny(
+        opis: json['opis'] as String,
+        kwadry: [
+          for (final wpis in json['kwadry'] as List<dynamic>)
+            KwadraSiewu(
+              nr: (wpis as Map<String, dynamic>)['nr'] as int,
+              od: wpis['od'] as String,
+              do_: wpis['do'] as String,
+              praca: wpis['praca'] as String?,
+              opis: wpis['opis'] as String,
+            ),
+        ],
+        fazyGlowne: [
+          for (final wpis in json['fazy_glowne'] as List<dynamic>)
+            FazaGlowna(
+              nazwa: (wpis as Map<String, dynamic>)['nazwa'] as String,
+              stopnie: (wpis['stopnie'] as num).toDouble(),
+            ),
+        ],
+      );
+
+  final String opis;
+
+  /// Cztery kwadry w kolejności od nowiu.
+  final List<KwadraSiewu> kwadry;
+
+  /// Fazy główne uporządkowane rosnąco po elongacji.
+  final List<FazaGlowna> fazyGlowne;
+
+  /// Kwadra dla elongacji 0–360: pierwsza od nowiu do pierwszej kwadry itd.
+  KwadraSiewu kwadraDla(double elongacja) {
+    final ile = kwadry.length;
+    final numer = ((elongacja % 360) / (360 / ile)).floor().clamp(0, ile - 1);
+    return kwadry[numer];
+  }
+}
+
+/// Faza główna, która wypada danego dnia — z godziną.
+class ZmianaFazy {
+  const ZmianaFazy({required this.faza, required this.okolo});
+
+  final FazaGlowna faza;
+
+  /// Przybliżona godzina (czas lokalny urządzenia).
+  final DateTime okolo;
+
+  String get godzinaOpis =>
+      '${okolo.hour}:${okolo.minute.toString().padLeft(2, '0')}';
+}
+
+/// Jak tradycja ocenia dzień pod siew.
+enum OcenaSiewu {
+  /// Dzień fazy głównej — przekreślona rączka.
+  zly,
+
+  /// Kwadra sprzyja siewowi — jedna rączka.
+  dobry,
+
+  /// Kwadra i gwiazdozbiór mówią to samo — dwie rączki.
+  bardzoDobry,
+
+  /// Czwarta kwadra: praca w glebie, nie siew — bez rączki.
+  bezSiewu;
+
+  String get dlaRolnika => switch (this) {
+    OcenaSiewu.zly => 'dzień zły do siewu',
+    OcenaSiewu.dobry => 'dobry dzień do siewu',
+    OcenaSiewu.bardzoDobry => 'bardzo dobry dzień do siewu',
+    OcenaSiewu.bezSiewu => 'prace w glebie, nie siew',
+  };
+}
+
 /// Słownik kalendarza biodynamicznego — dane z pliku, nie z kodu.
 ///
 /// Granice gwiazdozbiorów, przypisanie żywiołów i nazwy faz to **umowa
@@ -75,6 +193,7 @@ class SlownikBiodynamiczny {
     required this.ayanamsaNaRok,
     required this.znaki,
     required this.fazy,
+    required this.siew,
   });
 
   factory SlownikBiodynamiczny.zTekstuJson(String tekst) {
@@ -107,6 +226,7 @@ class SlownikBiodynamiczny {
             rosnie: wpis['rosnie'] as bool,
           ),
       ],
+      siew: SiewBiodynamiczny.zJson(json['siew'] as Map<String, dynamic>),
     );
   }
 
@@ -126,6 +246,9 @@ class SlownikBiodynamiczny {
 
   final List<ZnakZodiaku> znaki;
   final List<FazaKsiezyca> fazy;
+
+  /// Oznaczenia siewne: kwadry i fazy główne.
+  final SiewBiodynamiczny siew;
 
   /// Przesunięcie zodiaków na daną chwilę.
   double ayanamsa(DateTime chwila) {
@@ -192,12 +315,20 @@ class DzienBiodynamiczny {
     required this.faza,
     required this.elongacja,
     required this.oswietlenie,
+    required this.kwadra,
     this.zmiana,
+    this.zmianaFazy,
   });
 
   final DateTime data;
   final ZnakZodiaku znak;
   final FazaKsiezyca faza;
+
+  /// Ćwiartka obiegu i to, co tradycja radzi w niej siać.
+  final KwadraSiewu kwadra;
+
+  /// Faza główna wypadająca tego dnia — `null` w zwykły dzień.
+  final ZmianaFazy? zmianaFazy;
 
   /// Odległość kątowa od Słońca w południe (0–360 stopni).
   final double elongacja;
@@ -218,6 +349,18 @@ class DzienBiodynamiczny {
   bool get rosnie => elongacja < 180;
 
   String get oswietlenieOpis => '${(oswietlenie * 100).round()} %';
+
+  /// Rączki siewne: zły w dzień fazy głównej, bez rączki w kwadrze bez
+  /// siewu, dwie rączki, gdy gwiazdozbiór mówi to samo, co kwadra.
+  OcenaSiewu get ocenaSiewu {
+    if (zmianaFazy != null) {
+      return OcenaSiewu.zly;
+    }
+    if (kwadra.bezSiewu) {
+      return OcenaSiewu.bezSiewu;
+    }
+    return kwadra.praca == praca ? OcenaSiewu.bardzoDobry : OcenaSiewu.dobry;
+  }
 }
 
 /// Kalendarz biodynamiczny liczony na urządzeniu.
@@ -244,8 +387,45 @@ class KalendarzBiodynamiczny {
       faza: slownik.fazaDla(elongacja),
       elongacja: elongacja,
       oswietlenie: Astronomia.oswietlenie(jd),
+      kwadra: slownik.siew.kwadraDla(elongacja),
       zmiana: _zmiana(poczatek),
+      zmianaFazy: _zmianaFazy(poczatek),
     );
+  }
+
+  double _elongacjaO(DateTime chwila) =>
+      Astronomia.elongacja(Astronomia.dzienJulianski(chwila));
+
+  /// Faza główna, jeśli wypada tego dnia. Elongacja rośnie około 12 stopni
+  /// na dobę, więc między północami przechodzi najwyżej przez jeden
+  /// z czterech progów.
+  ZmianaFazy? _zmianaFazy(DateTime poczatekDnia) {
+    final koniecDnia = poczatekDnia.add(const Duration(days: 1));
+    final przed = _elongacjaO(poczatekDnia);
+    final po = _elongacjaO(koniecDnia);
+    final przebyte = (po - przed + 360) % 360;
+    for (final faza in slownik.siew.fazyGlowne) {
+      final doProgu = (faza.stopnie - przed + 360) % 360;
+      if (doProgu >= przebyte) {
+        continue;
+      }
+      // Połowienie przedziału do minuty — próg przechodzi się raz.
+      var wczesniej = poczatekDnia;
+      var pozniej = koniecDnia;
+      while (pozniej.difference(wczesniej).inMinutes > 1) {
+        final srodek = wczesniej.add(
+          Duration(minutes: pozniej.difference(wczesniej).inMinutes ~/ 2),
+        );
+        final odPrzed = (_elongacjaO(srodek) - przed + 360) % 360;
+        if (odPrzed < doProgu) {
+          wczesniej = srodek;
+        } else {
+          pozniej = srodek;
+        }
+      }
+      return ZmianaFazy(faza: faza, okolo: pozniej);
+    }
+    return null;
   }
 
   /// Siedem dni od podanego dnia włącznie.

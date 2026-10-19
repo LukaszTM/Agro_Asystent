@@ -65,8 +65,12 @@ wydrukach.
 Po dodaniu pól zajrzyj na **Pulpit**: wykres zasiewów ma zgadzać się z listą
 pól, mapa — z działkami. Pogoda i wiadomości wymagają internetu; bez sieci
 karty mówią o tym jednym zdaniem. Ceny skupu w tej wersji są puste (program
-pisze dlaczego). Kalendarz biodynamiczny ma zastrzeżenie, że to tradycja,
-nie przepis — tydzień rozwija się do miesiąca.
+pisze dlaczego). Kalendarz biodynamiczny ma oznaczenia jak w kalendarzu na ścianie:
+rączka siewna (jedna — dobry dzień do siewu, dwie — bardzo dobry,
+przekreślona — zły, bo tego dnia zmienia się faza Księżyca) oraz ikona,
+co siać w tej kwadrze (liść, owoc, korzeń) albo szpadel, gdy to czas na
+prace w glebie. Tydzień rozwija się do miesiąca. Zastrzeżenie, że to
+tradycja, nie przepis, stoi na karcie zawsze.
 
 ### 3.5 Dane z telefonu
 
