@@ -96,6 +96,9 @@ jobs:
             $przedwydanie \
             --title "$tytul" \
             --notes-file .github/wydanie-windows.md || true
+          # Wydanie już istnieje po pierwszym budowaniu — tytuł i opis
+          # odświeżamy przy każdym, żeby nie zostały z poprzedniej nazwy.
+          gh release edit "$nazwa" --title "$tytul" --notes-file .github/wydanie-windows.md
           gh release upload "$nazwa" "$plik" --clobber
 
           # W wydaniu ma leżeć tylko bieżąca wersja.

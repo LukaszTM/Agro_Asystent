@@ -154,6 +154,9 @@ jobs:
             --prerelease \
             --title "Mój Łan — APK do testów" \
             --notes "$opis" || true
+          # Wydanie już istnieje po pierwszym budowaniu — tytuł i opis
+          # odświeżamy przy każdym, żeby nie zostały z poprzedniej nazwy.
+          gh release edit apk-test --title "Mój Łan — APK do testów" --notes "$opis"
           gh release upload apk-test "$plik" "$maly" --clobber
 
           # W wydaniu ma leżeć tylko bieżąca wersja. Po podniesieniu numeru
