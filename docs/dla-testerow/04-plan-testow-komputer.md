@@ -47,18 +47,30 @@ Punkty z gwiazdką ★ są najważniejsze.
 | D4 | Karta cen skupu | Mówi wprost, że notowań nie ma w tej wersji — nie pokazuje żadnej ceny | TAK / NIE | |
 | D5 | Kalendarz biodynamiczny → rozwiń tydzień do miesiąca | Przy każdym dniu rączka siewna (jedna — dobry dzień, dwie — bardzo dobry, przekreślona — zły, w dzień nowiu, kwadry albo pełni) i ikona: liść, owoc, korzeń albo szpadel (prace w glebie); widoczne zastrzeżenie, że to tradycja, nie przepis | TAK / NIE | |
 
-## E. Dane z telefonu, rejestr, wydruk
+## E. Wpis zabiegu na komputerze
 
 | Nr | Co zrobić | Co powinno się stać | Udało się? | Uwagi |
 | --- | --- | --- | --- | --- |
-| E1 ★ | Na telefonie Zrób kopię, prześlij plik na komputer, Ustawienia → Dołącz dane z telefonu | Wpisy z telefonu są w Rejestrze zabiegów; program mówi, ile doszło; nic nie znika | TAK / NIE | |
-| E2 | Dołącz ten sam plik drugi raz | Program mówi, że plik nie wnosi nic nowego | TAK / NIE | |
-| E3 ★ | Dokumenty → przy rejestrze zabiegów Zapisz PDF, Zapisz CSV, Zapisz XLSX | Pliki powstają; PDF z polskimi znakami, nagłówek z danymi gospodarstwa; CSV/XLSX otwierają się w arkuszu | TAK / NIE | |
-| E4 | Dokumenty → Wydrukuj | Otwiera się okno drukowania systemu | TAK / NIE | |
-| E5 | Warunkowość → przejrzyj normy → Zapisz PDF | Każda norma ma stan; „do sprawdzenia" tam, gdzie program nie umie policzyć; PDF powstaje | TAK / NIE | |
-| E6 | Terminy | Lista obowiązków odpowiada danym gospodarstwa; karencje z zabiegów (po E1) na liście | TAK / NIE | |
-| E7 | Magazyn → dodaj zakup środka | Stan widoczny; po dołączeniu wpisów z telefonu zużycie zdjęte | TAK / NIE | |
-| E8 ★ | Ustawienia → Zrób kopię → wskaż miejsce | Plik powstaje; po skasowaniu danych i wczytaniu go na telefonie wszystko wraca | TAK / NIE | |
+| E1 ★ | Rejestr zabiegów → Dodaj zabieg → Oprysk → pole → środek z listy → Zapisz zabieg | Wpis od razu w tabeli; komunikat z karencją i najwcześniejszym dniem zbioru; data i godzina były wypełnione same | TAK / NIE | |
+| E2 ★ | W oknie zabiegu wpisz dawkę z klawiatury (np. 0,6), potem większą niż dopuszczalna | Dawka przyjęta z przecinkiem; powyżej dopuszczalnej ostrzeżenie, zapis nadal możliwy | TAK / NIE | |
+| E3 | Kliknij „Zapisz zabieg" bez wybrania rodzaju albo pola | Program mówi jednym zdaniem, czego brakuje; nic się nie zapisuje | TAK / NIE | |
+| E4 | Dodaj zabieg → Nawożenie → pole → obornik (ze spisu z telefonu) → dawka → Nazajutrz → Zapisz | Wpis w tabeli; w podglądzie ewidencji (Dokumenty) data przyorania to dzień po zabiegu | TAK / NIE | |
+| E5 | Zmień datę i godzinę w oknie zabiegu (kalendarz, zegar) → Zapisz | Wpis ma wybraną datę i godzinę, nie dzisiejszą | TAK / NIE | |
+| E6 | Pola → wybierz pole → Dodaj zabieg → Zbiór → Zapisz | Okno startuje z tym polem; wpis widać w Rejestrze zabiegów | TAK / NIE | |
+| E7 | Bez wersji płatnej spróbuj wybrać dwa pola naraz | Drugie pole zastępuje pierwsze; w wersji płatnej oba zostają i powierzchnia się sumuje | TAK / NIE | |
+
+## F. Dane z telefonu, rejestr, wydruk
+
+| Nr | Co zrobić | Co powinno się stać | Udało się? | Uwagi |
+| --- | --- | --- | --- | --- |
+| F1 ★ | Na telefonie Zrób kopię, prześlij plik na komputer, Ustawienia → Dołącz dane z telefonu | Wpisy z telefonu są w Rejestrze zabiegów; program mówi, ile doszło; nic nie znika | TAK / NIE | |
+| F2 | Dołącz ten sam plik drugi raz | Program mówi, że plik nie wnosi nic nowego | TAK / NIE | |
+| F3 ★ | Dokumenty → przy rejestrze zabiegów Zapisz PDF, Zapisz CSV, Zapisz XLSX | Pliki powstają; PDF z polskimi znakami, nagłówek z danymi gospodarstwa; CSV/XLSX otwierają się w arkuszu | TAK / NIE | |
+| F4 | Dokumenty → Wydrukuj | Otwiera się okno drukowania systemu | TAK / NIE | |
+| F5 | Warunkowość → przejrzyj normy → Zapisz PDF | Każda norma ma stan; „do sprawdzenia" tam, gdzie program nie umie policzyć; PDF powstaje | TAK / NIE | |
+| F6 | Terminy | Lista obowiązków odpowiada danym gospodarstwa; karencje z zabiegów (po E1 albo F1) na liście | TAK / NIE | |
+| F7 | Magazyn → dodaj zakup środka | Stan widoczny; po dołączeniu wpisów z telefonu zużycie zdjęte | TAK / NIE | |
+| F8 ★ | Ustawienia → Zrób kopię → wskaż miejsce | Plik powstaje; po skasowaniu danych i wczytaniu go na telefonie wszystko wraca | TAK / NIE | |
 
 ## Na koniec — dwa pytania
 

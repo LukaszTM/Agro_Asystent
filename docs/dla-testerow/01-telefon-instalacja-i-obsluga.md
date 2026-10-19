@@ -47,7 +47,7 @@ nałożyć na starą. Kolejność:
 
 ### Wygląd Prosty
 
-Ekran główny to cztery duże kafelki:
+Ekran główny to pięć dużych kafelków:
 
 | Kafelek | Co tam jest |
 | --- | --- |
@@ -55,6 +55,7 @@ Ekran główny to cztery duże kafelki:
 | **Dodaj zabieg** | wpis oprysku, nawożenia, siewu, zbioru |
 | **Terminy** | co trzeba zrobić i do kiedy; stąd też „Warunkowość" (normy GAEC) |
 | **Dokumenty** | rejestr zabiegów, podgląd wpisów, „Wydruk i eksport" |
+| **Kalendarz** | kalendarz biodynamiczny: tydzień i miesiąc z rączkami siewnymi |
 
 W prawym górnym rogu jest **ikona ciągnika** → ekran **Gospodarstwo**:
 dane gospodarstwa (dotknij nazwy, żeby poprawić), zwierzęta, wygląd,
@@ -62,8 +63,8 @@ dane gospodarstwa (dotknij nazwy, żeby poprawić), zwierzęta, wygląd,
 
 ### Wygląd Nowoczesny
 
-Dolny pasek: **Start · Pola · Terminy · Dokumenty**, a na środku duży
-przycisk **Dodaj zabieg**. W prawym górnym rogu **kółko zębate** →
+Dolny pasek: **Start · Pola · Terminy · Dokumenty · Kalendarz**, a na
+środku duży przycisk **Dodaj zabieg**. W prawym górnym rogu **kółko zębate** →
 **Ustawienia** (dane gospodarstwa, zwierzęta, wygląd, magazyn, kopia
 danych, słowniczek, numer wersji).
 
@@ -114,7 +115,9 @@ bez sieci.
 
 **Dodaj zabieg → pole → Oprysk → środek → Zapisz.** Pięć dotknięć, bez
 klawiatury. Data, godzina i powierzchnia uzupełniają się same. Dawka jest
-podpowiedziana z rejestru środków; zmienisz ją przyciskami **+** / **−**.
+podpowiedziana z rejestru środków; zmienisz ją przyciskami **+** / **−**
+albo **dotknij liczby** — otworzy się duża klawiatura i wpiszesz dawkę
+od razu (np. 1,5).
 
 - Jeśli ustawisz dawkę powyżej dopuszczalnej — zobaczysz ostrzeżenie, ale
   zapis nie jest blokowany (dokumentacja ma być prawdziwa).
@@ -134,6 +137,12 @@ dodajesz w Pola → Nawożenie → **Nawozy** → **Dodaj nawóz** (mineralny al
 naturalny, z zawartością azotu; worek można sfotografować — **Odczytaj
 z worka**). Program liczy azot na hektar i pokazuje, ile zostało do limitu.
 Przy nawożeniu po terminie granicznym dla Twojej gminy ostrzega.
+
+Przy nawozie naturalnym (obornik, gnojowica) program pyta o **przyoranie**:
+„Jeszcze nie", „Tego samego dnia", „Nazajutrz" albo inna data. Jeśli
+przyorasz później — w Dokumentach otwórz wpis i dotknij **Dopisz datę
+przyorania** (w wyglądzie Nowoczesnym: Popraw wpis). Ewidencja nawożenia
+wymaga tej daty na terenie o dużym nachyleniu.
 
 ### 3.6 Siew, zbiór, inne prace
 
@@ -162,7 +171,17 @@ po czasie jest wyróżniony. **Warunkowość** (przycisk na ekranie Terminy)
 to normy GAEC: każda ma stan, a ta, której program nie umie policzyć, mówi
 „do sprawdzenia" — nie udaje spełnionej.
 
-### 3.10 Magazyn, kopia, słowniczek
+### 3.10 Kalendarz biodynamiczny
+
+Kafelek **Kalendarz** (w Nowoczesnym — zakładka na dolnym pasku): tydzień
+od dziś, a po dotknięciu „Pokaż miesiąc" cały miesiąc. Oznaczenia jak
+w kalendarzu na ścianie: rączka siewna (jedna — dobry dzień do siewu, dwie —
+bardzo dobry, przekreślona — zły, bo zmienia się faza Księżyca) i ikona,
+co siać w tej kwadrze (liść, owoc, korzeń) albo szpadel na prace w glebie.
+To tradycja, nie przepis — terminów z rozporządzeń program nigdy nie liczy
+z Księżyca.
+
+### 3.11 Magazyn, kopia, słowniczek
 
 - **Magazyn** (Ustawienia): zakup środka lub nawozu, stan; zużycie zdejmuje
   się samo po wpisie zabiegu. Magazyn nie zmienia nic w ewidencji.

@@ -6,10 +6,10 @@ import '../../../funkcje/nawozenie/nawoz.dart';
 import '../../../funkcje/nawozenie/plan_nawozenia.dart';
 import '../../../funkcje/odczyt/czytnik_zdjecia.dart';
 import '../../../funkcje/odczyt/odczyt_etykiety.dart';
-import '../../../funkcje/magazyn/zuzycie_z_zabiegu.dart';
 import '../../../funkcje/warunkowosc/okres_legowy.dart';
 import '../../../funkcje/zabiegi/dane_wpisu.dart';
 import '../../../funkcje/zabiegi/slownik_srodkow.dart';
+import '../../../funkcje/zabiegi/zapis_wpisu.dart';
 import '../../../rdzen/modele/zabieg.dart';
 import '../../../rdzen/wspolne/wybor_przyorania.dart';
 import '../../../rdzen/dostep/funkcja.dart';
@@ -246,7 +246,7 @@ class _EkranWpisuState extends State<EkranWpisu> {
   }
 
   double get _domyslnaDawkaNawozu =>
-      _dane.jednostkaDawki == JednostkaDawki.kilogramyNaHektar ? 100 : 20;
+      ZapisWpisu.domyslnaDawkaNawozu(_dane.jednostkaDawki);
 
   double get _krokNawozu =>
       _dane.jednostkaDawki == JednostkaDawki.kilogramyNaHektar ? 10 : 1;
@@ -257,20 +257,13 @@ class _EkranWpisuState extends State<EkranWpisu> {
     }
     setState(() => _zapisuje = true);
     try {
-      final zabieg = switch (_dane.rodzaj) {
-        RodzajZabiegu.oprysk => await _zapiszOprysk(),
-        RodzajZabiegu.nawozenie => await _zapiszNawozenie(),
-        _ => await _zapiszProsty(),
-      };
-      // Magazyn (premium) odpisuje zużycie sam; ewidencja zapisuje się
-      // tak samo w wersji darmowej.
-      await ZuzycieZZabiegu.odpisz(
+      // Ten sam zapis co na komputerze (`funkcje/zabiegi/zapis_wpisu.dart`).
+      final zabieg = await ZapisWpisu(
+        zabiegi: widget.uslugi.zabiegi,
+        nawozenie: widget.uslugi.nawozenie,
         magazyn: widget.uslugi.magazyn,
         dostep: widget.uslugi.dostep,
-        dane: _dane,
-        zabiegId: zabieg.id,
-        urzadzenie: _dane.urzadzenie,
-      );
+      ).zapisz(_dane, praca: _praca);
       if (mounted) {
         setState(() => _zapisany = zabieg);
       }
@@ -280,101 +273,6 @@ class _EkranWpisuState extends State<EkranWpisu> {
       }
     }
   }
-
-  Future<Zabieg> _zapiszOprysk() async {
-    final srodek = _dane.srodek!;
-    final id = 'z-${_dane.kiedy.microsecondsSinceEpoch}-${_dane.pola.first.id}';
-    final zabieg = Zabieg(
-      id: id,
-      gospodarstwoId: _dane.gospodarstwoId,
-      rodzaj: RodzajZabiegu.oprysk,
-      data: _dane.kiedy,
-      godzina:
-          '${_dane.kiedy.hour.toString().padLeft(2, '0')}:'
-          '${_dane.kiedy.minute.toString().padLeft(2, '0')}',
-      powierzchniaAr: _dane.powierzchniaAr,
-      urzadzenie: _dane.urzadzenie,
-    );
-
-    await widget.uslugi.zabiegi.zapisz(
-      zabieg: zabieg,
-      pola: _poleZabiegu(),
-      oprysk: SzczegolyOprysku(
-        zabiegId: id,
-        srodekNazwa: srodek.nazwa,
-        nrZezwolenia: srodek.nrZezwolenia,
-        dawka: _dane.dawka,
-        // Przy środku bez dawki w rejestrze jednostkę wskazał rolnik.
-        dawkaJednostka: _dane.dawkaJednostka,
-        dawkaOdniesienie: _dane.dawkaOdniesienie,
-        przyczyna: _dane.przyczyna,
-        agrofag: srodek.agrofag,
-        bbchOd: srodek.bbchOd,
-        bbchDo: srodek.bbchDo,
-        kodEppo: _dane.pola.first.kodEppo,
-        // Rodzaj zastosowania wynika z wyboru rolnika („Oprysk"), nie
-        // z domysłu — ewidencja wymaga tego pola.
-        rodzajZastosowania: 'opryskiwanie',
-        karencjaDni: srodek.karencjaZnana ? srodek.karencjaDni : null,
-        karencjaZrodlo: srodek.karencjaZnana ? 'etykieta MRiRW' : null,
-        karencjaDataEtykiety: srodek.karencjaDataEtykiety,
-      ),
-      teraz: _dane.kiedy,
-    );
-    return zabieg;
-  }
-
-  Future<Zabieg> _zapiszNawozenie() async {
-    final id = await widget.uslugi.nawozenie.zapisz(
-      gospodarstwoId: _dane.gospodarstwoId,
-      nawoz: _dane.nawoz!,
-      pola: _poleZabiegu(),
-      dawka: _dane.dawka ?? _domyslnaDawkaNawozu,
-      jednostka: _dane.jednostkaDawki,
-      urzadzenie: _dane.urzadzenie,
-      kiedy: _dane.kiedy,
-      dataPrzyorania: _dane.nawoz!.naturalny ? _dane.dataPrzyorania : null,
-    );
-    return Zabieg(
-      id: id,
-      gospodarstwoId: _dane.gospodarstwoId,
-      rodzaj: RodzajZabiegu.nawozenie,
-      data: _dane.kiedy,
-      powierzchniaAr: _dane.powierzchniaAr,
-      urzadzenie: _dane.urzadzenie,
-    );
-  }
-
-  /// Siew, zbiór, uprawa gleby i inne prace — bez środka i bez dawki.
-  Future<Zabieg> _zapiszProsty() async {
-    final id =
-        'z-${_dane.kiedy.microsecondsSinceEpoch}-'
-        '${_dane.pola.first.id}';
-    final zabieg = Zabieg(
-      id: id,
-      gospodarstwoId: _dane.gospodarstwoId,
-      rodzaj: _dane.rodzaj ?? RodzajZabiegu.inny,
-      data: _dane.kiedy,
-      godzina:
-          '${_dane.kiedy.hour.toString().padLeft(2, '0')}:'
-          '${_dane.kiedy.minute.toString().padLeft(2, '0')}',
-      powierzchniaAr: _dane.powierzchniaAr,
-      uwagi: _praca?.nazwa,
-      podrodzaj: _praca?.id,
-      urzadzenie: _dane.urzadzenie,
-    );
-    await widget.uslugi.zabiegi.zapisz(
-      zabieg: zabieg,
-      pola: _poleZabiegu(),
-      teraz: _dane.kiedy,
-    );
-    return zabieg;
-  }
-
-  List<PoleZabiegu> _poleZabiegu() => [
-    for (final pole in _dane.pola)
-      PoleZabiegu(dzialkaRolnaId: pole.id, powierzchniaAr: pole.powierzchniaAr),
-  ];
 
   @override
   Widget build(BuildContext context) {

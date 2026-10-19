@@ -185,7 +185,38 @@ void main() {
     );
     await slowniki.execute('''
       CREATE TABLE karencja (srodek_nazwa TEXT, uprawa TEXT, dni INTEGER,
-        stan TEXT, data_etykiety TEXT)''');
+        stan TEXT, data_etykiety TEXT, zrodlo TEXT)''');
+    // Jeden środek z rejestru — do wpisu oprysku z komputera.
+    await slowniki.insert('srodek', {
+      'id': 1,
+      'nazwa': 'Abydos 750 EC',
+      'nr_zezwolenia': 'R-14/2025 h.r.',
+      'rodzaj': 'Fungicyd',
+    });
+    await slowniki.insert('zastosowanie', {
+      'id': 10,
+      'srodek_id': 1,
+      'agrofag': 'mączniak prawdziwy zbóż i traw',
+      'dawka_wartosc': 0.75,
+      'dawka_jednostka': 'l',
+      'dawka_odniesienie': 'ha',
+      'dawka_tekst': 'Maksymalna dawka: 0,75 l/ha',
+      'dawka_pewnosc': 'odczytana',
+      'bbch_od': 29,
+      'bbch_do': 59,
+    });
+    await slowniki.insert('zastosowanie_uprawa', {
+      'zastosowanie_id': 10,
+      'uprawa': 'pszenica ozima',
+    });
+    await slowniki.insert('karencja', {
+      'srodek_nazwa': 'Abydos 750 EC',
+      'uprawa': 'pszenica ozima',
+      'dni': 42,
+      'stan': 'dni',
+      'data_etykiety': '2025-04-15',
+      'zrodlo': 'etykieta MRiRW',
+    });
   });
 
   tearDown(() async {
@@ -454,10 +485,16 @@ void main() {
 
       await tester.tap(find.text('Za stodołą'));
       await tester.pumpAndSettle();
+      // Ostrzeżenie stoi pod kartą pola — na niskim oknie trzeba przewinąć
+      // prawy panel (ostatnia lista na ekranie).
+      await tester.drag(find.byType(ListView).last, const Offset(0, -400));
+      await tester.pumpAndSettle();
       expect(
         find.textContaining('Nie wiemy, czy to grunt orny'),
         findsOneWidget,
       );
+      await tester.drag(find.byType(ListView).last, const Offset(0, 400));
+      await tester.pumpAndSettle();
 
       await tester.tap(find.text('Grunty orne'));
       await tester.pumpAndSettle();
@@ -475,6 +512,13 @@ void main() {
       expect(find.textContaining('Nie wiemy, czy to grunt orny'), findsNothing);
     });
   });
+
+  /// Przycisk w oknie zabiegu — pod oknem stoją filtry rejestru o tych
+  /// samych napisach („Oprysk", „Nawożenie").
+  Finder wOknie(String napis) => find.descendant(
+    of: find.byType(AlertDialog),
+    matching: find.widgetWithText(OutlinedButton, napis),
+  );
 
   group('rejestr zabiegów', () {
     testWidgets('wpisy widać w tabeli, z filtrem rodzaju', (tester) async {
@@ -497,6 +541,179 @@ void main() {
 
       expect(find.text('02.08.2026'), findsOneWidget);
       expect(find.text('10.05.2026'), findsNothing);
+    });
+
+    testWidgets('oprysk dopisuje się z komputera w jednym oknie', (
+      tester,
+    ) async {
+      await dodajPole();
+      await pokaz(tester, zakladka: ZakladkaKomputer.rejestr);
+      expect(find.textContaining('przyciskiem „Dodaj zabieg"'), findsOneWidget);
+
+      await tester.tap(find.text('Dodaj zabieg'));
+      await tester.pumpAndSettle();
+      expect(find.text('Nowy zabieg'), findsOneWidget);
+      // Data i godzina z „teraz" — rolnik zmienia je tylko, gdy trzeba.
+      expect(find.text('01.10.2026'), findsOneWidget);
+      expect(find.text('09:00'), findsOneWidget);
+
+      // Zapis bez danych mówi, czego brakuje, zamiast milczeć.
+      await tester.tap(find.text('Zapisz zabieg'));
+      await tester.pumpAndSettle();
+      expect(find.textContaining('Wybierz, co robisz'), findsOneWidget);
+
+      await tester.tap(wOknie('Oprysk'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Za stodołą • pszenica ozima'));
+      await tester.pumpAndSettle();
+      await tester.ensureVisible(find.text('Abydos 750 EC'));
+      await tester.tap(find.text('Abydos 750 EC'));
+      await tester.pumpAndSettle();
+
+      // Dawka z rejestru podpowiedziana w polu tekstowym; można ją zmienić.
+      final dawka = find.widgetWithText(TextField, 'Dawka');
+      await tester.ensureVisible(dawka);
+      expect(find.text('0,75'), findsOneWidget);
+      await tester.enterText(dawka, '0,9');
+      await tester.pumpAndSettle();
+      expect(
+        find.textContaining('przekracza dopuszczalną'),
+        findsOneWidget,
+        reason: 'ostrzeżenie, nie blokada — zabieg mógł się odbyć',
+      );
+      await tester.enterText(dawka, '0,6');
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Zapisz zabieg'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Nowy zabieg'), findsNothing);
+      expect(find.textContaining('1 wpisów'), findsOneWidget);
+      expect(find.text('Abydos 750 EC'), findsOneWidget);
+      expect(
+        find.textContaining('zbiór najwcześniej 12.11.2026'),
+        findsWidgets,
+        reason: 'karencja 42 dni z rejestru liczy się od dnia zabiegu',
+      );
+
+      final wpis = (await RejestrZabiegow(baza).wpisy('g1')).single;
+      expect(wpis.zabieg.urzadzenie, 'komputer');
+      expect(wpis.zabieg.godzina, '09:00');
+      expect(wpis.oprysk?.dawka, closeTo(0.6, 1e-9));
+      expect(wpis.oprysk?.karencjaDni, 42);
+      expect(wpis.oprysk?.rodzajZastosowania, 'opryskiwanie');
+    });
+
+    testWidgets('nawożenie obornikiem z dawką z klawiatury i przyoraniem', (
+      tester,
+    ) async {
+      await dodajPole(uprawa: 'kukurydza na ziarno');
+      await RepozytoriumNawozow(baza).zapisz(
+        nawoz: const Nawoz(
+          id: 'n-obornik',
+          gospodarstwoId: 'g1',
+          nazwa: 'Obornik bydlęcy',
+          naturalny: true,
+          azotProcent: 0.5,
+        ),
+        urzadzenie: 'komputer',
+      );
+      await pokaz(tester, zakladka: ZakladkaKomputer.rejestr);
+      await tester.tap(find.text('Dodaj zabieg'));
+      await tester.pumpAndSettle();
+      await tester.tap(wOknie('Nawożenie'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Za stodołą • kukurydza na ziarno'));
+      await tester.pumpAndSettle();
+      await tester.ensureVisible(find.text('Obornik bydlęcy'));
+      await tester.tap(find.text('Obornik bydlęcy'));
+      await tester.pumpAndSettle();
+
+      final dawka = find.widgetWithText(TextField, 'Dawka');
+      await tester.ensureVisible(dawka);
+      await tester.tap(find.widgetWithText(OutlinedButton, 't/ha'));
+      await tester.pumpAndSettle();
+      await tester.enterText(dawka, '25');
+      await tester.pumpAndSettle();
+      // 25 t × 0,5 % = 125 kg N/ha.
+      expect(find.textContaining('125,0 kg azotu'), findsOneWidget);
+
+      await tester.ensureVisible(find.text('Nazajutrz'));
+      await tester.tap(find.text('Nazajutrz'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Zapisz zabieg'));
+      await tester.pumpAndSettle();
+
+      final wpis = (await RejestrZabiegow(baza).wpisy('g1')).single;
+      expect(wpis.zabieg.rodzaj, RodzajZabiegu.nawozenie);
+      expect(wpis.nawozenie?.dawka, 25);
+      expect(wpis.nawozenie?.azotKgHa, closeTo(125, 1e-6));
+      expect(wpis.nawozenie?.dataPrzyorania, DateTime(2026, 10, 2));
+    });
+
+    testWidgets('bez premium wpis dotyczy jednego pola, z premium kilku', (
+      tester,
+    ) async {
+      await dodajPole();
+      await dodajPole(id: 'p2', nazwa: 'Pod lasem', ar: 300);
+
+      await pokaz(tester, zakladka: ZakladkaKomputer.rejestr);
+      await tester.tap(find.text('Dodaj zabieg'));
+      await tester.pumpAndSettle();
+      expect(find.text('Na którym polu?'), findsOneWidget);
+      await tester.tap(find.text('Za stodołą • pszenica ozima'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Pod lasem • pszenica ozima'));
+      await tester.pumpAndSettle();
+      expect(
+        find.textContaining('Powierzchnia zabiegu: 3,00 ha'),
+        findsOneWidget,
+      );
+      await tester.tap(find.text('Anuluj'));
+      await tester.pumpAndSettle();
+
+      await pokaz(
+        tester,
+        uslugi: zbudujUslugi(premium: true),
+        zakladka: ZakladkaKomputer.rejestr,
+      );
+      await tester.tap(find.text('Dodaj zabieg'));
+      await tester.pumpAndSettle();
+      expect(find.text('Na których polach?'), findsOneWidget);
+      await tester.tap(find.text('Za stodołą • pszenica ozima'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Pod lasem • pszenica ozima'));
+      await tester.pumpAndSettle();
+      expect(
+        find.textContaining('Powierzchnia zabiegu: 15,00 ha (2 pola)'),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('z karty pola zabieg startuje z wybranym polem', (
+      tester,
+    ) async {
+      await dodajPole();
+      await pokaz(tester, zakladka: ZakladkaKomputer.pola);
+      await tester.tap(find.text('Za stodołą'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Dodaj zabieg'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Nowy zabieg'), findsOneWidget);
+      expect(
+        find.textContaining('Powierzchnia zabiegu: 12,00 ha'),
+        findsOneWidget,
+      );
+      await tester.tap(wOknie('Zbiór'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Zapisz zabieg'));
+      await tester.pumpAndSettle();
+
+      expect(find.textContaining('Zapisano zabieg na polu'), findsOneWidget);
+      final wpis = (await RejestrZabiegow(baza).wpisy('g1')).single;
+      expect(wpis.zabieg.rodzaj, RodzajZabiegu.zbior);
+      expect(wpis.pola.single.nazwa, 'Za stodołą');
     });
 
     testWidgets('szukanie zawęża listę wpisów', (tester) async {

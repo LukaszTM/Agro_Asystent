@@ -8,6 +8,7 @@ import '../../../rdzen/wspolne/daty.dart';
 import '../motyw.dart';
 import '../widgety/karta.dart';
 import '../widgety/tabela.dart';
+import 'okno_zabiegu.dart';
 
 /// Rejestr zabiegów w tabeli — po to jest program na komputer.
 ///
@@ -53,6 +54,33 @@ class _WidokRejestrKomputerState extends State<WidokRejestrKomputer> {
     });
   }
 
+  Future<void> _dodajZabieg() async {
+    final zabieg = await pokazOknoZabiegu(
+      context,
+      uslugi: widget.uslugi,
+      teraz: widget.teraz,
+    );
+    if (zabieg == null || !mounted) {
+      return;
+    }
+    setState(_odswiez);
+    final wpis = await widget.uslugi.rejestr.wpis(zabieg.id);
+    if (!mounted) {
+      return;
+    }
+    final dzienZbioru = wpis?.dzienZbioru;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          dzienZbioru == null
+              ? 'Zapisano zabieg z ${Daty.krotko(zabieg.data)}.'
+              : 'Zapisano zabieg z ${Daty.krotko(zabieg.data)}. Karencja: '
+                    'zbiór najwcześniej ${Daty.krotko(dzienZbioru)}.',
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final teksty = Theme.of(context).textTheme;
@@ -68,12 +96,24 @@ class _WidokRejestrKomputerState extends State<WidokRejestrKomputer> {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            NaglowekWidoku(
-              tytul: 'Wszystkie wpisy',
-              opis:
-                  '${wpisy.length} wpisów'
-                  '${niekompletne == 0 ? '' : ', z tego $niekompletne '
-                            'bez wszystkich pól wymaganych przepisem'}.',
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: NaglowekWidoku(
+                    tytul: 'Wszystkie wpisy',
+                    opis:
+                        '${wpisy.length} wpisów'
+                        '${niekompletne == 0 ? '' : ', z tego $niekompletne '
+                                  'bez wszystkich pól wymaganych przepisem'}.',
+                  ),
+                ),
+                FilledButton.icon(
+                  onPressed: _dodajZabieg,
+                  icon: const Icon(Icons.add),
+                  label: const Text('Dodaj zabieg'),
+                ),
+              ],
             ),
             const SizedBox(height: MotywKomputer.odstep),
             Wrap(
@@ -129,8 +169,7 @@ class _WidokRejestrKomputerState extends State<WidokRejestrKomputer> {
                     ],
                     gdyPusta: wpisy.isEmpty && _szukane.isEmpty
                         ? 'Nie ma jeszcze żadnego wpisu. Pierwszy zrobisz '
-                              'w telefonie albo tutaj, gdy dojdzie wpis '
-                              'zabiegu na komputerze.'
+                              'przyciskiem „Dodaj zabieg" albo w telefonie.'
                         : 'Nic nie pasuje do tego, czego szukasz.',
                     wiersze: [
                       for (final wpis in wpisy)
@@ -149,8 +188,9 @@ class _WidokRejestrKomputerState extends State<WidokRejestrKomputer> {
                   ),
                   const SizedBox(height: MotywKomputer.odstep),
                   Text(
-                    'Wpisy poprawia się i cofa w telefonie — tam, gdzie '
-                    'powstały. Każda zmiana zostaje w dzienniku zmian.',
+                    'Nowe wpisy dopisujesz tu albo w telefonie — trafiają '
+                    'do tej samej ewidencji. Poprawia się je i cofa '
+                    'w telefonie; każda zmiana zostaje w dzienniku zmian.',
                     style: teksty.bodyMedium,
                   ),
                 ],

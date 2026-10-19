@@ -13,6 +13,7 @@ import '../motyw.dart';
 import '../widgety/karta.dart';
 import '../widgety/tabela.dart';
 import 'okna_pola.dart';
+import 'okno_zabiegu.dart';
 
 /// Pola gospodarstwa w tabeli: co rośnie, ile ma hektarów i czego jeszcze
 /// brakuje do policzenia warunkowości.
@@ -56,6 +57,26 @@ class _WidokPolaKomputerState extends State<WidokPolaKomputer> {
 
   /// Własna nazwa pola. Pola z wniosku nazywają się „Pole A" — rolnik
   /// nazywa je po swojemu, a oznaczenie z wniosku zostaje w danych.
+  Future<void> _dodajZabieg(Pole pole) async {
+    final zabieg = await pokazOknoZabiegu(
+      context,
+      uslugi: widget.uslugi,
+      teraz: widget.teraz,
+      pole: pole,
+    );
+    if (zabieg == null || !mounted) {
+      return;
+    }
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          'Zapisano zabieg na polu „${pole.nazwa}" — zobaczysz go '
+          'w Rejestrze zabiegów.',
+        ),
+      ),
+    );
+  }
+
   Future<void> _zmienNazwe(Pole pole) async {
     final nowa = await showDialog<String>(
       context: context,
@@ -222,6 +243,7 @@ class _WidokPolaKomputerState extends State<WidokPolaKomputer> {
                       onRodzaj: (rodzaj) => _ustawRodzaj(_wybrane!, rodzaj),
                       onWoda: (granica) => _ustawWode(_wybrane!, granica),
                       onNazwa: () => _zmienNazwe(_wybrane!),
+                      onZabieg: () => _dodajZabieg(_wybrane!),
                     ),
             ),
           ],
@@ -240,6 +262,7 @@ class _SzczegolyPola extends StatelessWidget {
     required this.onRodzaj,
     required this.onWoda,
     required this.onNazwa,
+    required this.onZabieg,
   });
 
   final Pole pole;
@@ -247,6 +270,7 @@ class _SzczegolyPola extends StatelessWidget {
   final void Function(RodzajUzytku rodzaj) onRodzaj;
   final void Function(GranicaZWoda granica) onWoda;
   final VoidCallback onNazwa;
+  final VoidCallback onZabieg;
 
   @override
   Widget build(BuildContext context) {
@@ -260,6 +284,12 @@ class _SzczegolyPola extends StatelessWidget {
               Row(
                 children: [
                   Expanded(child: Text(pole.nazwa, style: teksty.titleLarge)),
+                  FilledButton.icon(
+                    onPressed: onZabieg,
+                    icon: const Icon(Icons.add),
+                    label: const Text('Dodaj zabieg'),
+                  ),
+                  const SizedBox(width: 8),
                   IconButton(
                     icon: const Icon(Icons.drive_file_rename_outline),
                     tooltip: 'Zmień nazwę pola',

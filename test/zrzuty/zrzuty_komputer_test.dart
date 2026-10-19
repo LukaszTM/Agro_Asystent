@@ -184,7 +184,7 @@ void main() {
     );
     await slowniki.execute('''
       CREATE TABLE karencja (srodek_nazwa TEXT, uprawa TEXT, dni INTEGER,
-        stan TEXT, data_etykiety TEXT)''');
+        stan TEXT, data_etykiety TEXT, zrodlo TEXT)''');
   });
 
   tearDown(() async {
@@ -444,6 +444,30 @@ void main() {
       'nr_zezwolenia': 'R-14/2025 h.r.',
       'rodzaj': 'Fungicyd',
     });
+    await slowniki.insert('zastosowanie', {
+      'id': 10,
+      'srodek_id': 1,
+      'agrofag': 'mączniak prawdziwy zbóż i traw',
+      'dawka_wartosc': 0.75,
+      'dawka_jednostka': 'l',
+      'dawka_odniesienie': 'ha',
+      'dawka_tekst': 'Maksymalna dawka: 0,75 l/ha',
+      'dawka_pewnosc': 'odczytana',
+      'bbch_od': 29,
+      'bbch_do': 59,
+    });
+    await slowniki.insert('zastosowanie_uprawa', {
+      'zastosowanie_id': 10,
+      'uprawa': 'pszenica ozima',
+    });
+    await slowniki.insert('karencja', {
+      'srodek_nazwa': 'Abydos 750 EC',
+      'uprawa': 'pszenica ozima',
+      'dni': 42,
+      'stan': 'dni',
+      'data_etykiety': '2025-04-15',
+      'zrodlo': 'etykieta MRiRW',
+    });
     await dodajPole(
       id: 'p1',
       nazwa: 'Za stodołą',
@@ -604,6 +628,35 @@ void main() {
       await tester.tap(find.widgetWithText(FilledButton, 'Dodaj pole'));
       await tester.pumpAndSettle();
       await zrzut(tester, '10-nowe-pole');
+    }, skip: !robZrzuty);
+
+    testWidgets('13-nowy zabieg', (tester) async {
+      await pokaz(
+        tester,
+        uslugi: zbudujUslugi(premium: true),
+        zakladka: ZakladkaKomputer.rejestr,
+        okno: const Size(1280, 1100),
+      );
+      await tester.tap(find.text('Dodaj zabieg'));
+      await tester.pumpAndSettle();
+      await tester.tap(
+        find.descendant(
+          of: find.byType(AlertDialog),
+          matching: find.widgetWithText(OutlinedButton, 'Oprysk'),
+        ),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.textContaining('Za stodołą •'));
+      await tester.pumpAndSettle();
+      // Ten sam napis stoi w tabeli pod oknem — bierzemy ten z okna.
+      await tester.tap(
+        find.descendant(
+          of: find.byType(AlertDialog),
+          matching: find.text('Abydos 750 EC'),
+        ),
+      );
+      await tester.pumpAndSettle();
+      await zrzut(tester, '13-nowy-zabieg');
     }, skip: !robZrzuty);
 
     testWidgets('11-pulpit duzy tekst', (tester) async {

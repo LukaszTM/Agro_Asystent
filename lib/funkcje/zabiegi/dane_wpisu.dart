@@ -17,7 +17,10 @@ class DaneWpisu {
 
   final String gospodarstwoId;
   final String urzadzenie;
-  final DateTime kiedy;
+
+  /// Chwila zabiegu. Na telefonie „teraz" (uzupełnia się sama); na
+  /// komputerze rolnik dopisuje zabiegi z kilku dni, więc da się ją zmienić.
+  DateTime kiedy;
 
   final List<Pole> pola = [];
   RodzajZabiegu? rodzaj;

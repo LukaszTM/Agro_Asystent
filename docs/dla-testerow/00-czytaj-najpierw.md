@@ -17,8 +17,8 @@ Są dwie wersje:
 
 - **na telefon** (Android) — tu wpisuje się zabiegi, stojąc w polu;
 - **na komputer** (Windows) — pulpit gospodarstwa, pola, rejestry, wydruki.
-  Na komputerze **nie wpisuje się zabiegów** — te robi się na telefonie
-  i przenosi kopią danych.
+  Zabiegi można wpisywać także tu (przycisk **Dodaj zabieg** w Rejestrze
+  zabiegów); wpisy z telefonu przenosi się kopią danych.
 
 ## Co jest w pakiecie
 

@@ -46,6 +46,7 @@ Nie musisz robić wszystkiego. Punkty z gwiazdką ★ są najważniejsze.
 | --- | --- | --- | --- | --- |
 | D1 ★ | Ekran główny → Dodaj zabieg → pole → Oprysk → środek z listy → Zapisz. **Policz dotknięcia** | Zabieg zapisany w najwyżej pięciu dotknięciach, bez pisania; data, godzina i powierzchnia uzupełnione same | TAK / NIE | dotknięć: …… |
 | D2 ★ | Przy wyborze środka zwiększ dawkę przyciskiem + powyżej dopuszczalnej | Ostrzeżenie, że dawka przekracza dopuszczalną, i co zrobić; zapis nadal możliwy | TAK / NIE | |
+| D2a ★ | Przy dawce dotknij liczby → wpisz na klawiaturze np. 1,5 → Gotowe | Dawka ustawiona od razu na 1,50, bez klikania „+"; przecinek działa; „Anuluj" nic nie zmienia | TAK / NIE | |
 | D3 ★ | Wybierz środek, przy którym program pisze, że rejestr nie podaje dawki | Można wpisać dawkę z etykiety: liczba od zera, jednostka z listy (l/ha, kg/ha…) | TAK / NIE | |
 | D4 | W sytuacji D3 ustaw dawkę, ale nie wybieraj jednostki | Ostrzeżenie, że nie wiadomo, w czym podana jest dawka | TAK / NIE | |
 | D5 | W sytuacji D3 zapisz zabieg z dawką zero | Zabieg zapisuje się bez dawki (dokumentacja nie jest blokowana) | TAK / NIE | |
@@ -63,6 +64,9 @@ Nie musisz robić wszystkiego. Punkty z gwiazdką ★ są najważniejsze.
 | E1 ★ | Pola → Nawożenie → Nawozy → Dodaj nawóz (np. saletra, azot 34 %) → Zapisz; potem Dodaj zabieg → pole → Nawożenie → ten nawóz → dawka → Zapisz | Program liczy azot na hektar i pokazuje, ile zostało do limitu | TAK / NIE | |
 | E2 | Dodaj nawóz bez podania zawartości azotu i wpisz nim nawożenie | Program mówi wprost, że azotu nie policzy — nie wstawia liczby | TAK / NIE | |
 | E3 | Wpisz nawożenie azotowe z datą po terminie granicznym dla Twojej gminy (np. grudzień) | Ostrzeżenie o terminie z radą; zapis możliwy | TAK / NIE | |
+| E4 ★ | Dodaj nawóz naturalny (obornik) → Dodaj zabieg → pole → Nawożenie → obornik → przy „Przyoranie" wybierz „Nazajutrz" → Zapisz | Wpis zapisany; w Dokumentach w podglądzie wpisu „Data przyorania" to dzień po zabiegu | TAK / NIE | |
+| E5 | Wpisz nawożenie obornikiem z „Jeszcze nie" → Dokumenty → ten wpis → Dopisz datę przyorania (Nowoczesny: Popraw wpis) → Tego samego dnia → Zapisz | Data pojawia się w ewidencji; wcześniej pole było oznaczone jako brak | TAK / NIE | |
+| E6 | Wpisz nawożenie saletrą (nawóz mineralny) i obejrzyj wpis w Dokumentach | Program nie pyta o przyoranie; w ewidencji przy dacie przyorania stoi „nie dotyczy" | TAK / NIE | |
 
 ## F. Rejestr, poprawki, wydruk
 
@@ -82,24 +86,32 @@ Nie musisz robić wszystkiego. Punkty z gwiazdką ★ są najważniejsze.
 | G2 ★ | Terminy → Warunkowość | Każda norma GAEC ma stan; ta, której program nie umie policzyć, mówi „do sprawdzenia" | TAK / NIE | |
 | G3 | Warunkowość → Zapisz PDF | Plik powstaje i da się otworzyć | TAK / NIE | |
 
-## H. Magazyn, kopia, słowniczek, bez internetu
+## H. Kalendarz biodynamiczny
 
 | Nr | Co zrobić | Co powinno się stać | Udało się? | Uwagi |
 | --- | --- | --- | --- | --- |
-| H1 | Ustawienia → Magazyn → Dodaj środek → Zakup; potem zapisz nim zabieg | Stan magazynu maleje o zużycie; wpis w ewidencji bez zmian | TAK / NIE | |
-| H2 ★ | Ustawienia → Kopia danych → Zrób kopię → zapisz plik; odinstaluj aplikację, zainstaluj od nowa, Wczytaj kopię | Wszystkie pola, wpisy i ustawienia wracają | TAK / NIE | |
-| H3 | Zrób kopię na drugim telefonie i na pierwszym „Dołącz dane z drugiego urządzenia" | Nic nie znika; program mówi, ile wpisów doszło | TAK / NIE | |
-| H4 | Ustawienia → Słowniczek → dotknij „TUZ" | Hasło rozwija się z wyjaśnieniem i gdzie je spotkasz | TAK / NIE | |
-| H5 ★ | Włącz tryb samolotowy i przejdź: pole, zabieg, rejestr, wydruk, kopia | Wszystko działa bez sieci; pogoda i wiadomości mówią o braku internetu jednym zdaniem | TAK / NIE | |
+| H1 ★ | Ekran główny → Kalendarz (Nowoczesny: zakładka Kalendarz) | Widać tydzień od dziś: przy każdym dniu rączka siewna (jedna — dobry, dwie — bardzo dobry, przekreślona — zły) i ikona liść/owoc/korzeń albo szpadel; zastrzeżenie „tradycja, nie przepis" | TAK / NIE | |
+| H2 | Pokaż miesiąc | Cały miesiąc w kratkach, dziś obramowane; nic nie wychodzi za ekran; legenda pod spodem | TAK / NIE | |
+| H3 | Kalendarz bez internetu | Działa tak samo | TAK / NIE | |
 
-## I. Czytelność i wygoda (wygląd Prosty)
+## I. Magazyn, kopia, słowniczek, bez internetu
 
 | Nr | Co zrobić | Co powinno się stać | Udało się? | Uwagi |
 | --- | --- | --- | --- | --- |
-| I1 ★ | Ustaw w Androidzie największą czcionkę i przejrzyj ekrany | Nic nie jest ucięte, nic na siebie nie nachodzi, przyciski nadal duże | TAK / NIE | |
-| I2 | Spróbuj obsłużyć aplikację w rękawicy roboczej | Da się trafić w przyciski | TAK / NIE | |
-| I3 | Wyjdź z telefonem na słońce | Tekst czytelny | TAK / NIE | |
-| I4 | Przy każdym ostrzeżeniu sprawdź, czy mówi, co zrobić | Każde ostrzeżenie = jedno zdanie + co zrobić | TAK / NIE | |
+| I1 | Ustawienia → Magazyn → Dodaj środek → Zakup; potem zapisz nim zabieg | Stan magazynu maleje o zużycie; wpis w ewidencji bez zmian | TAK / NIE | |
+| I2 ★ | Ustawienia → Kopia danych → Zrób kopię → zapisz plik; odinstaluj aplikację, zainstaluj od nowa, Wczytaj kopię | Wszystkie pola, wpisy i ustawienia wracają | TAK / NIE | |
+| I3 | Zrób kopię na drugim telefonie i na pierwszym „Dołącz dane z drugiego urządzenia" | Nic nie znika; program mówi, ile wpisów doszło | TAK / NIE | |
+| I4 | Ustawienia → Słowniczek → dotknij „TUZ" | Hasło rozwija się z wyjaśnieniem i gdzie je spotkasz | TAK / NIE | |
+| I5 ★ | Włącz tryb samolotowy i przejdź: pole, zabieg, rejestr, wydruk, kopia | Wszystko działa bez sieci; pogoda i wiadomości mówią o braku internetu jednym zdaniem | TAK / NIE | |
+
+## J. Czytelność i wygoda (wygląd Prosty)
+
+| Nr | Co zrobić | Co powinno się stać | Udało się? | Uwagi |
+| --- | --- | --- | --- | --- |
+| J1 ★ | Ustaw w Androidzie największą czcionkę i przejrzyj ekrany | Nic nie jest ucięte, nic na siebie nie nachodzi, przyciski nadal duże | TAK / NIE | |
+| J2 | Spróbuj obsłużyć aplikację w rękawicy roboczej | Da się trafić w przyciski | TAK / NIE | |
+| J3 | Wyjdź z telefonem na słońce | Tekst czytelny | TAK / NIE | |
+| J4 | Przy każdym ostrzeżeniu sprawdź, czy mówi, co zrobić | Każde ostrzeżenie = jedno zdanie + co zrobić | TAK / NIE | |
 
 ## Na koniec — trzy pytania
 
