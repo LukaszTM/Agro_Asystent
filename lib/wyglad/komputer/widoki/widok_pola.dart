@@ -174,7 +174,7 @@ class _WidokPolaKomputerState extends State<WidokPolaKomputer> {
                     kolumny: const [
                       KolumnaTabeli('Pole', udzial: 2),
                       KolumnaTabeli('Uprawa', udzial: 2),
-                      KolumnaTabeli('Powierzchnia', doPrawej: true),
+                      KolumnaTabeli('Powierzchnia', udzial: 2, doPrawej: true),
                       KolumnaTabeli('Rodzaj użytku', udzial: 2),
                       KolumnaTabeli('Woda'),
                     ],

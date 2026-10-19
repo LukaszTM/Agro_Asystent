@@ -398,9 +398,12 @@ class _Terminy extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(
-                    width: 96,
+                    // Szerokość rośnie z tekstem — przy „bardzo dużym"
+                    // data nie może łamać się w połowie roku.
+                    width: (teksty.labelLarge?.fontSize ?? 14) * 7,
                     child: Text(
                       Daty.krotko(pozycja.data),
+                      softWrap: false,
                       style: teksty.labelLarge?.copyWith(
                         color: pozycja.pilnosc(teraz) == PilnoscTerminu.minelo
                             ? MotywKomputer.ostrzezenieObramowanie

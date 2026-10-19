@@ -363,92 +363,96 @@ class _OknoDzialkaPoNumerzeState extends State<OknoDzialkaPoNumerze> {
     final pobrana = _pobrana;
     return AlertDialog(
       title: const Text('Działka po numerze'),
+      // Szesnaście województw plus pola i mapa nie mieszczą się w oknie na
+      // mniejszym monitorze — treść musi się przewijać, inaczej dół ucieka.
       content: SizedBox(
         width: 460,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              'Granice pobieramy raz, z państwowej usługi ULDK. Do tego '
-              'jednego kroku potrzebny jest internet — potem mapka działa '
-              'bez niego.',
-              style: teksty.bodyMedium,
-            ),
-            const SizedBox(height: MotywKomputer.odstep),
-            // Działka z wniosku ma pełny numer w dokumencie; dzierżawiona
-            // zwykle nie — wtedy szukamy po miejscowości i numerze z umowy.
-            SegmentedButton<bool>(
-              segments: const [
-                ButtonSegment(
-                  value: true,
-                  icon: Icon(Icons.list_alt_outlined, size: 20),
-                  label: Text('Po miejscowości'),
-                ),
-                ButtonSegment(
-                  value: false,
-                  icon: Icon(Icons.keyboard_outlined, size: 20),
-                  label: Text('Wpisz pełny numer'),
-                ),
-              ],
-              selected: {_zList},
-              onSelectionChanged: (wybrane) => setState(() {
-                _zList = wybrane.first;
-                _blad = null;
-                _pobrana = null;
-              }),
-            ),
-            const SizedBox(height: MotywKomputer.odstep),
-            if (_zList)
-              SzukanieDzialki(
-                szukanie: _poNazwie,
-                onZmiana: () => setState(() => _blad = null),
-                onWybor: (dzialka) => _pobierz(dzialka.teryt),
-                onSzukaj: _szukaj,
-              )
-            else
-              TextField(
-                controller: _numer,
-                autofocus: true,
-                decoration: const InputDecoration(
-                  labelText: 'Numer działki',
-                  hintText: 'np. 141201_2.0012.123/4',
-                ),
-                onChanged: (_) => setState(() {}),
-                onSubmitted: (_) => _szukaj(),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Granice pobieramy raz, z państwowej usługi ULDK. Do tego '
+                'jednego kroku potrzebny jest internet — potem mapka działa '
+                'bez niego.',
+                style: teksty.bodyMedium,
               ),
-            if (_blad case final String wiadomosc) ...[
               const SizedBox(height: MotywKomputer.odstep),
-              OstrzezenieKomputer(tresc: wiadomosc, coZrobic: _coZrobic),
-            ],
-            if (pobrana != null) ...[
-              const SizedBox(height: MotywKomputer.odstep),
-              KartaKomputer(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(pobrana.identyfikator, style: teksty.titleLarge),
-                    Text(
-                      [
-                        pobrana.wojewodztwo,
-                        pobrana.powiat,
-                        pobrana.gmina,
-                        pobrana.obreb,
-                      ].whereType<String>().join(' • '),
-                      style: teksty.bodyMedium,
-                    ),
-                  ],
-                ),
+              // Działka z wniosku ma pełny numer w dokumencie; dzierżawiona
+              // zwykle nie — wtedy szukamy po miejscowości i numerze z umowy.
+              SegmentedButton<bool>(
+                segments: const [
+                  ButtonSegment(
+                    value: true,
+                    icon: Icon(Icons.list_alt_outlined, size: 20),
+                    label: Text('Po miejscowości'),
+                  ),
+                  ButtonSegment(
+                    value: false,
+                    icon: Icon(Icons.keyboard_outlined, size: 20),
+                    label: Text('Wpisz pełny numer'),
+                  ),
+                ],
+                selected: {_zList},
+                onSelectionChanged: (wybrane) => setState(() {
+                  _zList = wybrane.first;
+                  _blad = null;
+                  _pobrana = null;
+                }),
               ),
-              if (_jestJuz) ...[
-                const SizedBox(height: 8),
-                const OstrzezenieKomputer(
-                  tresc: 'Tę działkę masz już w gospodarstwie.',
-                  coZrobic: 'Zapis odświeży jej granice i dane z rejestru.',
+              const SizedBox(height: MotywKomputer.odstep),
+              if (_zList)
+                SzukanieDzialki(
+                  szukanie: _poNazwie,
+                  onZmiana: () => setState(() => _blad = null),
+                  onWybor: (dzialka) => _pobierz(dzialka.teryt),
+                  onSzukaj: _szukaj,
+                )
+              else
+                TextField(
+                  controller: _numer,
+                  autofocus: true,
+                  decoration: const InputDecoration(
+                    labelText: 'Numer działki',
+                    hintText: 'np. 141201_2.0012.123/4',
+                  ),
+                  onChanged: (_) => setState(() {}),
+                  onSubmitted: (_) => _szukaj(),
                 ),
+              if (_blad case final String wiadomosc) ...[
+                const SizedBox(height: MotywKomputer.odstep),
+                OstrzezenieKomputer(tresc: wiadomosc, coZrobic: _coZrobic),
+              ],
+              if (pobrana != null) ...[
+                const SizedBox(height: MotywKomputer.odstep),
+                KartaKomputer(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(pobrana.identyfikator, style: teksty.titleLarge),
+                      Text(
+                        [
+                          pobrana.wojewodztwo,
+                          pobrana.powiat,
+                          pobrana.gmina,
+                          pobrana.obreb,
+                        ].whereType<String>().join(' • '),
+                        style: teksty.bodyMedium,
+                      ),
+                    ],
+                  ),
+                ),
+                if (_jestJuz) ...[
+                  const SizedBox(height: 8),
+                  const OstrzezenieKomputer(
+                    tresc: 'Tę działkę masz już w gospodarstwie.',
+                    coZrobic: 'Zapis odświeży jej granice i dane z rejestru.',
+                  ),
+                ],
               ],
             ],
-          ],
+          ),
         ),
       ),
       actions: [

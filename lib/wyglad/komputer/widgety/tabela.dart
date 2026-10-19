@@ -83,6 +83,9 @@ class Tabela extends StatelessWidget {
               ),
             ),
             child: Row(
+              // Odstęp między kolumnami: liczba wyrównana do prawej nie może
+              // stykać się z tekstem sąsiedniej komórki.
+              spacing: MotywKomputer.odstep,
               children: [
                 for (final kolumna in kolumny)
                   Expanded(
@@ -142,6 +145,7 @@ class _Wiersz extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
+            spacing: MotywKomputer.odstep,
             children: [
               for (final (numer, kolumna) in kolumny.indexed)
                 Expanded(

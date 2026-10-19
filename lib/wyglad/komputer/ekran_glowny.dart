@@ -110,9 +110,15 @@ class _EkranGlownyKomputerState extends State<EkranGlownyKomputer> {
                                 style: teksty.displayLarge,
                               ),
                             ),
-                            Text(
-                              _uslugi.nazwaGospodarstwa,
-                              style: teksty.bodyLarge,
+                            // Długa nazwa gospodarstwa nie może rozpychać
+                            // nagłówka — ucina się wielokropkiem.
+                            Expanded(
+                              child: Text(
+                                _uslugi.nazwaGospodarstwa,
+                                style: teksty.bodyLarge,
+                                textAlign: TextAlign.right,
+                                overflow: TextOverflow.ellipsis,
+                              ),
                             ),
                           ],
                         ),
