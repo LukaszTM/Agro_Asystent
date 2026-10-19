@@ -1,5 +1,9 @@
 # Agro Asystent — wersja testowa na telefon
 
+> **Pełny pakiet dla testerów** (instrukcje obsługi telefonu i komputera,
+> plany testów do zakreślania TAK/NIE, wzór zgłoszenia) leży w katalogu
+> `docs/dla-testerow/`. Ten plik to krótsza wersja do szybkiego przekazania.
+
 Ten plik jest do przekazania osobom, które będą próbować aplikacji.
 Na końcu jest gotowa wiadomość do skopiowania.
 
