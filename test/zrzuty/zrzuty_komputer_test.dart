@@ -546,6 +546,17 @@ void main() {
       }, skip: !robZrzuty);
     }
 
+    testWidgets('01b-pulpit caly, wysokie okno', (tester) async {
+      // Cały pulpit na raz — tak, jak widać go po przewinięciu.
+      await pokaz(
+        tester,
+        uslugi: zbudujUslugi(premium: true),
+        zakladka: ZakladkaKomputer.pulpit,
+        okno: const Size(1280, 2100),
+      );
+      await zrzut(tester, '01b-pulpit-caly');
+    }, skip: !robZrzuty);
+
     testWidgets('02-pola z wybranym polem', (tester) async {
       await pokaz(
         tester,

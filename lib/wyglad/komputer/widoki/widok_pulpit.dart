@@ -158,6 +158,38 @@ class _WidokPulpitKomputerState extends State<WidokPulpitKomputer> {
           builder: (context, wymiary) {
             final dwieKolumny =
                 wymiary.maxWidth >= MotywKomputer.szerokoscPelnegoUkladu - 160;
+            final pogoda = KartaPogody(
+              stan: dane.pogoda,
+              teraz: _teraz,
+              onOdswiez: () => setState(() {
+                _wymusPogode = true;
+                _dane = _wczytaj();
+              }),
+            );
+            final terminy = _Terminy(
+              terminy: dane.terminy,
+              teraz: _teraz,
+              onPelnyWidok: widget.onPelnyWidok,
+            );
+            final ceny = KartaCen(
+              slownik: widget.uslugi.cenySkupu,
+              wojewodztwo: dane.wojewodztwo,
+            );
+            final wiadomosci = KartaWiadomosci(
+              stan: dane.wiadomosci,
+              teraz: _teraz,
+              onOdswiez: () => setState(() {
+                _wymusWiadomosci = true;
+                _dane = _wczytaj();
+              }),
+            );
+            final zasiewy = _Zasiewy(zasiewy: dane.zasiewy);
+            final mapa = _Mapa(dzialki: dane.dzialki);
+
+            // Na szerokim monitorze karty idą parami, żeby to, o co rolnik
+            // pyta najczęściej — co rośnie, pogoda, mapa, terminy — mieściło
+            // się na pierwszym ekranie bez przewijania. Kalendarz zostaje na
+            // całą szerokość: miesiąc potrzebuje miejsca.
             return ListView(
               children: [
                 NaglowekWidoku(
@@ -165,57 +197,19 @@ class _WidokPulpitKomputerState extends State<WidokPulpitKomputer> {
                   opis: _zdanieOStanie(dane),
                 ),
                 const SizedBox(height: MotywKomputer.odstep),
-                _Zasiewy(zasiewy: dane.zasiewy),
-                const SizedBox(height: MotywKomputer.odstep),
-                if (dwieKolumny)
-                  IntrinsicHeight(
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Expanded(child: _Mapa(dzialki: dane.dzialki)),
-                        const SizedBox(width: MotywKomputer.odstep),
-                        Expanded(
-                          child: _Terminy(
-                            terminy: dane.terminy,
-                            teraz: _teraz,
-                            onPelnyWidok: widget.onPelnyWidok,
-                          ),
-                        ),
-                      ],
-                    ),
-                  )
-                else ...[
-                  _Mapa(dzialki: dane.dzialki),
+                if (dwieKolumny) ...[
+                  _Para(lewa: zasiewy, prawa: pogoda),
                   const SizedBox(height: MotywKomputer.odstep),
-                  _Terminy(
-                    terminy: dane.terminy,
-                    teraz: _teraz,
-                    onPelnyWidok: widget.onPelnyWidok,
-                  ),
+                  _Para(lewa: mapa, prawa: terminy),
+                ] else ...[
+                  zasiewy,
+                  const SizedBox(height: MotywKomputer.odstep),
+                  pogoda,
+                  const SizedBox(height: MotywKomputer.odstep),
+                  mapa,
+                  const SizedBox(height: MotywKomputer.odstep),
+                  terminy,
                 ],
-                const SizedBox(height: MotywKomputer.odstep),
-                KartaPogody(
-                  stan: dane.pogoda,
-                  teraz: _teraz,
-                  onOdswiez: () => setState(() {
-                    _wymusPogode = true;
-                    _dane = _wczytaj();
-                  }),
-                ),
-                const SizedBox(height: MotywKomputer.odstep),
-                KartaCen(
-                  slownik: widget.uslugi.cenySkupu,
-                  wojewodztwo: dane.wojewodztwo,
-                ),
-                const SizedBox(height: MotywKomputer.odstep),
-                KartaWiadomosci(
-                  stan: dane.wiadomosci,
-                  teraz: _teraz,
-                  onOdswiez: () => setState(() {
-                    _wymusWiadomosci = true;
-                    _dane = _wczytaj();
-                  }),
-                ),
                 if (dane.biodynamika case final _DaneBiodynamiki kalendarz) ...[
                   const SizedBox(height: MotywKomputer.odstep),
                   KalendarzBiodynamicznyKarta(
@@ -224,6 +218,14 @@ class _WidokPulpitKomputerState extends State<WidokPulpitKomputer> {
                     dzis: _teraz,
                     zastrzezenie: kalendarz.zastrzezenie,
                   ),
+                ],
+                const SizedBox(height: MotywKomputer.odstep),
+                if (dwieKolumny)
+                  _Para(lewa: ceny, prawa: wiadomosci)
+                else ...[
+                  ceny,
+                  const SizedBox(height: MotywKomputer.odstep),
+                  wiadomosci,
                 ],
               ],
             );
@@ -428,6 +430,28 @@ class _Terminy extends StatelessWidget {
               onPressed: () => onPelnyWidok!('terminy'),
               child: const Text('Zobacz wszystkie terminy'),
             ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Dwie karty obok siebie, wyrównane do wyższej z nich.
+class _Para extends StatelessWidget {
+  const _Para({required this.lewa, required this.prawa});
+
+  final Widget lewa;
+  final Widget prawa;
+
+  @override
+  Widget build(BuildContext context) {
+    return IntrinsicHeight(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Expanded(child: lewa),
+          const SizedBox(width: MotywKomputer.odstep),
+          Expanded(child: prawa),
         ],
       ),
     );
