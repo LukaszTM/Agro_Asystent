@@ -189,7 +189,8 @@ void main() {
     await tester.scrollUntilVisible(
       czego,
       200,
-      scrollable: find.byType(Scrollable).last,
+      // Pierwszy Scrollable to lista ekranu; dalsze to pola tekstowe.
+      scrollable: find.byType(Scrollable).first,
     );
     await tester.pumpAndSettle();
   }

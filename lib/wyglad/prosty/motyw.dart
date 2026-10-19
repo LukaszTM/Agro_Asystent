@@ -16,6 +16,10 @@ abstract final class MotywProsty {
   static const Color ostrzezenieTlo = Color(0xFFFFF1D6);
   static const Color ostrzezenieObramowanie = Color(0xFF8A4B00);
 
+  /// Tekst podpowiedzi (np. stara wartość w oknie wpisywania liczby) —
+  /// wciąż czytelny na jasnym tle, ale słabszy niż [tekst].
+  static const Color tekstPomocniczy = Color(0xFF4A5A48);
+
   /// Krój z makiety. Plik czcionki dojdzie przy pierwszym ekranie produkcyjnym
   /// (Atkinson Hyperlegible, licencja OFL); do tego czasu krój systemowy.
   static const String? krojPisma = null;

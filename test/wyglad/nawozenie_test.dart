@@ -399,6 +399,12 @@ void main() {
     expect(find.textContaining('wolno dać'), findsOneWidget);
     expect(find.textContaining('Zmniejsz dawkę'), findsOneWidget);
     // Ostrzeżenie nie blokuje zapisu: rolnik mógł już wysiać.
+    await tester.scrollUntilVisible(
+      find.widgetWithText(FilledButton, 'Zapisz'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pumpAndSettle();
     expect(
       tester
           .widget<FilledButton>(find.widgetWithText(FilledButton, 'Zapisz'))

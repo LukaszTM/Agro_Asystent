@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../motyw.dart';
 
@@ -67,6 +68,9 @@ class Wybor extends StatelessWidget {
 }
 
 /// Liczba z przyciskami „−" i „+" — bez klawiatury (reguły interfejsu).
+///
+/// Dotknięcie liczby otwiera okno z polem do wpisania: gdy dawka różni się
+/// znacznie od wyjściowej, wpisanie jej jest szybsze niż wiele dotknięć „+".
 class WyborLiczbyNowoczesny extends StatelessWidget {
   const WyborLiczbyNowoczesny({
     super.key,
@@ -92,6 +96,15 @@ class WyborLiczbyNowoczesny extends StatelessWidget {
   static String _liczba(double wartosc) =>
       wartosc.toStringAsFixed(2).replaceAll('.', ',');
 
+  Future<void> _wpisz(BuildContext context) async {
+    final nowa = await wpiszLiczbe(
+      context,
+      wartosc: wartosc,
+      jednostka: jednostka,
+    );
+    if (nowa != null) onZmiana(nowa);
+  }
+
   @override
   Widget build(BuildContext context) {
     final teksty = Theme.of(context).textTheme;
@@ -110,10 +123,23 @@ class WyborLiczbyNowoczesny extends StatelessWidget {
                     ),
             ),
             Expanded(
-              child: Text(
-                '${_liczba(wartosc)} $jednostka',
-                textAlign: TextAlign.center,
-                style: teksty.headlineMedium,
+              child: Semantics(
+                button: true,
+                label: 'Wpisz liczbę z klawiatury',
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(
+                    MotywNowoczesny.zaokraglenieMale,
+                  ),
+                  onTap: () => _wpisz(context),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 6),
+                    child: Text(
+                      '${_liczba(wartosc)} $jednostka',
+                      textAlign: TextAlign.center,
+                      style: teksty.headlineMedium,
+                    ),
+                  ),
+                ),
               ),
             ),
             _Krok(
@@ -124,10 +150,111 @@ class WyborLiczbyNowoczesny extends StatelessWidget {
             ),
           ],
         ),
-        if (opisMaksimum != null) ...[
-          const SizedBox(height: 4),
-          Text(opisMaksimum!, style: teksty.bodyMedium),
+        const SizedBox(height: 4),
+        Text(
+          opisMaksimum ?? 'Dotknij liczby, żeby ją wpisać.',
+          style: teksty.bodyMedium,
+        ),
+      ],
+    );
+  }
+}
+
+/// Otwiera okno z polem do wpisania liczby z klawiatury systemowej.
+/// Zwraca `null`, gdy użytkownik zrezygnował; wartość ujemna nie przechodzi.
+Future<double?> wpiszLiczbe(
+  BuildContext context, {
+  required double wartosc,
+  required String jednostka,
+}) {
+  return showDialog<double>(
+    context: context,
+    builder: (_) => _OknoLiczby(poczatkowa: wartosc, jednostka: jednostka),
+  );
+}
+
+/// Zamienia wpisany tekst („1,5", „2.", „12") na liczbę. `null`, gdy tekst
+/// nie jest liczbą.
+double? odczytajLiczbe(String tekst) {
+  final czysty = tekst.trim().replaceAll(',', '.');
+  if (czysty.isEmpty || czysty == '.') return null;
+  return double.tryParse(czysty.endsWith('.') ? '${czysty}0' : czysty);
+}
+
+class _OknoLiczby extends StatefulWidget {
+  const _OknoLiczby({required this.poczatkowa, required this.jednostka});
+
+  final double poczatkowa;
+  final String jednostka;
+
+  @override
+  State<_OknoLiczby> createState() => _OknoLiczbyState();
+}
+
+class _OknoLiczbyState extends State<_OknoLiczby> {
+  late final TextEditingController _pole = TextEditingController(
+    text: WyborLiczbyNowoczesny._liczba(widget.poczatkowa),
+  );
+
+  @override
+  void initState() {
+    super.initState();
+    // Cała stara wartość zaznaczona: pierwsza cyfra ją zastępuje.
+    _pole.selection = TextSelection(
+      baseOffset: 0,
+      extentOffset: _pole.text.length,
+    );
+    _pole.addListener(() => setState(() {}));
+  }
+
+  @override
+  void dispose() {
+    _pole.dispose();
+    super.dispose();
+  }
+
+  double? get _liczba {
+    final liczba = odczytajLiczbe(_pole.text);
+    return liczba == null || liczba < 0 ? null : liczba;
+  }
+
+  void _zapisz() {
+    final liczba = _liczba;
+    if (liczba != null) Navigator.of(context).pop(liczba);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Wpisz liczbę'),
+      content: TextField(
+        controller: _pole,
+        autofocus: true,
+        keyboardType: const TextInputType.numberWithOptions(decimal: true),
+        inputFormatters: [
+          FilteringTextInputFormatter.allow(RegExp(r'[0-9.,]')),
+          LengthLimitingTextInputFormatter(8),
         ],
+        textAlign: TextAlign.center,
+        style: Theme.of(context).textTheme.headlineMedium,
+        decoration: InputDecoration(
+          suffixText: widget.jednostka,
+          helperText: 'Przecinek oddziela części, np. 1,5.',
+          errorText: _pole.text.isNotEmpty && _liczba == null
+              ? 'To nie jest liczba.'
+              : null,
+        ),
+        onSubmitted: (_) => _zapisz(),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: const Text('Anuluj'),
+        ),
+        FilledButton(
+          onPressed: _liczba == null ? null : _zapisz,
+          child: const Text('Zapisz'),
+        ),
       ],
     );
   }
