@@ -329,3 +329,23 @@ Wykonywać po kolei; po każdym zadaniu krótki raport z wynikami i liczbami.
 - Nie pobierać stron ministerstwa z telefonu użytkownika; dane przygotowuje skrypt na komputerze.
 - Nie blokować dokumentacji użytkownika za brak płatności.
 - Nie zgadywać karencji ani dawek, gdy odczyt jest niepewny.
+
+## 12. Do zrobienia — zgłoszenia z testów (19.10.2026)
+
+Kolejność do ustalenia; żadne nie zmienia decyzji z pkt 2 ani reguł z pkt 11.
+
+1. **Numery działek przy polach.** Po wczytaniu wniosku każde pole ma w bazie
+   swoje działki ewidencyjne (`dzialka_rolna_czesc`), ale lista pól na telefonie
+   i tabela na komputerze pokazują tylko nazwę, uprawę i powierzchnię. Numery
+   działek mają stać przy polu — na liście, w karcie pola i przy wyborze pola
+   do zabiegu.
+2. **Nowe pole = wybór działki z listy.** Przy ręcznym tworzeniu pola (telefon
+   i komputer) wymagany wybór numeru działki ewidencyjnej z listy działek
+   gospodarstwa, z wyszukiwaniem po numerze. Pole bez działki tylko wtedy, gdy
+   gospodarstwo nie ma jeszcze żadnej działki — wtedy wyraźna podpowiedź, żeby
+   najpierw dodać działkę (ULDK albo wniosek).
+3. **Prace polowe z datą wstecz.** Przy siewie, zbiorze, uprawie gleby i innych
+   pracach na telefonie: wybór rodzaju pracy z listy (jak dziś przy „Inny") oraz
+   data z kalendarza wstecz od dnia bieżącego (bez dat z przyszłości) — rolnik
+   wpisuje prace po fakcie. Na komputerze data z kalendarza już jest (okno
+   „Dodaj zabieg").
