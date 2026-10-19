@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../funkcje/ustawienia/rozmiar_tekstu.dart';
+import '../../rdzen/wspolne/kalendarz_biodynamiczny.dart';
 import '../../rdzen/wspolne/mapa_dzialek.dart';
 
 /// Kolory, odstępy i rozmiary programu na komputer.
@@ -89,7 +90,18 @@ abstract final class MotywKomputer {
     'owoc': Color(0xFFC0532B),
   };
 
-  static Color barwaPracy(String praca) => barwyPracy[praca] ?? tekstPomocniczy;
+  /// Styl kalendarza biodynamicznego — kalendarz jest wspólny
+  /// (`rdzen/wspolne/`), więc barwy podaje program.
+  static const StylKalendarza stylKalendarza = StylKalendarza(
+    tekst: tekst,
+    tekstPomocniczy: tekstPomocniczy,
+    tlo: karta,
+    akcent: zielen,
+    ostrzezenie: ostrzezenieObramowanie,
+    barwyPracy: barwyPracy,
+    zaokraglenie: zaokraglenieMale,
+    odstep: odstep,
+  );
 
   /// Motyw programu w wybranej wielkości tekstu.
   static ThemeData zbuduj([RozmiarTekstu rozmiar = RozmiarTekstu.normalny]) {

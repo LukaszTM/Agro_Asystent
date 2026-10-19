@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../rdzen/wspolne/kalendarz_biodynamiczny.dart';
 import '../../rdzen/wspolne/mapa_dzialek.dart';
 
 /// Kolory, odstępy i rozmiary wyglądu „Prosty" (użytkownicy 60+).
@@ -33,6 +34,27 @@ abstract final class MotywProsty {
   static const double zaokraglenieMale = 14;
   static const double zaokraglenieDuze = 18;
   static const double odstep = 16;
+
+  /// Barwy dni kalendarza biodynamicznego po rodzaju pracy — ciemne,
+  /// wyraźne na jasnym tle. Nazwy prac pochodzą ze słownika.
+  static const Map<String, Color> barwyPracy = {
+    'korzeń': Color(0xFF7A4A1E),
+    'liść': Color(0xFF2E6B2E),
+    'kwiat': Color(0xFF5E3F66),
+    'owoc': Color(0xFFA84420),
+  };
+
+  /// Styl kalendarza biodynamicznego — kalendarz leży w `rdzen/wspolne/`.
+  static const StylKalendarza stylKalendarza = StylKalendarza(
+    tekst: tekst,
+    tekstPomocniczy: tekstPomocniczy,
+    tlo: powierzchnia,
+    akcent: zielenAkcji,
+    ostrzezenie: ostrzezenieObramowanie,
+    barwyPracy: barwyPracy,
+    zaokraglenie: zaokraglenieMale,
+    odstep: odstep,
+  );
 
   /// Barwy mapy działek dla tego wyglądu — sama mapa leży w `rdzen/`.
   static const BarwyMapy barwyMapy = BarwyMapy(

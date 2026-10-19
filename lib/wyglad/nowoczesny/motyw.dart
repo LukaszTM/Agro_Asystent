@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../rdzen/wspolne/kalendarz_biodynamiczny.dart';
 import '../../rdzen/wspolne/mapa_dzialek.dart';
 
 /// Kolory, odstępy i rozmiary wyglądu „Nowoczesny" (osoby obyte ze
@@ -44,6 +45,27 @@ abstract final class MotywNowoczesny {
 
   /// Wysokość dolnego paska nawigacji.
   static const double wysokoscPaska = 64;
+
+  /// Barwy dni kalendarza biodynamicznego po rodzaju pracy. Nazwy prac
+  /// pochodzą ze słownika (`assets/dane/kalendarz_biodynamiczny.json`).
+  static const Map<String, Color> barwyPracy = {
+    'korzeń': Color(0xFF8A5A2B),
+    'liść': Color(0xFF3F7D3F),
+    'kwiat': Color(0xFF6B4E71),
+    'owoc': Color(0xFFC0532B),
+  };
+
+  /// Styl kalendarza biodynamicznego — kalendarz leży w `rdzen/wspolne/`.
+  static const StylKalendarza stylKalendarza = StylKalendarza(
+    tekst: tekst,
+    tekstPomocniczy: tekstPomocniczy,
+    tlo: karta,
+    akcent: zielen,
+    ostrzezenie: ostrzezenieObramowanie,
+    barwyPracy: barwyPracy,
+    zaokraglenie: zaokraglenieMale,
+    odstep: odstep,
+  );
 
   /// Barwy mapy działek. Mapa jest wspólna dla obu wyglądów
   /// (`rdzen/wspolne/`), więc kolory podaje wygląd.

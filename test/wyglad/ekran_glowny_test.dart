@@ -23,6 +23,7 @@ void main() {
       expect(find.text('Dodaj zabieg'), findsOneWidget);
       expect(find.text('Terminy'), findsOneWidget);
       expect(find.text('Dokumenty'), findsOneWidget);
+      expect(find.text('Kalendarz'), findsOneWidget);
       // Bez szuflady nawigacji i bez menu „trzy kropki".
       expect(find.byType(Drawer), findsNothing);
       expect(find.byType(PopupMenuButton<dynamic>), findsNothing);
@@ -33,7 +34,13 @@ void main() {
     ) async {
       await tester.pumpWidget(aplikacjaBezBazy());
 
-      for (final etykieta in ['Pola', 'Dodaj zabieg', 'Terminy', 'Dokumenty']) {
+      for (final etykieta in [
+        'Pola',
+        'Dodaj zabieg',
+        'Terminy',
+        'Dokumenty',
+        'Kalendarz',
+      ]) {
         final przycisk = find.ancestor(
           of: find.text(etykieta),
           matching: find.byType(InkWell),

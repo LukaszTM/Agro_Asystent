@@ -4,6 +4,7 @@ import 'dart:typed_data';
 
 import 'package:agro_asystent/app/aplikacja.dart';
 import 'package:agro_asystent/app/uslugi.dart';
+import 'package:agro_asystent/funkcje/biodynamika/biodynamika.dart';
 import 'package:agro_asystent/funkcje/dokumenty/usluga_dokumentow.dart';
 import 'package:agro_asystent/funkcje/dokumenty/wydruk_pdf.dart';
 import 'package:agro_asystent/funkcje/dokumenty/wyjscie_dokumentu.dart';
@@ -218,6 +219,9 @@ void main() {
       profil: ProfilZBazy(gospodarstwo),
       przypomnienia: const _BrakPrzypomnien(),
       ustawieniaPrzypomnien: UstawieniaPrzypomnien(gospodarstwo),
+      biodynamika: SlownikBiodynamiczny.zTekstuJson(
+        File('assets/dane/kalendarz_biodynamiczny.json').readAsStringSync(),
+      ),
     );
 
     await uslugi.pola.dodaj(
@@ -280,10 +284,16 @@ void main() {
   }
 
   group('dolny pasek nawigacji', () {
-    testWidgets('ma cztery zakładki i przycisk „+" w środku', (tester) async {
+    testWidgets('ma pięć zakładek i przycisk „+" w środku', (tester) async {
       await otworz(tester);
 
-      for (final etykieta in ['Start', 'Pola', 'Terminy', 'Dokumenty']) {
+      for (final etykieta in [
+        'Start',
+        'Pola',
+        'Terminy',
+        'Dokumenty',
+        'Kalendarz',
+      ]) {
         expect(find.text(etykieta), findsWidgets, reason: etykieta);
       }
       final dodaj = find.bySemanticsLabel('Dodaj zabieg');
@@ -310,12 +320,26 @@ void main() {
       expect(find.text('Opryski'), findsOneWidget);
       expect(find.text('Nawożenie azotem'), findsOneWidget);
       expect(find.text('Ekoschematy'), findsOneWidget);
+
+      await zakladka(tester, 'Kalendarz');
+      // Zastrzeżenie stoi na ekranie: to tradycja, nie przepis.
+      expect(find.textContaining('tradycja, nie przepis'), findsOneWidget);
+      expect(find.text('dobry dzień do siewu'), findsOneWidget);
+      await tester.tap(find.text('Pokaż miesiąc'));
+      await tester.pumpAndSettle();
+      expect(find.text('maja 2026'), findsOneWidget);
     });
 
     testWidgets('cele dotyku mają co najmniej 44 px', (tester) async {
       await otworz(tester);
 
-      for (final etykieta in ['Start', 'Pola', 'Terminy', 'Dokumenty']) {
+      for (final etykieta in [
+        'Start',
+        'Pola',
+        'Terminy',
+        'Dokumenty',
+        'Kalendarz',
+      ]) {
         final zakladka = find.ancestor(
           of: find.text(etykieta),
           matching: find.byType(InkWell),

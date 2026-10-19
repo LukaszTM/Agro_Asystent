@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:agro_asystent/app/uslugi.dart';
+import 'package:agro_asystent/funkcje/biodynamika/biodynamika.dart';
 import 'package:agro_asystent/funkcje/dokumenty/usluga_dokumentow.dart';
 import 'package:agro_asystent/funkcje/dokumenty/wydruk_pdf.dart';
 import 'package:agro_asystent/funkcje/dokumenty/wyjscie_dokumentu.dart';
@@ -32,6 +33,7 @@ import 'package:agro_asystent/rdzen/modele/zabieg.dart';
 import 'package:agro_asystent/rdzen/reguly/gminy_terminy.dart';
 import 'package:agro_asystent/rdzen/reguly/regula_prawna.dart';
 import 'package:agro_asystent/rdzen/uslugi/kopia/kopia_danych.dart';
+import 'package:agro_asystent/wyglad/prosty/kalendarz/ekran_kalendarz.dart';
 import 'package:agro_asystent/wyglad/prosty/motyw.dart';
 import 'package:agro_asystent/wyglad/prosty/terminy/ekran_terminy.dart';
 import 'package:flutter/material.dart';
@@ -119,10 +121,11 @@ void main() {
     await slowniki.close();
   });
 
-  Uslugi zbudujUslugi() => Uslugi(
+  Uslugi zbudujUslugi({SlownikBiodynamiczny? biodynamika}) => Uslugi(
     gospodarstwoId: 'g1',
     nazwaGospodarstwa: 'Gospodarstwo próbne',
     urzadzenie: 'telefon',
+    biodynamika: biodynamika,
     pola: RepozytoriumPol(baza),
     dzialki: RepozytoriumDzialek(baza),
     zabiegi: RepozytoriumZabiegow(baza),
@@ -186,6 +189,54 @@ void main() {
       await tester.pumpAndSettle();
     }
   }
+
+  group('kalendarz biodynamiczny (ekran z kafelka „Kalendarz")', () {
+    final biodynamika = SlownikBiodynamiczny.zTekstuJson(
+      File('assets/dane/kalendarz_biodynamiczny.json').readAsStringSync(),
+    );
+
+    testWidgets('pokazuje tydzień z zastrzeżeniem i rozwija na miesiąc', (
+      tester,
+    ) async {
+      tester.view.physicalSize = const Size(420, 900);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.reset);
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: MotywProsty.zbuduj(),
+          home: EkranKalendarz(
+            uslugi: zbudujUslugi(biodynamika: biodynamika),
+            teraz: teraz,
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('Kalendarz'), findsOneWidget);
+      expect(find.textContaining('tradycja, nie przepis'), findsOneWidget);
+      // Siedem dni, zaczynając od dzisiaj.
+      expect(find.text('czw 1.10'), findsOneWidget);
+      expect(find.text('śr 7.10'), findsOneWidget);
+
+      await tester.tap(find.text('Pokaż miesiąc'));
+      await tester.pumpAndSettle();
+      expect(find.text('października 2026'), findsOneWidget);
+      expect(find.text('Pokaż tydzień'), findsOneWidget);
+    });
+
+    testWidgets('bez słownika mówi, co zrobić, zamiast pustego ekranu', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: MotywProsty.zbuduj(),
+          home: EkranKalendarz(uslugi: zbudujUslugi(), teraz: teraz),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.textContaining('nie udało się wczytać'), findsOneWidget);
+    });
+  });
 
   testWidgets('bez pól widać tylko terminy, które dotyczą każdego', (
     tester,

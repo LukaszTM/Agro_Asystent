@@ -6,13 +6,14 @@ import '../../rdzen/dostep/dostep_funkcji.dart';
 import '../../rdzen/marka/marka.dart';
 import 'ekran_pola.dart';
 import 'ekran_w_budowie.dart';
+import 'kalendarz/ekran_kalendarz.dart';
 import 'rejestr/ekran_rejestr.dart';
 import 'terminy/ekran_terminy.dart';
 import 'motyw.dart';
 import 'ustawienia/ekran_gospodarstwa.dart';
 import 'wpis/ekran_wybor_pola.dart';
 
-/// Ekran główny wyglądu „Prosty": cztery duże przyciski, bez ukrytego menu
+/// Ekran główny wyglądu „Prosty": pięć dużych przycisków, bez ukrytego menu
 /// (plan, pkt 5). Kolejność od najczęściej używanego.
 class EkranGlownyProsty extends StatelessWidget {
   const EkranGlownyProsty({
@@ -66,6 +67,13 @@ class EkranGlownyProsty extends StatelessWidget {
           'Rejestr zabiegów do podglądu; wydruk PDF i eksport '
           'CSV/XLSX — zawsze w wersji darmowej.',
     ),
+    _Kafelek(
+      etykieta: 'Kalendarz',
+      ikona: Icons.nightlight_outlined,
+      coBedzie:
+          'Kalendarz biodynamiczny: dni siewu oznaczone rączkami, '
+          'fazy Księżyca i rodzaj pracy w tygodniu i w miesiącu.',
+    ),
   ];
 
   @override
@@ -113,11 +121,24 @@ class EkranGlownyProsty extends StatelessWidget {
           child: LayoutBuilder(
             builder: (context, wymiary) {
               final waskiEkran = wymiary.maxWidth < 420;
+              final kolumny = waskiEkran ? 1 : 2;
+              // Kafelki dzielą między siebie wysokość ekranu, żeby wszystkie
+              // pięć było widać bez przewijania; przy bardzo dużym tekście
+              // nie schodzą poniżej dwóch celów dotyku i lista się przewija.
+              final wiersze = (_kafelki.length / kolumny).ceil();
+              final szerokosc =
+                  (wymiary.maxWidth - (kolumny - 1) * MotywProsty.odstep) /
+                  kolumny;
+              final wysokosc =
+                  (wymiary.maxHeight - (wiersze - 1) * MotywProsty.odstep) /
+                  wiersze;
+              final najmniej = MotywProsty.minCelDotyku * 2;
               return GridView.count(
-                crossAxisCount: waskiEkran ? 1 : 2,
+                crossAxisCount: kolumny,
                 mainAxisSpacing: MotywProsty.odstep,
                 crossAxisSpacing: MotywProsty.odstep,
-                childAspectRatio: waskiEkran ? 2.4 : 1.2,
+                childAspectRatio:
+                    szerokosc / (wysokosc < najmniej ? najmniej : wysokosc),
                 children: [
                   for (final kafelek in _kafelki)
                     _PrzyciskKafelek(kafelek: kafelek, uslugi: uslugi),
@@ -165,6 +186,8 @@ class _PrzyciskKafelek extends StatelessWidget {
           return EkranRejestr(uslugi: dostepneUslugi);
         case 'Terminy':
           return EkranTerminy(uslugi: dostepneUslugi);
+        case 'Kalendarz':
+          return EkranKalendarz(uslugi: dostepneUslugi);
       }
     }
     return EkranWBudowie(tytul: kafelek.etykieta, coBedzie: kafelek.coBedzie);

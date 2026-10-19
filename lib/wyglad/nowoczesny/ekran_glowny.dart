@@ -5,6 +5,7 @@ import '../../funkcje/dzialki/repozytorium_pol.dart';
 import '../../funkcje/ustawienia/wybor_wygladu.dart';
 import '../../rdzen/marka/marka.dart';
 import 'dokumenty/widok_dokumenty.dart';
+import 'kalendarz/widok_kalendarz.dart';
 import 'motyw.dart';
 import 'pola/widok_pola.dart';
 import 'nawozenie/ekran_nawozenie.dart';
@@ -53,6 +54,7 @@ class _EkranGlownyNowoczesnyState extends State<EkranGlownyNowoczesny> {
     ZakladkaPaska(etykieta: 'Pola', ikona: Icons.map_outlined),
     ZakladkaPaska(etykieta: 'Terminy', ikona: Icons.event_outlined),
     ZakladkaPaska(etykieta: 'Dokumenty', ikona: Icons.description_outlined),
+    ZakladkaPaska(etykieta: 'Kalendarz', ikona: Icons.nightlight_outlined),
   ];
 
   static const List<String> _tytuly = [
@@ -60,6 +62,7 @@ class _EkranGlownyNowoczesnyState extends State<EkranGlownyNowoczesny> {
     'Pola',
     'Terminy',
     'Dokumenty',
+    'Kalendarz biodynamiczny',
   ];
 
   Future<void> _dodajZabieg({Pole? pole}) async {
@@ -181,6 +184,7 @@ class _EkranGlownyNowoczesnyState extends State<EkranGlownyNowoczesny> {
               uslugi: widget.uslugi,
               onRejestr: _rejestr,
             ),
+            WidokKalendarz(uslugi: widget.uslugi, teraz: widget.teraz),
           ],
         ),
       ),

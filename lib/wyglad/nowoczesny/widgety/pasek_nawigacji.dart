@@ -31,8 +31,9 @@ class PasekNawigacji extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // „+" wchodzi w środek paska: połowa zakładek po lewej, połowa po prawej.
-    final polowa = (zakladki.length / 2).ceil();
+    // „+" wchodzi w środek paska: połowa zakładek po lewej, reszta po
+    // prawej (przy nieparzystej liczbie — o jedną więcej po prawej).
+    final polowa = zakladki.length ~/ 2;
 
     return Container(
       color: MotywNowoczesny.pasekNawigacji,
@@ -84,17 +85,23 @@ class _Zakladka extends StatelessWidget {
             Icon(zakladka.ikona, size: 22, color: kolor),
             const SizedBox(height: 2),
             // Rozmiar bierzemy z motywu tego wyglądu, nie z `Theme.of`:
-            // pasek ma cztery podpisy w jednym wierszu i musi się zmieścić
+            // pasek ma pięć podpisów w jednym wierszu i musi się zmieścić
             // także wtedy, gdy ekran przebudowuje się po zmianie wyglądu.
-            Text(
-              zakladka.etykieta,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                color: kolor,
-                fontFamily: MotywNowoczesny.krojPisma,
-                fontSize: MotywNowoczesny.minRozmiarTekstu,
-                fontWeight: wybrana ? FontWeight.w700 : FontWeight.w500,
+            // Na wąskim telefonie podpis raczej się zmniejszy, niż utnie.
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 2),
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  zakladka.etykieta,
+                  maxLines: 1,
+                  style: TextStyle(
+                    color: kolor,
+                    fontFamily: MotywNowoczesny.krojPisma,
+                    fontSize: MotywNowoczesny.minRozmiarTekstu,
+                    fontWeight: wybrana ? FontWeight.w700 : FontWeight.w500,
+                  ),
+                ),
               ),
             ),
           ],
