@@ -1,0 +1,219 @@
+<title>Agro Asystent — pakiet testera</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bitter:wght@600;700&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&display=swap">
+<style>
+/* Układ: ciemnozielony pasek marki z zakładkami, jedna kolumna tekstu ~68 znaków,
+   listy testów jako karty z przyciskami TAK/NIE — do obsługi kciukiem w polu. */
+:root {
+  --bg: #F4F6F0; --surface: #FFFFFF; --surface-2: #E4EEDF; --fg: #10230F; --muted: #4B5A47;
+  --accent: #1E5B2E; --accent-fg: #FFFFFF; --brand: #0A3C20; --leaf: #69A31E; --gold: #C3912E;
+  --warn-bg: #FFF1D6; --warn-border: #8A4B00; --no: #B3261E; --no-bg: #FBE4E1; --ok-bg: #DDF0C8;
+  --line: #CBD8C4; --focus: #69A31E;
+  --font-display: "Bitter", Georgia, "Times New Roman", serif;
+  --font-body: "Source Sans 3", "Segoe UI", Roboto, Arial, sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0F1A12; --surface: #16241A; --surface-2: #1F3225; --fg: #EAF0E6; --muted: #A9B8A4;
+  --accent: #7FC24A; --accent-fg: #0A1A0E; --brand: #071F12; --leaf: #8FD05C; --gold: #E0B153;
+  --warn-bg: #3A2A10; --warn-border: #E0B153; --no: #FF8A80; --no-bg: #3B1A17; --ok-bg: #22401B;
+  --line: #33493A; --focus: #8FD05C; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #0F1A12; --surface: #16241A; --surface-2: #1F3225; --fg: #EAF0E6; --muted: #A9B8A4;
+  --accent: #7FC24A; --accent-fg: #0A1A0E; --brand: #071F12; --leaf: #8FD05C; --gold: #E0B153;
+  --warn-bg: #3A2A10; --warn-border: #E0B153; --no: #FF8A80; --no-bg: #3B1A17; --ok-bg: #22401B;
+  --line: #33493A; --focus: #8FD05C; color-scheme: dark }
+
+* { box-sizing: border-box }
+body { background: var(--bg); color: var(--fg); font: 18px/1.5 var(--font-body); margin: 0 }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--brand) }
+a { color: var(--accent); text-decoration-thickness: 1px; word-break: break-word }
+code { font: 0.92em/1.3 ui-monospace, Consolas, monospace; background: var(--surface-2); padding: 0 .3em; border-radius: 4px }
+pre.kod { font: 15px/1.45 ui-monospace, Consolas, monospace; background: var(--surface-2); padding: 12px 14px; border-radius: 8px; overflow-x: auto; white-space: pre-wrap }
+h1, h2, h3, h4 { font-family: var(--font-display); line-height: 1.2; text-wrap: balance; margin: 1.6em 0 .5em }
+h1 { font-size: 2rem; margin-top: .4em } h2 { font-size: 1.5rem } h3 { font-size: 1.2rem } h4 { font-size: 1.05rem }
+p, li { max-width: 68ch } ul, ol { padding-left: 1.3em } li { margin: .25em 0 }
+blockquote { margin: 1em 0; padding: 10px 16px; background: var(--warn-bg); border-left: 5px solid var(--warn-border); border-radius: 0 8px 8px 0 }
+blockquote p { margin: .4em 0 }
+.tabela-wrap { overflow-x: auto; margin: 1em 0 }
+table { border-collapse: collapse; width: 100%; font-size: .95em }
+th, td { text-align: left; vertical-align: top; padding: 8px 10px; border-bottom: 1px solid var(--line) }
+th { font-weight: 700; background: var(--surface-2) }
+strong { font-weight: 700 }
+
+header.pasek { background: var(--brand); color: #fff; position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5 }
+.pasek-wnetrze { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 12px 0; max-width: 980px; margin: 0 auto }
+.marka { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap }
+.marka .nazwa { font-family: var(--font-display); font-weight: 700; font-size: 1.25rem; color: #fff }
+.marka .beta { font-size: .85rem; letter-spacing: .06em; text-transform: uppercase; color: var(--gold); font-weight: 600 }
+nav.zakladki { display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none; margin-top: 8px; -webkit-overflow-scrolling: touch }
+nav.zakladki::-webkit-scrollbar { display: none }
+nav.zakladki button { flex: 0 0 auto; background: transparent; color: #DCE8D6; border: 0; border-bottom: 3px solid transparent; padding: 10px 12px; font: 600 1rem var(--font-body); cursor: pointer; min-height: 48px; white-space: nowrap }
+nav.zakladki button[aria-selected="true"] { color: #fff; border-bottom-color: var(--leaf) }
+nav.zakladki button:focus-visible { outline: 3px solid var(--focus); outline-offset: -3px }
+
+main { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 8px 64px; max-width: 980px; margin: 0 auto }
+section[hidden] { display: none }
+
+/* Plan testów */
+.prowadzenie { background: var(--surface-2); padding: 12px 16px; border-radius: 10px; max-width: none }
+.postep { font-weight: 700; margin: 12px 0; font-variant-numeric: tabular-nums }
+.pola-testera { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin: 12px 0 }
+.pola-testera label, label.pyt { display: flex; flex-direction: column; gap: 4px; font-size: .95rem; color: var(--muted); font-weight: 600 }
+input[type="text"], textarea { font: 18px/1.4 var(--font-body); color: var(--fg); background: var(--surface); border: 1.5px solid var(--line); border-radius: 8px; padding: 10px 12px; width: 100%; min-width: 0 }
+input:focus-visible, textarea:focus-visible, button:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px }
+.przypadek { background: var(--surface); border: 1.5px solid var(--line); border-radius: 12px; padding: 14px 16px; margin: 12px 0; display: grid; gap: 10px }
+.przypadek.wazny { border-left: 6px solid var(--leaf) }
+.przypadek[data-wynik="TAK"] { background: var(--ok-bg) }
+.przypadek[data-wynik="NIE"] { background: var(--no-bg) }
+.p-naglowek { display: flex; gap: 10px; align-items: flex-start }
+.nr { font: 700 1rem var(--font-display); background: var(--accent); color: var(--accent-fg); border-radius: 6px; padding: 2px 8px; flex: 0 0 auto; margin-top: 2px }
+.gwiazdka { color: var(--gold); flex: 0 0 auto; margin-top: 2px }
+.p-tresc { min-width: 0 } .p-tresc p { margin: 0 0 6px; max-width: none }
+.etykieta { display: block; font-size: .8rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 700 }
+.p-wynik { display: flex; gap: 8px; flex-wrap: wrap }
+.p-wynik .w { min-height: 48px; min-width: 96px; padding: 8px 16px; font: 700 1.05rem var(--font-body); border-radius: 10px; border: 2px solid var(--line); background: var(--surface); color: var(--fg); cursor: pointer }
+.p-wynik .w.pom { font-weight: 600 }
+.p-wynik .w[aria-pressed="true"].tak { background: var(--accent); color: var(--accent-fg); border-color: var(--accent) }
+.p-wynik .w[aria-pressed="true"].nie { background: var(--no); color: #fff; border-color: var(--no) }
+.p-wynik .w[aria-pressed="true"].pom { background: var(--muted); color: var(--bg); border-color: var(--muted) }
+.uwagi { resize: vertical }
+.dzialania { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-top: 20px }
+button.glowny, button.drugi, .potwierdz button { min-height: 48px; padding: 10px 20px; border-radius: 10px; font: 700 1.05rem var(--font-body); cursor: pointer }
+button.glowny { background: var(--accent); color: var(--accent-fg); border: 2px solid var(--accent) }
+button.drugi, .potwierdz button { background: var(--surface); color: var(--fg); border: 2px solid var(--line) }
+.info { color: var(--muted); font-weight: 600 }
+.zapas { font-family: ui-monospace, Consolas, monospace; font-size: 15px }
+@media (prefers-reduced-motion: no-preference) { .przypadek { transition: background .2s } }
+</style>
+
+<header class="pasek">
+  <div class="pasek-wnetrze">
+    <div class="marka"><span class="nazwa">Agro Asystent</span><span class="beta">pakiet testera · beta 1</span></div>
+    <nav class="zakladki" role="tablist" aria-label="Części pakietu">
+      <button type="button" role="tab" data-zakladka="start" aria-selected="true">Czytaj najpierw</button>
+      <button type="button" role="tab" data-zakladka="telefon" aria-selected="false">Telefon</button>
+      <button type="button" role="tab" data-zakladka="komputer" aria-selected="false">Komputer</button>
+      <button type="button" role="tab" data-zakladka="testy-telefon" aria-selected="false">Testy: telefon</button>
+      <button type="button" role="tab" data-zakladka="testy-komputer" aria-selected="false">Testy: komputer</button>
+      <button type="button" role="tab" data-zakladka="zgloszenie" aria-selected="false">Zgłoś błąd</button>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section id="s-start" data-sekcja="start">{{START}}</section>
+  <section id="s-telefon" data-sekcja="telefon" hidden>{{TELEFON}}</section>
+  <section id="s-komputer" data-sekcja="komputer" hidden>{{KOMPUTER}}</section>
+  <section id="s-testy-telefon" data-sekcja="testy-telefon" hidden>{{PLAN_TELEFON}}</section>
+  <section id="s-testy-komputer" data-sekcja="testy-komputer" hidden>{{PLAN_KOMPUTER}}</section>
+  <section id="s-zgloszenie" data-sekcja="zgloszenie" hidden>{{ZGLOSZENIE}}</section>
+</main>
+
+<script>
+(function () {
+  var DANE = {{DANE}};
+  var KLUCZ = 'agro-tester-v1';
+  var stan = { telefon: { pola: {}, wyniki: {}, uwagi: {}, koncowe: {} }, komputer: { pola: {}, wyniki: {}, uwagi: {}, koncowe: {} } };
+  try { var z = JSON.parse(localStorage.getItem(KLUCZ) || 'null'); if (z && z.telefon && z.komputer) stan = z; } catch (e) {}
+  function zapisz() { try { localStorage.setItem(KLUCZ, JSON.stringify(stan)); } catch (e) {} }
+
+  // Zakładki
+  var zakladki = Array.prototype.slice.call(document.querySelectorAll('nav.zakladki button'));
+  var sekcje = Array.prototype.slice.call(document.querySelectorAll('main section'));
+  function pokaz(nazwa, przewin) {
+    if (!sekcje.some(function (s) { return s.dataset.sekcja === nazwa; })) nazwa = 'start';
+    sekcje.forEach(function (s) { s.hidden = s.dataset.sekcja !== nazwa; });
+    zakladki.forEach(function (b) { b.setAttribute('aria-selected', String(b.dataset.zakladka === nazwa)); if (b.dataset.zakladka === nazwa && b.scrollIntoView) b.scrollIntoView({ block: 'nearest', inline: 'center' }); });
+    if (przewin) window.scrollTo(0, 0);
+    try { if (location.hash !== '#' + nazwa) history.replaceState(null, '', '#' + nazwa); } catch (e) {}
+  }
+  document.addEventListener('click', function (e) {
+    var cel = e.target.closest('[data-zakladka]');
+    if (cel) { e.preventDefault(); pokaz(cel.dataset.zakladka, true); }
+  });
+  window.addEventListener('hashchange', function () { pokaz(location.hash.replace('#', ''), true); });
+  pokaz((location.hash || '#start').replace('#', ''), false);
+
+  // Plany testów
+  function odswiezPostep(plan) {
+    var d = DANE[plan], w = stan[plan].wyniki, ile = 0, nie = 0;
+    Object.keys(w).forEach(function (k) { if (w[k]) { ile++; if (w[k] === 'NIE') nie++; } });
+    var el = document.getElementById('postep-' + plan);
+    if (el) el.textContent = 'Zakreślono ' + ile + ' z ' + d.razem + (nie ? ' · NIE: ' + nie : '');
+  }
+  function odtworz(plan) {
+    var s = stan[plan];
+    Object.keys(s.pola).forEach(function (k) { var el = document.getElementById('pole-' + plan + '-' + k); if (el) el.value = s.pola[k]; });
+    Object.keys(s.koncowe).forEach(function (k) { var el = document.getElementById('k-' + plan + '-' + k); if (el) el.value = s.koncowe[k]; });
+    document.querySelectorAll('.przypadek[data-plan="' + plan + '"]').forEach(function (art) {
+      var nr = art.dataset.nr, wynik = s.wyniki[nr] || '';
+      art.dataset.wynik = wynik;
+      art.querySelectorAll('.w').forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.w === wynik)); });
+      var u = art.querySelector('.uwagi'); if (u && s.uwagi[nr]) u.value = s.uwagi[nr];
+    });
+    odswiezPostep(plan);
+  }
+  ['telefon', 'komputer'].forEach(odtworz);
+
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest('.w');
+    if (b) {
+      var art = b.closest('.przypadek'), plan = art.dataset.plan, nr = art.dataset.nr;
+      var nowy = stan[plan].wyniki[nr] === b.dataset.w ? '' : b.dataset.w;
+      stan[plan].wyniki[nr] = nowy; zapisz();
+      art.dataset.wynik = nowy;
+      art.querySelectorAll('.w').forEach(function (x) { x.setAttribute('aria-pressed', String(x.dataset.w === nowy)); });
+      odswiezPostep(plan);
+      if (nowy === 'NIE') { var u = art.querySelector('.uwagi'); if (u && !u.value) u.focus(); }
+      return;
+    }
+    var k = e.target.closest('[data-kopiuj]'); if (k) { kopiuj(k.dataset.kopiuj); return; }
+    var w = e.target.closest('[data-wyczysc]'); if (w) { document.getElementById('potwierdz-' + w.dataset.wyczysc).hidden = false; return; }
+    var wn = e.target.closest('[data-wyczysc-nie]'); if (wn) { document.getElementById('potwierdz-' + wn.dataset.wyczyscNie).hidden = true; return; }
+    var wt = e.target.closest('[data-wyczysc-tak]');
+    if (wt) {
+      var plan = wt.dataset.wyczyscTak;
+      stan[plan] = { pola: {}, wyniki: {}, uwagi: {}, koncowe: {} }; zapisz();
+      document.querySelectorAll('#s-testy-' + plan + ' input, #s-testy-' + plan + ' textarea').forEach(function (el) { if (!el.classList.contains('zapas')) el.value = ''; });
+      odtworz(plan);
+      document.getElementById('potwierdz-' + plan).hidden = true;
+      document.getElementById('info-' + plan).textContent = 'Wyczyszczono.';
+    }
+  });
+  document.addEventListener('input', function (e) {
+    var el = e.target;
+    if (el.dataset && el.dataset.pole) { stan[el.dataset.plan].pola[el.dataset.pole] = el.value; zapisz(); return; }
+    if (el.dataset && el.dataset.koncowe) { stan[el.dataset.plan].koncowe[el.dataset.koncowe] = el.value; zapisz(); return; }
+    if (el.classList.contains('uwagi')) { var art = el.closest('.przypadek'); stan[art.dataset.plan].uwagi[art.dataset.nr] = el.value; zapisz(); }
+  });
+
+  function tekstWynikow(plan) {
+    var d = DANE[plan], s = stan[plan], linie = ['Agro Asystent — ' + d.tytul];
+    d.pola.forEach(function (k) {
+      var el = document.getElementById('pole-' + plan + '-' + k);
+      var etyk = el ? el.parentNode.firstChild.textContent.trim() : k;
+      linie.push(etyk + ': ' + (s.pola[k] || '—'));
+    });
+    linie.push('');
+    var ile = 0, nie = 0;
+    document.querySelectorAll('.przypadek[data-plan="' + plan + '"]').forEach(function (art) {
+      var nr = art.dataset.nr, w = s.wyniki[nr] || '', u = (s.uwagi[nr] || '').trim();
+      if (!w && !u) return;
+      if (w) { ile++; if (w === 'NIE') nie++; }
+      linie.push(nr + ': ' + (w || '(bez wyniku)') + (u ? ' — ' + u.replace(/\s+/g, ' ') : ''));
+    });
+    linie.push('');
+    linie.push('Zakreślono ' + ile + ' z ' + d.razem + ', NIE: ' + nie);
+    d.koncowe.forEach(function (p, i) { var o = (s.koncowe[i + 1] || '').trim(); if (o) linie.push(p + ' ' + o.replace(/\s+/g, ' ')); });
+    return linie.join('\n');
+  }
+  function kopiuj(plan) {
+    var tekst = tekstWynikow(plan), info = document.getElementById('info-' + plan), zapas = document.getElementById('zapas-' + plan);
+    zapas.value = tekst;
+    function awaryjnie() { zapas.hidden = false; zapas.focus(); zapas.select(); info.textContent = 'Nie udało się skopiować samo — zaznacz tekst niżej i skopiuj go ręcznie.'; }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(tekst).then(function () { info.textContent = 'Skopiowano. Wklej tekst w wiadomości (przytrzymaj pole i wybierz „Wklej").'; zapas.hidden = false; }, awaryjnie);
+    } else awaryjnie();
+  }
+})();
+</script>
