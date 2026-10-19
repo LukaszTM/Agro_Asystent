@@ -349,3 +349,11 @@ Kolejność do ustalenia; żadne nie zmienia decyzji z pkt 2 ani reguł z pkt 11
    data z kalendarza wstecz od dnia bieżącego (bez dat z przyszłości) — rolnik
    wpisuje prace po fakcie. Na komputerze data z kalendarza już jest (okno
    „Dodaj zabieg").
+4. **Notatki rolnika ze zdjęciem i przypomnieniem.** Osobny moduł
+   (`lib/funkcje/notatki/`): notatka z datą zapisu, treścią i opcjonalnym
+   zdjęciem (plik w katalogu danych aplikacji, w bazie tylko ścieżka — kopia
+   danych musi go objąć), z możliwością ustawienia przypomnienia
+   jednorazowego albo cyklicznego (co tydzień, co miesiąc, co rok) przez
+   istniejącą `UslugaPrzypomnien`. Notatki są dopisywane jak wpisy
+   (`historia_zmian`), eksport razem z kopią. Na komputerze podgląd i edycja
+   tekstu; zdjęcie robi telefon. Nigdy za opłatą.
