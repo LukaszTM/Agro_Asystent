@@ -10,7 +10,7 @@ import 'package:flutter_test/flutter_test.dart';
 /// prowadzą do ekranów zastępczych. Baza w testach ekranu głównego nie jest
 /// potrzebna — ścieżkę wpisu sprawdza osobny test.
 Widget aplikacjaBezBazy() =>
-    AplikacjaAgroAsystent(wlasneUruchomienie: () => Completer<Uslugi>().future);
+    AplikacjaMojLan(wlasneUruchomienie: () => Completer<Uslugi>().future);
 
 void main() {
   group('ekran główny (wygląd prosty)', () {
@@ -79,7 +79,7 @@ void main() {
       final logo = tester.widget<Image>(
         find.descendant(of: find.byType(AppBar), matching: find.byType(Image)),
       );
-      expect((logo.image as AssetImage).assetName, Marka.logo);
+      expect((logo.image as AssetImage).assetName, Marka.znak);
     });
 
     testWidgets('dotknięcie kafelka otwiera ekran z informacją, co będzie', (

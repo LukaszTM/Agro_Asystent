@@ -168,10 +168,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(wyjscie.udostepnione, hasLength(1));
-    expect(
-      wyjscie.udostepnione.single.nazwa,
-      startsWith('agro-asystent-kopia'),
-    );
+    expect(wyjscie.udostepnione.single.nazwa, startsWith('moj-lan-kopia'));
     expect(wyjscie.udostepnione.single.nazwa, endsWith('.zip'));
     expect(wyjscie.udostepnione.single.typMime, 'application/zip');
     expect(find.textContaining('Kopia gotowa'), findsOneWidget);
@@ -349,7 +346,7 @@ class _ZrodloKopii implements ZrodloPliku {
     final dane = kopia;
     return dane == null
         ? null
-        : WybranyPlik(nazwa: 'agro-asystent-kopia.zip', bajty: dane);
+        : WybranyPlik(nazwa: 'moj-lan-kopia.zip', bajty: dane);
   }
 }
 

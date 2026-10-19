@@ -199,7 +199,7 @@ class _EkranGospodarstwaState extends State<EkranGospodarstwa> {
               const SizedBox(height: MotywProsty.odstep),
               // Numer wersji przyda się przy zgłaszaniu usterek w czasie
               // testów — inaczej nie wiadomo, którego pliku dotyczy uwaga.
-              const WierszWersji(przed: 'Agro Asystent • '),
+              const WierszWersji(przed: 'Mój Łan • '),
               if (dane.lista.length > 1) ...[
                 const SizedBox(height: MotywProsty.odstep),
                 Text(

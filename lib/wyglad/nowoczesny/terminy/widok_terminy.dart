@@ -83,7 +83,7 @@ class _WidokTerminyState extends State<WidokTerminy> {
             const SnackBar(
               content: Text(
                 'Telefon nie pozwala na powiadomienia. Włącz je w '
-                'ustawieniach telefonu dla Agro Asystenta.',
+                'ustawieniach telefonu dla aplikacji Mój Łan.',
               ),
             ),
           );

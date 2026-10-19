@@ -1,4 +1,4 @@
-# Agro Asystent — wersja testowa na telefon
+# Mój Łan — wersja testowa na telefon
 
 > **Pełny pakiet dla testerów** (instrukcje obsługi telefonu i komputera,
 > plany testów do zakreślania TAK/NIE, wzór zgłoszenia) leży w katalogu
@@ -18,7 +18,7 @@ Na końcu jest gotowa wiadomość do skopiowania.
    **https://github.com/LukaszTM/Agro_Asystent/releases/tag/apk-test**
    (na telefonie pliki bywają schowane pod napisem **Assets** — trzeba go
    rozwinąć).
-2. Naciśnij plik z dopiskiem **`-arm64`** — `agro-asystent-0.2.0+2-arm64.apk`.
+2. Naciśnij plik z dopiskiem **`-arm64`** — `moj-lan-0.2.0+2-arm64.apk`.
    Waży 39 MB i wchodzi na telefony z ostatnich kilku lat. Obok leży plik
    bez dopiska: ten sam program, ale 101 MB; bierz go tylko wtedy, gdy
    mniejszy nie chce się zainstalować.
@@ -83,7 +83,7 @@ pobieraniu granic działki, pogody i wiadomości.
 
 1. Co robiłeś (np. „dodawałem oprysk na polu Za stodołą").
 2. Co się stało i czego się spodziewałeś.
-3. Numer wersji — stoi na dole ekranu Ustawienia („Agro Asystent •
+3. Numer wersji — stoi na dole ekranu Ustawienia („Mój Łan •
    Wersja 0.2.0").
 4. Model telefonu, jeśli łatwo go sprawdzić.
 

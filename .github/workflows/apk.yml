@@ -116,9 +116,9 @@ jobs:
       - name: Nazwy plików z numerem wersji
         run: |
           wersja=$(grep '^version:' pubspec.yaml | cut -d' ' -f2)
-          plik="agro-asystent-$wersja.apk"
+          plik="moj-lan-$wersja.apk"
           cp build/app/outputs/flutter-apk/app-release.apk "$plik"
-          maly="agro-asystent-$wersja-arm64.apk"
+          maly="moj-lan-$wersja-arm64.apk"
           cp build/app/outputs/flutter-apk/app-arm64-v8a-release.apk "$maly"
           ls -lh "$plik" "$maly"
           echo "plik=$plik" >> "$GITHUB_ENV"
@@ -126,7 +126,7 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: agro-asystent-apk
+          name: moj-lan-apk
           path: |
             ${{ env.plik }}
             ${{ env.maly }}
@@ -152,7 +152,7 @@ jobs:
           gh release create apk-test \
             --target "$GITHUB_SHA" \
             --prerelease \
-            --title "Agro Asystent — APK do testów" \
+            --title "Mój Łan — APK do testów" \
             --notes "$opis" || true
           gh release upload apk-test "$plik" "$maly" --clobber
 

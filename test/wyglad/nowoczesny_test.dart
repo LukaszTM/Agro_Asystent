@@ -1026,7 +1026,7 @@ void main() {
       tester.view.devicePixelRatio = 1;
       addTearDown(tester.view.reset);
 
-      await tester.pumpWidget(AplikacjaAgroAsystent(uslugi: uslugi));
+      await tester.pumpWidget(AplikacjaMojLan(uslugi: uslugi));
       await tester.pumpAndSettle();
 
       expect(find.text('Start'), findsOneWidget, reason: 'dolny pasek');
@@ -1040,7 +1040,7 @@ void main() {
       tester.view.devicePixelRatio = 1;
       addTearDown(tester.view.reset);
 
-      await tester.pumpWidget(AplikacjaAgroAsystent(uslugi: uslugi));
+      await tester.pumpWidget(AplikacjaMojLan(uslugi: uslugi));
       await tester.pumpAndSettle();
 
       expect(find.text('Dodaj zabieg'), findsOneWidget);

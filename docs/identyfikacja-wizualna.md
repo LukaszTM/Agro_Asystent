@@ -9,11 +9,11 @@ wydruków dla kontroli, repozytorium i strony w sklepie.
 
 | Plik | Co zawiera | Z czego powstaje |
 | --- | --- | --- |
-| `assets/logo/agro_asystent.png` (1331 × 1331) | znak **i nazwa** | ekran powitalny, pasek ekranu głównego, README |
-| `assets/logo/agro_asystent_znak.png` (1238 × 1238) | **sam znak** | ikony Androida i Windows |
+| `assets/logo/moj_lan.png` (1254 × 1254) | znak **i nazwa** | ekran powitalny, README |
+| `assets/logo/moj_lan_znak.png` (1254 × 1254) | **sam znak** | ikony Androida i Windows, pasek ekranu głównego obok nazwy |
 
 Oba mają przezroczyste tło. Ikony robimy ze znaku, bo w kwadracie 48 × 48 px
-napis „Agro Asystent" zlewa się w nieczytelną kreskę.
+napis „Mój Łan" zlewa się w nieczytelną kreskę.
 
 | | |
 | --- | --- |
@@ -69,9 +69,9 @@ Wyłuskane z pliku logo, nie dobrane z pamięci:
 
 | Kolor | Kod | Skąd w logo | Do czego |
 | --- | --- | --- | --- |
-| Ciemna zieleń | `#0A3C20` | litera „A" i napis | główny kolor marki, nagłówki wydruków |
-| Zieleń liścia | `#69A31E` | liść | akcent, podkreślenia |
-| Złoto | `#C3912E` | pas pola | wyróżnienia, oszczędnie |
+| Ciemna zieleń | `#085A30` | pasy pola | główny kolor marki, nagłówki wydruków |
+| Zieleń liścia | `#78B81B` | liść | akcent, podkreślenia |
+| Złoto | `#F8BA1E` | słońce i pas pola | wyróżnienia, oszczędnie |
 | Biel | `#FFFFFF` | karta pod logo | tło ikony aplikacji |
 
 ### Tło ikony: biel
@@ -98,9 +98,10 @@ w `lib/wyglad/*/motyw.dart` kolory ekranów, w `Marka` kolory znaku.
 
 - ikona aplikacji na telefonie i na pulpicie Windows — **sam znak**,
 - ekran powitalny (zanim aplikacja się wczyta) — pełne logo z nazwą,
-- pasek ekranu głównego — pełne logo z nazwą,
+- pasek ekranu głównego — sam znak obok nazwy (pełne logo w 40 px miałoby
+  nazwę dwa razy: w obrazku i w tekście),
 - stopka wydruków i eksportów — **nazwą**, nie znakiem graficznym:
-  „Sporządzono … w Agro Asystencie (słownik reguł …)",
+  „Sporządzono … w aplikacji Mój Łan (słownik reguł …)",
 - `README.md` repozytorium.
 
 **Nie ma go:**
@@ -124,5 +125,13 @@ w `lib/wyglad/*/motyw.dart` kolory ekranów, w `Marka` kolory znaku.
 
 ## Nazwa
 
-**Agro Asystent** — tak samo w aplikacji, na wydrukach, w sklepie i w stopce
+**Mój Łan** — tak samo w aplikacji, na wydrukach, w sklepie i w stopce
 dokumentów. W kodzie: `Marka.nazwa`, żeby nie rozjechała się w pięciu miejscach.
+
+Do 19 października 2026 r. projekt nazywał się „Agro Asystent". Nazwa została
+zmieniona, bo od 2009 r. istnieje komercyjny program **AgroAsystent** firmy
+AgroPower dla gospodarstw roślinnych — ten sam segment, prawie ta sama nazwa
+(ADR-0009). Identyfikator pakietu Androida to `pl.mojlan.app`, program na
+Windows to `moj_lan.exe`; w nazwach bez polskich znaków piszemy „moj-lan".
+Nazwa repozytorium i pakietu Dart (`agro_asystent`) zostają — to nazwy
+techniczne, których rolnik nie widzi.

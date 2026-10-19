@@ -9,7 +9,7 @@
 
 1. Otwórz w Chrome: **https://github.com/LukaszTM/Agro_Asystent/releases/tag/apk-test**
    (na telefonie pliki bywają schowane pod napisem **Assets** — rozwiń go).
-2. Naciśnij plik z dopiskiem **`-arm64`**: `agro-asystent-0.2.0+2-arm64.apk`
+2. Naciśnij plik z dopiskiem **`-arm64`**: `moj-lan-0.2.0+2-arm64.apk`
    (39 MB). Obok leży plik bez dopiska (101 MB) — ten sam program, bierz go
    tylko wtedy, gdy mniejszy nie chce się zainstalować.
 3. Android zapyta, czy zezwolić na instalację z tego miejsca („nieznane
@@ -199,5 +199,5 @@ zdaniem i nie blokuje reszty.
 
 ## 5. Numer wersji
 
-Ustawienia → wiersz „Agro Asystent • Wersja 0.2.0 (budowa 2)". Podaj go
+Ustawienia → wiersz „Mój Łan • Wersja 0.2.0 (budowa 2)". Podaj go
 w każdym zgłoszeniu.

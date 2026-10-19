@@ -10,8 +10,8 @@ import 'package:package_info_plus/package_info_plus.dart';
 void main() {
   testWidgets('pokazuje numer wersji z paczki aplikacji', (tester) async {
     PackageInfo.setMockInitialValues(
-      appName: 'Agro Asystent',
-      packageName: 'pl.agroasystent.agro_asystent',
+      appName: 'Mój Łan',
+      packageName: 'pl.mojlan.app',
       version: '0.2.0',
       buildNumber: '2',
       buildSignature: '',
@@ -19,15 +19,12 @@ void main() {
 
     await tester.pumpWidget(
       const MaterialApp(
-        home: Scaffold(body: WierszWersji(przed: 'Agro Asystent • ')),
+        home: Scaffold(body: WierszWersji(przed: 'Mój Łan • ')),
       ),
     );
     await tester.pumpAndSettle();
 
-    expect(
-      find.text('Agro Asystent • Wersja 0.2.0 (budowa 2)'),
-      findsOneWidget,
-    );
+    expect(find.text('Mój Łan • Wersja 0.2.0 (budowa 2)'), findsOneWidget);
   });
 
   test('bez numeru budowy zostaje sama wersja', () {

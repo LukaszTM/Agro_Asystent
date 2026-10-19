@@ -4,11 +4,11 @@
 
 1. Otwórz w przeglądarce:
    **https://github.com/LukaszTM/Agro_Asystent/releases/tag/pc-test**
-2. Pobierz plik `agro-asystent-windows-0.2.0+2.zip` (20 MB).
+2. Pobierz plik `moj-lan-windows-0.2.0+2.zip` (20 MB).
 3. **Rozpakuj cały folder** (prawy przycisk → Wyodrębnij wszystko). Nie
-   uruchamiaj programu z wnętrza archiwum — obok `agro_asystent.exe` leżą
+   uruchamiaj programu z wnętrza archiwum — obok `moj_lan.exe` leżą
    biblioteki, bez których program nie wstanie.
-4. Uruchom `agro_asystent.exe`.
+4. Uruchom `moj_lan.exe`.
 5. Windows pokaże niebieskie okno SmartScreen („system Windows ochronił ten
    komputer"), bo program nie ma jeszcze podpisu wydawcy. Kliknij **Więcej
    informacji** → **Uruchom mimo to**. To znany stan wersji testowej.
@@ -121,5 +121,5 @@ policzyć); magazyn trzyma stany środków i nawozów.
 
 ## 4. Numer wersji
 
-Ustawienia → karta „O programie" → „Agro Asystent • Wersja 0.2.0 (budowa
+Ustawienia → karta „O programie" → „Mój Łan • Wersja 0.2.0 (budowa
 2)". Podaj go w zgłoszeniu.

@@ -6,7 +6,7 @@
 # commicie, bo maszyny z Windows liczą się w darmowym limicie GitHuba
 # podwójnie, a budżet projektu to zero.
 #
-# Wynik to katalog z plikiem agro_asystent.exe i bibliotekami. Przy
+# Wynik to katalog z plikiem moj_lan.exe i bibliotekami. Przy
 # znaczniku `pc-*` powstaje z niego wydanie (Releases) ze stałym linkiem
 # do pobrania; przy ręcznym uruchomieniu — artefakt .zip na 14 dni.
 # Program nie jest podpisany, więc Windows pokaże ostrzeżenie SmartScreen;
@@ -59,11 +59,11 @@ jobs:
         shell: pwsh
         run: |
           New-Item -ItemType Directory -Force wydanie | Out-Null
-          Compress-Archive -Path build/windows/x64/runner/Release/* -DestinationPath wydanie/agro-asystent-windows.zip
+          Compress-Archive -Path build/windows/x64/runner/Release/* -DestinationPath wydanie/moj-lan-windows.zip
 
       - uses: actions/upload-artifact@v4
         with:
-          name: agro-asystent-windows
+          name: moj-lan-windows
           path: build/windows/x64/runner/Release/
           retention-days: 14
 
@@ -79,17 +79,17 @@ jobs:
           # odświeża jedno wspólne wydanie „pc-test".
           if [[ "$GITHUB_REF" == refs/tags/pc-* ]]; then
             nazwa="$GITHUB_REF_NAME"
-            tytul="Agro Asystent na Windows $GITHUB_REF_NAME"
+            tytul="Mój Łan na Windows $GITHUB_REF_NAME"
             przedwydanie=""
           else
             nazwa="pc-test"
-            tytul="Agro Asystent na Windows — wersja testowa"
+            tytul="Mój Łan na Windows — wersja testowa"
             przedwydanie="--prerelease"
           fi
 
           wersja=$(grep '^version:' pubspec.yaml | cut -d' ' -f2)
-          plik="agro-asystent-windows-$wersja.zip"
-          mv wydanie/agro-asystent-windows.zip "$plik"
+          plik="moj-lan-windows-$wersja.zip"
+          mv wydanie/moj-lan-windows.zip "$plik"
 
           gh release create "$nazwa" \
             --target "$GITHUB_SHA" \

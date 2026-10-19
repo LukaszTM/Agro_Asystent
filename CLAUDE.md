@@ -1,4 +1,4 @@
-# CLAUDE.md — zasady pracy nad Agro Asystentem
+# CLAUDE.md — zasady pracy nad aplikacją Mój Łan
 
 Aplikacja mobilna (Android, potem Windows) prowadząca dokumentację gospodarstwa wymaganą
 przez ARiMR i inspekcje. Pełny plan: `docs/PLAN.md` — ten plik jest jego skrótem
@@ -62,7 +62,7 @@ Miara powodzenia: **wpis zabiegu w najwyżej pięciu dotknięciach, bez klawiatu
   w ekranach.
 - **Identyfikacja wizualna**: logo i kolory marki tylko z `lib/rdzen/marka/marka.dart`,
   pliki wariantów wytwarza `tools/zbuduj_ikony.py` z jednego źródła
-  (`assets/logo/agro_asystent.png`). Nie rysuj wariantów logo ręcznie i nie myl
+  (`assets/logo/moj_lan.png`). Nie rysuj wariantów logo ręcznie i nie myl
   kolorów marki z kolorami ekranów — zasady w `docs/identyfikacja-wizualna.md`.
 
 ## Nazewnictwo

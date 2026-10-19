@@ -83,7 +83,7 @@ abstract final class WydrukPdf {
         mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
         children: [
           pw.Text(
-            'Sporządzono ${_data(dokument.sporzadzono)} w Agro Asystencie '
+            'Sporządzono ${_data(dokument.sporzadzono)} w aplikacji Mój Łan '
             '(słownik reguł ${dokument.wersjaRegul})',
             style: const pw.TextStyle(fontSize: 7, color: PdfColors.grey700),
           ),

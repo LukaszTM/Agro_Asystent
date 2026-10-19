@@ -142,7 +142,7 @@ sekcje['zgloszenie'] = md_do_html((ZRODLO / '05-zgloszenie-bledu.md').read_text(
 plan_t, dane_t = plan('03-plan-testow-telefon.md', 'telefon')
 plan_k, dane_k = plan('04-plan-testow-komputer.md', 'komputer')
 # W sekcji „start" tabela plików odsyła do zakładek strony.
-sekcje['start'] = sekcje['start'].replace('<h1>Agro Asystent — pakiet dla testera (beta 1)</h1>', '<h1>Czytaj najpierw</h1>')
+sekcje['start'] = sekcje['start'].replace('<h1>Mój Łan — pakiet dla testera (beta 1)</h1>', '<h1>Czytaj najpierw</h1>')
 for nazwa, kotw in [('01-telefon-instalacja-i-obsluga.md', 'telefon'), ('02-komputer-instalacja-i-obsluga.md', 'komputer'),
                     ('03-plan-testow-telefon.md', 'testy-telefon'), ('04-plan-testow-komputer.md', 'testy-komputer'),
                     ('05-zgloszenie-bledu.md', 'zgloszenie')]:

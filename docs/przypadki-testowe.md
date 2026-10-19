@@ -32,7 +32,7 @@ zostają bez zmian (pola, wpisy).
 
 ### INS-04 — Numer wersji widoczny dla testera (B)
 **Kroki:** Ustawienia → zjechać na sam dół.
-**Oczekiwane:** napis „Agro Asystent • Wersja 0.2.0 (budowa 2)".
+**Oczekiwane:** napis „Mój Łan • Wersja 0.2.0 (budowa 2)".
 
 ### INS-05 — Aktualizacja na wierzch poprzedniej (A)
 **Warunki:** zainstalowana wcześniejsza wersja **podpisana tym samym
@@ -393,7 +393,7 @@ problemu — zawsze jest zdanie, co z tym zrobić.
 ## PC — program na Windows
 
 ### PC-01 — Uruchomienie z rozpakowanego folderu (A)
-**Kroki:** rozpakować paczkę → uruchomić `agro_asystent.exe` → przy
+**Kroki:** rozpakować paczkę → uruchomić `moj_lan.exe` → przy
 SmartScreenie „Więcej informacji" → „Uruchom mimo to".
 **Oczekiwane:** program wstaje w oknie 1280×720, otwiera się na Pulpicie.
 

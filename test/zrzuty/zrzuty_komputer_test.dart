@@ -42,6 +42,7 @@ import 'package:agro_asystent/rdzen/baza/migracje.dart';
 import 'package:agro_asystent/rdzen/dostep/dostep_funkcji.dart';
 import 'package:agro_asystent/rdzen/modele/zabieg.dart';
 import 'package:agro_asystent/rdzen/reguly/gminy_terminy.dart';
+import 'package:agro_asystent/rdzen/marka/marka.dart';
 import 'package:agro_asystent/rdzen/reguly/regula_prawna.dart';
 import 'package:agro_asystent/rdzen/uslugi/kopia/kopia_danych.dart';
 import 'package:agro_asystent/wyglad/komputer/ekran_glowny.dart';
@@ -368,6 +369,15 @@ void main() {
           teraz: teraz,
           zakladkaNaStart: zakladka,
         ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    // Znak marki dekoduje się poza pętlą testu — bez tego na zrzucie
+    // byłoby puste miejsce obok nazwy.
+    await tester.runAsync(
+      () => precacheImage(
+        const AssetImage(Marka.znak),
+        tester.element(find.byType(MaterialApp)),
       ),
     );
     await tester.pumpAndSettle();

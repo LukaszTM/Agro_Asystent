@@ -134,7 +134,7 @@ class _EkranGlownyNowoczesnyState extends State<EkranGlownyNowoczesny> {
               Padding(
                 padding: const EdgeInsets.only(right: 8),
                 child: Image.asset(
-                  Marka.logo,
+                  Marka.znak,
                   height: 28,
                   // Logo jest znakiem aplikacji, nie treścią ekranu.
                   excludeFromSemantics: true,

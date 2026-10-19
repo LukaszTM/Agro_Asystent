@@ -40,7 +40,7 @@ class KlientPogody {
   final String przedstawienie;
 
   static const String domyslnePrzedstawienie =
-      'AgroAsystent/0.1 (github.com/LukaszTM/Agro_Asystent)';
+      'MojLan/0.1 (github.com/LukaszTM/Agro_Asystent)';
 
   static const String nazwaZrodla = 'MET Norway (CC BY 4.0)';
 

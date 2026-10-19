@@ -89,13 +89,13 @@ BEGIN
     BEGIN
         BLOCK "040904e4"
         BEGIN
-            VALUE "CompanyName", "pl.agroasystent" "\0"
-            VALUE "FileDescription", "agro_asystent" "\0"
+            VALUE "CompanyName", "pl.mojlan" "\0"
+            VALUE "FileDescription", "Moj Lan" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "agro_asystent" "\0"
-            VALUE "LegalCopyright", "Copyright (C) 2026 pl.agroasystent. All rights reserved." "\0"
-            VALUE "OriginalFilename", "agro_asystent.exe" "\0"
-            VALUE "ProductName", "agro_asystent" "\0"
+            VALUE "InternalName", "moj_lan" "\0"
+            VALUE "LegalCopyright", "Copyright (C) 2026 pl.mojlan. All rights reserved." "\0"
+            VALUE "OriginalFilename", "moj_lan.exe" "\0"
+            VALUE "ProductName", "Moj Lan" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

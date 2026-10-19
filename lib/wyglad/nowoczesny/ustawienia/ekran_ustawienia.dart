@@ -232,7 +232,7 @@ class _EkranUstawieniaState extends State<EkranUstawienia> {
               tresc: 'To nie jest kopia z tej aplikacji.',
               coZrobic:
                   'Wybierz plik o nazwie zaczynającej się od '
-                  '„agro-asystent-kopia".',
+                  '„moj-lan-kopia".',
             ),
             BladKopii.nowszaWersja => (
               tresc: 'Kopia pochodzi z nowszej wersji aplikacji.',
@@ -282,7 +282,7 @@ class _EkranUstawieniaState extends State<EkranUstawienia> {
               tresc: 'To nie jest kopia z tej aplikacji.',
               coZrobic:
                   'Wybierz plik o nazwie zaczynającej się od '
-                  '„agro-asystent-kopia".',
+                  '„moj-lan-kopia".',
             ),
             BladKopii.nowszaWersja => (
               tresc: 'Plik pochodzi z nowszej wersji aplikacji.',
@@ -576,7 +576,7 @@ class _EkranUstawieniaState extends State<EkranUstawienia> {
               const SizedBox(height: MotywNowoczesny.odstep),
               // Numer wersji przyda się przy zgłaszaniu usterek w czasie
               // testów — inaczej nie wiadomo, którego pliku dotyczy uwaga.
-              const WierszWersji(przed: 'Agro Asystent • '),
+              const WierszWersji(przed: 'Mój Łan • '),
             ],
           );
         },

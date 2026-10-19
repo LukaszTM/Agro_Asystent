@@ -1,4 +1,4 @@
-package pl.agroasystent.agro_asystent
+package pl.mojlan.app
 
 import io.flutter.embedding.android.FlutterActivity
 

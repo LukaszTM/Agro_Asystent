@@ -1,4 +1,4 @@
-# Agro Asystent — pakiet dla testera (beta 1)
+# Mój Łan — pakiet dla testera (beta 1)
 
 Dziękujemy, że chcesz wypróbować program. Ten pakiet to wszystko, czego
 potrzebujesz: jak zainstalować, jak obsługiwać, co sprawdzić i jak dać znać,
@@ -6,7 +6,7 @@ potrzebujesz: jak zainstalować, jak obsługiwać, co sprawdzić i jak dać zna�
 
 ## Co to za program
 
-Agro Asystent prowadzi dokumentację gospodarstwa, której wymaga ARiMR
+Mój Łan prowadzi dokumentację gospodarstwa, której wymaga ARiMR
 i kontrole: pola i działki, zabiegi (opryski, nawożenie, siew, zbiór),
 karencje, terminy, trzy rejestry do wydruku. Działa **bez internetu** —
 sieć jest potrzebna tylko do pobrania granic działki, pogody i wiadomości.

@@ -101,7 +101,7 @@ class _EkranKopiaState extends State<EkranKopia> {
               tresc: 'To nie jest kopia z tej aplikacji.',
               coZrobic:
                   'Wybierz plik o nazwie zaczynającej się od '
-                  '„agro-asystent-kopia".',
+                  '„moj-lan-kopia".',
             ),
             BladKopii.nowszaWersja => (
               tresc: 'Kopia pochodzi z nowszej wersji aplikacji.',
@@ -155,7 +155,7 @@ class _EkranKopiaState extends State<EkranKopia> {
               tresc: 'To nie jest kopia z tej aplikacji.',
               coZrobic:
                   'Wybierz plik o nazwie zaczynającej się od '
-                  '„agro-asystent-kopia".',
+                  '„moj-lan-kopia".',
             ),
             BladKopii.nowszaWersja => (
               tresc: 'Plik pochodzi z nowszej wersji aplikacji.',

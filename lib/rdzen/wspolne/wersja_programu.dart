@@ -51,7 +51,7 @@ class WierszWersji extends StatefulWidget {
 
   final TextStyle? styl;
 
-  /// Co napisać przed numerem, np. „Agro Asystent • ".
+  /// Co napisać przed numerem, np. „Mój Łan • ".
   final String przed;
 
   @override

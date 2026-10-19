@@ -16,7 +16,7 @@ to znalezisko, nawet jeśli ekran wygląda ładnie.
 
 ## Zanim zaczniesz
 
-1. Zainstaluj plik `agro-asystent-0.2.0+2-arm64.apk` (39 MB) na swoim
+1. Zainstaluj plik `moj-lan-0.2.0+2-arm64.apk` (39 MB) na swoim
    telefonie.
 2. **Plik testowy ma odblokowane wszystkie dodatki** — wczytanie
    wniosku, magazyn, odczyt zdjęcia, plan nawożenia. Pod numerem wersji
@@ -54,7 +54,7 @@ Zainstaluj, uruchom, wybierz wygląd **Prosty**.
 ### A2. Dane gospodarstwa
 Ustawienia → dane gospodarstwa → wpisz nazwę, **12,00 ha**, „Nie mam
 zwierząt".
-→ Na dole ekranu Ustawień stoi **„Agro Asystent • Wersja 0.2.0 (budowa 2)"**.
+→ Na dole ekranu Ustawień stoi **„Mój Łan • Wersja 0.2.0 (budowa 2)"**.
 
 ### A3. Dwa pola
 Pola → Dodaj pole → **Za stodołą**, pszenica ozima, **3,40 ha**.
@@ -172,7 +172,7 @@ znajdziesz go z komputera (dysk, poczta, chmura).
 ## Przebieg B — komputer (~15 min)
 
 ### B1. Uruchomienie
-Rozpakuj **cały** folder z paczki `.zip` → `agro_asystent.exe` →
+Rozpakuj **cały** folder z paczki `.zip` → `moj_lan.exe` →
 SmartScreen → „Więcej informacji" → „Uruchom mimo to".
 → Program otwiera się na **Pulpicie**.
 

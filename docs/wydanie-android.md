@@ -84,8 +84,8 @@ zmieniać w kodzie.**
 
 ## Jak wgrać plik na telefon
 
-1. W repozytorium: **Releases → „Agro Asystent — APK do testów"**.
-2. Dotknij pliku `agro-asystent-<wersja>.apk` — telefon go pobierze.
+1. W repozytorium: **Releases → „Mój Łan — APK do testów"**.
+2. Dotknij pliku `moj-lan-<wersja>.apk` — telefon go pobierze.
 3. Przy pierwszej instalacji Android zapyta o zgodę na instalację
    z nieznanych źródeł. Zgoda dotyczy przeglądarki, z której plik
    pobrano.

@@ -427,10 +427,7 @@ void main() {
       addTearDown(tester.view.reset);
 
       await tester.pumpWidget(
-        AplikacjaAgroAsystent(
-          uslugi: zbudujUslugi(),
-          platforma: Platforma.komputer,
-        ),
+        AplikacjaMojLan(uslugi: zbudujUslugi(), platforma: Platforma.komputer),
       );
       await tester.pumpAndSettle();
 
@@ -448,7 +445,7 @@ void main() {
       tester.view.devicePixelRatio = 1;
       addTearDown(tester.view.reset);
 
-      await tester.pumpWidget(AplikacjaAgroAsystent(uslugi: zbudujUslugi()));
+      await tester.pumpWidget(AplikacjaMojLan(uslugi: zbudujUslugi()));
       await tester.pumpAndSettle();
 
       expect(find.text('Dodaj zabieg'), findsOneWidget);

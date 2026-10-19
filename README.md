@@ -1,6 +1,6 @@
-<img src="assets/logo/agro_asystent.png" alt="Agro Asystent" width="120" align="right" />
+<img src="assets/logo/moj_lan.png" alt="Mój Łan" width="120" align="right" />
 
-# Agro Asystent
+# Mój Łan
 
 Aplikacja na telefon (Android, później Windows) prowadząca dokumentację gospodarstwa
 wymaganą przez ARiMR i inspekcje. Rdzeniem jest jeden rejestr zabiegów przypisanych

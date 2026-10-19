@@ -80,7 +80,7 @@ class _EkranTerminyState extends State<EkranTerminy> {
             SnackBar(
               content: Text(
                 'Telefon nie pozwala na powiadomienia. Włącz je w ustawieniach '
-                'telefonu dla Agro Asystenta.',
+                'telefonu dla aplikacji Mój Łan.',
                 style: Theme.of(context).textTheme.bodyLarge
                     ?.copyWith(color: MotywProsty.powierzchnia),
               ),

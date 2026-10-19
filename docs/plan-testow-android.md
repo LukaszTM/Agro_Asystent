@@ -1,6 +1,6 @@
-# Plan testów – Agro Asystent (Android)
+# Plan testów – Mój Łan (Android)
 
-Plan i 37 przypadków testowych dla aplikacji Agro Asystent (dokumentacja
+Plan i 37 przypadków testowych dla aplikacji Mój Łan (dokumentacja
 gospodarstwa wymagana przez ARiMR i inspekcje: pola, zabiegi, nawożenie,
 trzy rejestry, wydruk i eksport — wszystko bez internetu). Oczekiwane wyniki
 wynikają z planu projektu i `CLAUDE.md`; tam, gdzie dokumentacja nie precyzuje
@@ -12,7 +12,7 @@ Wersja rozbudowana, z warunkami wstępnymi i pełnym opisem kroków:
 
 ## Zakres i środowisko
 
-- **Przedmiot testów:** aplikacja Agro Asystent na Androida, repozytorium
+- **Przedmiot testów:** aplikacja Mój Łan na Androida, repozytorium
   github.com/LukaszTM/Agro_Asystent, plik APK z wydania `apk-test`
 - **W zakresie:** pola i działki (w tym działka spoza wniosku szukana po
   województwie, miejscowości i numerze, własna nazwa pola), wpis zabiegu
@@ -28,9 +28,9 @@ Wersja rozbudowana, z warunkami wstępnymi i pełnym opisem kroków:
   dopóki nikt nie uruchomi skryptu), zakup wersji płatnej (w wydaniu testowym
   wszystkie dodatki są odblokowane), testy wydajnościowe na dużej bazie
 - **Środowisko:** model telefonu: ……, wersja Androida: ……, wersja aplikacji:
-  przepisz z Ustawień („Agro Asystent • Wersja 0.2.0 (budowa 2)"), plik APK:
-  `agro-asystent-0.2.0+2-arm64.apk` (40 MB, na telefony z ostatnich lat) albo
-  `agro-asystent-0.2.0+2.apk` (106 MB, na każdy telefon)
+  przepisz z Ustawień („Mój Łan • Wersja 0.2.0 (budowa 2)"), plik APK:
+  `moj-lan-0.2.0+2-arm64.apk` (40 MB, na telefony z ostatnich lat) albo
+  `moj-lan-0.2.0+2.apk` (106 MB, na każdy telefon)
 - **Gdzie są ustawienia:** w wyglądzie Nowoczesnym zakładka „Ustawienia"; w wyglądzie
   Prostym ikona ciągnika w prawym górnym rogu ekranu głównego → ekran
   „Gospodarstwo". W krokach piszemy krótko „Ustawienia"

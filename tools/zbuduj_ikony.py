@@ -2,9 +2,9 @@
 
 Źródła są dwa i każde ma swoje zadanie:
 
-- `assets/logo/agro_asystent_znak.png` — **sam znak**, bez nazwy; z niego
+- `assets/logo/moj_lan_znak.png` — **sam znak**, bez nazwy; z niego
   powstają ikony, bo w kwadracie 48 × 48 px napis i tak zlewa się w kreskę,
-- `assets/logo/agro_asystent.png` — **pełne logo z nazwą**; z niego powstaje
+- `assets/logo/moj_lan.png` — **pełne logo z nazwą**; z niego powstaje
   logo ekranu powitalnego, gdzie jest miejsce na nazwę.
 
 Dzięki temu nie powstają rozjeżdżone warianty rysowane ręcznie — zmiana logo
@@ -119,9 +119,9 @@ def zbuduj(
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--logo", type=Path, default=Path("assets/logo/agro_asystent.png"))
+    parser.add_argument("--logo", type=Path, default=Path("assets/logo/moj_lan.png"))
     parser.add_argument(
-        "--znak", type=Path, default=Path("assets/logo/agro_asystent_znak.png")
+        "--znak", type=Path, default=Path("assets/logo/moj_lan_znak.png")
     )
     parser.add_argument("--android", type=Path, default=Path("android/app/src/main/res"))
     parser.add_argument(

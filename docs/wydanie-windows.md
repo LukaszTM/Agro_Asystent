@@ -27,16 +27,16 @@ git push origin pc-0.1.0
 ```
 
 Po kilkunastu minutach w zakładce **Releases** repozytorium staje
-wydanie `pc-0.1.0` z plikiem `agro-asystent-windows.zip`. Ten link jest
+wydanie `pc-0.1.0` z plikiem `moj-lan-windows.zip`. Ten link jest
 stały — można go wysłać dalej i nie wygasa.
 
-Dalej: rozpakować **cały** folder (obok `agro_asystent.exe` leżą
-biblioteki, bez nich program nie wstanie) i uruchomić `agro_asystent.exe`.
+Dalej: rozpakować **cały** folder (obok `moj_lan.exe` leżą
+biblioteki, bez nich program nie wstanie) i uruchomić `moj_lan.exe`.
 Windows pokaże SmartScreen, bo program nie jest podpisany certyfikatem:
 **Więcej informacji** → **Uruchom mimo to**.
 
 Przy ręcznym uruchomieniu przepływu (Actions → Run workflow) wydanie nie
-powstaje — jest tylko artefakt `agro-asystent-windows` na 14 dni, do
+powstaje — jest tylko artefakt `moj-lan-windows` na 14 dni, do
 pobrania wyłącznie po zalogowaniu na GitHubie.
 
 > Przycisk **Run workflow** pokazuje się dopiero, gdy plik przepływu leży

@@ -45,7 +45,7 @@ val wlasnyPodpis = listOf(
 ).all { !it.isNullOrBlank() } && file(keystorePlik!!).exists()
 
 android {
-    namespace = "pl.agroasystent.agro_asystent"
+    namespace = "pl.mojlan.app"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -59,7 +59,7 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "pl.agroasystent.agro_asystent"
+        applicationId = "pl.mojlan.app"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion
@@ -89,7 +89,7 @@ android {
                 signingConfigs.getByName("wydanie")
             } else {
                 logger.warn(
-                    "Agro Asystent: brak klucza podpisującego — wydanie " +
+                    "Mój Łan: brak klucza podpisującego — wydanie " +
                         "podpisuję kluczem debugowym. Plik nadaje się do " +
                         "testów na telefonie, ale nie do Google Play. " +
                         "Patrz docs/wydanie-android.md.",

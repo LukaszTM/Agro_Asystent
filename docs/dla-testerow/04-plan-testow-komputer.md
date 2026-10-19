@@ -11,8 +11,8 @@ Punkty z gwiazdką ★ są najważniejsze.
 
 | Nr | Co zrobić | Co powinno się stać | Udało się? | Uwagi |
 | --- | --- | --- | --- | --- |
-| A1 ★ | Pobierz zip, rozpakuj cały folder, uruchom `agro_asystent.exe`, przy SmartScreen: Więcej informacji → Uruchom mimo to | Program wstaje, po lewej pasek zakładek, otwarta zakładka Pulpit | TAK / NIE | |
-| A2 | Uruchom `agro_asystent.exe` prosto z wnętrza archiwum zip (bez rozpakowania) | Program nie wstaje albo wstaje i od razu gaśnie — to znany stan; zapisz, co zobaczyłeś | TAK / NIE | |
+| A1 ★ | Pobierz zip, rozpakuj cały folder, uruchom `moj_lan.exe`, przy SmartScreen: Więcej informacji → Uruchom mimo to | Program wstaje, po lewej pasek zakładek, otwarta zakładka Pulpit | TAK / NIE | |
+| A2 | Uruchom `moj_lan.exe` prosto z wnętrza archiwum zip (bez rozpakowania) | Program nie wstaje albo wstaje i od razu gaśnie — to znany stan; zapisz, co zobaczyłeś | TAK / NIE | |
 | A3 ★ | Ustawienia → Wielkość tekstu → wybierz inną | Tekst zmienia się od razu w całym programie | TAK / NIE | |
 | A4 | Zwęź okno do połowy ekranu | Nic nie jest ucięte, da się dalej pracować | TAK / NIE | |
 

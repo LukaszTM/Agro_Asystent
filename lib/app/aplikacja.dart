@@ -21,8 +21,8 @@ import 'uslugi.dart';
 /// rolników 60+ (plan, pkt 5). Na komputerze wygląd jest **jeden**,
 /// z ustawieniem wielkości tekstu — stąd osobna warstwa ekranów
 /// w `lib/wyglad/komputer/`.
-class AplikacjaAgroAsystent extends StatefulWidget {
-  const AplikacjaAgroAsystent({
+class AplikacjaMojLan extends StatefulWidget {
+  const AplikacjaMojLan({
     super.key,
     this.dostep = const DostepFunkcji.zBudowy(),
     this.uslugi,
@@ -44,10 +44,10 @@ class AplikacjaAgroAsystent extends StatefulWidget {
   final Future<Uslugi> Function()? wlasneUruchomienie;
 
   @override
-  State<AplikacjaAgroAsystent> createState() => _AplikacjaState();
+  State<AplikacjaMojLan> createState() => _AplikacjaState();
 }
 
-class _AplikacjaState extends State<AplikacjaAgroAsystent> {
+class _AplikacjaState extends State<AplikacjaMojLan> {
   Future<Uslugi>? _uslugi;
 
   /// Usługi po przełączeniu gospodarstwa — baza i słowniki zostają otwarte,
@@ -95,7 +95,7 @@ class _AplikacjaState extends State<AplikacjaAgroAsystent> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Agro Asystent',
+      title: 'Mój Łan',
       debugShowCheckedModeBanner: false,
       theme: _naKomputerze
           ? MotywKomputer.zbuduj(_rozmiarTekstu)

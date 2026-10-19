@@ -10,24 +10,25 @@ import 'dart:ui' show Color;
 /// ma znaczyć aplikację, a nie decydować o czytelności w słońcu.
 abstract final class Marka {
   /// Nazwa używana wszędzie: w aplikacji, na wydrukach i w sklepie.
-  static const String nazwa = 'Agro Asystent';
+  static const String nazwa = 'Mój Łan';
 
   /// Pełne logo: znak i nazwa. Używamy go tam, gdzie jest miejsce na nazwę —
   /// pasek ekranu głównego, ekran powitalny, README.
-  static const String logo = 'assets/logo/agro_asystent.png';
+  static const String logo = 'assets/logo/moj_lan.png';
 
-  /// Sam znak, bez nazwy. Z niego powstają ikony: w kwadracie 48 × 48 px
-  /// napis zlewa się w kreskę, więc tam zostaje sama litera „A" z liściem.
-  static const String znak = 'assets/logo/agro_asystent_znak.png';
+  /// Sam znak, bez nazwy: pole w pasach, dwa liście i słońce. Z niego
+  /// powstają ikony i stoi obok nazwy na paskach ekranów — w kwadracie
+  /// 48 × 48 px napis zlewa się w kreskę.
+  static const String znak = 'assets/logo/moj_lan_znak.png';
 
-  /// Ciemna zieleń z litery „A" i napisu — główny kolor marki.
-  static const Color zielenCiemna = Color(0xFF0A3C20);
+  /// Ciemna zieleń pasów pola — główny kolor marki.
+  static const Color zielenCiemna = Color(0xFF085A30);
 
   /// Jasna zieleń liścia — akcent.
-  static const Color zielenLiscia = Color(0xFF69A31E);
+  static const Color zielenLiscia = Color(0xFF78B81B);
 
-  /// Złoto pola na logo — używane oszczędnie, do wyróżnień.
-  static const Color zloto = Color(0xFFC3912E);
+  /// Złoto słońca i pasa pola — używane oszczędnie, do wyróżnień.
+  static const Color zloto = Color(0xFFF8BA1E);
 
   /// Biel karty, na której stoi logo.
   static const Color biel = Color(0xFFFFFFFF);

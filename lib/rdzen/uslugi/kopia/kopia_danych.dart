@@ -80,6 +80,9 @@ class KopiaDanych {
   final int wersjaSchematu;
 
   static const String nazwaWpisu = 'kopia.json';
+
+  /// Znacznik formatu wewnątrz pliku. Zostaje z czasów nazwy „Agro Asystent",
+  /// żeby kopie zrobione przed zmianą nazwy nadal się wczytywały.
   static const String znacznik = 'agro-asystent-kopia';
 
   /// Tabele w kolejności zapisu i wczytania — rodzice przed dziećmi,
@@ -118,7 +121,7 @@ class KopiaDanych {
   /// Nazwa pliku kopii — z datą, żeby rolnik widział, która jest nowsza.
   static String nazwaPliku(DateTime kiedy) {
     String dwucyfrowo(int liczba) => liczba.toString().padLeft(2, '0');
-    return 'agro-asystent-kopia-${kiedy.year}'
+    return 'moj-lan-kopia-${kiedy.year}'
         '${dwucyfrowo(kiedy.month)}${dwucyfrowo(kiedy.day)}'
         '-${dwucyfrowo(kiedy.hour)}${dwucyfrowo(kiedy.minute)}.zip';
   }

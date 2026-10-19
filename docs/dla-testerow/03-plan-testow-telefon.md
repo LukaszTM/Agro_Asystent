@@ -1,7 +1,7 @@
 # Plan testów — telefon (Android)
 
 **Tester:** …………………………… **Model telefonu:** …………………………… **Android:** ………
-**Wersja aplikacji** (Ustawienia → „Agro Asystent • Wersja …"): ……………
+**Wersja aplikacji** (Ustawienia → „Mój Łan • Wersja …"): ……………
 **Wygląd:** Prosty / Nowoczesny (zakreśl) **Data:** ……………
 
 Jak zakreślać: **TAK** — stało się to, co w kolumnie „Co powinno się stać".
@@ -15,7 +15,7 @@ Nie musisz robić wszystkiego. Punkty z gwiazdką ★ są najważniejsze.
 | A1 ★ | Zainstaluj aplikację według instrukcji 01 i uruchom | Aplikacja wstaje, pyta o wygląd (Prosty / Nowoczesny), po wyborze pokazuje ekran główny. Nie żąda logowania ani internetu | TAK / NIE | |
 | A2 | Zamknij aplikację z listy ostatnich aplikacji i otwórz od nowa | Ten sam wygląd, bez pytania od nowa | TAK / NIE | |
 | A3 | Ustawienia → Wygląd → wybierz drugi wygląd | Cała aplikacja zmienia wygląd od razu; pola i wpisy zostają | TAK / NIE | |
-| A4 | Ustawienia → znajdź numer wersji | Widać „Agro Asystent • Wersja … (budowa …)" i zdanie, że to wydanie testowe | TAK / NIE | |
+| A4 | Ustawienia → znajdź numer wersji | Widać „Mój Łan • Wersja … (budowa …)" i zdanie, że to wydanie testowe | TAK / NIE | |
 
 ## B. Gospodarstwo i pola
 

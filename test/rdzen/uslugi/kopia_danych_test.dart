@@ -94,7 +94,7 @@ void main() {
     expect(opis.zrobiona, DateTime(2026, 10, 16, 9, 5));
     expect(
       KopiaDanych.nazwaPliku(DateTime(2026, 10, 16, 9, 5)),
-      'agro-asystent-kopia-20261016-0905.zip',
+      'moj-lan-kopia-20261016-0905.zip',
     );
   });
 

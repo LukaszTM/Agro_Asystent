@@ -24,6 +24,7 @@ internetu, a z programem na PC synchronizuje się tylko wtedy, gdy użytkownik t
 | Serwer | Brak własnego serwera. Synchronizacja i kopia przez dysk użytkownika (Google Drive, OneDrive) |
 | Budżet | Zero. Tylko darmowe narzędzia i dane; jedyna opłata na start to konto Google Play |
 | Budowa | Jedna osoba z Claude Code |
+| Nazwa | **Mój Łan** (od 19.10.2026; wcześniej „Agro Asystent" — kolizja z programem AgroAsystent firmy AgroPower, ADR-0009) |
 | Import działek | Z pliku PDF wniosku pobranego z eWniosekPlus |
 | Środki ochrony roślin | Lista z pliku ministerstwa, zawężona do uprawy na polu, szukanie po nazwie i po zdjęciu etykiety |
 | Nawozy | Wprowadzane ręcznie albo ze zdjęcia opakowania (nazwa, skład NPK) |

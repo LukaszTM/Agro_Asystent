@@ -163,7 +163,7 @@ class _WidokUstawieniaKomputerState extends State<WidokUstawieniaKomputer> {
               tresc: 'To nie jest kopia z tej aplikacji.',
               coZrobic:
                   'Wybierz plik o nazwie zaczynającej się od '
-                  '„agro-asystent-kopia".',
+                  '„moj-lan-kopia".',
             ),
             BladKopii.nowszaWersja => (
               tresc: 'Plik pochodzi z nowszej wersji aplikacji.',
@@ -346,7 +346,7 @@ class _WidokUstawieniaKomputerState extends State<WidokUstawieniaKomputer> {
                 children: [
                   Text('O programie', style: teksty.titleLarge),
                   const SizedBox(height: 4),
-                  const WierszWersji(przed: 'Agro Asystent • '),
+                  const WierszWersji(przed: 'Mój Łan • '),
                   Text(
                     'Urządzenie: ${_uslugi.urzadzenie} • słownik reguł '
                     '${_uslugi.reguly.wersja} (obowiązuje od '

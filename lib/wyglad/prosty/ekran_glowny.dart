@@ -84,7 +84,7 @@ class EkranGlownyProsty extends StatelessWidget {
         title: Row(
           children: [
             Image.asset(
-              Marka.logo,
+              Marka.znak,
               height: 40,
               // Logo jest znakiem aplikacji, nie treścią ekranu — czytnik
               // ekranu ma czytać nazwę, nie opisywać obrazek.

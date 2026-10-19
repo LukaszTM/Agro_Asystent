@@ -137,7 +137,7 @@ void main() {
       // Regulamin usługi każe skracać współrzędne i przedstawiać się.
       expect(zadanie.url.queryParameters['lat'], '52.0512');
       expect(zadanie.url.queryParameters['lon'], '21.0512');
-      expect(zadanie.headers['User-Agent'], contains('AgroAsystent'));
+      expect(zadanie.headers['User-Agent'], contains('MojLan'));
 
       expect(prognoza.godziny, hasLength(30));
       expect(prognoza.zrodlo, contains('MET'));

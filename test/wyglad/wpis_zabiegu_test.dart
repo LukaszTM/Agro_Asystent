@@ -258,7 +258,7 @@ void main() {
       );
 
   Future<void> otworz(WidgetTester tester) async {
-    await tester.pumpWidget(AplikacjaAgroAsystent(uslugi: uslugi));
+    await tester.pumpWidget(AplikacjaMojLan(uslugi: uslugi));
     await tester.pumpAndSettle();
   }
 

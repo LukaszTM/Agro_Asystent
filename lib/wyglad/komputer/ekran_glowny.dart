@@ -230,7 +230,7 @@ class _Nawigacja extends StatelessWidget {
             child: Row(
               children: [
                 Image.asset(
-                  Marka.logo,
+                  Marka.znak,
                   height: 32,
                   // Logo jest znakiem programu, nie treścią ekranu.
                   excludeFromSemantics: true,

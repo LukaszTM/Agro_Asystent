@@ -1,4 +1,4 @@
-<title>Agro Asystent — pakiet testera</title>
+<title>Mój Łan — pakiet testera</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bitter:wght@600;700&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&display=swap">
 <style>
@@ -88,7 +88,7 @@ button.drugi, .potwierdz button { background: var(--surface); color: var(--fg); 
 
 <header class="pasek">
   <div class="pasek-wnetrze">
-    <div class="marka"><span class="nazwa">Agro Asystent</span><span class="beta">pakiet testera · beta 1</span></div>
+    <div class="marka"><span class="nazwa">Mój Łan</span><span class="beta">pakiet testera · beta 1</span></div>
     <nav class="zakladki" role="tablist" aria-label="Części pakietu">
       <button type="button" role="tab" data-zakladka="start" aria-selected="true">Czytaj najpierw</button>
       <button type="button" role="tab" data-zakladka="telefon" aria-selected="false">Telefon</button>
@@ -188,7 +188,7 @@ button.drugi, .potwierdz button { background: var(--surface); color: var(--fg); 
   });
 
   function tekstWynikow(plan) {
-    var d = DANE[plan], s = stan[plan], linie = ['Agro Asystent — ' + d.tytul];
+    var d = DANE[plan], s = stan[plan], linie = ['Mój Łan — ' + d.tytul];
     d.pola.forEach(function (k) {
       var el = document.getElementById('pole-' + plan + '-' + k);
       var etyk = el ? el.parentNode.firstChild.textContent.trim() : k;
