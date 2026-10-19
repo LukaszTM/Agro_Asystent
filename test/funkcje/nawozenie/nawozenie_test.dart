@@ -157,6 +157,69 @@ void main() {
       expect(rejestr.single.pola.single.nazwa, 'Pole p1');
     });
 
+    test(
+      'data przyorania zapisuje się od razu albo dopisuje później',
+      () async {
+        await dodajPole('p1', 1000);
+        final id = await ewidencja.zapisz(
+          gospodarstwoId: 'g1',
+          nawoz: obornik,
+          pola: const [PoleZabiegu(dzialkaRolnaId: 'p1', powierzchniaAr: 1000)],
+          dawka: 30,
+          jednostka: JednostkaDawki.tonyNaHektar,
+          urzadzenie: 'telefon',
+          kiedy: DateTime(2026, 3, 10, 9),
+        );
+        // Bez daty: jeszcze nie przyorano — nic nie zgadujemy.
+        var wpis = (await ewidencja.wpisy('g1')).single;
+        expect(wpis.dataPrzyorania, isNull);
+
+        await ewidencja.zapiszPrzyoranie(
+          zabiegId: id,
+          data: DateTime(2026, 3, 11),
+          urzadzenie: 'telefon',
+          teraz: DateTime(2026, 3, 11, 18),
+        );
+        wpis = (await ewidencja.wpisy('g1')).single;
+        expect(wpis.dataPrzyorania, DateTime(2026, 3, 11));
+
+        // Rejestr widzi tę samą datę, bo wydruk ewidencji bierze ją stamtąd.
+        final zRejestru = await RejestrZabiegow(baza).wpis(id);
+        expect(zRejestru!.nawozenie?.dataPrzyorania, DateTime(2026, 3, 11));
+
+        // Poprawka zostawia ślad: wpisy są dopisywane, nie nadpisywane.
+        await ewidencja.zapiszPrzyoranie(
+          zabiegId: id,
+          data: DateTime(2026, 3, 12),
+          urzadzenie: 'telefon',
+          teraz: DateTime(2026, 3, 12, 18),
+        );
+        final dziennik = await baza.query(
+          'historia_zmian',
+          where: 'tabela = ? AND wiersz_id = ?',
+          whereArgs: ['zabieg_nawozenie', id],
+        );
+        expect(dziennik, hasLength(2));
+        expect(dziennik.last['dane_json'], contains('2026-03-11'));
+
+        final odRazu = await ewidencja.zapisz(
+          gospodarstwoId: 'g1',
+          nawoz: obornik,
+          pola: const [PoleZabiegu(dzialkaRolnaId: 'p1', powierzchniaAr: 1000)],
+          dawka: 20,
+          jednostka: JednostkaDawki.tonyNaHektar,
+          urzadzenie: 'telefon',
+          kiedy: DateTime(2026, 4, 2, 9),
+          dataPrzyorania: DateTime(2026, 4, 2, 9),
+        );
+        final wpisy = await ewidencja.wpisy('g1');
+        expect(
+          wpisy.firstWhere((w) => w.zabiegId == odRazu).dataPrzyorania,
+          DateTime(2026, 4, 2),
+        );
+      },
+    );
+
     test('wpisy z innego sezonu nie mieszają się', () async {
       await dodajPole('p1', 1000);
       await ewidencja.zapisz(

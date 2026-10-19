@@ -31,6 +31,10 @@ class DaneWpisu {
   double? dawka;
   String? przyczyna;
 
+  /// Dzień przyorania nawozu naturalnego (tabela 15 programu azotanowego).
+  /// `null` znaczy „jeszcze nie" — datę da się dopisać z rejestru.
+  DateTime? dataPrzyorania;
+
   /// Jednostka dawki odczytanej z etykiety — ustawiana tylko wtedy, gdy
   /// rejestr nie podał dawki w jednoznacznej postaci. Wtedy liczbę wpisuje
   /// rolnik i musi powiedzieć, w czym ją podaje.

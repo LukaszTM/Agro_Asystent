@@ -413,6 +413,86 @@ void main() {
     );
   });
 
+  testWidgets('obornik: przyoranie wybiera się przyciskiem i trafia do '
+      'ewidencji', (tester) async {
+    await dodajPole(ar: 1000);
+    const obornik = Nawoz(
+      id: 'n-obornik',
+      gospodarstwoId: 'g1',
+      nazwa: 'Obornik bydlęcy',
+      naturalny: true,
+      azotProcent: 0.5,
+    );
+    await RepozytoriumNawozow(baza)
+        .zapisz(nawoz: obornik, urzadzenie: 'telefon');
+    final dane =
+        DaneWpisu(
+            gospodarstwoId: 'g1',
+            urzadzenie: 'telefon',
+            kiedy: DateTime(2026, 3, 10, 9),
+          )
+          ..pola.add(
+            const Pole(
+              id: 'pole-1000',
+              gospodarstwoId: 'g1',
+              nazwa: 'Za stodołą',
+              uprawa: 'kukurydza na ziarno',
+              powierzchniaAr: 1000,
+            ),
+          )
+          ..rodzaj = RodzajZabiegu.nawozenie
+          ..nawoz = obornik
+          ..jednostkaDawki = JednostkaDawki.tonyNaHektar
+          ..dawka = 20;
+
+    await pokaz(tester, EkranDawkaNawozu(uslugi: zbudujUslugi(), dane: dane));
+
+    await przewinDo(tester, find.text('Przyoranie'));
+    expect(find.text('Jeszcze nie'), findsOneWidget);
+    await tester.tap(find.text('Nazajutrz'));
+    await tester.pumpAndSettle();
+    expect(find.textContaining('Przyorano 11 marca 2026'), findsOneWidget);
+
+    await przewinDo(tester, find.widgetWithText(FilledButton, 'Zapisz'));
+    await tester.tap(find.widgetWithText(FilledButton, 'Zapisz'));
+    await tester.pumpAndSettle();
+
+    final wpisy = await EwidencjaNawozenia(
+      baza: baza,
+      zabiegi: RepozytoriumZabiegow(baza),
+      reguly: reguly,
+    ).wpisy('g1');
+    expect(wpisy.single.dataPrzyorania, DateTime(2026, 3, 11));
+  });
+
+  testWidgets('saletra: nie pytamy o przyoranie', (tester) async {
+    await dodajPole(ar: 1000);
+    const saletra = Nawoz(
+      id: 'n-saletra',
+      gospodarstwoId: 'g1',
+      nazwa: 'Saletra z worka',
+      naturalny: false,
+      azotProcent: 34,
+    );
+    final dane = DaneWpisu(gospodarstwoId: 'g1', urzadzenie: 'telefon')
+      ..pola.add(
+        const Pole(
+          id: 'pole-1000',
+          gospodarstwoId: 'g1',
+          nazwa: 'Za stodołą',
+          uprawa: 'kukurydza na ziarno',
+          powierzchniaAr: 1000,
+        ),
+      )
+      ..rodzaj = RodzajZabiegu.nawozenie
+      ..nawoz = saletra
+      ..dawka = 100;
+
+    await pokaz(tester, EkranDawkaNawozu(uslugi: zbudujUslugi(), dane: dane));
+    await przewinDo(tester, find.widgetWithText(FilledButton, 'Zapisz'));
+    expect(find.text('Przyoranie'), findsNothing);
+  });
+
   testWidgets('dawka w granicach tabeli nie straszy rolnika', (tester) async {
     await dodajPole(ar: 1000);
     const saletra = Nawoz(

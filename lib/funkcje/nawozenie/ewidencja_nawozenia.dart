@@ -17,6 +17,7 @@ class WpisNawozenia {
     this.dawka,
     this.dawkaJednostka,
     this.azotKgHa,
+    this.dataPrzyorania,
   });
 
   final String zabiegId;
@@ -31,6 +32,10 @@ class WpisNawozenia {
   /// Azot wniesiony na hektar. `null`, gdy nawóz nie ma znanej zawartości —
   /// wtedy do limitu nie liczymy nic i mówimy o tym wprost.
   final double? azotKgHa;
+
+  /// Dzień przyorania (wymieszania z glebą) nawozu naturalnego — tabela 15
+  /// programu azotanowego. `null`: jeszcze nie przyorano albo nie dotyczy.
+  final DateTime? dataPrzyorania;
 
   double get powierzchniaHa => powierzchniaAr / 100;
 
@@ -47,6 +52,9 @@ class WpisNawozenia {
     powierzchniaAr: (w['powierzchnia_ar'] as int?) ?? 0,
     dawka: (w['dawka'] as num?)?.toDouble(),
     dawkaJednostka: w['dawka_jednostka'] as String?,
+    dataPrzyorania: EwidencjaNawozenia.dataZBazy(
+      w['data_przyorania'] as String?,
+    ),
     azotKgHa: (w['azot_kg_ha'] as num?)?.toDouble(),
   );
 }
@@ -124,6 +132,7 @@ class EwidencjaNawozenia {
     required String urzadzenie,
     DateTime? kiedy,
     String? uwagi,
+    DateTime? dataPrzyorania,
   }) async {
     final czas = kiedy ?? DateTime.now();
     final id = 'nawoz-${czas.microsecondsSinceEpoch}';
@@ -154,10 +163,44 @@ class EwidencjaNawozenia {
       'dawka_jednostka': jednostka.opis,
       'azot_kg_ha': nawoz.azotKgNaHa(dawka, jednostka),
       'naturalny': nawoz.naturalny ? 1 : 0,
+      'data_przyorania': dataDoBazy(dataPrzyorania),
     }, conflictAlgorithm: ConflictAlgorithm.replace);
 
     return id;
   }
+
+  /// Dopisuje (albo czyści — `null`) datę przyorania nawozu naturalnego.
+  /// Poprzednia wartość zostaje w dzienniku zmian.
+  Future<void> zapiszPrzyoranie({
+    required String zabiegId,
+    required DateTime? data,
+    required String urzadzenie,
+    DateTime? teraz,
+  }) async {
+    final czas = (teraz ?? DateTime.now()).toIso8601String();
+    await baza.update(
+      'zabieg',
+      {'zmieniono': czas, 'urzadzenie': urzadzenie},
+      where: 'id = ?',
+      whereArgs: [zabiegId],
+    );
+    await baza.update(
+      'zabieg_nawozenie',
+      {'data_przyorania': dataDoBazy(data)},
+      where: 'zabieg_id = ?',
+      whereArgs: [zabiegId],
+    );
+  }
+
+  /// Sama data, bez godziny — przyoranie liczy się dniem.
+  static String? dataDoBazy(DateTime? data) => data == null
+      ? null
+      : '${data.year.toString().padLeft(4, '0')}-'
+            '${data.month.toString().padLeft(2, '0')}-'
+            '${data.day.toString().padLeft(2, '0')}';
+
+  static DateTime? dataZBazy(String? tekst) =>
+      tekst == null || tekst.isEmpty ? null : DateTime.tryParse(tekst);
 
   /// Wpisy nawożenia z danego sezonu, od najnowszego.
   Future<List<WpisNawozenia>> wpisy(String gospodarstwoId, {int? sezon}) async {

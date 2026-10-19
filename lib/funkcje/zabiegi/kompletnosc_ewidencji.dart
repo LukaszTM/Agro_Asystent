@@ -210,9 +210,17 @@ abstract final class KompletnoscEwidencji {
         final razem = wpis.azotKgRazem;
         return razem == null ? null : '${liczba(razem)} kg N';
       case 'data_przyorania':
-        // Wymagane tylko na terenie o dużym nachyleniu; aplikacja nie zna
-        // nachylenia pola, więc zostawia pole rolnikowi.
-        return null;
+        // Pole dotyczy nawozów naturalnych (na terenie o dużym nachyleniu).
+        // Datę wpisuje rolnik — gdy jej nie ma, zostaje brak, nie zgadujemy.
+        final nawozenie = wpis.nawozenie;
+        if (nawozenie == null) {
+          return null;
+        }
+        if (!nawozenie.naturalny) {
+          return 'nie dotyczy';
+        }
+        final przyorano = nawozenie.dataPrzyorania;
+        return przyorano == null ? null : dzien(przyorano);
 
       // ── rejestr ekoschematów ────────────────────────────────────────
       case 'nawoz':

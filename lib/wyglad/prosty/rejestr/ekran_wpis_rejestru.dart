@@ -9,6 +9,7 @@ import '../motyw.dart';
 import '../widgety/duzy_przycisk.dart';
 import '../wpis/ekran_karencja.dart';
 import 'ekran_popraw_wpis.dart';
+import 'ekran_przyoranie.dart';
 
 /// Jeden wpis rejestru w całości — tak, jak ma go zobaczyć kontrola.
 ///
@@ -49,6 +50,18 @@ class _EkranWpisRejestruState extends State<EkranWpisRejestru> {
       ),
     );
     if (poprawione ?? false) {
+      _zmienione = true;
+      setState(_odswiez);
+    }
+  }
+
+  Future<void> _ustawPrzyoranie(WpisRejestru wpis) async {
+    final zapisane = await Navigator.of(context).push<bool>(
+      MaterialPageRoute<bool>(
+        builder: (_) => EkranPrzyoranie(uslugi: widget.uslugi, wpis: wpis),
+      ),
+    );
+    if (zapisane ?? false) {
       _zmienione = true;
       setState(_odswiez);
     }
@@ -193,6 +206,21 @@ class _EkranWpisRejestruState extends State<EkranWpisRejestru> {
                 const SizedBox(height: MotywProsty.odstep),
               ] else if (wpis.dzienZbioru != null)
                 const SizedBox(height: MotywProsty.odstep),
+              if (wpis.nawozenie case final SzczegolyNawozeniaWpisu nawozenie
+                  when nawozenie.naturalny) ...[
+                DuzyPrzycisk(
+                  etykieta: nawozenie.dataPrzyorania == null
+                      ? 'Dopisz datę przyorania'
+                      : 'Zmień datę przyorania',
+                  opis: nawozenie.dataPrzyorania == null
+                      ? 'jeszcze nie przyorano'
+                      : 'przyorano '
+                            '${KompletnoscEwidencji.dzien(nawozenie.dataPrzyorania!)}',
+                  ikona: Icons.agriculture_outlined,
+                  onTap: () => _ustawPrzyoranie(wpis),
+                ),
+                const SizedBox(height: MotywProsty.odstep),
+              ],
               if (ocena != null) ..._ewidencja(context, ocena),
               const SizedBox(height: MotywProsty.odstep),
               if (wpis.oprysk != null)

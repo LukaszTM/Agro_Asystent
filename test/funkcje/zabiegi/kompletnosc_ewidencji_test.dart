@@ -215,16 +215,64 @@ void main() {
         nawozenie,
         slownik.obowiazek(idRejestru)!,
       );
-      expect(
-        ocena.braki.map((o) => o.pole.id),
-        // Datę przyorania wypełnia rolnik: aplikacja nie zna nachylenia pola.
-        idRejestru == 'program_azotanowy_ewidencja'
-            ? ['data_przyorania']
-            : isEmpty,
-        reason: idRejestru,
-      );
+      // Nawóz mineralny: daty przyorania nie ma, bo nie dotyczy.
+      expect(ocena.braki, isEmpty, reason: idRejestru);
       expect(ocena.nieznane, isEmpty, reason: idRejestru);
     }
+    final azotanowa = KompletnoscEwidencji.sprawdz(
+      nawozenie,
+      slownik.obowiazek('program_azotanowy_ewidencja')!,
+    );
+    expect(
+      azotanowa.pola.firstWhere((p) => p.pole.id == 'data_przyorania').wartosc,
+      'nie dotyczy',
+    );
+  });
+
+  test('data przyorania nawozu naturalnego: brak, dopóki rolnik jej nie '
+      'wpisze', () {
+    WpisRejestru obornik({DateTime? przyorano}) => WpisRejestru(
+      zabieg: Zabieg(
+        id: 'z-ob',
+        gospodarstwoId: 'g1',
+        rodzaj: RodzajZabiegu.nawozenie,
+        data: DateTime(2026, 3, 10),
+        powierzchniaAr: 250,
+        urzadzenie: 'telefon',
+      ),
+      pola: const [
+        PoleWpisu(
+          id: 'p1',
+          nazwa: 'Za stodołą',
+          uprawa: 'kukurydza',
+          powierzchniaAr: 250,
+          kodEppo: 'ZEAMX',
+          dzialkiReferencyjne: ['061506_2.0007.138'],
+        ),
+      ],
+      nawozenie: SzczegolyNawozeniaWpisu(
+        nawozNazwa: 'Obornik bydlęcy',
+        naturalny: true,
+        dawka: 30,
+        dawkaJednostka: 't/ha',
+        azotKgHa: 150,
+        dataPrzyorania: przyorano,
+      ),
+    );
+    final obowiazek = slownik.obowiazek('program_azotanowy_ewidencja')!;
+
+    final bezDaty = KompletnoscEwidencji.sprawdz(obornik(), obowiazek);
+    expect(bezDaty.braki.map((o) => o.pole.id), ['data_przyorania']);
+
+    final zData = KompletnoscEwidencji.sprawdz(
+      obornik(przyorano: DateTime(2026, 3, 11)),
+      obowiazek,
+    );
+    expect(zData.braki, isEmpty);
+    expect(
+      zData.pola.firstWhere((p) => p.pole.id == 'data_przyorania').wartosc,
+      '11.03.2026',
+    );
   });
 
   test('ewidencja nawożenia azotem pokazuje azot na ha i łącznie', () {

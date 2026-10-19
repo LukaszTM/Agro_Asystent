@@ -663,4 +663,30 @@ const List<Migracja> migracje = [
       'ALTER TABLE gospodarstwo ADD COLUMN wlasciciel TEXT',
     ],
   ),
+  Migracja(
+    wersja: 13,
+    opis: 'Data przyorania nawozu naturalnego i dziennik zmian nawożenia',
+    polecenia: [
+      // Tabela 15 programu azotanowego wymaga daty przyorania (wymieszania
+      // z glebą) nawozu naturalnego na terenie o dużym nachyleniu. Rolnik
+      // wpisuje ją sam — od razu albo po przyoraniu; puste pole to „jeszcze
+      // nie przyorano", nigdy data zgadnięta.
+      'ALTER TABLE zabieg_nawozenie ADD COLUMN data_przyorania TEXT',
+      // Poprawka daty przyorania (albo dawki) zostawia ślad tak samo, jak
+      // poprawka oprysku: wpisy są dopisywane, nie nadpisywane.
+      '''
+      CREATE TRIGGER historia_nawozenie_zmiana AFTER UPDATE ON zabieg_nawozenie
+      BEGIN
+        INSERT INTO historia_zmian (tabela, wiersz_id, operacja, dane_json, czas, urzadzenie)
+        VALUES ('zabieg_nawozenie', NEW.zabieg_id, 'zmiana',
+                json_object('poprzednio',
+                  json_object('nawoz_nazwa', OLD.nawoz_nazwa, 'dawka', OLD.dawka,
+                              'dawka_jednostka', OLD.dawka_jednostka,
+                              'data_przyorania', OLD.data_przyorania)),
+                (SELECT zmieniono FROM zabieg WHERE id = NEW.zabieg_id),
+                (SELECT urzadzenie FROM zabieg WHERE id = NEW.zabieg_id));
+      END
+      ''',
+    ],
+  ),
 ];

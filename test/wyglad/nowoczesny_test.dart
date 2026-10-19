@@ -743,6 +743,70 @@ void main() {
       expect(find.textContaining('Nie znamy zawartości azotu'), findsOneWidget);
     });
 
+    testWidgets('obornik: przyoranie przy wpisie i poprawka z rejestru', (
+      tester,
+    ) async {
+      await uslugi.nawozy.zapisz(
+        nawoz: const Nawoz(
+          id: 'n1',
+          gospodarstwoId: 'g1',
+          nazwa: 'Obornik bydlęcy',
+          naturalny: true,
+          azotProcent: 0.5,
+        ),
+        urzadzenie: 'telefon',
+      );
+      await otworz(tester);
+      await tester.tap(find.bySemanticsLabel('Dodaj zabieg'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Nawożenie'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.textContaining('Za stodołą'));
+      await tester.pumpAndSettle();
+      await przewinDo(tester, find.text('Obornik bydlęcy'));
+      await tester.tap(find.text('Obornik bydlęcy'));
+      await tester.pumpAndSettle();
+
+      await przewinDo(tester, find.text('Przyoranie'));
+      await tester.tap(find.text('Tego samego dnia'));
+      await tester.pumpAndSettle();
+      expect(find.textContaining('Przyorano 20 maja 2026'), findsOneWidget);
+      await przewinDo(tester, find.text('Zapisz'));
+      await tester.tap(find.text('Zapisz'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Gotowe'));
+      await tester.pumpAndSettle();
+
+      final zabiegi = await uslugi.zabiegi.wszystkie('g1');
+      var wpis = await uslugi.rejestr.wpis(zabiegi.single.id);
+      expect(wpis!.nawozenie?.dataPrzyorania, DateTime(2026, 5, 20));
+
+      // Poprawka z rejestru: „nazajutrz" zamiast „tego samego dnia".
+      await przewinDo(tester, find.text('Wszystkie wpisy'));
+      await tester.tap(find.text('Wszystkie wpisy'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.textContaining('Obornik bydlęcy'));
+      await tester.pumpAndSettle();
+      await przewinDo(tester, find.text('Popraw wpis'));
+      await tester.tap(find.text('Popraw wpis'));
+      await tester.pumpAndSettle();
+      await przewinDo(tester, find.text('Nazajutrz'));
+      await tester.tap(find.text('Nazajutrz'));
+      await tester.pumpAndSettle();
+      await przewinDo(tester, find.text('Zapisz poprawkę'));
+      await tester.tap(find.text('Zapisz poprawkę'));
+      await tester.pumpAndSettle();
+
+      wpis = await uslugi.rejestr.wpis(zabiegi.single.id);
+      expect(wpis!.nawozenie?.dataPrzyorania, DateTime(2026, 5, 21));
+      final dziennik = await gospodarstwo.query(
+        'historia_zmian',
+        where: 'tabela = ? AND wiersz_id = ?',
+        whereArgs: ['zabieg_nawozenie', zabiegi.single.id],
+      );
+      expect(dziennik, hasLength(1));
+    });
+
     testWidgets('przy dawce widać maksimum z tabeli dla uprawy', (
       tester,
     ) async {

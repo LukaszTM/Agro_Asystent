@@ -370,8 +370,8 @@ void main() {
     expect(csv, contains('Pod lasem'));
     expect(
       csv,
-      contains('brak'),
-      reason: 'daty przyorania aplikacja nie zgaduje — wypełnia ją rolnik',
+      contains('nie dotyczy'),
+      reason: 'saletra to nawóz mineralny — daty przyorania nie wymaga',
     );
   });
 }

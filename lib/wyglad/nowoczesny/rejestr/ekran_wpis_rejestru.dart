@@ -5,6 +5,7 @@ import '../../../funkcje/zabiegi/kompletnosc_ewidencji.dart';
 import '../../../funkcje/zabiegi/rejestr_zabiegow.dart';
 import '../../../rdzen/modele/zabieg.dart';
 import '../../../rdzen/wspolne/opis_karencji.dart';
+import '../../../rdzen/wspolne/wybor_przyorania.dart';
 import '../motyw.dart';
 import '../widgety/karta.dart';
 import '../widgety/wybor.dart';
@@ -45,6 +46,11 @@ class _EkranWpisuRejestruState extends State<EkranWpisuRejestru> {
   double? _dawka;
   int? _minuty;
   int? _karencjaDni;
+  DateTime? _dataPrzyorania;
+
+  /// Czy rolnik dotknął daty przyorania — tylko wtedy ją zapisujemy,
+  /// bo „jeszcze nie" i „bez zmian" wyglądają tak samo (`null`).
+  bool _przyoranieZmienione = false;
 
   @override
   void initState() {
@@ -78,6 +84,8 @@ class _EkranWpisuRejestruState extends State<EkranWpisuRejestru> {
       _dawka = wpis.oprysk?.dawka;
       _minuty = _zGodziny(wpis.zabieg.godzina);
       _karencjaDni = wpis.oprysk?.karencjaDni;
+      _dataPrzyorania = wpis.nawozenie?.dataPrzyorania;
+      _przyoranieZmienione = false;
     });
   }
 
@@ -105,6 +113,14 @@ class _EkranWpisuRejestruState extends State<EkranWpisuRejestru> {
         zrodlo: 'opakowanie, wpisane przez rolnika',
         potwierdzona: true,
         dataEtykiety: oprysk.karencjaDataEtykiety,
+        urzadzenie: widget.uslugi.urzadzenie,
+      );
+    }
+
+    if (_przyoranieZmienione && (wpis.nawozenie?.naturalny ?? false)) {
+      await widget.uslugi.nawozenie.zapiszPrzyoranie(
+        zabiegId: wpis.zabieg.id,
+        data: _dataPrzyorania,
         urzadzenie: widget.uslugi.urzadzenie,
       );
     }
@@ -262,8 +278,13 @@ class _EkranWpisuRejestruState extends State<EkranWpisuRejestru> {
                     dawka: _dawka,
                     minuty: _minuty ?? _zGodziny(wpis.zabieg.godzina),
                     karencjaDni: _karencjaDni,
+                    dataPrzyorania: _dataPrzyorania,
                     zapisuje: _zapisuje,
                     onDawka: (nowa) => setState(() => _dawka = nowa),
+                    onPrzyoranie: (dzien) => setState(() {
+                      _dataPrzyorania = dzien;
+                      _przyoranieZmienione = true;
+                    }),
                     onGodzina: (oMinut) => setState(() {
                       _minuty =
                           ((_minuty ?? _zGodziny(wpis.zabieg.godzina)) + oMinut)
@@ -301,10 +322,12 @@ class _Poprawka extends StatelessWidget {
     required this.dawka,
     required this.minuty,
     required this.karencjaDni,
+    required this.dataPrzyorania,
     required this.zapisuje,
     required this.onDawka,
     required this.onGodzina,
     required this.onKarencja,
+    required this.onPrzyoranie,
     required this.onZapisz,
     required this.onPorzuc,
   });
@@ -313,10 +336,12 @@ class _Poprawka extends StatelessWidget {
   final double? dawka;
   final int minuty;
   final int? karencjaDni;
+  final DateTime? dataPrzyorania;
   final bool zapisuje;
   final ValueChanged<double> onDawka;
   final ValueChanged<int> onGodzina;
   final ValueChanged<int> onKarencja;
+  final ValueChanged<DateTime?> onPrzyoranie;
   final VoidCallback onZapisz;
   final VoidCallback onPorzuc;
 
@@ -396,6 +421,16 @@ class _Poprawka extends StatelessWidget {
                   child: const Text('+'),
                 ),
               ],
+            ),
+          ],
+          if (wpis.nawozenie?.naturalny ?? false) ...[
+            const SizedBox(height: MotywNowoczesny.odstep),
+            Text('Przyoranie nawozu', style: teksty.labelLarge),
+            const SizedBox(height: 4),
+            WyborPrzyorania(
+              dzienZabiegu: wpis.zabieg.data,
+              wybrana: dataPrzyorania,
+              onZmiana: onPrzyoranie,
             ),
           ],
           const SizedBox(height: MotywNowoczesny.odstep),

@@ -120,6 +120,31 @@ void main() {
     );
   }
 
+  Future<String> dodajObornik({required String poleId}) async {
+    const obornik = Nawoz(
+      id: 'n-obornik',
+      gospodarstwoId: 'g1',
+      nazwa: 'Obornik bydlęcy',
+      naturalny: true,
+      azotProcent: 0.5,
+    );
+    await RepozytoriumNawozow(baza)
+        .zapisz(nawoz: obornik, urzadzenie: 'telefon');
+    return EwidencjaNawozenia(
+      baza: baza,
+      zabiegi: zabiegi,
+      reguly: reguly,
+    ).zapisz(
+      gospodarstwoId: 'g1',
+      nawoz: obornik,
+      pola: [PoleZabiegu(dzialkaRolnaId: poleId, powierzchniaAr: 250)],
+      dawka: 30,
+      jednostka: JednostkaDawki.tonyNaHektar,
+      urzadzenie: 'telefon',
+      kiedy: DateTime(2026, 3, 10, 9),
+    );
+  }
+
   setUp(() async {
     baza = await BazaGospodarstwa.otworz(
       fabryka: fabryka,
@@ -334,6 +359,35 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('godzina zabiegu'), findsOneWidget);
     expect(find.text('08:15'), findsOneWidget);
+  });
+
+  testWidgets('datę przyorania obornika dopisuje się z rejestru', (
+    tester,
+  ) async {
+    await dodajPole(id: 'p1', nazwa: 'Za stodołą');
+    final id = await dodajObornik(poleId: 'p1');
+    await pokaz(tester);
+
+    await tester.tap(find.textContaining('10.03.2026'));
+    await tester.pumpAndSettle();
+    await przewinDo(tester, find.text('Dopisz datę przyorania'));
+    expect(find.text('jeszcze nie przyorano'), findsOneWidget);
+    await tester.tap(find.text('Dopisz datę przyorania'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Przyoranie'), findsOneWidget);
+    await tester.tap(find.text('Tego samego dnia'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.widgetWithText(FilledButton, 'Zapisz'));
+    await tester.pumpAndSettle();
+
+    final wpis = await RejestrZabiegow(baza).wpis(id);
+    expect(wpis!.nawozenie?.dataPrzyorania, DateTime(2026, 3, 10));
+    // Po powrocie przycisk mówi, że przyorano, a ewidencja ma tę datę.
+    await przewinDo(tester, find.text('Zmień datę przyorania'));
+    expect(find.text('przyorano 10.03.2026'), findsOneWidget);
+    await przewinDo(tester, find.text('Data przyorania nawozu naturalnego'));
+    expect(find.text('10.03.2026'), findsWidgets);
   });
 
   testWidgets('cofnięcie wpisu pyta i usuwa go z rejestru', (tester) async {

@@ -11,6 +11,7 @@ import '../../../funkcje/warunkowosc/okres_legowy.dart';
 import '../../../funkcje/zabiegi/dane_wpisu.dart';
 import '../../../funkcje/zabiegi/slownik_srodkow.dart';
 import '../../../rdzen/modele/zabieg.dart';
+import '../../../rdzen/wspolne/wybor_przyorania.dart';
 import '../../../rdzen/dostep/funkcja.dart';
 import '../../../rdzen/reguly/regula_prawna.dart';
 import '../motyw.dart';
@@ -332,6 +333,7 @@ class _EkranWpisuState extends State<EkranWpisu> {
       jednostka: _dane.jednostkaDawki,
       urzadzenie: _dane.urzadzenie,
       kiedy: _dane.kiedy,
+      dataPrzyorania: _dane.nawoz!.naturalny ? _dane.dataPrzyorania : null,
     );
     return Zabieg(
       id: id,
@@ -827,6 +829,16 @@ class _EkranWpisuState extends State<EkranWpisu> {
                 'Azotu nie policzymy — dopisz zawartość z worka albo '
                 'z analizy gnojowicy.',
           ),
+        if (nawoz.naturalny) ...[
+          const SizedBox(height: MotywNowoczesny.odstep),
+          Text('Przyoranie', style: teksty.titleLarge),
+          const SizedBox(height: 8),
+          WyborPrzyorania(
+            dzienZabiegu: _dane.kiedy,
+            wybrana: _dane.dataPrzyorania,
+            onZmiana: (dzien) => setState(() => _dane.dataPrzyorania = dzien),
+          ),
+        ],
       ],
     ];
   }

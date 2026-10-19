@@ -6,6 +6,7 @@ import '../../../funkcje/nawozenie/plan_nawozenia.dart';
 import '../../../funkcje/magazyn/zuzycie_z_zabiegu.dart';
 import '../../../funkcje/zabiegi/dane_wpisu.dart';
 import '../../../rdzen/modele/zabieg.dart';
+import '../../../rdzen/wspolne/wybor_przyorania.dart';
 import '../motyw.dart';
 import '../widgety/duzy_przycisk.dart';
 import '../widgety/wybor_liczby.dart';
@@ -52,9 +53,10 @@ class _EkranDawkaNawozuState extends State<EkranDawkaNawozu> {
     setState(() => _zapisuje = true);
 
     final dane = widget.dane;
+    final nawoz = dane.nawoz!;
     final zabiegId = await widget.uslugi.nawozenie.zapisz(
       gospodarstwoId: dane.gospodarstwoId,
-      nawoz: dane.nawoz!,
+      nawoz: nawoz,
       pola: [
         for (final pole in dane.pola)
           PoleZabiegu(
@@ -66,6 +68,7 @@ class _EkranDawkaNawozuState extends State<EkranDawkaNawozu> {
       jednostka: dane.jednostkaDawki,
       urzadzenie: dane.urzadzenie,
       kiedy: dane.kiedy,
+      dataPrzyorania: nawoz.naturalny ? dane.dataPrzyorania : null,
     );
 
     // Magazyn (premium) odpisuje zużycie sam; ewidencja nawożenia zapisuje
@@ -151,6 +154,16 @@ class _EkranDawkaNawozuState extends State<EkranDawkaNawozu> {
           if (azot != null) ...[
             const SizedBox(height: MotywProsty.odstep),
             _MaksymalnaDawka(stanPol: _stanPol, azotWpisu: azot),
+          ],
+          if (nawoz.naturalny) ...[
+            const SizedBox(height: MotywProsty.odstep),
+            Text('Przyoranie', style: Theme.of(context).textTheme.titleLarge),
+            const SizedBox(height: 8),
+            WyborPrzyorania(
+              dzienZabiegu: dane.kiedy,
+              wybrana: dane.dataPrzyorania,
+              onZmiana: (dzien) => setState(() => dane.dataPrzyorania = dzien),
+            ),
           ],
           const SizedBox(height: MotywProsty.odstep * 2),
           FilledButton(

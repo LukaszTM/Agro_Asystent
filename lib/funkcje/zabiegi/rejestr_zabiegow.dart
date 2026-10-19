@@ -41,10 +41,15 @@ class SzczegolyNawozeniaWpisu {
     this.dawka,
     this.dawkaJednostka,
     this.azotKgHa,
+    this.dataPrzyorania,
   });
 
   final String nawozNazwa;
   final bool naturalny;
+
+  /// Dzień przyorania nawozu naturalnego (tabela 15). `null`, gdy jeszcze
+  /// nie przyorano — na wydruku zostaje brak, nie data „na oko".
+  final DateTime? dataPrzyorania;
   final double? dawka;
   final String? dawkaJednostka;
 
@@ -59,6 +64,10 @@ class SzczegolyNawozeniaWpisu {
         dawka: (w['dawka'] as num?)?.toDouble(),
         dawkaJednostka: w['dawka_jednostka'] as String?,
         azotKgHa: (w['azot_kg_ha'] as num?)?.toDouble(),
+        dataPrzyorania: switch (w['data_przyorania']) {
+          final String tekst when tekst.isNotEmpty => DateTime.tryParse(tekst),
+          _ => null,
+        },
       );
 }
 
